@@ -1,10 +1,11 @@
-import { colors } from "@material-ui/core";
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import styled from "styled-components";
-import "./App.css";
+
 import { Chat } from "./components/Chat";
 import { Intro } from "./screens/intro";
+
+import "./App.css";
 
 export const FindJob = () => {
   return <Chat>Find a job</Chat>;
@@ -31,9 +32,9 @@ const routes = [
 ];
 
 export const Container = styled.div`
-  width: 450px;
-  margin: 0 auto;
-  padding: 50px;
+  width: 385px;
+  margin: 50px auto;
+  max-width: 100%;
 `;
 
 function App() {

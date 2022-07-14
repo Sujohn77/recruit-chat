@@ -1,14 +1,7 @@
+import { useState } from "react";
 import styled from "styled-components";
-import { ICONS, Images } from "../../../utils/constants";
+import { ICONS } from "../../../utils/constants";
 import sizes from "../../../utils/sizes";
-
-type PropsType = {
-  open: boolean;
-  handlePressMenu: () => void;
-  bottom?: boolean;
-  whiteNavbar?: boolean;
-  isClosedWhiteSide: boolean;
-};
 
 const BurgerButton = styled.div`
   height: 20px;
@@ -34,18 +27,21 @@ const MobileMenu = styled.img`
   opacity: 1;
 `;
 
-const BurgerMenu = (props: PropsType) => {
-  const { open } = props;
-  const getIcon = (open: boolean) => {
-    if (open) {
+const BurgerMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const getIcon = (isOpen: boolean) => {
+    if (isOpen) {
       return ICONS.OPENED_BURGER;
     }
     return ICONS.BURGER;
   };
 
+  const onClick = () => {
+    setIsOpen(!isOpen);
+  };
   return (
-    <BurgerButton onClick={props.handlePressMenu}>
-      <MobileMenu src={getIcon(open)} onClick={props.handlePressMenu} />
+    <BurgerButton onClick={onClick}>
+      <MobileMenu src={getIcon(isOpen)} />
     </BurgerButton>
   );
 };

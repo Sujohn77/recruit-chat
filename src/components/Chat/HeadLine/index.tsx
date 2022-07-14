@@ -32,6 +32,15 @@ export const Title = styled.h3`
   margin: 0;
 `;
 
+export const CloseChat = styled(Close)`
+  position: relative;
+  margin-left: auto;
+  height: 12px;
+  width: 12px;
+  top: initial;
+  right: initial;
+`;
+
 const defaultTitle = "Career bot";
 
 export const HeadLine = ({ title = defaultTitle }) => {
@@ -39,7 +48,7 @@ export const HeadLine = ({ title = defaultTitle }) => {
     <Wrapper>
       <Avatar />
       <Title>{title}</Title>
-      <Close />
+      <CloseChat />
     </Wrapper>
   );
 };
