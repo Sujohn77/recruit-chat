@@ -5,5 +5,6 @@ export const colors = {
     zambesi: '#5f5f5f',
     alto: '#d1d1d1',
     dustyGray: '#969696',
-    silverChalice: '#a7a7a7'
+    silverChalice: '#a7a7a7',
+    boulder: '#787878',
 }

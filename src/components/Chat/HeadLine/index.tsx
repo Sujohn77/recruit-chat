@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { colors } from "../../../utils/colors";
 
 import { Close } from "../../../screens/intro/styles";
+import { setOption } from "redux/slices";
+import { useDispatch } from "react-redux";
 
 export const Wrapper = styled.div`
   height: 60px;
@@ -39,16 +41,18 @@ export const CloseChat = styled(Close)`
   width: 12px;
   top: initial;
   right: initial;
+  cursor: pointer;
 `;
 
 const defaultTitle = "Career bot";
 
 export const HeadLine = ({ title = defaultTitle }) => {
+  const dispatch = useDispatch();
   return (
     <Wrapper>
       <Avatar />
       <Title>{title}</Title>
-      <CloseChat />
+      <CloseChat onClick={() => dispatch(setOption(null))} />
     </Wrapper>
   );
 };

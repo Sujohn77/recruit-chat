@@ -43,7 +43,7 @@ export const Message = styled.div`
   padding: 10px 10px;
   color: ${colors.shamrock};
   border: 1px solid ${colors.shamrock};
-  font-size: calc(10px + 1vmin);
+  font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
   text-align: center;
   cursor: pointer;
@@ -61,7 +61,7 @@ export const Question = styled(Message)`
 `;
 
 export const Text = styled.span`
-  font-size: 14px;
+  font-size: 13px;
 `;
 
 export const Image = styled.img<{size?: string}>`

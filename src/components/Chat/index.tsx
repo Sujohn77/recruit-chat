@@ -1,59 +1,79 @@
-import React, { FC } from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import React, { ChangeEvent, FC, useEffect, useState } from "react";
+
 import { HeadLine } from "./HeadLine";
 import { mockData } from "./mockData";
-
-import Box from "@mui/material/Box";
+import * as S from "./styles";
 
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-
-export const MessagesArea = styled.div`
-  height: 400px;
-  padding: 16px;
-  border-bottom: 1px solid ${colors.alto};
-`;
-
-export const MessagesInput = styled(Box)`
-  height: 50px;
-  display: flex;
-  align-items: center;
-  padding: 24px 16px;
-  box-sizing: border-box;
-  background: #efefef;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-`;
-
-export const Message = styled.span`
-  // margin-left: 1em;
-  color: ${colors.silverChalice};
-`;
-
-const InitialMessage = styled.div`
-  color: ${colors.dustyGray};
-  font-size: 14px;
-  line-height: 17px;
-  margin-bottom: 32px;
-`;
+import { getMessageColorProps } from "utils/helpers";
+import { TextField } from "components/Layout/Input";
+import { ScenarioType } from "App";
+import { Loader } from "components/Layout/Loader";
 
 type PropsType = {
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
+  scenario: ScenarioType;
 };
 
 const botTypingTxt = "Bot is typing...";
-export const Chat: FC<PropsType> = ({ children }) => {
+
+export const Chat: FC<PropsType> = ({ children, scenario }) => {
+  const [draftMessage, setDraftMessage] = useState<string | null>(null);
+  const [messages, setMessages] = useState<string[]>(
+    scenario.initialOwnMessages
+  );
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDraftMessage(event.currentTarget.value);
+  };
+
+  useEffect(() => {
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        draftMessage && setMessages([...messages, draftMessage]);
+        setDraftMessage(null);
+      }
+    };
+
+    document.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [draftMessage, messages]);
+
+  const ownMessages = messages.map((value, index) => (
+    <S.Message
+      key={`own-message-${value}-index`}
+      {...getMessageColorProps(true)}
+    >
+      {value}
+    </S.Message>
+  ));
+  const initMessages = scenario.initialMessages.map((value) => (
+    <S.Message key={`init-message-${value}-index`} {...getMessageColorProps()}>
+      {value}
+    </S.Message>
+  ));
+
+  // TODO: check if we have last own message
+  const isLastOwnMessage = draftMessage !== "" && !!draftMessage;
+
   return (
-    <div>
+    <S.Wrapper>
       <HeadLine />
 
-      <MessagesArea>
-        <InitialMessage>{mockData.initialMessage}</InitialMessage>
-        {children}
-      </MessagesArea>
+      <S.MessagesArea>
+        <S.InitialMessage>{mockData.initialMessage}</S.InitialMessage>
+        {initMessages}
+        {ownMessages}
 
-      <MessagesInput position="static">
+        {isLastOwnMessage && <Loader isShow={isLastOwnMessage} />}
+      </S.MessagesArea>
+
+      <S.MessagesInput position="static">
         <IconButton
           size="large"
           edge="start"
@@ -63,8 +83,12 @@ export const Chat: FC<PropsType> = ({ children }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Message>{botTypingTxt}</Message>
-      </MessagesInput>
-    </div>
+        <TextField
+          value={draftMessage || ""}
+          onChange={onChange}
+          placeHolder={botTypingTxt}
+        />
+      </S.MessagesInput>
+    </S.Wrapper>
   );
 };
