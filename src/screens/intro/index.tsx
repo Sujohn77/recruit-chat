@@ -1,16 +1,23 @@
 import React from "react";
 
 import * as S from "./styles";
-import { Images } from "../../utils/constants";
-import { useHistory } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 import { setOption } from "redux/slices";
+// import { Images } from "../../utils/constants";
+import SEARCH_ICON from "../../assets/imgs/search.png";
+import QUESTION from "../../assets/imgs/question.png";
+import ROB_FACE from "../../assets/imgs/rob-face.png";
 
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",
   ASK_QUESTION = "ASK QUESTION",
 }
-
+export const Images = {
+  SEARCH_ICON,
+  QUESTION,
+  ROB_FACE,
+};
 // TODO: connect firebase with messages
 const messages = {
   sayHello: "Hi! Are you looking for a job",

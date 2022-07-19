@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React from "react";
 import styled from "styled-components";
 
 import { Chat } from "./components/Chat";
-import { CHAT_OPTIONS, Intro } from "./screens/intro";
 
 import "./App.css";
-import { Provider, useSelector } from "react-redux";
-import { IRootState, store } from "redux/store";
+import { useSelector } from "react-redux";
+import { IRootState } from "redux/store";
+import { CHAT_OPTIONS, Intro } from "./screens/intro";
 // import { FindJob } from "screens/findJob";
 
 // export const FAQ = () => {
@@ -53,11 +52,7 @@ const App = () => {
   const option = useSelector<IRootState, CHAT_OPTIONS | null>(
     (state) => state.option
   );
-  return (
-    <Container>
-      {!option ? <Intro /> : <Chat scenario={scenarios[option]} />}
-    </Container>
-  );
+  return <Container>{!option ? <Intro /> : <Chat />}</Container>;
 };
 
 export default App;
