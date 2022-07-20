@@ -1,4 +1,11 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { HeadLine } from "./HeadLine";
 import * as S from "./styles";
@@ -9,10 +16,17 @@ import { TextField } from "components/Layout/Input";
 
 import { MessagesBody } from "./MessagesBody";
 import { botTypingTxt } from "utils/constants";
+import { FirebaseSocketReactivePagination } from "redux/socket";
+import { IMessage } from "redux/slices/types";
+import { SocketCollectionPreset } from "redux/socket.options";
 
 type PropsType = {
   children?: React.ReactNode | React.ReactNode[];
 };
+
+const chatId = "213123";
+
+export const onUpdateMessages = () => {};
 
 export const Chat: FC<PropsType> = ({ children }) => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
@@ -20,6 +34,25 @@ export const Chat: FC<PropsType> = ({ children }) => {
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
   };
+
+  /* ------ Socket Connection ------ */
+  const messagesSocketConnection = useRef(
+    new FirebaseSocketReactivePagination<IMessage>(
+      SocketCollectionPreset.Messages,
+      chatId
+    )
+  );
+
+  useEffect(() => {
+    const savedSocketConnection = messagesSocketConnection.current;
+    savedSocketConnection.subscribe(onUpdateMessages);
+    return () => savedSocketConnection?.unsubscribe();
+  }, [onUpdateMessages]);
+
+  const onLoadNextMessagesPage = useCallback(() => {
+    messagesSocketConnection.current?.loadNextPage(onUpdateMessages);
+  }, [onUpdateMessages]);
+  /* ------------------------------- */
 
   return (
     <S.Wrapper>

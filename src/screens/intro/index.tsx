@@ -40,8 +40,11 @@ const messages = {
 
 export const Intro = () => {
   const dispatch = useDispatch();
-  const chooseOptions = messages.options.map((opt) => (
-    <S.Message onClick={() => dispatch(setOption(opt.option))}>
+  const chooseOptions = messages.options.map((opt, index) => (
+    <S.Message
+      key={`chat-option-${index}`}
+      onClick={() => dispatch(setOption(opt.option))}
+    >
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={""} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>

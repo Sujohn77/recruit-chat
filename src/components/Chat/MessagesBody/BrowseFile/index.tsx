@@ -7,12 +7,14 @@ import { colors } from "utils/colors";
 export const Wrapper = styled.div`
   background: ${colors.alto};
   border-radius: 10px;
-  padding: 24px 28px;
+  padding: 32px 17px 16px;
   margin: 0 auto;
   display: flex;
   flex-flow: column;
-  gap: 16px;
-  width: 306px;
+  width: 220px;
+  align-items: center;
+  color: ${colors.dustyGray};
+  border-radius: 10px;
 `;
 export const Title = styled.p`
   margin: 0 0 24px;
@@ -21,13 +23,14 @@ export const Title = styled.p`
   color: ${colors.black};
 `;
 export const Avatar = styled.div`
-  widht: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  margin: 0 0 32px;
-`;
-export const Browse = styled(Button)`
   margin: 0 0 16px;
+  background: ${colors.white};
+`;
+export const Browse = styled.label`
+  margin: 11px 0 16px;
   color: ${colors.black};
   background: ${colors.silverChalice};
   padding: 11px 0;
@@ -35,6 +38,8 @@ export const Browse = styled(Button)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
+  border-radius: 100px;
+  font-weight: 500;
 `;
 
 export const Cancel = styled(Button)`
@@ -44,15 +49,17 @@ export const Cancel = styled(Button)`
 `;
 
 export const Text = styled.p`
-  margin: 0 0 24px;
+  margin: 0 0 16px;
 `;
+
 export const BrowseFile = () => {
   return (
     <Wrapper>
       <Avatar />
       <Text>Lorem ipsum dolor sit amet</Text>
       <Text>or</Text>
-      <Browse value="Browse" />
+      <Browse htmlFor="myfile">Browse</Browse>
+      <input type="file" id="myfile" name="myfile" multiple hidden />
       <Cancel value="Cancel" />
     </Wrapper>
   );

@@ -6,87 +6,72 @@ import {
   IContent,
   IMessage,
   IState,
+  Status,
   USER_INPUTS,
 } from "./types";
 
 const initialState: IState = {
   option: null,
   messages: [],
+  status: Status.DONE,
 };
 
-export const getChatResponseOnMessage = (userInput: string): IMessage[] => {
-  const createdAt = new Date();
+const name = "chat";
 
-  switch (userInput) {
-    case USER_INPUTS.ASK_QUESTION: {
-      const content = {
-        text: "Output of existing most popular questions",
-        subType: CHAT_TYPE_MESSAGES.TEXT,
-        subTypeId: 1,
-      };
-      return [
-        {
-          createdAt,
-          content,
-          messageId: Math.random() * 5000,
-          isReceived: true,
-        },
-      ];
-    }
-    case USER_INPUTS.FIND_JOB: {
-      const content = {
-        text: "There are our job propositions",
-        subType: CHAT_TYPE_MESSAGES.TEXT,
-        subTypeId: 1,
-      };
-      return [
-        {
-          createdAt,
-          content,
-          messageId: Math.random() * 5000,
-          isReceived: true,
-        },
-      ];
-    }
-    default: {
-      const content = {
-        subType: CHAT_TYPE_MESSAGES.REFINE_SERCH,
-        subTypeId: 1,
-      };
-      return [
-        {
-          createdAt,
-          content,
-          messageId: Math.random() * 5000,
-          isReceived: true,
-        },
-      ];
-    }
-  }
-};
+// export const initChat = createSagaAction`${name}/initChat`);
+// export const doSomeMoreAsyncStuff = createSagaAction(`${name}/doSomeMoreAsyncStuff`)
 
 const chatSlice = createSlice({
-  name: "scenario",
+  name,
   initialState: initialState,
   reducers: {
+    initChat: (state) => {
+      state.status = Status.PENDING;
+    },
+    addMessage: (state, action: PayloadAction<string>) => {
+      const createdAt = `${new Date()}`;
+      const content: IContent = {
+        subType: CHAT_TYPE_MESSAGES.TEXT,
+        subTypeId: 1,
+        text: action.payload,
+      };
+      state.status = Status.PENDING;
+      state.messages.push({
+        createdAt,
+        content,
+        messageId: state.messages.length + 1,
+      });
+    },
+
+    pushMessage: (state, action: PayloadAction<IMessage[]>) => {
+      state.messages = [...state.messages, ...action.payload];
+    },
+
     setOption: (state, action: PayloadAction<CHAT_OPTIONS | null>) => {
       if (action.payload !== null && !state.messages.length) {
         const chat = defaultChatHistory[action.payload];
-        const createdAt = new Date();
+        const createdAt = `${new Date()}`;
+        console.log(action.type);
         const ownerId = `${Math.random() * 500}`;
-
         for (const msg of chat.initialMessages) {
-          const content: IContent = {
-            subType: CHAT_TYPE_MESSAGES.TEXT,
-            subTypeId: 1,
-            text: msg.text,
-          };
-          state.messages.push({
-            createdAt,
-            content,
-            messageId: state.messages.length + 1,
-            isReceived: !msg.isOwner,
-          });
+          if (msg.isOwner) {
+            chatSlice.caseReducers.addMessage(state, {
+              type: "chat/addMessage",
+              payload: msg.text,
+            });
+          } else {
+            const content: IContent = {
+              subType: CHAT_TYPE_MESSAGES.TEXT,
+              subTypeId: 1,
+              text: msg.text,
+            };
+            state.messages.push({
+              createdAt,
+              content,
+              messageId: state.messages.length + 1,
+              isReceived: !msg.isOwner,
+            });
+          }
         }
 
         state.ownerId = ownerId;
@@ -95,30 +80,12 @@ const chatSlice = createSlice({
       state.option = action.payload;
     },
 
-    pushMessage: (state, action: PayloadAction<string>) => {
-      const createdAt = new Date();
-      const content: IContent = {
-        subType: CHAT_TYPE_MESSAGES.TEXT,
-        subTypeId: 1,
-        text: action.payload,
-      };
-      state.messages.push({
-        createdAt,
-        content,
-        messageId: state.messages.length + 1,
-      });
-
-      state.messages = [
-        ...state.messages,
-        ...getChatResponseOnMessage(action.payload),
-      ];
-    },
-
     updateMessage: (state, action: PayloadAction<CHAT_OPTIONS | null>) => {
       state.option = action.payload;
     },
   },
 });
 
-export const { setOption, pushMessage } = chatSlice.actions;
+export const { setOption, addMessage, pushMessage, initChat } =
+  chatSlice.actions;
 export default chatSlice.reducer;
