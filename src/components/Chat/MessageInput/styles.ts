@@ -6,7 +6,7 @@ export const searchItemheight = 32;
 export const searchHeaderHeight = 40;
 export const MessagesInput = styled(Box)`
   height: 50px;
-  position: relative;
+  position: relative!important;
   display: flex;
   align-items: center;
   padding: 24px 16px;
@@ -21,7 +21,9 @@ export const SearchWrapper = styled.div<{searchOptionsHeight:number}>`
     position: absolute;
     width: 100%;
     left: 0;
-    top: ${({searchOptionsHeight}) => -searchOptionsHeight - searchHeaderHeight  + 'px'}
+    top: ${({searchOptionsHeight}) => -searchOptionsHeight - searchHeaderHeight  + 'px'};
+    color: ${colors.dustyGray};
+    font-weight: 500;
 `;
 
 export const SearchHeader = styled.div`
@@ -29,6 +31,10 @@ export const SearchHeader = styled.div`
     padding: 7px 16px;
     height: ${searchHeaderHeight}px;
     box-sizing: border-box;
+    font-size: 14px;
+    line-height: 17px;
+    display: flex;
+    align-items: center;
 `;
 export const SearchBody = styled.div`
     background: ${colors.darkGrey};
@@ -37,12 +43,13 @@ export const SearchBody = styled.div`
 `;
 
 export const SearchPosition = styled.div`
-    height: ${searchItemheight};
+    height: ${searchItemheight}px;
+    box-sizing: border-box;
     width:100%;
     padding: 7px 16px;
     font-size: 14px;
     line-height: 17px;
-
+    font-weight: 400;
     span{
         font-weight: 700;
     }

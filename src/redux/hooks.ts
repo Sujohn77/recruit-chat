@@ -1,5 +1,6 @@
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { useCallback } from "react";
+import { sendMessage } from "saga/chat";
 
 import { updateChatRoomMessages } from "saga/handlers";
 
@@ -22,9 +23,9 @@ export const useUpdateChatRoomMessagesCallback = (dispatch:  Dispatch<AnyAction>
   },[dispatch, chatId]
   );
 
-  // export const useUpdateChatRoomMessagesCallback = (dispatch: AppDispatch, chatId: number) =>
-  // useCallback(
-  //   (messagesSnapshots: ISnapshot<IMessage>[]) =>
-  //     dispatch({ type: chatsActionTypes.UPDATE_CHAT_ROOM_MESSAGES, chatId, messagesSnapshots }),
-  //   [dispatch, chatId],
-  // );
+  export const useSendMessageCallback = (dispatch: AppDispatch) =>
+  useCallback(
+    (message: IApiMessage, sender: IUserSelf, chatId?: number) =>
+      dispatch(sendMessage({ type: chatsActionTypes.SEND_MESSAGE, message, sender, chatId })),
+    [dispatch],
+  );

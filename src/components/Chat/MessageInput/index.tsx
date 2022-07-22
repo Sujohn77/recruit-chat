@@ -9,6 +9,7 @@ import * as S from "./styles";
 import { addMessage } from "redux/slices";
 import { useDispatch } from "react-redux";
 import { SearchResults } from "./SearchResults";
+import { capitalizeFirstLetter } from "utils/helpers";
 
 type PropsType = {};
 
@@ -44,7 +45,14 @@ export const MessageInput: FC<PropsType> = () => {
 
   const matchedPositions = draftMessage?.length
     ? positions
-        .filter((p) => p.indexOf(draftMessage) !== -1)
+        .filter((p) => {
+          const position = p.toLowerCase();
+          const firstWord = p.toLowerCase().split(" ")[0];
+          return (
+            position.indexOf(draftMessage) !== -1 &&
+            firstWord.indexOf(draftMessage) !== -1
+          );
+        })
         .map((p) => p.slice(draftMessage.length, p.length))
     : [];
 
@@ -64,7 +72,7 @@ export const MessageInput: FC<PropsType> = () => {
       {!!matchedPositions?.length && draftMessage && (
         <SearchResults
           matchedPositions={matchedPositions}
-          matchedPart={draftMessage}
+          matchedPart={capitalizeFirstLetter(draftMessage)}
         />
       )}
 

@@ -15,6 +15,7 @@ export const Wrapper = styled.div`
   align-items: center;
   color: ${colors.dustyGray};
   border-radius: 10px;
+  margin-bottom: 24px;
 `;
 export const Title = styled.p`
   margin: 0 0 24px;

@@ -1,7 +1,11 @@
 import { createAction } from "@reduxjs/toolkit";
 
 export const initChatAction: any = createAction("INIT_CHAT");
-
+export const sendMessageChatAction: any = createAction(
+  "SEND_MESSAGE",
+  chatId,
+  message
+);
 export enum chatsActionTypes {
   OPEN_NOTIFICATION_CHAT_ROOM = "OPEN_NOTIFICATION_CHAT_ROOM",
 
