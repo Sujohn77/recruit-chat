@@ -1,33 +1,32 @@
-import { call, put, take, all, takeEvery } from "redux-saga/effects";
+import { call, all, takeEvery, takeLatest } from "redux-saga/effects";
 import { FIREBASE_TOKEN } from "firebase/config";
 import { handleSignInWithCustomToken } from "./handlers";
-import initChatAction, { sagaActions } from "redux/actions";
+import { chatsActionTypes } from "redux/actions";
+import { SendMessageAction, UpdateChatRoomMessagesAction } from "./types";
+import { withRefreshTokenHandler } from "./refreshToken";
+import { sendMessage, updateMessages } from "./chat";
 
-function* setUserDataAfterVerify(argUserData: { type?: string; payload: any }) {
-  const { error } = yield call(handleSignInWithCustomToken, FIREBASE_TOKEN);
-  //   yield put(
-  //     appActionsCreators.setFirebaseSignInWithCustomTokenError(Boolean(error))
-  //   );
+function* setUserDataAfterVerify() {
+  yield call(handleSignInWithCustomToken, FIREBASE_TOKEN);
 }
 
 export function* watchInit() {
-  yield takeEvery(initChatAction().type, setUserDataAfterVerify);
+  yield takeEvery<{ type: chatsActionTypes.INIT_CHAT }>(
+    chatsActionTypes.INIT_CHAT,
+    setUserDataAfterVerify
+  );
 }
 
 export function* rootSaga() {
-  yield all([watchInit()]);
+  yield all([
+    watchInit(),
+    takeLatest<SendMessageAction>(
+      chatsActionTypes.SEND_MESSAGE,
+      withRefreshTokenHandler(sendMessage)
+    ),
+    takeLatest<UpdateChatRoomMessagesAction>(
+      chatsActionTypes.UPDATE_CHAT_ROOM_MESSAGES,
+      withRefreshTokenHandler(updateMessages)
+    ),
+  ]);
 }
-
-// export const getMessagesSuccess = (data: any) => {
-//     return { type: "chat/addMessage" };
-//   };
-
-// export function* workGetMessages() {
-//   const data: any = yield call(() => fetch(""));
-//   const formattedMessages = yield data.json();
-//   yield put(getMessagesSuccess(formattedMessages));
-// }
-
-// function* watchMessages() {
-//   yield take("chat/init", workGetMessages);
-// }

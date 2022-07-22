@@ -1,25 +1,20 @@
-import { Loader } from "components/Layout/Loader";
-import { db } from "firebase/config";
-
-import React, { Dispatch, FC, SetStateAction, useEffect, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessage, pushMessage } from "redux/slices";
+import firebaseApp from "firebase";
+import { pushMessage } from "redux/slices";
 import { CHAT_TYPE_MESSAGES, IState } from "redux/slices/types";
-import { getChatResponseOnMessage, getMessageColorProps } from "utils/helpers";
-import { mockData } from "../mockData";
+
+import { Loader } from "components/Layout/Loader";
 import { BrowseFile } from "./BrowseFile";
 import { NoMatchJob } from "./NoMatchJob";
-import * as S from "./styles";
-import firebaseApp from "firebase";
-type PropsType = {
-  draftMessage: string | null;
-  setDraftMessage: Dispatch<SetStateAction<string | null>>;
-};
 
-export const MessagesBody: FC<PropsType> = ({
-  draftMessage,
-  setDraftMessage,
-}) => {
+import { getChatResponseOnMessage, getMessageColorProps } from "utils/helpers";
+import { mockData } from "../mockData";
+import * as S from "./styles";
+
+type PropsType = {};
+
+export const MessagesBody: FC<PropsType> = () => {
   const dispatch = useDispatch();
   const { messages } = useSelector<IState, IState>((state) => state);
 
@@ -45,25 +40,6 @@ export const MessagesBody: FC<PropsType> = ({
 
     getChats();
   }, []);
-
-  useEffect(() => {
-    const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (draftMessage) {
-          dispatch(addMessage(draftMessage));
-          setDraftMessage(null);
-        }
-      }
-    };
-
-    document.addEventListener("keydown", keyDownHandler);
-
-    return () => {
-      document.removeEventListener("keydown", keyDownHandler);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftMessage]);
 
   const chatMessages = useMemo(() => {
     return messages.map((msg, index) => {

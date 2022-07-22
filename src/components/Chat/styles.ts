@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colors } from "utils/colors";
-import Box from "@mui/material/Box";
+
 
 export const Wrapper = styled.div`
     background: ${colors.white};
@@ -44,16 +44,7 @@ export const MessagesArea = styled.div`
   position: relative;
 `;
 
-export const MessagesInput = styled(Box)`
-  height: 50px;
-  display: flex;
-  align-items: center;
-  padding: 24px 16px;
-  box-sizing: border-box;
-  background: #efefef;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-`;
+
 
 export const InputMessage = styled.span`
   color: ${colors.silverChalice};

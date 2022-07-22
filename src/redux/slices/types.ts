@@ -1,3 +1,4 @@
+import { IMessage } from "saga/types";
 import { CHAT_OPTIONS } from "screens/intro";
 
 export enum CHAT_TYPE_MESSAGES {
@@ -10,14 +11,15 @@ export enum CHAT_TYPE_MESSAGES {
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
-  messages: IMessage[]
+  messages: ILocalMessage[];
+  serverMessages: IMessage[];
   ownerId?: string;
   chatId?: string;
   status: Status
 }
 // type IMessage = IMessageString | IMessageNoMatchJob | IMessageJobPositions
 
-export interface IMessage {
+export interface ILocalMessage {
   createdAt: string,
   content: IContent
   messageId: number | string;
@@ -26,7 +28,7 @@ export interface IMessage {
 
 export interface IContent {
     subType: CHAT_TYPE_MESSAGES;
-    subTypeId: number;
+    subTypeId: number | null;
     text?: string;
 }
 // interface IMessageNoMatchJob {

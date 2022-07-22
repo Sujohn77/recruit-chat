@@ -1,6 +1,7 @@
-import { CHAT_TYPE_MESSAGES, IMessage, USER_INPUTS } from "redux/slices/types";
+import { CHAT_TYPE_MESSAGES, ILocalMessage, USER_INPUTS } from "redux/slices/types";
 import { colors } from "./colors";
-
+import moment from 'moment';
+import { IApiMessage, IMessage, IUserSelf, MessageType } from "saga/types";
 // interface IGetMessageColorProps {
 //     isOwn?: boolean;
 // }
@@ -26,7 +27,7 @@ export const getMessageColorProps = (isOwn?: boolean):IMessageProps  => {
   };
 };
 
-export const getChatResponseOnMessage = (userInput: string): IMessage[] => {
+export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => {
   const createdAt = `${new Date()}`;
 
   switch (userInput.toLowerCase()) {
@@ -35,6 +36,9 @@ export const getChatResponseOnMessage = (userInput: string): IMessage[] => {
         text: "Output of existing most popular questions",
         subType: CHAT_TYPE_MESSAGES.TEXT,
         subTypeId: 1,
+        // typeId: 1,
+        // contextId: "1",
+        // url: ''
       };
       return [
         {
@@ -85,3 +89,48 @@ export const getChatResponseOnMessage = (userInput: string): IMessage[] => {
     }
   }
 };
+
+export const MessageTypeId: Record<MessageType, number> = {
+  /* Default text */
+  [MessageType.Text]: 1,
+
+  /* Events */
+  [MessageType.Date]: 2,
+  [MessageType.UnreadMessages]: 2,
+  [MessageType.Transcript]: 2,
+  [MessageType.ChatCreated]: 2,
+
+  /* Files */
+  [MessageType.Video]: 2,
+  [MessageType.Document]: 2,
+  [MessageType.File]: 2,
+};
+
+
+export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf): IMessage => {
+  const currentUnixTime = moment().unix();
+
+  return {
+    chatItemId: -1,
+    localId: requestMessage.localId,
+    content: {
+      typeId: MessageTypeId.text,
+      subTypeId: null,
+      contextId: requestMessage.contextId || null,
+      text: requestMessage.msg,
+      subType: MessageType.Text,
+      url: null,
+    },
+    dateCreated: {
+      seconds: currentUnixTime,
+    },
+    dateModified: {
+      seconds: currentUnixTime,
+    },
+    isEdited: false,
+    isReceived: false,
+    sender,
+    searchValue: '',
+  };
+};
+

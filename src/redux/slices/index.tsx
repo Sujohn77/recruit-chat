@@ -1,18 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IMessage } from "saga/types";
 import { CHAT_OPTIONS } from "screens/intro";
 import { defaultChatHistory } from "utils/constants";
 import {
   CHAT_TYPE_MESSAGES,
   IContent,
-  IMessage,
+  ILocalMessage,
   IState,
   Status,
-  USER_INPUTS,
 } from "./types";
 
 const initialState: IState = {
   option: null,
   messages: [],
+  serverMessages: [],
   status: Status.DONE,
 };
 
@@ -43,7 +44,7 @@ const chatSlice = createSlice({
       });
     },
 
-    pushMessage: (state, action: PayloadAction<IMessage[]>) => {
+    pushMessage: (state, action: PayloadAction<ILocalMessage[]>) => {
       state.messages = [...state.messages, ...action.payload];
     },
 
@@ -80,12 +81,12 @@ const chatSlice = createSlice({
       state.option = action.payload;
     },
 
-    updateMessage: (state, action: PayloadAction<CHAT_OPTIONS | null>) => {
-      state.option = action.payload;
+    updateMessages: (state, action: PayloadAction<IMessage[]>) => {
+      state.serverMessages = action.payload;
     },
   },
 });
 
-export const { setOption, addMessage, pushMessage, initChat } =
+export const { setOption, addMessage, pushMessage, initChat, updateMessages } =
   chatSlice.actions;
 export default chatSlice.reducer;

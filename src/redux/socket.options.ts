@@ -2,9 +2,8 @@ import firebaseApp from 'firebase';
 
 import { Query } from '@firebase/firestore-types';
 import { isArray } from 'lodash';
-​
+
 export type FirebaseOrderType = 'asc' | 'desc' | undefined;
-​
 export enum SocketCollectionPreset {
   Chats,
   Messages,
@@ -13,16 +12,16 @@ export enum SocketCollectionPreset {
   QueueChats,
   QueuesChatMessages,
 }
-​
+
 export const SORT_ORDERS: FirebaseOrderType[] = ['desc', 'asc'];
-​
+
 export interface ISocketPresetOptions {
   pageSize: number;
   sortField: string;
   onGetCollectionRef: (...args: any[]) => Query;
   queueChatStatusIds?: number[];
 }
-​
+
 export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPresetOptions> = {
   [SocketCollectionPreset.Chats]: {
     pageSize: 20,

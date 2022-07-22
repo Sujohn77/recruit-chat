@@ -1,84 +1,56 @@
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useEffect } from "react";
 
 import { HeadLine } from "./HeadLine";
 import * as S from "./styles";
 
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { TextField } from "components/Layout/Input";
-
 import { MessagesBody } from "./MessagesBody";
-import { botTypingTxt } from "utils/constants";
-import { FirebaseSocketReactivePagination } from "redux/socket";
-import { IMessage } from "redux/slices/types";
-import { SocketCollectionPreset } from "redux/socket.options";
+
+// import { FirebaseSocketReactivePagination } from "redux/socket";
+// import { IMessage } from "saga/types";
+// import { SocketCollectionPreset } from "redux/socket.options";
+
+import { useUpdateChatRoomMessagesCallback } from "redux/hooks";
+
+import chatsActionTypes from "redux/actions";
+import { dispatch } from "redux/store";
+import { MessageInput } from "./MessageInput";
 
 type PropsType = {
   children?: React.ReactNode | React.ReactNode[];
 };
 
-const chatId = "213123";
-
-export const onUpdateMessages = () => {};
+export const chatId = 213123;
 
 export const Chat: FC<PropsType> = ({ children }) => {
-  const [draftMessage, setDraftMessage] = useState<string | null>(null);
-
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDraftMessage(event.currentTarget.value);
-  };
+  const onUpdateMessages = useUpdateChatRoomMessagesCallback(dispatch, chatId);
 
   /* ------ Socket Connection ------ */
-  const messagesSocketConnection = useRef(
-    new FirebaseSocketReactivePagination<IMessage>(
-      SocketCollectionPreset.Messages,
-      chatId
-    )
-  );
+  // const messagesSocketConnection = useRef(
+  //   new FirebaseSocketReactivePagination<IMessage>(
+  //     SocketCollectionPreset.Messages,
+  //     chatId
+  //   )
+  // );
 
   useEffect(() => {
-    const savedSocketConnection = messagesSocketConnection.current;
-    savedSocketConnection.subscribe(onUpdateMessages);
-    return () => savedSocketConnection?.unsubscribe();
+    dispatch({ type: chatsActionTypes.INIT_CHAT });
+
+    // const savedSocketConnection = messagesSocketConnection.current;
+    // savedSocketConnection.subscribe(onUpdateMessages);
+    // return () => savedSocketConnection?.unsubscribe();
   }, [onUpdateMessages]);
 
-  const onLoadNextMessagesPage = useCallback(() => {
-    messagesSocketConnection.current?.loadNextPage(onUpdateMessages);
-  }, [onUpdateMessages]);
+  // const onLoadNextMessagesPage = useCallback(() => {
+  //   // messagesSocketConnection.current?.loadNextPage(onUpdateMessages);
+  // }, [onUpdateMessages]);
+
   /* ------------------------------- */
 
   return (
     <S.Wrapper>
       <HeadLine />
-
-      <MessagesBody
-        draftMessage={draftMessage}
-        setDraftMessage={setDraftMessage}
-      />
-
-      <S.MessagesInput position="static">
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 1 }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <TextField
-          value={draftMessage || ""}
-          onChange={onChange}
-          placeHolder={botTypingTxt}
-        />
-      </S.MessagesInput>
+      <MessagesBody />
+      <MessageInput />
     </S.Wrapper>
   );
 };

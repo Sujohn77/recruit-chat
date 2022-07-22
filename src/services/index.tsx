@@ -1,11 +1,11 @@
 import apisauce, { ApisauceInstance } from "apisauce";
-
+import { IApiMessage, ISendMessageResponse } from "saga/types";
+import { IUpdateMessagesResponse } from "./types";
+const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 class Api {
   private client: ApisauceInstance;
 
-  constructor(
-    baseURL = process?.env?.REACT_APP_BASE_API_URL ?? "localhost:3001"
-  ) {
+  constructor(baseURL = BASE_API_URL) {
     this.client = apisauce.create({
       baseURL,
       timeout: 10000,
@@ -19,6 +19,16 @@ class Api {
 
   setAuthHeader = (token: string) =>
     this.client.setHeader("Authorization", `Bearer ${token}`);
+
+  setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
+  sendMessage = (payload: IApiMessage) =>
+    this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
+
+  markChatRead = (chatId?: number) =>
+    this.client.post<IUpdateMessagesResponse>(
+      "/api/messenger/chat/acknowledge",
+      { chatId }
+    );
 }
 
 export const apiInstance = new Api();

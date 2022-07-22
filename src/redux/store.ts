@@ -9,5 +9,6 @@ const saga = createSagaMiddleware()
 export const store = configureStore({ reducer: chatReducer, middleware:[saga]});
 
 saga.run(rootSaga)
-
+export const dispatch = store.dispatch;
 export type IRootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
