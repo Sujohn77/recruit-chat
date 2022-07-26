@@ -10,6 +10,7 @@ import { ChatProvider } from "components/Context/MessangerContext";
 import { SocketProvider } from "components/Context/SocketContext";
 import { FIREBASE_TOKEN } from "firebase/config";
 import { handleSignInWithCustomToken } from "firebase/config";
+import { FileUploadProvider } from "components/Context/FileUploadContext";
 
 export const Container = styled.div`
   width: 385px;
@@ -34,7 +35,9 @@ const App = () => {
   return (
     <Container>
       <ChatProvider>
-        <SocketProvider>{renderContent()}</SocketProvider>
+        <FileUploadProvider>
+          <SocketProvider>{renderContent()}</SocketProvider>{" "}
+        </FileUploadProvider>
       </ChatProvider>
     </Container>
   );

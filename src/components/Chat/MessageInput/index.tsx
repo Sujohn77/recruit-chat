@@ -4,26 +4,33 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { TextField } from "components/Layout/Input";
 import { IconButton } from "@mui/material";
 
-import { botTypingTxt, ICONS } from "utils/constants";
+import {
+  botTypingTxt,
+  categoryHeaderName,
+  ICONS,
+  locationHeaderName,
+  locations,
+  positions,
+} from "utils/constants";
 import * as S from "./styles";
 
 import { SearchResults } from "./SearchResults";
-import { capitalizeFirstLetter } from "utils/helpers";
+import { capitalizeFirstLetter, getMatchedItems } from "utils/helpers";
 import { useChatMessanger } from "components/Context/MessangerContext";
 import { CHAT_TYPE_MESSAGES } from "utils/types";
 import { sendMessage } from "services/hooks";
+import { useFileUploadContext } from "components/Context/FileUploadContext";
 
 type PropsType = {};
 
-// TODO: fix mock
-const positions = ["Devops", "Developer ios", "Developer backend"];
-
 export const MessageInput: FC<PropsType> = () => {
-  const { addMessage } = useChatMessanger();
+  const { file, sendFile, setNotification } = useFileUploadContext();
+  const { addMessage, jobPosition } = useChatMessanger();
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
+    setNotification(null);
   };
 
   useEffect(() => {
@@ -45,23 +52,28 @@ export const MessageInput: FC<PropsType> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftMessage]);
 
-  const matchedPositions = draftMessage?.length
-    ? positions
-        .filter((p) => {
-          const position = p.toLowerCase();
-          const firstWord = p.toLowerCase().split(" ")[0];
-          return (
-            position.indexOf(draftMessage) !== -1 &&
-            firstWord.indexOf(draftMessage) !== -1
-          );
-        })
-        .map((p) => p.slice(draftMessage.length, p.length))
-    : [];
+  const { searchItems, placeHolder, headerName } = jobPosition
+    ? {
+        searchItems: locations,
+        placeHolder: "Reply to choose location...",
+        headerName: locationHeaderName,
+      }
+    : {
+        searchItems: positions,
+        headerName: categoryHeaderName,
+        placeHolder: null,
+      };
+
+  const matchedPositions = getMatchedItems({
+    message: draftMessage,
+    searchItems,
+  });
 
   const onClick = (draftMessage: string) => {
     sendMessage(draftMessage);
     setDraftMessage(null);
   };
+
   return (
     <S.MessagesInput position="static">
       <IconButton
@@ -76,6 +88,7 @@ export const MessageInput: FC<PropsType> = () => {
 
       {!!matchedPositions?.length && draftMessage && (
         <SearchResults
+          headerName={headerName}
           matchedPositions={matchedPositions}
           matchedPart={capitalizeFirstLetter(draftMessage)}
           setDraftMessage={setDraftMessage}
@@ -85,14 +98,20 @@ export const MessageInput: FC<PropsType> = () => {
       <TextField
         value={draftMessage || ""}
         onChange={onChange}
-        placeHolder={botTypingTxt}
+        placeHolder={placeHolder || botTypingTxt}
       />
 
-      {draftMessage && (
+      {(draftMessage || file) && (
         <S.PlaneIcon
           src={ICONS.INPUT_PLANE}
           width="16"
-          onClick={() => onClick(draftMessage)}
+          onClick={() => {
+            if (draftMessage) {
+              onClick(draftMessage);
+            } else if (file) {
+              sendFile(file);
+            }
+          }}
         />
       )}
     </S.MessagesInput>

@@ -1,9 +1,7 @@
-import * as React from "react";
-import { Button } from "@mui/material";
 
 import styled from "styled-components";
 import { colors } from "utils/colors";
-import DragAndDrop from "components/DragAndDrop";
+import { IMAGES } from "utils/constants";
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
@@ -17,20 +15,24 @@ export const Wrapper = styled.div`
   color: ${colors.dustyGray};
   border-radius: 10px;
   margin-bottom: 24px;
+  position: relative;
 `;
+
 export const Title = styled.p`
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 17px;
   color: ${colors.black};
 `;
+
 export const Avatar = styled.div`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  margin: 0 0 16px;
-  background: ${colors.white};
+  width: 30px;
+  height: 30px;
+  filter: contrast(0.2);
+  background: url(${IMAGES.UPLOAD_FILE}) no-repeat;
+  background-size: cover;
 `;
+
 export const Browse = styled.label`
   margin: 11px 0 16px;
   color: ${colors.black};
@@ -38,38 +40,35 @@ export const Browse = styled.label`
   padding: 11px 0;
   text-align: center;
   width: 100%;
+  cursor: pointer;
   font-size: 14px;
   line-height: 17px;
   border-radius: 100px;
   font-weight: 500;
 `;
 
-export const Cancel = styled(Button)`
+export const Cancel = styled.div`
   font-size: 14px;
   line-height: 17px;
   border-bottom: 1px solid ${colors.black};
+  color:${colors.black};
+  cursor: pointer;
 `;
 
 export const Text = styled.p`
   margin: 0 0 16px;
 `;
+export const FileWrapper = styled.div`
+  display: flex;
+  gap: 5px;
+`;
 
-export const BrowseFile = () => {
-  const [file, setFiles] = React.useState(null);
-  const handleDrop = (upload: any) => {
-    setFiles(upload);
-  };
-  return (
-    <Wrapper>
-      <Avatar />
-      <DragAndDrop handleDrop={handleDrop}>
-        <div>{file}</div>
-      </DragAndDrop>
-      <Text>Lorem ipsum dolor sit amet</Text>
-      <Text>or</Text>
-      <Browse htmlFor="myfile">Browse</Browse>
-      <input type="file" id="myfile" name="myfile" multiple hidden />
-      <Cancel value="Cancel" />
-    </Wrapper>
-  );
-};
+
+
+export const FileName = styled.p`
+  margin: 0;
+  color: ${colors.alto};
+  font-size: 14px;
+`;
+
+export const FileError = styled(FileName)``;

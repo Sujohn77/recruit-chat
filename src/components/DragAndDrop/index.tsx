@@ -1,18 +1,22 @@
 import React, { Component, ReactNode, RefObject } from "react";
 import styled from "styled-components";
 import { colors } from "utils/colors";
+
 interface IProps {
   handleDrop: (files: any) => void;
   children: ReactNode;
 }
 
-export const Avatar = styled.div`
+export const Wrapper = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 50%;
   margin: 0 0 16px;
   background: ${colors.white};
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `;
 
 class DragAndDrop extends Component<IProps> {
@@ -32,12 +36,16 @@ class DragAndDrop extends Component<IProps> {
     e.stopPropagation();
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       this.setState({ dragging: true });
+      this.dragCounter++;
     }
   };
   handleDragOut = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ dragging: false });
+    this.dragCounter--;
+    if (this.dragCounter === 0) {
+      this.setState({ dragging: false });
+    }
   };
 
   handleDrop = (e: any) => {
@@ -47,6 +55,7 @@ class DragAndDrop extends Component<IProps> {
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       this.props.handleDrop(e.dataTransfer.files[0]);
       e.dataTransfer.clearData();
+      this.setState({ dragging: false });
       this.dragCounter = 0;
     }
   };
@@ -72,7 +81,7 @@ class DragAndDrop extends Component<IProps> {
   }
   render() {
     return (
-      <Avatar ref={this.dropRef}>
+      <Wrapper ref={this.dropRef}>
         {this.state.dragging && (
           <div
             style={{
@@ -97,12 +106,12 @@ class DragAndDrop extends Component<IProps> {
                 fontSize: 36,
               }}
             >
-              <div>drop here :)</div>
+              <div>drop here</div>
             </div>
           </div>
         )}
         {this.props.children}
-      </Avatar>
+      </Wrapper>
     );
   }
 }

@@ -57,7 +57,9 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   return (
     <S.Wrapper>
       <S.Flex>
-        <S.Image src={Images.ROB_FACE} size="60px" alt="rob-face" />
+        <S.ImageButton>
+          <S.IntroImage src={Images.ROB_FACE} size="50px" alt="rob-face" />
+        </S.ImageButton>
         <S.InfoContent>
           <S.Question>{messages.sayHello}</S.Question>
           <S.Options>{chooseOptions}</S.Options>

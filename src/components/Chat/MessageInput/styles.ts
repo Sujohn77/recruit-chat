@@ -61,4 +61,5 @@ export const SearchPosition = styled.div`
 
 export const PlaneIcon = styled.img`
     margin-left: auto;
+    cursor: pointer;
 `;

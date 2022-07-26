@@ -81,7 +81,7 @@ export interface IUpdateMessagesResponse {
     employer?: string | null;
     type?: string;
   }
-  export interface IMessageID {
+  export interface I_id {
     chatItemId: number;
   }
   export interface IMessageContent {
@@ -113,7 +113,7 @@ export interface IUpdateMessagesResponse {
     name: string;
     text: string;
   }
-  export interface IMessage extends IMessageID, IMessageContent {
+  export interface IMessage extends I_id, IMessageContent {
     dateCreated: { seconds: number };
     optionList?: { isActive: boolean; options: IMessageOption[] };
     dateModified: { seconds: number };

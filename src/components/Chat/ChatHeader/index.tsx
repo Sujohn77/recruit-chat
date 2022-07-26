@@ -51,7 +51,7 @@ type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
-export const HeadLine: FC<PropsType> = ({
+export const ChatHeader: FC<PropsType> = ({
   title = defaultTitle,
   setIsSelectedOption,
 }) => {

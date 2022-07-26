@@ -12,8 +12,9 @@ export enum CHAT_TYPE_MESSAGES {
     JOB_POSITIONS = 'job_positions',
     REFINE_SERCH = 'refine_search',
     RECOMMENDATIONS = 'recommendations',
-    UPLOAD_CV = 'UPLOAD_CV',
-    BUTTON = 'button'
+    UPLOAD_CV = 'upload_cv',
+    BUTTON = 'button',
+    FILE = 'file'
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -26,9 +27,9 @@ export interface IState {
 // type IMessage = IMessageString | IMessageNoMatchJob | IMessageJobPositions
 
 export interface ILocalMessage {
+  _id: string | number;
   createdAt: string,
   content: IContent
-  messageId: number | string;
   isReceived?: boolean
 }
 
@@ -51,8 +52,12 @@ export enum USER_INPUTS {
   ASK_QUESTION = "ask a question",
   UPLOAD_CV = 'upload cv',
   ANSWER_QUESTIONS = 'answer questions',
-  JOB_POSITION = 'job position',
   UNKNOWN = "",
+}
+
+export enum USER_CHAT_ACTIONS {
+  SUCCESS_UPLOAD_CV = 'SUCCESS_UPLOAD_CV',
+  JOB_POSITION = 'JOB_POSITION',
 }
 
 export enum Status  {

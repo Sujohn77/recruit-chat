@@ -1,11 +1,13 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 
-import { HeadLine } from "./HeadLine";
+import { ChatHeader } from "./ChatHeader";
 import * as S from "./styles";
 
-import { MessagesBody } from "./MessagesBody";
-
 import { MessageInput } from "./MessageInput";
+import { useFileUploadContext } from "components/Context/FileUploadContext";
+import { MessagesList } from "./MessagesList";
+import { ICONS } from "utils/constants";
+import { Close } from "screens/intro/styles";
 
 type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -14,11 +16,21 @@ type PropsType = {
 
 export const chatId = 2433044;
 
+// TODO: refactor notification's part
 export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
+  const { file, notification, resetFile } = useFileUploadContext();
   return (
     <S.Wrapper>
-      <HeadLine setIsSelectedOption={setIsSelectedOption} />
-      <MessagesBody />
+      <ChatHeader setIsSelectedOption={setIsSelectedOption} />
+      <MessagesList />
+
+      {file && (
+        <S.Notification>
+          <S.Icon src={ICONS.ATTACHED_FILE} />
+          <S.NotificationText>{file?.name || notification}</S.NotificationText>
+          <Close onClick={() => resetFile()} />
+        </S.Notification>
+      )}
       <MessageInput />
     </S.Wrapper>
   );

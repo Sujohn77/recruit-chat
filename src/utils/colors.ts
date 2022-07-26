@@ -8,7 +8,8 @@ export const colors = {
     silverChalice: '#a7a7a7',
     boulder: '#787878',
     darkGrey: '#A9A9A9',
-    silver: '#cacaca'
+    silver: '#cacaca',
+    alabaster: '#FAFAFA'
 }
 
 export const chatColors = {

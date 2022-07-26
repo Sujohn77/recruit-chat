@@ -25,8 +25,8 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  position: absolute;
-  bottom: 16px;
+  position: sticky;
+  bottom: 10px;
 `;
 
 export const Loader = ({ isShow }: { isShow?: boolean }) => {

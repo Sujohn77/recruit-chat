@@ -1,25 +1,27 @@
 
+import { Button } from '@mui/material';
 import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
 const borderWidth = '1.5px';
-const introQuestionShadow = '2px 2px 2px 2px rgba(0, 0, 0, 0.1)';
+const introQuestionShadow = '5px 5px 25px 10px rgb(0 0 0 / 8%);';
 const messageShadow = '5px 5px 25px 10px rgb(0 0 0 / 8%);'
 
 export const Flex = styled.div`
   display: flex;
-  gap: 30px;
   justify-content: space-between;
   align-items: center;
 `;
 export const Wrapper = styled.div`
   position: relative;
+  width: 340px;
 `;
 
 export const Close = styled.div`
     position: absolute;
     right: 20px;
     top: 10px;
+    cursor: pointer;
     &:before, &:after {
         content: "";  
         height: 15px;
@@ -54,7 +56,7 @@ export const Message = styled.div`
 
 export const Question = styled(Message)`
   box-shadow: ${introQuestionShadow};
-  padding: 20px 60px 20px 15px;
+  padding: 20px 60px 20px 20px;
   border: none;
   color: ${colors.zambesi};
   font-weight: 600;
@@ -67,8 +69,29 @@ export const Text = styled.span`
 export const Image = styled.img<{size?: string}>`
     width: ${({size = '20px'}) => size};
     height: ${({size = '20px'}) => size};
+    border-radius: 50%;
+    
 `;
-
+export const IntroImage = styled(Image)`
+  animation: pulsing 3s infinite ease-in-out;
+  
+  @keyframes pulsing {
+    0% {
+      transform: scale(1);
+      box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 60%)
+    }
+   
+    50% {
+      transform: scale(1.15);
+      box-shadow: 0px 0px 0px 10px rgb(0 0 0 / 0%)
+    }
+  
+    100% {
+      box-shadow: 0px 0px 0px 8px rgb(0 0 0 / 0%)
+      transform: scale(1);
+    }
+  }
+`;
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;
@@ -78,3 +101,8 @@ export const Options = styled(Flex)`
 export const InfoContent = styled.div`
 `;
 
+export const ImageButton = styled(Button)`
+  width: 60px;
+  border-radius: 50%!important;
+ 
+`;

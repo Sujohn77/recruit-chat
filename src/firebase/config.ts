@@ -5,7 +5,7 @@ import { findIndex, remove, sortBy } from "lodash";
 import {
   IChatRoom,
   IMessage,
-  IMessageID,
+  I_id,
   ISnapshot,
   SnapshotType,
 } from "services/types";
@@ -129,7 +129,7 @@ export const updateChatRoomMessages = (
   if (foundRoomIndex !== -1) {
     // Update whole room (link) with new messages
     const processedSnapshots = sortBy(
-      getProcessedSnapshots<IMessageID, IMessage>(
+      getProcessedSnapshots<I_id, IMessage>(
         updatedRooms[foundRoomIndex].messages || [],
         messagesSnapshots,
         "chatItemId",
