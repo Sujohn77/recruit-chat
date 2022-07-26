@@ -1,4 +1,4 @@
-import firebaseApp from 'firebase';
+import firebaseApp from 'firebase/app';
 
 import { Query } from '@firebase/firestore-types';
 import { isArray } from 'lodash';

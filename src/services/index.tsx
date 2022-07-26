@@ -1,6 +1,10 @@
 import apisauce, { ApisauceInstance } from "apisauce";
-import { IApiMessage, ISendMessageResponse } from "saga/types";
-import { IUpdateMessagesResponse } from "./types";
+
+import {
+  IApiMessage,
+  ISendMessageResponse,
+  IUpdateMessagesResponse,
+} from "./types";
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 class Api {
   private client: ApisauceInstance;

@@ -37,9 +37,11 @@ export const SearchHeader = styled.div`
     align-items: center;
 `;
 export const SearchBody = styled.div`
-    background: ${colors.darkGrey};
-
+    background: ${colors.silver};
     display: flex;
+    div {
+        width: 100%
+    }
 `;
 
 export const SearchPosition = styled.div`
@@ -50,6 +52,8 @@ export const SearchPosition = styled.div`
     font-size: 14px;
     line-height: 17px;
     font-weight: 400;
+    cursor: pointer;
+    width: 100%;
     span{
         font-weight: 700;
     }

@@ -6,10 +6,12 @@ import { IconButton } from "@mui/material";
 
 import { botTypingTxt, ICONS } from "utils/constants";
 import * as S from "./styles";
-import { addMessage } from "redux/slices";
-import { useDispatch } from "react-redux";
+
 import { SearchResults } from "./SearchResults";
 import { capitalizeFirstLetter } from "utils/helpers";
+import { useChatMessanger } from "components/Context/MessangerContext";
+import { CHAT_TYPE_MESSAGES } from "utils/types";
+import { sendMessage } from "services/hooks";
 
 type PropsType = {};
 
@@ -17,8 +19,8 @@ type PropsType = {};
 const positions = ["Devops", "Developer ios", "Developer backend"];
 
 export const MessageInput: FC<PropsType> = () => {
+  const { addMessage } = useChatMessanger();
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
-  const dispatch = useDispatch();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
@@ -29,7 +31,7 @@ export const MessageInput: FC<PropsType> = () => {
       if (event.key === "Enter") {
         event.preventDefault();
         if (draftMessage) {
-          dispatch(addMessage(draftMessage));
+          addMessage({ text: draftMessage, subType: CHAT_TYPE_MESSAGES.TEXT });
           setDraftMessage(null);
         }
       }
@@ -56,7 +58,10 @@ export const MessageInput: FC<PropsType> = () => {
         .map((p) => p.slice(draftMessage.length, p.length))
     : [];
 
-  const onClick = () => {};
+  const onClick = (draftMessage: string) => {
+    sendMessage(draftMessage);
+    setDraftMessage(null);
+  };
   return (
     <S.MessagesInput position="static">
       <IconButton
@@ -73,6 +78,7 @@ export const MessageInput: FC<PropsType> = () => {
         <SearchResults
           matchedPositions={matchedPositions}
           matchedPart={capitalizeFirstLetter(draftMessage)}
+          setDraftMessage={setDraftMessage}
         />
       )}
 
@@ -83,7 +89,11 @@ export const MessageInput: FC<PropsType> = () => {
       />
 
       {draftMessage && (
-        <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
+        <S.PlaneIcon
+          src={ICONS.INPUT_PLANE}
+          width="16"
+          onClick={() => onClick(draftMessage)}
+        />
       )}
     </S.MessagesInput>
   );

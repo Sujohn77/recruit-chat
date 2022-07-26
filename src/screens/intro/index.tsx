@@ -1,13 +1,12 @@
-import React from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 
 import * as S from "./styles";
 
-import { useDispatch } from "react-redux";
-import { setOption } from "redux/slices";
 // import { Images } from "../../utils/constants";
 import SEARCH_ICON from "../../assets/imgs/search.png";
 import QUESTION from "../../assets/imgs/question.png";
 import ROB_FACE from "../../assets/imgs/rob-face.png";
+import { useChatMessanger } from "components/Context/MessangerContext";
 
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",
@@ -36,15 +35,20 @@ const messages = {
     },
   ],
 };
-// type PropsType = {};
+type PropsType = {
+  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+};
 
-export const Intro = () => {
-  const dispatch = useDispatch();
+export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
+  const { setOption } = useChatMessanger();
+
+  const onClick = (option: CHAT_OPTIONS) => {
+    setIsSelectedOption(true);
+    setOption(option);
+  };
+
   const chooseOptions = messages.options.map((opt, index) => (
-    <S.Message
-      key={`chat-option-${index}`}
-      onClick={() => dispatch(setOption(opt.option))}
-    >
+    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt.option)}>
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={""} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>

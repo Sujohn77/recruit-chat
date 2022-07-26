@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
 export const Message = styled.div<{backColor?: string; color?: string;isOwn?: boolean}>`
     position: relative;
     border-radius: 10px;
-    height: 41px;
+    min-height: 41px;
     padding: 12px 16px;
     font-size: 14px;
     line-height: 17px;
@@ -51,3 +51,12 @@ export const InitialMessage = styled.div`
   line-height: 17px;
   margin-bottom: 32px;
 `;
+
+export const MessageButton = styled(Message)`
+  cursor: pointer;
+`;
+
+export const infiniteScrollStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+};

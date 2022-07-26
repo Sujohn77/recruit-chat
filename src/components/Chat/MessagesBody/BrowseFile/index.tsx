@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 
 import styled from "styled-components";
 import { colors } from "utils/colors";
+import DragAndDrop from "components/DragAndDrop";
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
@@ -54,9 +55,16 @@ export const Text = styled.p`
 `;
 
 export const BrowseFile = () => {
+  const [file, setFiles] = React.useState(null);
+  const handleDrop = (upload: any) => {
+    setFiles(upload);
+  };
   return (
     <Wrapper>
       <Avatar />
+      <DragAndDrop handleDrop={handleDrop}>
+        <div>{file}</div>
+      </DragAndDrop>
       <Text>Lorem ipsum dolor sit amet</Text>
       <Text>or</Text>
       <Browse htmlFor="myfile">Browse</Browse>

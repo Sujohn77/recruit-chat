@@ -1,7 +1,12 @@
-import { CHAT_TYPE_MESSAGES, ILocalMessage, USER_INPUTS } from "redux/slices/types";
+// generateLocalId
+import randomString from 'random-string';
+import { CHAT_TYPE_MESSAGES, ILocalMessage, USER_INPUTS } from "./types";
 import { colors } from "./colors";
 import moment from 'moment';
-import { IApiMessage, IMessage, IUserSelf, MessageType } from "saga/types";
+// import { IApiMessage, IMessage, IUserSelf, MessageType } from "saga/types";
+import { IChatMessangerContext } from "components/Context/types";
+import { IApiMessage, IMessage, IUserSelf, MessageType } from 'services/types';
+
 // interface IGetMessageColorProps {
 //     isOwn?: boolean;
 // }
@@ -11,6 +16,8 @@ interface IMessageProps {
     backColor: string
     isOwn: boolean;
 }
+
+export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageColorProps = (isOwn?: boolean):IMessageProps  => {
   if (isOwn) {
@@ -36,9 +43,6 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         text: "Output of existing most popular questions",
         subType: CHAT_TYPE_MESSAGES.TEXT,
         subTypeId: 1,
-        // typeId: 1,
-        // contextId: "1",
-        // url: ''
       };
       return [
         {
@@ -51,7 +55,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
     }
     case USER_INPUTS.FIND_JOB: {
       const content = {
-        text: "There are our job propositions",
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
         subType: CHAT_TYPE_MESSAGES.TEXT,
         subTypeId: 1,
       };
@@ -59,20 +63,78 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         {
           createdAt,
           content,
-          messageId: Math.random() * 5000,
+          messageId: generateLocalId(),
           isReceived: true,
         },
         {
           createdAt,
           content: {
-            subType: CHAT_TYPE_MESSAGES.BROWSE,
-            subTypeId: 2,
+            subType: CHAT_TYPE_MESSAGES.BUTTON,
+            text: 'Upload CV',
+            // subTypeId: 2,
+          },
+          messageId: generateLocalId(),
+        },
+        {
+          createdAt,
+          content: {
+            subType: CHAT_TYPE_MESSAGES.BUTTON,
+            text: 'Answer questions',
+            // subTypeId: 2,
+          },
+          messageId: generateLocalId(),
+        }
+        // {
+        //   createdAt,
+        //   content: {
+        //     subType: CHAT_TYPE_MESSAGES.BROWSE,
+        //     // subTypeId: 2,
+        //   },
+        //   messageId: Math.random() * 5000,
+        //   isReceived: true,
+        // },
+      ];
+    }
+    case USER_INPUTS.UPLOAD_CV: {
+      return [
+        {
+          createdAt,
+          content: {
+            subType: CHAT_TYPE_MESSAGES.UPLOAD_CV,
           },
           messageId: Math.random() * 5000,
           isReceived: true,
         },
       ];
     }
+    case USER_INPUTS.ANSWER_QUESTIONS: {
+      return [
+        {
+          createdAt,
+          content: {
+            text: "What's your preferred job title? We'll try finding similar jobs.",
+            subType: CHAT_TYPE_MESSAGES.TEXT,
+          },
+          messageId: Math.random() * 5000,
+          isReceived: true,
+        },
+      ];
+    }
+    case USER_INPUTS.JOB_POSITION: {
+      return [
+        {
+          createdAt,
+          content: {
+            text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
+            subType: CHAT_TYPE_MESSAGES.TEXT,
+          },
+          messageId: Math.random() * 5000,
+          isReceived: true,
+        },
+      ];
+      
+    }
+   
     default: {
       const content = {
         subType: CHAT_TYPE_MESSAGES.REFINE_SERCH,
@@ -137,3 +199,17 @@ export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf):
 export const capitalizeFirstLetter = (str: string)=> {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+const emptyFunc = () => console.log();
+
+export const chatMessangerDefaultState: IChatMessangerContext = {
+  messages: [],
+  chatOption: null,
+  serverMessages: [],
+  ownerId: null,
+  addMessage: emptyFunc,
+  pushMessage: emptyFunc,
+  setOption: emptyFunc,
+  updateMessages: emptyFunc,
+  chooseButtonOption: emptyFunc,
+};

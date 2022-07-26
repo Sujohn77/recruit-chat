@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../utils/colors";
 
 import { Close } from "../../../screens/intro/styles";
-import { setOption } from "redux/slices";
-import { useDispatch } from "react-redux";
+
+import { useChatMessanger } from "components/Context/MessangerContext";
 
 export const Wrapper = styled.div`
   height: 60px;
@@ -46,13 +46,26 @@ export const CloseChat = styled(Close)`
 
 const defaultTitle = "Career bot";
 
-export const HeadLine = ({ title = defaultTitle }) => {
-  const dispatch = useDispatch();
+type PropsType = {
+  title?: string;
+  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+};
+
+export const HeadLine: FC<PropsType> = ({
+  title = defaultTitle,
+  setIsSelectedOption,
+}) => {
+  const { setOption } = useChatMessanger();
   return (
     <Wrapper>
       <Avatar />
       <Title>{title}</Title>
-      <CloseChat onClick={() => dispatch(setOption(null))} />
+      <CloseChat
+        onClick={() => {
+          setIsSelectedOption(false);
+          setOption(null);
+        }}
+      />
     </Wrapper>
   );
 };

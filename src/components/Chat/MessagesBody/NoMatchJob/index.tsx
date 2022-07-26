@@ -11,7 +11,8 @@ export const Wrapper = styled.div`
   display: flex;
   flex-flow: column;
   gap: 20px;
-  width: 306px;
+  // width: 306px;
+  margin-bottom: 24px;
 `;
 export const Title = styled.p`
   margin: 0 0 24px;

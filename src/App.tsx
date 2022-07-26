@@ -1,33 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { Chat } from "./components/Chat";
 
 import "./App.css";
-import { useSelector } from "react-redux";
-import { IRootState } from "redux/store";
-import { CHAT_OPTIONS, Intro } from "./screens/intro";
-// import { FindJob } from "screens/findJob";
 
-// export const FAQ = () => {
-//   return <Chat>Ask a question</Chat>;
-// };
-
-// const routes = [
-//   {
-//     path: "/",
-//     exact: true,
-//     component: Intro,
-//   },
-//   {
-//     path: "/findJob",
-//     component: FindJob,
-//   },
-//   {
-//     path: "/faq",
-//     component: FAQ,
-//   },
-// ];
+import { Intro } from "./screens/intro";
+import { ChatProvider } from "components/Context/MessangerContext";
+import { SocketProvider } from "components/Context/SocketContext";
+import { FIREBASE_TOKEN } from "firebase/config";
+import { handleSignInWithCustomToken } from "firebase/config";
 
 export const Container = styled.div`
   width: 385px;
@@ -35,24 +17,27 @@ export const Container = styled.div`
   max-width: 100%;
 `;
 
-const scenarios = {
-  [CHAT_OPTIONS.FIND_JOB]: {
-    initialMessages: ["Lorem ipsum dolor sit amet"],
-    initialOwnMessages: ["Find a job"],
-  },
-  [CHAT_OPTIONS.ASK_QUESTION]: {
-    initialMessages: ["Lorem ipsum dolor sit amet"],
-    initialOwnMessages: ["Ask a question"],
-  },
-};
-
-export type ScenarioType = typeof scenarios[CHAT_OPTIONS.ASK_QUESTION];
-
 const App = () => {
-  const option = useSelector<IRootState, CHAT_OPTIONS | null>(
-    (state) => state.option
+  const [isSelectedOption, setIsSelectedOption] = useState(false);
+
+  useEffect(() => {
+    handleSignInWithCustomToken(FIREBASE_TOKEN);
+  }, []);
+
+  const renderContent = () => {
+    if (isSelectedOption) {
+      return <Chat setIsSelectedOption={setIsSelectedOption} />;
+    }
+    return <Intro setIsSelectedOption={setIsSelectedOption} />;
+  };
+
+  return (
+    <Container>
+      <ChatProvider>
+        <SocketProvider>{renderContent()}</SocketProvider>
+      </ChatProvider>
+    </Container>
   );
-  return <Container>{!option ? <Intro /> : <Chat />}</Container>;
 };
 
 export default App;

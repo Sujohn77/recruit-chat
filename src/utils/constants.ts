@@ -39,4 +39,6 @@ export const defaultChatHistory = {
   },
 };
 
+
+
 export const botTypingTxt = "Bot is typing...";

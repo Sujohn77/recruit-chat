@@ -11,7 +11,6 @@ const Input = styled.input`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  
 `;
 
 export const Browse = () => {
