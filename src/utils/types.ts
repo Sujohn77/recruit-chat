@@ -1,12 +1,12 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
 import { CHAT_OPTIONS } from 'screens/intro';
-import { IMessage } from 'services/types';
+import { IChatRoomID, IMessage, IMuteStatus, IUserSelf } from 'services/types';
 export interface ISnapshot<T = Object> {
     type: DocumentChangeType;
     data: T;
 }
 
-export enum CHAT_TYPE_MESSAGES {
+export enum MessageType {
     TEXT = 'text',
     NO_MATCH_JOB = 'no_match_job',
     JOB_POSITIONS = 'job_positions',
@@ -14,11 +14,18 @@ export enum CHAT_TYPE_MESSAGES {
     RECOMMENDATIONS = 'recommendations',
     UPLOAD_CV = 'upload_cv',
     BUTTON = 'button',
-    FILE = 'file'
+    FILE = 'resume_uploaded',
+    INITIAL_MESSAGE = 'initial_message',
+    TRANSCRIPT = "transcript_sent",
+    VIDEO = "video_uploaded",
+    CHAT_CREATED = "chat_created",
+    DOCUMENT = "document_uploaded",
+    UNREAD_MESSAGES = "unread_messages",
+    DATE = "date",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
-  messages: ILocalMessage[];
+  messages: IMessage[];
   serverMessages: IMessage[];
   ownerId?: string;
   chatId?: string;
@@ -27,22 +34,23 @@ export interface IState {
 // type IMessage = IMessageString | IMessageNoMatchJob | IMessageJobPositions
 
 export interface ILocalMessage {
-  _id: string | number;
-  createdAt: string,
+  _id: number | string | null; 
+  localId?: string | number;
+  dateCreated?: {seconds:number},
   content: IContent
-  isReceived?: boolean
+  isOwn?: boolean
 }
 
 export interface IContent {
-    subType: CHAT_TYPE_MESSAGES;
+    subType: MessageType;
     // subTypeId: number | null;
     text?: string;
 }
 // interface IMessageNoMatchJob {
-//     type: CHAT_TYPE_MESSAGES.NO_MATCH_JOB,
+//     type: MessageType.NO_MATCH_JOB,
 // }
 // interface IMessageJobPositions {
-//     type: CHAT_TYPE_MESSAGES.STRING,
+//     type: MessageType.STRING,
 //     positions: string[]
 // }
 
@@ -55,12 +63,103 @@ export enum USER_INPUTS {
   UNKNOWN = "",
 }
 
-export enum USER_CHAT_ACTIONS {
+export enum CHAT_ACTIONS {
   SUCCESS_UPLOAD_CV = 'SUCCESS_UPLOAD_CV',
-  JOB_POSITION = 'JOB_POSITION',
+  SET_CATEGORY = 'SET_CATEGORY',
+  SET_LOCATIONS = 'SET_LOCATIOBS'
 }
 
 export enum Status  {
   PENDING = 'PENDING',
   DONE = 'DONE'
+}
+
+export interface IChatRoom extends IChatRoomID {
+  canChat: {
+    canChat: boolean;
+    errorCode: null;
+    isImageEnabled: boolean;
+    unavailableMessage: null;
+  };
+  countOfUnread: number;
+  dateCreated: { seconds: string };
+  dateModified: { seconds: string } | string | false;
+  imageUrl: null;
+  imageUrlSasToken: string;
+  isOptedOut: boolean;
+  isViewed: boolean;
+  lastMessage: IMessage;
+  participantIds: string[];
+  participants: (IUserSelf & { countOfUnread: number; uniqueId?: string })[];
+  subscriber: IUserSelf;
+  subscriberId: number;
+  messages: IMessage[];
+  pinned: string[];
+  archived: string[];
+  muted: IMuteStatus[];
+  ownerId: number;
+}
+
+export interface IQueue {
+  name: string;
+  queueId: number | string;
+  rooms: IChatRoom[]
+}
+
+export interface IQueuesRooms {
+  [key: string]: IQueueChatRoom[];
+}
+
+export interface QueuesState {
+  queues: IQueueItem[];
+  queueIds: string[];
+  rooms: IQueuesRooms;
+  archivedRooms: IQueueChatRoom[];
+  totalUnread: number;
+  chatStatusFilter: number[];
+  changeStatusError: boolean | null;
+}
+
+export interface UpdateQueueChatRoomMessagesAction {
+  type: QueuesActionTypes['UPDATE_CHAT_ROOM_MESSAGES'];
+  messagesSnapshots: ISnapshot<IMessage>[];
+  chatId: string;
+  queueId: string;
+}
+
+export interface IQueueChatRoom extends IChatRoom {
+  statusId?: number
+}
+
+interface QueuesActionTypes {
+  SET_CURRENT_QUEUES: 'SET_CURRENT_QUEUES';
+  SET_QUEUE: 'SET_QUEUE';
+  REMOVE_QUEUE: 'REMOVE_QUEUE';
+  UPDATE_CHAT_ROOM_MESSAGES: 'UPDATE_CHAT_ROOM_MESSAGES';
+  UPDATE_QUEUE_CHATS_LIST: 'UPDATE_QUEUE_CHATS_LIST';
+
+  SEND_MESSAGE: 'SEND_MESSAGE';
+
+  SET_QUEUE_CHAT_STATUS: 'SET_QUEUE_CHAT_STATUS';
+
+  SET_CHAT_STATUS_FILTER: 'SET_CHAT_STATUS_FILTER';
+
+  CLEAR_QUEUES_STATE: 'CLEAR_QUEUES_STATE';
+}
+
+export interface IMessageID {
+  chatItemId: number;
+}
+
+export interface IQueueItem {
+  queueId: string 
+  name: string
+}
+
+
+
+export enum HTTPStatusCodes {
+  UNAUTHORIZED_401 = 'UNAUTHORIZED_401',
+  NOT_FOUND_404 = 'NOT_FOUND_404',
+  FORBIDDEN_403 = 'FORBIDDEN_403',
 }

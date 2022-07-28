@@ -1,9 +1,11 @@
 import apisauce, { ApisauceInstance } from "apisauce";
 
 import {
+  AppKeyType,
   IApiMessage,
   ISendMessageResponse,
   IUpdateMessagesResponse,
+  IUserSelf,
 } from "./types";
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 class Api {
@@ -33,6 +35,9 @@ class Api {
       "/api/messenger/chat/acknowledge",
       { chatId }
     );
+
+  getUserSelf = (data: AppKeyType) =>
+    this.client.get<IUserSelf>("api/user/self", data);
 }
 
 export const apiInstance = new Api();

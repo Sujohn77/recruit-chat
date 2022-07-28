@@ -25,14 +25,15 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  position: sticky;
+  position: absolute;
   bottom: 10px;
+  left: 16px;
 `;
 
 export const Loader = ({ isShow }: { isShow?: boolean }) => {
   const dots = Array.from({ length: 3 }).map((v, index) => (
     <Dot key={"dot-" + index} isShow={isShow} />
   ));
-  console.log(dots);
+
   return <Wrapper>{dots}</Wrapper>;
 };

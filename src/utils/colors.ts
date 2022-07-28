@@ -9,7 +9,8 @@ export const colors = {
     boulder: '#787878',
     darkGrey: '#A9A9A9',
     silver: '#cacaca',
-    alabaster: '#FAFAFA'
+    alabaster: '#FAFAFA',
+    gray: '#868686'
 }
 
 export const chatColors = {

@@ -58,14 +58,14 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
     <S.Wrapper>
       <S.Flex>
         <S.ImageButton>
-          <S.IntroImage src={Images.ROB_FACE} size="50px" alt="rob-face" />
+          <S.IntroImage src={Images.ROB_FACE} size="57px" alt="rob-face" />
         </S.ImageButton>
         <S.InfoContent>
           <S.Question>{messages.sayHello}</S.Question>
           <S.Options>{chooseOptions}</S.Options>
         </S.InfoContent>
       </S.Flex>
-      <S.Close />
+      <S.Close height="12px" />
     </S.Wrapper>
   );
 };

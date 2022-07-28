@@ -14,19 +14,19 @@ export const Flex = styled.div`
 `;
 export const Wrapper = styled.div`
   position: relative;
-  width: 340px;
+  width: 365px;
 `;
 
-export const Close = styled.div`
+export const Close = styled.div<{height?: string}>`
     position: absolute;
     right: 20px;
     top: 10px;
     cursor: pointer;
     &:before, &:after {
         content: "";  
-        height: 15px;
+        height: ${({height = '17px'}) => height};
         width: ${borderWidth}; 
-        background: #000;
+        background: ${({color = '#000'}) => color};
         display: inline-block;
         position: absolute;
         top: 0px;
@@ -73,7 +73,7 @@ export const Image = styled.img<{size?: string}>`
     
 `;
 export const IntroImage = styled(Image)`
-  animation: pulsing 3s infinite ease-in-out;
+  animation: pulsing 2.5s infinite ease-in-out;
   
   @keyframes pulsing {
     0% {
@@ -82,8 +82,10 @@ export const IntroImage = styled(Image)`
     }
    
     50% {
-      transform: scale(1.15);
       box-shadow: 0px 0px 0px 10px rgb(0 0 0 / 0%)
+    }
+    75% {
+      transform: scale(1.1);
     }
   
     100% {

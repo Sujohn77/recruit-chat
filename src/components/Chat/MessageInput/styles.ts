@@ -5,16 +5,20 @@ import { colors } from "utils/colors";
 export const searchItemheight = 32;
 export const searchHeaderHeight = 40;
 export const MessagesInput = styled(Box)`
-  height: 50px;
+  min-height: 50px;
   position: relative!important;
   display: flex;
   align-items: center;
-  padding: 24px 16px;
+  padding: 15px 16px;
   box-sizing: border-box;
   background: #efefef;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  
+   > button {
+    padding: 0px;
+    margin: 0;
+    margin-right: 16px;
+   }
 `;
 
 export const SearchWrapper = styled.div<{searchOptionsHeight:number}>`
@@ -36,15 +40,19 @@ export const SearchHeader = styled.div`
     display: flex;
     align-items: center;
 `;
-export const SearchBody = styled.div`
+export const SearchBody = styled.ul`
     background: ${colors.silver};
     display: flex;
+    flex-direction: column;
+    margin: 0;
+    list-style: none;
+    padding: 0;
     div {
         width: 100%
     }
 `;
 
-export const SearchPosition = styled.div`
+export const SearchPosition = styled.li`
     height: ${searchItemheight}px;
     box-sizing: border-box;
     width:100%;

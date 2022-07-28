@@ -1,43 +1,69 @@
+import { AutocompleteGroupedOption, useAutocomplete } from "@mui/material";
 import { useChatMessanger } from "components/Context/MessangerContext";
-import React, { Dispatch, FC, SetStateAction } from "react";
+import React, { Dispatch, FC, SetStateAction, MouseEvent } from "react";
+import { Close } from "screens/intro/styles";
+import { colors } from "utils/colors";
+import { CHAT_ACTIONS } from "utils/types";
 import * as S from "./styles";
 import { searchItemheight } from "./styles";
 
 export const maxSearchHeight = 300;
+interface IGetOptionProps {
+  option: any;
+  index: number;
+}
 type PropsType = {
-  matchedPositions: string[];
+  matchedItems: string[];
   matchedPart: string;
   headerName: string;
-  setDraftMessage: Dispatch<SetStateAction<string | null>>;
+  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS;
+  onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
+  getOptionProps?: ({
+    option,
+    index,
+  }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
+  getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
+  setIsFocus: Dispatch<SetStateAction<boolean>>;
 };
 export const SearchResults: FC<PropsType> = ({
-  matchedPositions,
+  matchedItems,
   matchedPart,
   headerName,
-  setDraftMessage,
+  type,
+  getOptionProps,
+  onClick,
+  getListboxProps = () => ({}),
+  setIsFocus,
 }) => {
-  const { selectJobPosition } = useChatMessanger();
-  const items = matchedPositions.map((position) => (
-    <S.SearchPosition
-      onClick={() => {
-        setDraftMessage(null);
-        selectJobPosition(matchedPart + position);
-      }}
-    >
-      <span>{matchedPart}</span>
-      {position}
-    </S.SearchPosition>
-  ));
+  const items = matchedItems.map((option, index) => {
+    const optionProps = getOptionProps && getOptionProps({ option, index });
+
+    return (
+      <S.SearchPosition
+        key={`search-item-${type}-${index}`}
+        {...optionProps}
+        onClick={(e) => {
+          onClick && onClick(e);
+          optionProps?.onClick && optionProps.onClick(e);
+          setIsFocus(false);
+        }}
+      >
+        <span>{matchedPart}</span>
+        {option}
+      </S.SearchPosition>
+    );
+  });
   const searchOptionsHeight =
-    matchedPositions.length < 10
-      ? searchItemheight * matchedPositions.length
+    matchedItems.length < 10
+      ? searchItemheight * matchedItems.length
       : maxSearchHeight;
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
-      <S.SearchHeader>{headerName}</S.SearchHeader>
-      <S.SearchBody>
-        <div>{items}</div>
-      </S.SearchBody>
+      <S.SearchHeader>
+        {headerName}
+        <Close color={colors.gray} onClick={() => setIsFocus(false)} />
+      </S.SearchHeader>
+      <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>
     </S.SearchWrapper>
   );
 };

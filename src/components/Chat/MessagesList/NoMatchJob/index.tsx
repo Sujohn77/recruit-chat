@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
   margin-bottom: 24px;
 `;
 export const Title = styled.p`
-  margin: 0 0 24px;
+  margin: 0;
   font-size: 14px;
   line-height: 17px;
   color: ${colors.black};
@@ -40,9 +40,9 @@ export const NoMatchJob = () => {
   return (
     <Wrapper>
       <Title>Sorry, No match yet</Title>
-      <Avatar />
+      {/* <Avatar />
       <SetJobAlert value="Set Job Alert" />
-      <RefineJobSearch value="Refine job search" />
+      <RefineJobSearch value="Refine job search" /> */}
     </Wrapper>
   );
 };

@@ -1,12 +1,11 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
-import { CHAT_TYPE_MESSAGES, IContent, ILocalMessage } from "utils/types";
+import {
+  MessageType,
+  IContent,
+  ILocalMessage,
+  CHAT_ACTIONS,
+} from "utils/types";
 import { IMessage } from "services/types";
 import { CHAT_OPTIONS } from "screens/intro";
 import { defaultChatHistory } from "utils/constants";
@@ -14,8 +13,17 @@ import {
   chatMessangerDefaultState,
   generateLocalId,
   getChatResponseOnMessage,
+  getParsedMessage,
+  getServerParsedMessages,
 } from "utils/helpers";
-import { IAddMessageProps, IChatMessangerContext } from "./types";
+import {
+  IAddMessageProps,
+  IChatMessangerContext,
+  IResponseAction,
+  ITriggerActionProps,
+} from "./types";
+import { mockData } from "components/Chat/mockData";
+import { useEffect } from "react";
 
 type PropsType = {
   children: React.ReactNode;
@@ -25,27 +33,63 @@ const ChatContext = createContext<IChatMessangerContext>(
   chatMessangerDefaultState
 );
 
+export const initialChatMessage = {
+  _id: generateLocalId(),
+  localId: generateLocalId(),
+  content: {
+    subType: MessageType.INITIAL_MESSAGE,
+    text: mockData.initialMessage,
+  },
+  dateCreated: { seconds: new Date().getSeconds() },
+  isOwn: true,
+};
+
+const CHAT_ACTIONS_RESPONSE: IResponseAction = {
+  [CHAT_ACTIONS.SET_CATEGORY]: {
+    replaceLatest: false,
+    messages: [
+      {
+        localId: generateLocalId(),
+        _id: null,
+        content: {
+          subType: MessageType.TEXT,
+          text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
+        },
+        isOwn: true,
+      },
+    ],
+  },
+  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
+    messages: [],
+  },
+};
+
+export enum ServerMessageType {
+  Text = "text",
+  Transcript = "transcript_sent",
+  Video = "video_uploaded",
+  ChatCreated = "chat_created",
+  Document = "document_uploaded",
+  File = "resume_uploaded",
+  UnreadMessages = "unread_messages",
+  Date = "date",
+}
+
 const ChatProvider = ({ children }: PropsType) => {
-  const [jobPosition, setJobPosition] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
+  const [locations, setLocations] = useState<string[]>([]);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
+  const [portionMessages, setPortionMessages] = useState<ILocalMessage[]>([]);
   const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
-  const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [ownerId, setOwnerId] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
-    if (chatOption !== null && messages.length) {
-      const lastMessage = messages[messages.length - 1]?.content.text;
-
-      if (lastMessage) {
-        // TODO: fix after discussing with client
-        setTimeout(() => {
-          const messages = getChatResponseOnMessage(lastMessage);
-          pushMessages(messages);
-        }, 500);
-      }
+    if (portionMessages.length) {
+      setMessages([...portionMessages, ...messages]);
+      setPortionMessages([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatOption]);
+  }, [portionMessages, messages]);
 
   const pushMessages = useCallback(
     (chatMessages: ILocalMessage[]) => {
@@ -54,69 +98,92 @@ const ChatProvider = ({ children }: PropsType) => {
     [messages]
   );
 
-  // useEffect(() => {
-  //   if (messages.length) {
-  //     const lastMessage = messages[messages.length - 1];
-  //     const initialMessages = chatOption
-  //       ? defaultChatHistory[chatOption].initialMessages
-  //       : 0;
-  //     const isUserMessage = !lastMessage.isReceived;
-  //     if (
-  //       isUserMessage &&
-  //       initialMessages &&
-  //       lastMessage.content.subType !== CHAT_TYPE_MESSAGES.BUTTON &&
-  //       messages?.length > initialMessages.length
-  //     ) {
-  //       const lastMessageText = messages[messages.length - 1].content.text;
-
-  //       if (lastMessageText) {
-  //         const updatedMessages = getChatResponseOnMessage(lastMessageText);
-  //         pushMessages(updatedMessages);
-  //       }
-  //     }
-  //   }
-  // }, [messages, chatOption, pushMessages]);
-
   const addMessage = ({
     text,
-    subType = CHAT_TYPE_MESSAGES.TEXT,
+    subType = MessageType.TEXT,
   }: IAddMessageProps) => {
-    const createdAt = `${new Date()}`;
-    const content: IContent = {
-      subType,
-      text,
-    };
+    const message = getParsedMessage({ text, subType });
 
-    setMessages([
-      ...messages,
-      {
-        createdAt,
-        content,
-        _id: messages.length + 1,
-      },
-    ]);
+    const initialMessages = chatOption
+      ? defaultChatHistory[chatOption].initialMessages
+      : 0;
+
+    if (
+      initialMessages &&
+      subType !== MessageType.BUTTON &&
+      messages?.length > initialMessages.length
+    ) {
+      if (text) {
+        const updatedMessages = getChatResponseOnMessage(text);
+        pushMessages([message, ...updatedMessages]);
+      }
+    } else {
+      pushMessages([message]);
+    }
   };
 
-  const setOption = (option: CHAT_OPTIONS) => {
-    if (option !== null && !messages.length) {
-      const chat = defaultChatHistory[option];
-      const createdAt = `${new Date()}`;
-      const ownerId = `${Math.random() * 500}`;
-      const initialMessages = [];
+  // useEffect(() => {
+  //   if (chatOption) {
+  //     const updatedMessages: ILocalMessage[] = [...initialMessages];
+  //     const chat = defaultChatHistory[chatOption];
+  //     for (const msg of chat.initialMessages) {
+  //       const content: IContent = {
+  //         subType: MessageType.TEXT,
+  //         text: msg.text || "",
+  //       };
+  //       updatedMessages.push({
+  //         content,
+  //         dateCreated: { seconds: new Date().getSeconds() },
+  //         localId: generateLocalId(),
+  //         _id: null,
+  //         isOwn: !msg.isOwner,
+  //       });
+  //     }
+  //     setMessages(updatedMessages);
 
+  //     // TODO: fix after discussing with client
+  //     const lastMessage =
+  //       initialMessages[initialMessages.length - 1].content.text;
+  //     setTimeout(() => {
+  //       if (lastMessage) {
+  //         const messages = getChatResponseOnMessage(lastMessage);
+  //         pushMessages([...updatedMessages, ...messages]);
+  //       }
+  //     }, 500);
+  //   }
+  // }, []);
+
+  const setOption = (option: CHAT_OPTIONS) => {
+    if (option !== null) {
+      const ownerId = `${Math.random() * 500}`;
+      const updatedMessages: ILocalMessage[] = [];
+      const chat = defaultChatHistory[option];
+      // TODO: refactor
       for (const msg of chat.initialMessages) {
         const content: IContent = {
-          subType: CHAT_TYPE_MESSAGES.TEXT,
+          subType: MessageType.TEXT,
           text: msg.text || "",
         };
-        initialMessages.push({
+        updatedMessages.push({
           content,
-          createdAt,
-          _id: generateLocalId(),
-          isReceived: !msg.isOwner,
+          dateCreated: { seconds: new Date().getSeconds() },
+          localId: generateLocalId(),
+          _id: null,
+          isOwn: !msg.isOwner,
         });
       }
-      setMessages([...messages, ...initialMessages]);
+      setMessages(updatedMessages);
+
+      // TODO: fix after discussing with client
+      const lastMessage =
+        updatedMessages[updatedMessages.length - 1].content.text;
+      setTimeout(() => {
+        if (lastMessage) {
+          const messages = getChatResponseOnMessage(lastMessage);
+          pushMessages([...updatedMessages, ...messages]);
+        }
+      }, 500);
+
       setOwnerId(ownerId);
     }
 
@@ -126,12 +193,12 @@ const ChatProvider = ({ children }: PropsType) => {
   const chooseButtonOption = (optionText: string) => {
     const updatedMessages = messages.filter(
       (msg) =>
-        msg.content.subType !== CHAT_TYPE_MESSAGES.BUTTON ||
+        msg.content.subType !== MessageType.BUTTON ||
         (msg.content.text === optionText &&
-          msg.content.subType === CHAT_TYPE_MESSAGES.BUTTON)
+          msg.content.subType === MessageType.BUTTON)
     );
     updatedMessages[updatedMessages.length - 1].content.subType =
-      CHAT_TYPE_MESSAGES.TEXT;
+      MessageType.TEXT;
     const lastMessageText =
       updatedMessages[updatedMessages.length - 1].content.text;
 
@@ -143,19 +210,47 @@ const ChatProvider = ({ children }: PropsType) => {
     }
   };
 
-  const selectJobPosition = (position: string) => {
-    setJobPosition(position);
-    addMessage({ text: position });
+  const triggerAction = ({ type, payload }: ITriggerActionProps) => {
+    let response = CHAT_ACTIONS_RESPONSE[type];
+
+    if (response) {
+      response.replaceLatest && popMessage();
+
+      if (payload.item) {
+        const message = getParsedMessage({
+          text: payload.item,
+          subType: MessageType.TEXT,
+        });
+        pushMessages([message, ...response.messages]);
+      } else {
+        pushMessages(response.messages);
+      }
+    }
+
+    switch (type) {
+      case CHAT_ACTIONS.SET_CATEGORY: {
+        payload.item && setCategory(payload.item);
+        break;
+      }
+      case CHAT_ACTIONS.SET_LOCATIONS: {
+        payload.items && setLocations(payload.items);
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   const updateMessages = (serverMessages: IMessage[]) => {
-    setServerMessages(serverMessages);
+    const updatedMessages = getServerParsedMessages(serverMessages);
+    setPortionMessages(updatedMessages);
+    isInitialized && setIsInitialized(true);
   };
 
   const popMessage = () => {
-    const updateMessages = messages;
-    updateMessages.pop();
-    setMessages(updateMessages);
+    const updatedMessages = messages;
+    updatedMessages.pop();
+    setMessages(updatedMessages);
   };
 
   return (
@@ -168,11 +263,11 @@ const ChatProvider = ({ children }: PropsType) => {
         setOption,
         updateMessages,
         ownerId,
-        serverMessages,
         popMessage,
         chooseButtonOption,
-        selectJobPosition,
-        jobPosition,
+        triggerAction,
+        category,
+        locations,
       }}
     >
       {children}

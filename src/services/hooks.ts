@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN } from 'firebase/config';
 import Api from 'services';
 import { generateLocalId } from 'utils/helpers';
+import { handleRefreshToken } from './utils';
 
 const apiInstanse = new Api();
 
@@ -19,5 +20,5 @@ export const sendMessage = (text: string) => {
         images: [],
         localId: generateLocalId()
     }
-    apiInstanse.sendMessage(message);
+    handleRefreshToken(() => apiInstanse.sendMessage(message))
 }

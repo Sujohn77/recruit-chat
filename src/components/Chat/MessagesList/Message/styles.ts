@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { colors } from "utils/colors";
 import { IMessageProps } from "utils/helpers";
 
 export const MessageBox = styled.div<IMessageProps>`
@@ -16,6 +17,7 @@ export const MessageBox = styled.div<IMessageProps>`
     margin-left: ${({isOwn = false}) => isOwn ? 'auto' : 'initial'};
     margin-bottom: 24px;
     cursor: ${({cursor})=> cursor};
+    padding-right: 28px;
     &:after {
         content: '';
         width: 0; 
@@ -34,10 +36,10 @@ export const MessageBox = styled.div<IMessageProps>`
 `;
 
 export const MessageContent = styled.div<{isFile?:boolean}>`
+    align-items: center;
+    display: flex;
+    gap: 8px;
     ${({isFile}) => isFile && `
-        display: flex;
-        gap: 8px;
-        align-items: center;
         background: #B0B0B0;
         border-radius: 8px;
         padding: 8px;
@@ -59,4 +61,21 @@ export const MessageContent = styled.div<{isFile?:boolean}>`
 
 export const MessageText = styled.p`
     margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 218px;
+`;
+
+export const InitialMessage = styled.div`
+  color: ${colors.dustyGray};
+  font-size: 14px;
+  line-height: 17px;
+  margin-bottom: 32px;
+`;
+export const MessageUnsendIcon = styled.img`
+    width: 12px;
+    height: 12px;
+    filter: invert(1);
+    position: absolute;
+    right: 10px;
 `;

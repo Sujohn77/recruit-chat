@@ -9,7 +9,7 @@ import {
   categoryHeaderName,
   ICONS,
   locationHeaderName,
-  locations,
+  locations as searchLocations,
   positions,
 } from "utils/constants";
 import * as S from "./styles";
@@ -17,30 +17,36 @@ import * as S from "./styles";
 import { SearchResults } from "./SearchResults";
 import { capitalizeFirstLetter, getMatchedItems } from "utils/helpers";
 import { useChatMessanger } from "components/Context/MessangerContext";
-import { CHAT_TYPE_MESSAGES } from "utils/types";
+import { CHAT_ACTIONS, MessageType } from "utils/types";
 import { sendMessage } from "services/hooks";
 import { useFileUploadContext } from "components/Context/FileUploadContext";
+import { MultiSelectInput } from "components/Layout/Input/MultiSelectInput";
+import { Autocomplete } from "components/Layout/Input/Autocomplete";
 
 type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
-  const { addMessage, jobPosition } = useChatMessanger();
+  const { addMessage, category, triggerAction, locations } = useChatMessanger();
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
-
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const [isFocus, setIsFocus] = useState(false);
+  const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
     setNotification(null);
+  };
+
+  const onChangeLocation = (locations: string[]) => {
+    triggerAction({
+      type: CHAT_ACTIONS.SET_LOCATIONS,
+      payload: { items: locations },
+    });
   };
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        if (draftMessage) {
-          addMessage({ text: draftMessage, subType: CHAT_TYPE_MESSAGES.TEXT });
-          setDraftMessage(null);
-        }
+        draftMessage && onClick(draftMessage);
       }
     };
 
@@ -52,9 +58,9 @@ export const MessageInput: FC<PropsType> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftMessage]);
 
-  const { searchItems, placeHolder, headerName } = jobPosition
+  const { searchItems, placeHolder, headerName } = category
     ? {
-        searchItems: locations,
+        searchItems: searchLocations,
         placeHolder: "Reply to choose location...",
         headerName: locationHeaderName,
       }
@@ -64,15 +70,48 @@ export const MessageInput: FC<PropsType> = () => {
         placeHolder: null,
       };
 
-  const matchedPositions = getMatchedItems({
-    message: draftMessage,
-    searchItems,
-  });
+  const matchedPositions = draftMessage
+    ? getMatchedItems({
+        message: draftMessage,
+        searchItems,
+      })
+    : searchItems;
 
   const onClick = (draftMessage: string) => {
     sendMessage(draftMessage);
+    addMessage({ text: draftMessage });
     setDraftMessage(null);
   };
+
+  const renderInput = (
+    type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS
+  ) => {
+    const inputProps = {
+      type,
+      headerName: headerName,
+      matchedItems: matchedPositions,
+      matchedPart: capitalizeFirstLetter(draftMessage || ""),
+      setValue: setDraftMessage,
+      value: draftMessage || "",
+      placeHolder: placeHolder || botTypingTxt,
+      setIsFocus,
+      isFocus,
+    };
+    if (inputProps.type === CHAT_ACTIONS.SET_LOCATIONS) {
+      return (
+        <MultiSelectInput
+          {...inputProps}
+          options={searchItems}
+          onChange={onChangeLocation}
+        />
+      );
+    }
+    return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
+  };
+
+  const type = category
+    ? CHAT_ACTIONS.SET_LOCATIONS
+    : CHAT_ACTIONS.SET_CATEGORY;
 
   return (
     <S.MessagesInput position="static">
@@ -83,33 +122,24 @@ export const MessageInput: FC<PropsType> = () => {
         aria-label="menu"
         sx={{ mr: 1 }}
       >
-        <MenuIcon />
+        <svg viewBox="0 0 100 80" width="30" height="30">
+          <rect x="25" y="20" width="53.3" height="5.66" rx="5.5"></rect>
+          <rect x="25" y="40" width="53.3" height="5.66" rx="5.5"></rect>
+          <rect x="25" y="60" width="53.3" height="5.66" rx="5.5"></rect>
+        </svg>
       </IconButton>
 
-      {!!matchedPositions?.length && draftMessage && (
-        <SearchResults
-          headerName={headerName}
-          matchedPositions={matchedPositions}
-          matchedPart={capitalizeFirstLetter(draftMessage)}
-          setDraftMessage={setDraftMessage}
-        />
-      )}
+      {renderInput(type)}
 
-      <TextField
-        value={draftMessage || ""}
-        onChange={onChange}
-        placeHolder={placeHolder || botTypingTxt}
-      />
-
-      {(draftMessage || file) && (
+      {(draftMessage || file || !!locations.length) && (
         <S.PlaneIcon
           src={ICONS.INPUT_PLANE}
           width="16"
           onClick={() => {
-            if (draftMessage) {
-              onClick(draftMessage);
-            } else if (file) {
+            if (file) {
               sendFile(file);
+            } else if (draftMessage) {
+              onClick(draftMessage);
             }
           }}
         />

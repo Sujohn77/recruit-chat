@@ -73,3 +73,4 @@ export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPreset
         : firebaseApp.firestore().collection('queues').doc(queueId?.toString()).collection('chats'),
   },
 };
+

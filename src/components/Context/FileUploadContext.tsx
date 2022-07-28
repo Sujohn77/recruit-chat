@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 import { IFileUploadContext } from "./types";
 import { fileUploadDefaultState, getChatResponseOnAction } from "utils/helpers";
 import { useChatMessanger } from "./MessangerContext";
-import { USER_CHAT_ACTIONS } from "utils/types";
+import { CHAT_ACTIONS } from "utils/types";
 
 type PropsType = {
   children: React.ReactNode;
@@ -18,19 +18,16 @@ const FileUploadContext = createContext<IFileUploadContext>(
 // }
 
 const FileUploadProvider = ({ children }: PropsType) => {
-  const { pushMessages, popMessage } = useChatMessanger();
+  const { triggerAction } = useChatMessanger();
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
   const sendFile = (file: File) => {
     setFile(null);
-    const responseMessages = getChatResponseOnAction(
-      USER_CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
-      { text: file.name }
-    );
-    popMessage();
-    pushMessages(responseMessages);
-    // setNotification(NOTIFICATIONS.SUCCESS_SEND);
+    triggerAction({
+      type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
+      payload: { item: file.name },
+    });
   };
 
   const saveFile = (file: File) => {

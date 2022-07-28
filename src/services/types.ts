@@ -1,4 +1,5 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
+import { MessageType } from 'utils/types';
 
 export interface IUpdateMessagesResponse {
     errorOccurrenceId: null;
@@ -51,7 +52,9 @@ export interface IUpdateMessagesResponse {
   export enum UserLicenseTypes {
     Standard = "Standart",
   }
-  
+  export type AppKeyType = {
+    appKey: string;
+  };
   export interface IUserSelf {
     id: number;
     userLicenseType: UserLicenseTypes.Standard;
@@ -96,7 +99,7 @@ export interface IUpdateMessagesResponse {
     text: string;
     url: null | string;
   }
-  export enum MessageType {
+  export enum ServerMessageType {
     Text = "text",
     Transcript = "transcript_sent",
     Video = "video_uploaded",
@@ -119,7 +122,7 @@ export interface IUpdateMessagesResponse {
     dateModified: { seconds: number };
     isEdited: boolean;
     localId?: string;
-    isReceived: boolean;
+    isOwn: boolean;
     sender: IUserSelf;
     searchValue: string;
   }
