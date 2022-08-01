@@ -4,7 +4,7 @@ import { ChatHeader } from "./ChatHeader";
 import * as S from "./styles";
 
 import { MessageInput } from "./MessageInput";
-import { useFileUploadContext } from "components/Context/FileUploadContext";
+import { useFileUploadContext } from "contexts/FileUploadContext";
 import { MessagesList } from "./MessagesList";
 import { ICONS } from "utils/constants";
 import { Close } from "screens/intro/styles";

@@ -67,3 +67,7 @@ export const HTTP_STATUSES: Record<HTTPStatusCodes, number> = {
   [HTTPStatusCodes.FORBIDDEN_403]: HTTP_RESPONSES.FORBIDDEN_403,
   [HTTPStatusCodes.NOT_FOUND_404]: HTTP_RESPONSES.NOT_FOUND_404,
 };
+
+export enum ChannelName  {
+  SMS = 'SMS'
+}

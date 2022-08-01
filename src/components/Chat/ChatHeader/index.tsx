@@ -5,7 +5,7 @@ import { colors } from "../../../utils/colors";
 
 import { Close } from "../../../screens/intro/styles";
 
-import { useChatMessanger } from "components/Context/MessangerContext";
+import { useChatMessanger } from "contexts/MessangerContext";
 
 export const Wrapper = styled.div`
   height: 60px;

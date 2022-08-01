@@ -6,13 +6,11 @@ import { Chat } from "./components/Chat";
 import "./App.css";
 
 import { Intro } from "./screens/intro";
-import { ChatProvider } from "components/Context/MessangerContext";
-import { SocketProvider } from "components/Context/SocketContext";
+import { ChatProvider } from "contexts/MessangerContext";
+import { SocketProvider } from "contexts/SocketContext";
 import { FIREBASE_TOKEN } from "firebase/config";
 import { handleSignInWithCustomToken } from "firebase/config";
-import { FileUploadProvider } from "components/Context/FileUploadContext";
-import { loginUser } from "services";
-import { profile } from "components/Context/mockData";
+import { FileUploadProvider } from "contexts/FileUploadContext";
 
 export const Container = styled.div`
   width: 385px;

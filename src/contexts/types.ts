@@ -8,7 +8,7 @@ export interface IChatMessangerContext {
     messages: ILocalMessage[];
     chatOption: CHAT_OPTIONS | null;
     // serverMessages: IMessage[];
-    ownerId: string | null;
+    // ownerId: string | null;
     category: string | null;
     addMessage: (props: IAddMessageProps) => void;
     pushMessages: (message: ILocalMessage[]) => void;
@@ -18,7 +18,9 @@ export interface IChatMessangerContext {
     triggerAction: (action: ITriggerActionProps) => void;
     locations:string[];
     updateStateMessages: (messagesIds: number[]) => void;
-    setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[])=>void
+    setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[])=>void;
+    setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS | null>>;
+    lastActionType: CHAT_ACTIONS | null
 }
 
 export interface IFileUploadContext {
@@ -33,12 +35,13 @@ export interface IFileUploadContext {
 export interface IAddMessageProps {
     text: string;
     subType?: MessageType;
+    localId: string
 }
 type PayloadType = {
     item?: string | null;
     items?: string[];
 }
-export interface ITriggerActionProps {type: CHAT_ACTIONS, payload?: PayloadType}
+export interface ITriggerActionProps {type: CHAT_ACTIONS, payload?: PayloadType;isServer?:boolean}
 export type IResponseAction = {
     [key in CHAT_ACTIONS]?: {
         replaceLatest?: boolean;

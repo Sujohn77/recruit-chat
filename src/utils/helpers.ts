@@ -3,12 +3,12 @@ import { MessageType,  ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IContent, Queue
 import { colors } from "./colors";
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext } from "components/Context/types";
+import { IChatMessangerContext, IFileUploadContext } from "contexts/types";
 import {  IApiMessage, IMessage, IUserSelf, ServerMessageType } from 'services/types';
 
 import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
-import { profile } from 'components/Context/mockData';
+import { profile } from 'contexts/mockData';
 
 // interface IGetMessageColorProps {
 //     isOwn?: boolean;
@@ -20,6 +20,7 @@ export interface IMessageProps {
     isOwn: boolean;
     padding: string;
     cursor?:string
+    isText?:boolean
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
@@ -30,18 +31,18 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps  => {
 
   if (!msg.isOwn) {
     return {
-      color: colors.white,
-      backColor: colors.boulder,
+      color: colors.dustyGray ,
+      backColor:  colors.alto,
+      isOwn: !!msg.isOwn,
       padding,
-      isOwn:!msg.isOwn,
       cursor
     };
   }
   return {
-    color: colors.dustyGray,
-    backColor: colors.alto,
-    isOwn: !msg.isOwn,
+    color:msg.content.subType === MessageType.BUTTON? colors.tundora : colors.white,
+    backColor: msg.content.subType === MessageType.BUTTON? colors.alto : colors.boulder,
     padding,
+    isOwn: !!msg.isOwn,
     cursor
   };
 };
@@ -61,8 +62,8 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
           dateCreated,
           content,
           localId: generateLocalId(),
-          _id: generateLocalId(),
-          isOwn: true,
+          _id: null,
+          isOwn: false,
         },
       ];
     }
@@ -77,18 +78,18 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
           dateCreated,
           content,
           localId: generateLocalId(),
-          _id: generateLocalId(),
-          isOwn: true,
+          _id: null,
+          isOwn: false,
         },
         {
           dateCreated,
           content: {
             subType: MessageType.BUTTON,
             text: 'Upload CV',
-            // subTypeId: 2,
           },
           localId: generateLocalId(),
-          _id: generateLocalId(),
+          isOwn: true,
+          _id: null,
         },
         {
           dateCreated,
@@ -97,8 +98,9 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             text: 'Answer questions',
             // subTypeId: 2,
           },
+          isOwn: true,
           localId: generateLocalId(),
-          _id: generateLocalId(),
+          _id: null,
         }
         // {
         //   dateCreated,
@@ -119,7 +121,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             subType: MessageType.UPLOAD_CV,
           },
           localId: generateLocalId(),
-          _id: generateLocalId(),
+          _id: null,
           isOwn: true,
         },
       ];
@@ -133,8 +135,8 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             subType: MessageType.TEXT,
           },
           localId: generateLocalId(),
-          _id: generateLocalId(),
-          isOwn: true,
+          _id: null,
+          isOwn: false,
         },
       ];
     }
@@ -143,15 +145,16 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
     default: {
       const content = {
         subType: MessageType.REFINE_SERCH,
+        text: responseMessages.refineSearch,
         subTypeId: 1,
       };
       return [
         {
           dateCreated,
           content,
-          _id: generateLocalId(),
+          _id: null,
           localId: generateLocalId(),
-          isOwn: true,
+          isOwn: false,
         },
       ];
     }
@@ -167,21 +170,21 @@ export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPaylo
     case CHAT_ACTIONS.SET_CATEGORY: {
       return [
         {
-          _id: generateLocalId(),
+          _id: null,
           dateCreated,
           content: {
             text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
             subType: MessageType.TEXT,
           },
           localId:generateLocalId(),
-          isOwn: true,
+          isOwn: false,
         },
       ];
     }
     case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
       return [
         {  
-          _id: generateLocalId(),
+          _id: null,
           localId:generateLocalId(),
           dateCreated,
           content: {
@@ -189,26 +192,17 @@ export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPaylo
             subType: MessageType.TEXT,
           },
         
-          isOwn: true,
+          isOwn: false,
         },
         {
-          _id: generateLocalId(),
-          localId:generateLocalId(),
+          _id: null,
+          localId: generateLocalId(),
           dateCreated,
-          // dateModified: dateCreated,
-          // chatItemId:chatId,
           content: {
-            // typeId: MessageTypeId.resume_uploaded,
-            // subTypeId: MessageSubtypeId.date!,  
-            // contextId: null,
             text: payload.text || '',
             subType: MessageType.FILE,
-            // url: null,
           },
-          isOwn: false,
-          // isEdited:false,
-          // searchValue: '',
-          // sender: null
+          isOwn: true,
         },
       
       ];
@@ -288,7 +282,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   messages: [],
   chatOption: null,
   // serverMessages: [],
-  ownerId: null,
+  // ownerId: null,
   category: null,locations:[],
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
@@ -297,7 +291,9 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   popMessage: emptyFunc,
   triggerAction: emptyFunc, 
   updateStateMessages: emptyFunc,
-  setSnapshotMessages: emptyFunc
+  setSnapshotMessages: emptyFunc,
+  setLastActionType: emptyFunc,
+  lastActionType: null
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -351,11 +347,13 @@ export const getMatchedItems = ({message,searchItems}:IGetMatchedItems) => {
 export const getParsedMessage = ({
   text,
   subType,
-  isOwn
+  isOwn  = true,
+  localId = generateLocalId()
 }: {
   text: string;
   subType: MessageType;
-  isOwn?: boolean
+  isOwn?: boolean;
+  localId?:string;
 }) => {
   const dateCreated = { seconds: moment().unix()};
   const content: IContent = {
@@ -366,8 +364,8 @@ export const getParsedMessage = ({
     dateCreated,
     content,
     isOwn: !!isOwn,
-    localId: generateLocalId(),
-    _id: generateLocalId()
+    localId,
+    _id: null
   };
 };
 
@@ -398,15 +396,15 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
 
 
 
-const INITIAL_STATE: QueuesState = {
-  queues: [],
-  queueIds: [],
-  rooms: {},
-  archivedRooms: [],
-  totalUnread: 0,
-  chatStatusFilter: [1, 2, 3, 4],
-  changeStatusError: null,
-};
+// const INITIAL_STATE: QueuesState = {
+//   queues: [],
+//   queueIds: [],
+//   rooms: {},
+//   archivedRooms: [],
+//   totalUnread: 0,
+//   chatStatusFilter: [1, 2, 3, 4],
+//   changeStatusError: null,
+// };
 
 
 type Handler<A> = (state: QueuesState, action: A) => QueuesState;
@@ -443,3 +441,17 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
 
   return { ...state, rooms: { ...state.rooms, [queueId]: chatRooms } };
 };
+
+const responseMessages = {
+  refineSearch: "Let's try again to find a job"
+}
+
+export const getMessageBySubtype = (subType: string | undefined) => {
+  if(!subType) {
+    return undefined;
+  }
+  switch(subType){
+    case CHAT_ACTIONS.REFINE_SEARCH: 
+      return responseMessages.refineSearch
+  }
+}

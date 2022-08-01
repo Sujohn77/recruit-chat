@@ -38,8 +38,7 @@ export const Message = styled.div<{backColor?: string; color?: string;isOwn?: bo
 `;
 
 export const MessagesArea = styled.div`
-  height: 400px;
-
+  // height: 400px;
   border-bottom: 1px solid ${colors.alto};
   position: relative;
 `;
@@ -49,17 +48,16 @@ export const MessageButton = styled(Message)`
 `;
 
 export const MessageListContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column-reverse;
-  height: 382px;
+  height: 300px;
   overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
   padding: 16px;
 `;
 
 export const infiniteScrollStyle: React.CSSProperties = {
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'column-reverse',
 };
 
 export const Notification = styled.div`

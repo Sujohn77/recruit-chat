@@ -1,5 +1,5 @@
 import { AutocompleteGroupedOption, useAutocomplete } from "@mui/material";
-import { useChatMessanger } from "components/Context/MessangerContext";
+import { useChatMessanger } from "contexts/MessangerContext";
 import React, { Dispatch, FC, SetStateAction, MouseEvent } from "react";
 import { Close } from "screens/intro/styles";
 import { colors } from "utils/colors";
@@ -43,6 +43,7 @@ export const SearchResults: FC<PropsType> = ({
         key={`search-item-${type}-${index}`}
         {...optionProps}
         onClick={(e) => {
+          console.log(e);
           onClick && onClick(e);
           optionProps?.onClick && optionProps.onClick(e);
           setIsFocus(false);

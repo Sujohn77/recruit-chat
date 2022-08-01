@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, useRef } from "react";
-import { useFileUploadContext } from "components/Context/FileUploadContext";
+import { useFileUploadContext } from "contexts/FileUploadContext";
 import DragAndDrop from "components/DragAndDrop";
 
 import * as S from "./styles";

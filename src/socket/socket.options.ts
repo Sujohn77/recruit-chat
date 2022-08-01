@@ -30,7 +30,7 @@ export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPreset
       firebaseApp.firestore().collection('chats').where('participantIds', 'array-contains', userId),
   },
   [SocketCollectionPreset.Messages]: {
-    pageSize: 50,
+    pageSize: 20,
     sortField: 'dateCreated',
     onGetCollectionRef: (chatId: number) =>
       firebaseApp.firestore().collection('chats').doc(chatId.toString()).collection('messages'),

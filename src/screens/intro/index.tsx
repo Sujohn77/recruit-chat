@@ -6,7 +6,7 @@ import * as S from "./styles";
 import SEARCH_ICON from "../../assets/imgs/search.png";
 import QUESTION from "../../assets/imgs/question.png";
 import ROB_FACE from "../../assets/imgs/rob-face.png";
-import { useChatMessanger } from "components/Context/MessangerContext";
+import { useChatMessanger } from "contexts/MessangerContext";
 
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",

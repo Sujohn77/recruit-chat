@@ -4,6 +4,9 @@ import { handleSignInWithCustomToken } from "firebase/config";
 import {
   AppKeyType,
   IApiMessage,
+  IApiSignedRequest,
+  IGetAllRequisitions,
+  IRequisitionsResponse,
   ISendMessageResponse,
   IUpdateMessagesResponse,
   IUserSelf,
@@ -50,6 +53,9 @@ class Api {
     });
 
   loginUser = (data: any) => this.client.post<any>("api/auth/login", data);
+
+  searchRequisitions = (data: IGetAllRequisitions & IApiSignedRequest) =>
+    this.client.post<IRequisitionsResponse>("api/requisition/search", data);
 }
 
 export const APP_VERSION = "1.0.3";

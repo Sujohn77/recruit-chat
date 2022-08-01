@@ -7,6 +7,7 @@ import { IconButton } from "@mui/material";
 import {
   botTypingTxt,
   categoryHeaderName,
+  ChannelName,
   ICONS,
   locationHeaderName,
   locations as searchLocations,
@@ -15,11 +16,15 @@ import {
 import * as S from "./styles";
 
 import { SearchResults } from "./SearchResults";
-import { capitalizeFirstLetter, getMatchedItems } from "utils/helpers";
-import { useChatMessanger } from "components/Context/MessangerContext";
+import {
+  capitalizeFirstLetter,
+  generateLocalId,
+  getMatchedItems,
+} from "utils/helpers";
+import { useChatMessanger } from "contexts/MessangerContext";
 import { CHAT_ACTIONS, MessageType } from "utils/types";
 import { sendMessage } from "services/hooks";
-import { useFileUploadContext } from "components/Context/FileUploadContext";
+import { useFileUploadContext } from "contexts/FileUploadContext";
 import { MultiSelectInput } from "components/Layout/Input/MultiSelectInput";
 import { Autocomplete } from "components/Layout/Input/Autocomplete";
 
@@ -27,13 +32,8 @@ type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
-  const {
-    addMessage,
-    category,
-    triggerAction,
-    locations,
-    updateStateMessages,
-  } = useChatMessanger();
+  const { addMessage, category, triggerAction, locations, setLastActionType } =
+    useChatMessanger();
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -41,11 +41,12 @@ export const MessageInput: FC<PropsType> = () => {
     setNotification(null);
   };
 
-  const onChangeLocation = (locations: string[]) => {
+  const onChangeLocations = (event: any, locations: string[]) => {
     triggerAction({
       type: CHAT_ACTIONS.SET_LOCATIONS,
       payload: { items: locations },
     });
+    setIsFocus(false);
   };
 
   useEffect(() => {
@@ -84,10 +85,21 @@ export const MessageInput: FC<PropsType> = () => {
     : searchItems;
 
   const onClick = (draftMessage: string) => {
-    sendMessage(draftMessage, updateStateMessages);
-    addMessage({ text: draftMessage });
+    const localId = generateLocalId();
+    // TODO: fix when backend is ready
+    const message = {
+      channelName: ChannelName.SMS,
+      candidateId: 49530690,
+      contextId: null,
+      msg: draftMessage,
+      images: [],
+      localId,
+    };
+    sendMessage(message);
+    addMessage({ text: draftMessage, localId });
     setDraftMessage(null);
     setIsFocus(false);
+    setLastActionType(CHAT_ACTIONS.SEND_MESSAGE);
   };
 
   const renderInput = (
@@ -98,18 +110,19 @@ export const MessageInput: FC<PropsType> = () => {
       headerName: headerName,
       matchedItems: matchedPositions,
       matchedPart: capitalizeFirstLetter(draftMessage || ""),
-      setValue: setDraftMessage,
       value: draftMessage || "",
       placeHolder: placeHolder || botTypingTxt,
       setIsFocus,
       isFocus,
+      setInputValue: (value: string) => setDraftMessage(value),
     };
     if (inputProps.type === CHAT_ACTIONS.SET_LOCATIONS) {
       return (
         <MultiSelectInput
           {...inputProps}
           options={searchItems}
-          onChange={onChangeLocation}
+          onChange={onChangeLocations}
+          values={locations}
         />
       );
     }

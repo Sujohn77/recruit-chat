@@ -7,7 +7,7 @@ export const colors = {
     dustyGray: '#969696',
     silverChalice: '#a7a7a7',
     boulder: '#787878',
-    darkGrey: '#A9A9A9',
+    tundora: '#454545',
     silver: '#cacaca',
     alabaster: '#FAFAFA',
     gray: '#868686',

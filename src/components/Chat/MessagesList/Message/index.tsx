@@ -28,22 +28,19 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <BrowseFile />;
     case MessageType.TEXT:
     case MessageType.JOB_POSITIONS:
-    case MessageType.BUTTON:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
     case MessageType.REFINE_SERCH:
       const isFile = subType === MessageType.FILE;
       return (
-        <S.MessageBox
-          onClick={() => onClick(message.content)}
-          {...getMessageProps(message)}
-        >
+        <S.MessageBox {...getMessageProps(message)} isText>
           <S.MessageContent isFile={isFile}>
             {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
             <S.MessageText>
               {message.content.text || message.content.subType}
             </S.MessageText>
+
             {message._id ? (
               <S.TimeText>
                 {message.dateCreated?.seconds &&
@@ -52,14 +49,22 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
                   )}
               </S.TimeText>
             ) : (
-              !message.isOwn && <S.MessageUnsendIcon src={IMAGES.CLOCK} />
+              message.isOwn && <S.MessageUnsendIcon src={IMAGES.CLOCK} />
             )}
           </S.MessageContent>
         </S.MessageBox>
       );
-    // case MessageType.CHAT_CREATED: {
-    //   return null;
-    // }
+    case MessageType.BUTTON: {
+      console.log({ ...getMessageProps(message) });
+      return (
+        <S.MessageBox
+          onClick={() => onClick(message.content)}
+          {...getMessageProps(message)}
+        >
+          <S.MessageText>{message.content.text}</S.MessageText>
+        </S.MessageBox>
+      );
+    }
     default: {
       console.log("uknown", message);
       return <NoMatchJob />;

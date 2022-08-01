@@ -11,7 +11,6 @@ import { FirebaseSocketReactivePagination } from "socket";
 import { SocketCollectionPreset } from "socket/socket.options";
 import { IMessage, ISnapshot } from "services/types";
 import { useChatMessanger } from "./MessangerContext";
-import { updateChatRoomMessages } from "firebase/config";
 
 type PropsType = {
   children: React.ReactNode;

@@ -3,6 +3,7 @@ import React, {
   Dispatch,
   FC,
   SetStateAction,
+  SyntheticEvent,
   useEffect,
   useState,
 } from "react";
@@ -13,7 +14,7 @@ import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
 import { useAutocomplete } from "@mui/material";
 import { Input } from "..";
 import { CHAT_ACTIONS } from "utils/types";
-import { useChatMessanger } from "components/Context/MessangerContext";
+import { useChatMessanger } from "contexts/MessangerContext";
 import {
   SearchBody,
   SearchPosition,
@@ -23,11 +24,12 @@ import { colors } from "utils/colors";
 
 type PropsType = {
   value: string;
+  values: string[];
+  matchedPart: string;
   matchedItems: string[];
   headerName: string;
-  matchedPart: string;
-  setValue: (result: string | null) => void;
-  onChange: (values: string[]) => void;
+  setInputValue: (value: string | null) => void;
+  onChange: (event: any, values: string[]) => void;
   placeHolder: string;
   options: string[];
   type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS;
@@ -40,7 +42,7 @@ export interface TagProps extends ReturnType<AutocompleteGetTagProps> {
 }
 
 export function Tag(props: TagProps) {
-  const { label, onDelete, ...other } = props;
+  const { label, onDelete } = props;
 
   return (
     <S.TagWrapper>
@@ -53,13 +55,15 @@ export function Tag(props: TagProps) {
 export const MultiSelectInput: FC<PropsType> = ({
   matchedItems,
   value,
+  values,
   headerName,
   matchedPart,
-  setValue,
+  onChange,
   placeHolder,
   type,
   options,
   isFocus,
+  setInputValue,
   setIsFocus,
 }) => {
   const {
@@ -67,7 +71,7 @@ export const MultiSelectInput: FC<PropsType> = ({
     getTagProps,
     getOptionProps,
     getListboxProps,
-    value: values,
+    value: selectedValues,
     focused,
     setAnchorEl,
   } = useAutocomplete({
@@ -75,19 +79,16 @@ export const MultiSelectInput: FC<PropsType> = ({
     multiple: true,
     options,
     getOptionLabel: (option: any) => option,
+    value: values,
+    onChange: onChange,
   });
-  const { triggerAction, locations } = useChatMessanger();
 
-  useEffect(() => {
-    setValue(null);
-    setIsFocus(false);
-    triggerAction({
-      type,
-      payload: { items: values },
-    });
-  }, [values.length]);
-
-  const onClick = () => {};
+  const onDelete = (selectedIndex: number) => {
+    onChange(
+      null,
+      values.filter((value, index) => selectedIndex !== index)
+    );
+  };
 
   return (
     <div>
@@ -99,14 +100,17 @@ export const MultiSelectInput: FC<PropsType> = ({
           matchedPart={matchedPart}
           getOptionProps={getOptionProps}
           getListboxProps={getListboxProps}
-          onClick={onClick}
           setIsFocus={setIsFocus}
         />
       )}
 
       <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
-        {locations.map((option: string, index: number) => (
-          <Tag label={option} {...getTagProps({ index })} />
+        {selectedValues.map((option: string, index: number) => (
+          <Tag
+            label={option}
+            {...getTagProps({ index })}
+            onDelete={() => onDelete(index)}
+          />
         ))}
         <Input
           {...getInputProps()}
@@ -118,7 +122,7 @@ export const MultiSelectInput: FC<PropsType> = ({
           onChange={(event) => {
             const inputProps = getInputProps();
             inputProps.onChange && inputProps.onChange(event);
-            setValue(event?.target.value);
+            setInputValue(event?.target.value);
           }}
         />
       </S.InputWrapper>

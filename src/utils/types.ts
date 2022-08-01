@@ -67,7 +67,9 @@ export enum CHAT_ACTIONS {
   SUCCESS_UPLOAD_CV = 'SUCCESS_UPLOAD_CV',
   SET_CATEGORY = 'SET_CATEGORY',
   SET_LOCATIONS = 'SET_LOCATIOBS',
-  SEND_LOCATIONS = 'SEND_LOCATIONS'
+  SEND_LOCATIONS = 'SEND_LOCATIONS',
+  REFINE_SEARCH = 'refine_search',
+  SEND_MESSAGE = 'send_message'
 }
 
 export enum Status  {
@@ -164,3 +166,4 @@ export enum HTTPStatusCodes {
   NOT_FOUND_404 = 'NOT_FOUND_404',
   FORBIDDEN_403 = 'FORBIDDEN_403',
 }
+
