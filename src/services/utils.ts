@@ -1,5 +1,7 @@
+import { getServerParsedMessages } from "utils/helpers";
+import { ILocalMessage } from "utils/types";
 
-export const handleRefreshToken = async (action: () => any, isFirst = true) => {
+export const handleRefreshToken = async (action: () => any, updateState: (items: number[])=>void, isFirst = true) => {
     const response = await action();
   
     // Error: try to refresh token and repeat action
@@ -30,6 +32,8 @@ export const handleRefreshToken = async (action: () => any, isFirst = true) => {
   
     // if request was canceled
     if (response?.status === null && isFirst) {
-        handleRefreshToken(action, false)
+        handleRefreshToken(action, updateState, false)
+    } else {
+        updateState && updateState(response.data.chatItems.map((msg:any)=>msg.chatItemId))
     }
   }

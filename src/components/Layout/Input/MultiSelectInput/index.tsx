@@ -1,5 +1,11 @@
 import { SearchResults } from "components/Chat/MessageInput/SearchResults";
-import React, { Dispatch, FC, SetStateAction } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 import * as S from "./styles";
 import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
@@ -70,16 +76,18 @@ export const MultiSelectInput: FC<PropsType> = ({
     options,
     getOptionLabel: (option: any) => option,
   });
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction, locations } = useChatMessanger();
 
-  const onClick = () => {
+  useEffect(() => {
     setValue(null);
     setIsFocus(false);
     triggerAction({
       type,
       payload: { items: values },
     });
-  };
+  }, [values.length]);
+
+  const onClick = () => {};
 
   return (
     <div>
@@ -97,7 +105,7 @@ export const MultiSelectInput: FC<PropsType> = ({
       )}
 
       <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
-        {values.map((option: string, index: number) => (
+        {locations.map((option: string, index: number) => (
           <Tag label={option} {...getTagProps({ index })} />
         ))}
         <Input

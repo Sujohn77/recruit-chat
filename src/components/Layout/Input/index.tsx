@@ -22,7 +22,7 @@ export const Input = styled.input`
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  min-width: 250px !important; ;
+  width: 250px !important; ;
 `;
 
 export const TextField: FC<PropsType> = ({
@@ -38,9 +38,11 @@ export const TextField: FC<PropsType> = ({
         value={value}
         placeholder={!isFocus ? placeHolder : ""}
         onChange={onChange}
+        onClick={() => {
+          setIsInputFocus(true);
+        }}
         onFocus={() => {
           setIsFocus(true);
-          setIsInputFocus(true);
         }}
         onBlur={() => {
           setIsFocus(false);

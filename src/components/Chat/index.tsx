@@ -24,11 +24,11 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
       <ChatHeader setIsSelectedOption={setIsSelectedOption} />
       <MessagesList />
 
-      {file && (
+      {(file || notification) && (
         <S.Notification>
-          <S.Icon src={ICONS.ATTACHED_FILE} />
+          {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}
           <S.NotificationText>{file?.name || notification}</S.NotificationText>
-          <Close onClick={() => resetFile()} />
+          {file?.name && <Close onClick={() => resetFile()} />}
         </S.Notification>
       )}
       <MessageInput />

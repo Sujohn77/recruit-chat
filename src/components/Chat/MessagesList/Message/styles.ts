@@ -17,7 +17,7 @@ export const MessageBox = styled.div<IMessageProps>`
     margin-left: ${({isOwn = false}) => isOwn ? 'auto' : 'initial'};
     margin-bottom: 24px;
     cursor: ${({cursor})=> cursor};
-    padding-right: 28px;
+   
     &:after {
         content: '';
         width: 0; 
@@ -76,6 +76,16 @@ export const MessageUnsendIcon = styled.img`
     width: 12px;
     height: 12px;
     filter: invert(1);
-    position: absolute;
-    right: 10px;
+    // position: absolute;
+    // right: 10px;
+`;
+export const TimeText = styled.div`
+    color: ${colors.alabaster};
+    white-space: nowrap;
+    font-size: 10px;
+    line-height: 12px;
+    margin-top: auto;
+    margin-left: 8px;;
+    width: fit-content;
+        display: inline-block;
 `;

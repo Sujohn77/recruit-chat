@@ -47,7 +47,7 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps  => {
 };
 
 export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => {
-  const dateCreated = {seconds:new Date().getSeconds()}
+  const dateCreated = {seconds:moment().unix()}
 
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION: {
@@ -61,7 +61,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
           dateCreated,
           content,
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
           isOwn: true,
         },
       ];
@@ -77,7 +77,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
           dateCreated,
           content,
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
           isOwn: true,
         },
         {
@@ -88,7 +88,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             // subTypeId: 2,
           },
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
         },
         {
           dateCreated,
@@ -98,7 +98,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             // subTypeId: 2,
           },
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
         }
         // {
         //   dateCreated,
@@ -119,7 +119,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             subType: MessageType.UPLOAD_CV,
           },
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
           isOwn: true,
         },
       ];
@@ -133,7 +133,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
             subType: MessageType.TEXT,
           },
           localId: generateLocalId(),
-          _id: null,
+          _id: generateLocalId(),
           isOwn: true,
         },
       ];
@@ -149,7 +149,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         {
           dateCreated,
           content,
-          _id: null,
+          _id: generateLocalId(),
           localId: generateLocalId(),
           isOwn: true,
         },
@@ -161,13 +161,13 @@ interface IPayload {
   text?: string
 }
 export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPayload): ILocalMessage[] => {
-  const dateCreated = {seconds:new Date().getSeconds()}
+  const dateCreated = {seconds:moment().unix()}
 
   switch (userInput) {
     case CHAT_ACTIONS.SET_CATEGORY: {
       return [
         {
-          _id: null,
+          _id: generateLocalId(),
           dateCreated,
           content: {
             text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
@@ -181,7 +181,7 @@ export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPaylo
     case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
       return [
         {  
-          _id: null,
+          _id: generateLocalId(),
           localId:generateLocalId(),
           dateCreated,
           content: {
@@ -192,7 +192,7 @@ export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPaylo
           isOwn: true,
         },
         {
-          _id: null,
+          _id: generateLocalId(),
           localId:generateLocalId(),
           dateCreated,
           // dateModified: dateCreated,
@@ -293,10 +293,11 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
   setOption: emptyFunc,
-  updateMessages: emptyFunc,
   chooseButtonOption: emptyFunc,
   popMessage: emptyFunc,
-  triggerAction: emptyFunc
+  triggerAction: emptyFunc, 
+  updateStateMessages: emptyFunc,
+  setSnapshotMessages: emptyFunc
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -356,7 +357,7 @@ export const getParsedMessage = ({
   subType: MessageType;
   isOwn?: boolean
 }) => {
-  const dateCreated = { seconds: new Date().getSeconds() };
+  const dateCreated = { seconds: moment().unix()};
   const content: IContent = {
     subType,
     text,
@@ -366,19 +367,18 @@ export const getParsedMessage = ({
     content,
     isOwn: !!isOwn,
     localId: generateLocalId(),
-    _id: null
+    _id: generateLocalId()
   };
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
   const parsedMessages = messages.map((msg)=>{
-    const dateCreated = { seconds: new Date().getSeconds() };
     const content: IContent = {
       subType: msg.content.subType,
       text:msg.content.text
     };
     return {
-      dateCreated,
+      dateCreated:msg.dateCreated,
       content,
       isOwn: msg.sender.id === profile.id,
       localId: msg.localId,

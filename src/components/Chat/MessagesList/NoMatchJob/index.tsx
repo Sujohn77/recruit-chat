@@ -40,9 +40,9 @@ export const NoMatchJob = () => {
   return (
     <Wrapper>
       <Title>Sorry, No match yet</Title>
-      {/* <Avatar />
-      <SetJobAlert value="Set Job Alert" />
-      <RefineJobSearch value="Refine job search" /> */}
+      <Avatar />
+      <SetJobAlert>Set Job Alert</SetJobAlert>
+      <RefineJobSearch>Refine job search</RefineJobSearch>
     </Wrapper>
   );
 };

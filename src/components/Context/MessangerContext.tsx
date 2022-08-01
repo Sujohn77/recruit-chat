@@ -6,7 +6,7 @@ import {
   ILocalMessage,
   CHAT_ACTIONS,
 } from "utils/types";
-import { IMessage } from "services/types";
+import { IMessage, ISnapshot, I_id } from "services/types";
 import { CHAT_OPTIONS } from "screens/intro";
 import { defaultChatHistory } from "utils/constants";
 import {
@@ -24,6 +24,9 @@ import {
 } from "./types";
 import { mockData } from "components/Chat/mockData";
 import { useEffect } from "react";
+import { getProcessedSnapshots } from "firebase/config";
+import { sortBy } from "lodash";
+import moment from "moment";
 
 type PropsType = {
   children: React.ReactNode;
@@ -40,7 +43,7 @@ export const initialChatMessage = {
     subType: MessageType.INITIAL_MESSAGE,
     text: mockData.initialMessage,
   },
-  dateCreated: { seconds: new Date().getSeconds() },
+  dateCreated: { seconds: moment().unix() },
   isOwn: true,
 };
 
@@ -50,7 +53,7 @@ const CHAT_ACTIONS_RESPONSE: IResponseAction = {
     messages: [
       {
         localId: generateLocalId(),
-        _id: null,
+        _id: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
           text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
@@ -79,17 +82,36 @@ const ChatProvider = ({ children }: PropsType) => {
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
-  const [portionMessages, setPortionMessages] = useState<ILocalMessage[]>([]);
+  const [messagesIds, setMessagesIds] = useState<number[]>([]);
+  const [portionMessages, setPortionMessages] = useState<ISnapshot<IMessage>[]>(
+    []
+  );
+  const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
   const [ownerId, setOwnerId] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     if (portionMessages.length) {
-      setMessages([...portionMessages, ...messages]);
-      setPortionMessages([]);
+      const processedSnapshots: IMessage[] = sortBy(
+        getProcessedSnapshots<I_id, IMessage>(
+          serverMessages || [],
+          portionMessages,
+          "chatItemId",
+          [],
+          "localId"
+        ),
+        (message: any) => -message.dateCreated.seconds
+      );
+
+      updateMessages(processedSnapshots);
+      setServerMessages(serverMessages);
     }
-  }, [portionMessages, messages]);
+  }, [portionMessages]);
+
+  const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
+    setPortionMessages(messagesSnapshots);
+  };
 
   const pushMessages = useCallback(
     (chatMessages: ILocalMessage[]) => {
@@ -122,74 +144,43 @@ const ChatProvider = ({ children }: PropsType) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (chatOption) {
-  //     const updatedMessages: ILocalMessage[] = [...initialMessages];
-  //     const chat = defaultChatHistory[chatOption];
-  //     for (const msg of chat.initialMessages) {
-  //       const content: IContent = {
-  //         subType: MessageType.TEXT,
-  //         text: msg.text || "",
-  //       };
-  //       updatedMessages.push({
-  //         content,
-  //         dateCreated: { seconds: new Date().getSeconds() },
-  //         localId: generateLocalId(),
-  //         _id: null,
-  //         isOwn: !msg.isOwner,
-  //       });
-  //     }
-  //     setMessages(updatedMessages);
-
-  //     // TODO: fix after discussing with client
-  //     const lastMessage =
-  //       initialMessages[initialMessages.length - 1].content.text;
-  //     setTimeout(() => {
-  //       if (lastMessage) {
-  //         const messages = getChatResponseOnMessage(lastMessage);
-  //         pushMessages([...updatedMessages, ...messages]);
-  //       }
-  //     }, 500);
-  //   }
-  // }, []);
-
   const setOption = (option: CHAT_OPTIONS) => {
     if (option !== null) {
       const ownerId = `${Math.random() * 500}`;
       const updatedMessages: ILocalMessage[] = [];
       const chat = defaultChatHistory[option];
       // TODO: refactor
-      for (const msg of chat.initialMessages) {
-        const content: IContent = {
-          subType: MessageType.TEXT,
-          text: msg.text || "",
-        };
-        updatedMessages.push({
-          content,
-          dateCreated: { seconds: new Date().getSeconds() },
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: !msg.isOwner,
-        });
-      }
-      setMessages(updatedMessages);
+      // for (const msg of chat.initialMessages) {
+      //   const content: IContent = {
+      //     subType: MessageType.TEXT,
+      //     text: msg.text || "",
+      //   };
+      //   updatedMessages.push({
+      //     content,
+      //     dateCreated: { seconds: new Date().getSeconds() },
+      //     localId: generateLocalId(),
+      //     _id: generateLocalId(),
+      //     isOwn: !msg.isOwner,
+      //   });
+      // }
+      // setMessages(updatedMessages);
 
-      // TODO: fix after discussing with client
-      const lastMessage =
-        updatedMessages[updatedMessages.length - 1].content.text;
-      setTimeout(() => {
-        if (lastMessage) {
-          const messages = getChatResponseOnMessage(lastMessage);
-          pushMessages([...updatedMessages, ...messages]);
-        }
-      }, 500);
+      // // TODO: delete after backend is ready
+      // const lastMessage =
+      //   updatedMessages[updatedMessages.length - 1].content.text;
+      // setTimeout(() => {
+      //   if (lastMessage) {
+      //     const messages = getChatResponseOnMessage(lastMessage);
+      //     pushMessages([...updatedMessages, ...messages]);
+      //   }
+      // }, 500);
 
       setOwnerId(ownerId);
     }
 
     setChatOption(option);
   };
-
+  // TODO: delete after backend is ready
   const chooseButtonOption = (optionText: string) => {
     const updatedMessages = messages.filter(
       (msg) =>
@@ -216,24 +207,29 @@ const ChatProvider = ({ children }: PropsType) => {
     if (response) {
       response.replaceLatest && popMessage();
 
-      if (payload.item) {
+      if (payload?.item) {
         const message = getParsedMessage({
           text: payload.item,
           subType: MessageType.TEXT,
         });
+
         pushMessages([message, ...response.messages]);
       } else {
-        pushMessages(response.messages);
+        response.messages.length && pushMessages(response.messages);
       }
     }
 
     switch (type) {
       case CHAT_ACTIONS.SET_CATEGORY: {
-        payload.item && setCategory(payload.item);
+        payload?.item && setCategory(payload.item);
         break;
       }
       case CHAT_ACTIONS.SET_LOCATIONS: {
-        payload.items && setLocations(payload.items);
+        payload?.items?.length && setLocations(payload.items);
+        break;
+      }
+      case CHAT_ACTIONS.SEND_LOCATIONS: {
+        setLocations([]);
         break;
       }
       default:
@@ -241,9 +237,21 @@ const ChatProvider = ({ children }: PropsType) => {
     }
   };
 
+  const updateStateMessages = (messagesIds: number[]) => {
+    setMessagesIds(messagesIds);
+  };
+
   const updateMessages = (serverMessages: IMessage[]) => {
     const updatedMessages = getServerParsedMessages(serverMessages);
-    setPortionMessages(updatedMessages);
+
+    for (const msg of updatedMessages) {
+      if (msg.content.subType === MessageType.REFINE_SERCH) {
+        setCategory(null);
+        setLocations([]);
+      }
+    }
+    setMessages([...updatedMessages, ...messages]);
+    setPortionMessages([]);
     isInitialized && setIsInitialized(true);
   };
 
@@ -261,13 +269,14 @@ const ChatProvider = ({ children }: PropsType) => {
         pushMessages,
         chatOption,
         setOption,
-        updateMessages,
+        setSnapshotMessages,
         ownerId,
         popMessage,
         chooseButtonOption,
         triggerAction,
         category,
         locations,
+        updateStateMessages,
       }}
     >
       {children}

@@ -1,4 +1,6 @@
+import moment from "moment";
 import React, { FC } from "react";
+import { colors } from "utils/colors";
 import { ICONS, IMAGES } from "utils/constants";
 import { getMessageProps } from "utils/helpers";
 
@@ -15,6 +17,8 @@ type PropsType = {
   onClick: (content: IContent) => void;
 };
 
+export const MS_1000 = 1000;
+
 export const Message: FC<PropsType> = ({ message, onClick }) => {
   const subType = message.content.subType;
   switch (subType) {
@@ -27,6 +31,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.BUTTON:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
+    case MessageType.REFINE_SERCH:
       const isFile = subType === MessageType.FILE;
       return (
         <S.MessageBox
@@ -35,9 +40,19 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
         >
           <S.MessageContent isFile={isFile}>
             {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
-            <S.MessageText>{message.content.text}</S.MessageText>
-            {!message._id && !message.isOwn && (
-              <S.MessageUnsendIcon src={IMAGES.CLOCK} />
+
+            <S.MessageText>
+              {message.content.text || message.content.subType}
+            </S.MessageText>
+            {message._id ? (
+              <S.TimeText>
+                {message.dateCreated?.seconds &&
+                  moment(message.dateCreated?.seconds * MS_1000).format(
+                    "HH:mm A"
+                  )}
+              </S.TimeText>
+            ) : (
+              !message.isOwn && <S.MessageUnsendIcon src={IMAGES.CLOCK} />
             )}
           </S.MessageContent>
         </S.MessageBox>

@@ -70,7 +70,7 @@ export const Notification = styled.div`
   width: 100%;
   background-color: ${colors.alabaster};
   position: absolute;
-  bottom: 50px;
+  bottom: 60px;
 `;
 export const NotificationText = styled.p`
   font-weight: 500;

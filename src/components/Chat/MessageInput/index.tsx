@@ -27,7 +27,13 @@ type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
-  const { addMessage, category, triggerAction, locations } = useChatMessanger();
+  const {
+    addMessage,
+    category,
+    triggerAction,
+    locations,
+    updateStateMessages,
+  } = useChatMessanger();
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -78,9 +84,10 @@ export const MessageInput: FC<PropsType> = () => {
     : searchItems;
 
   const onClick = (draftMessage: string) => {
-    sendMessage(draftMessage);
+    sendMessage(draftMessage, updateStateMessages);
     addMessage({ text: draftMessage });
     setDraftMessage(null);
+    setIsFocus(false);
   };
 
   const renderInput = (
@@ -140,6 +147,8 @@ export const MessageInput: FC<PropsType> = () => {
               sendFile(file);
             } else if (draftMessage) {
               onClick(draftMessage);
+            } else if (locations) {
+              triggerAction({ type: CHAT_ACTIONS.SEND_LOCATIONS });
             }
           }}
         />

@@ -21,19 +21,11 @@ const socketDefaultState = {};
 const SocketContext = createContext<any>(socketDefaultState);
 
 const SocketProvider = ({ children }: PropsType) => {
-  const { updateMessages, messages } = useChatMessanger();
+  const { messages, setSnapshotMessages } = useChatMessanger();
 
   const onUpdateMessages = useCallback(
     (messagesSnapshots: ISnapshot<IMessage>[]) => {
-      const proceedMessages = updateChatRoomMessages(
-        { rooms: [{ chatId }] },
-        {
-          messagesSnapshots,
-          chatId,
-        }
-      );
-
-      updateMessages(proceedMessages);
+      setSnapshotMessages(messagesSnapshots);
     },
     [chatId, messages]
   );

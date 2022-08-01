@@ -17,7 +17,7 @@ export const MessagesInput = styled(Box)`
    > button {
     padding: 0px;
     margin: 0;
-    margin-right: 16px;
+    margin-right: 10px;
    }
 `;
 
