@@ -1,5 +1,7 @@
+import { IconButton } from "@mui/material";
+import { useChatMessanger } from "contexts/MessangerContext";
 import { map } from "lodash";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { colors } from "utils/colors";
 import { CHAT_ACTIONS } from "utils/types";
@@ -36,8 +38,21 @@ export const MenuItems = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   position: absolute;
-  bottom: 120px;
-  left: 16px;
+  bottom: 50px;
+  left: 20px;
+  animation: fade-in 0.1s ease-in forwards;
+  opacity: 0;
+  z-index: 1;
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 `;
 
 export const MenuItem = styled.div`
@@ -53,51 +68,69 @@ export const MenuItem = styled.div`
     margin-right: 8px;
   }
   padding: 11px 0;
-  border-bottom: 1px solid #c4c4c4;
+  &:not(:last-child){
+    border-bottom: 1px solid #c4c4c4;
+  }
 `;
-
+interface IMenuItem {
+  type: CHAT_ACTIONS;
+  text: string;
+}
 const menuItems = [
   {
-    // action: CHAT_ACTIONS.SAVE_TRANSCIRPT,
+    type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
     text: "Save transcript",
   },
   {
-    // action: CHAT_ACTIONS._CHANGE_LANG,
+    type: CHAT_ACTIONS.CHANGE_LANG,
     text: "Change language",
   },
   {
-    // action: CHAT_ACTIONS.FIND_JOB,
+    type: CHAT_ACTIONS.FIND_JOB,
     text: "Find a job",
   },
   {
-    // action: CHAT_ACTIONS.ASK_QUESTION,
+    type: CHAT_ACTIONS.ASK_QUESTION,
     text: "Ask a question",
   },
 ];
 
 const BurgerMenu = () => {
+  const { triggerAction } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
-  const getIcon = (isOpen: boolean) => {
-    if (isOpen) {
-      return ICONS.OPENED_BURGER;
-    }
-    return ICONS.BURGER;
+
+  const handleItemClick = ({ type, text }: IMenuItem) => {
+    triggerAction({ type, payload: { item: text } });
+    setIsOpen(false);
   };
 
-  const onClick = () => {
+  const handleBurgerClick = useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, [isOpen]);
+
+  const items = map(menuItems, (item, index) => (
+    <MenuItem onClick={() => handleItemClick(item)} key={`menu-item-${index}`}>
+      {item.text}
+    </MenuItem>
+  ));
+
   return (
-    <BurgerButton onClick={onClick}>
-      <MobileMenu src={getIcon(isOpen)} />
-      {isOpen && (
-        <MenuItems>
-          {map(menuItems, (item, index) => (
-            <MenuItem key={`menu-item-${index}`}>{item.text}</MenuItem>
-          ))}
-        </MenuItems>
-      )}
-    </BurgerButton>
+    <div onClick={handleBurgerClick}>
+      <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 1 }}
+      >
+        <svg viewBox="0 0 100 80" width="16" height="16">
+          <rect y="0" width="100" height="14" rx="10"></rect>
+          <rect y="35" width="100" height="14" rx="10"></rect>
+          <rect y="70" width="100" height="14" rx="10"></rect>
+        </svg>
+      </IconButton>
+      {isOpen && <MenuItems>{items}</MenuItems>}
+    </div>
   );
 };
 

@@ -1,16 +1,17 @@
-import moment from "moment";
-import React, { FC } from "react";
-import { colors } from "utils/colors";
-import { ICONS, IMAGES } from "utils/constants";
-import { getMessageProps } from "utils/helpers";
+import moment from 'moment';
+import React, { FC } from 'react';
+import { ICONS, IMAGES } from 'utils/constants';
+import { getMessageProps } from 'utils/helpers';
 
-import { MessageType, IContent, ILocalMessage } from "utils/types";
-import { BrowseFile } from "../BrowseFile";
+import { MessageType, IContent, ILocalMessage } from 'utils/types';
+import { BrowseFile } from '../BrowseFile';
+import { EmailForm } from '../EmailForm';
 
-import { NoMatchJob } from "../NoMatchJob";
-import { Icon } from "../styles";
+import { NoMatchJob } from '../NoMatchJob';
+import { Icon } from '../styles';
+import { TranscriptSent } from '../TranscriptSent';
 
-import * as S from "./styles";
+import * as S from './styles';
 
 type PropsType = {
   message: ILocalMessage;
@@ -26,11 +27,16 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
       return <BrowseFile />;
+    case MessageType.EMAIL_FORM: {
+      return <EmailForm />;
+    }
+    case MessageType.TRANSCRIPT: {
+      return <TranscriptSent />;
+    }
     case MessageType.TEXT:
     case MessageType.JOB_POSITIONS:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
-    case MessageType.REFINE_SERCH:
       const isFile = subType === MessageType.FILE;
       return (
         <S.MessageBox {...getMessageProps(message)} isText>
@@ -45,7 +51,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
               <S.TimeText>
                 {message.dateCreated?.seconds &&
                   moment(message.dateCreated?.seconds * MS_1000).format(
-                    "HH:mm A"
+                    'HH:mm A'
                   )}
               </S.TimeText>
             ) : (
@@ -65,8 +71,10 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
         </S.MessageBox>
       );
     }
+    case MessageType.REFINE_SERCH: {
+      return <NoMatchJob />;
+    }
     default: {
-      console.log("uknown", message);
       return <NoMatchJob />;
     }
   }

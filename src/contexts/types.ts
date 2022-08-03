@@ -7,8 +7,7 @@ import { CHAT_ACTIONS, MessageType, ILocalMessage } from "utils/types";
 export interface IChatMessangerContext {
     messages: ILocalMessage[];
     chatOption: CHAT_OPTIONS | null;
-    // serverMessages: IMessage[];
-    // ownerId: string | null;
+    categories: string[];
     category: string | null;
     addMessage: (props: IAddMessageProps) => void;
     pushMessages: (message: ILocalMessage[]) => void;
@@ -17,10 +16,9 @@ export interface IChatMessangerContext {
     popMessage: () => void;
     triggerAction: (action: ITriggerActionProps) => void;
     locations:string[];
-    updateStateMessages: (messagesIds: number[]) => void;
     setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[])=>void;
-    setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS | null>>;
-    lastActionType: CHAT_ACTIONS | null
+    setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
+    lastActionType: CHAT_ACTIONS | undefined;
 }
 
 export interface IFileUploadContext {
@@ -35,16 +33,28 @@ export interface IFileUploadContext {
 export interface IAddMessageProps {
     text: string;
     subType?: MessageType;
-    localId: string
 }
 type PayloadType = {
     item?: string | null;
     items?: string[];
 }
-export interface ITriggerActionProps {type: CHAT_ACTIONS, payload?: PayloadType;isServer?:boolean}
+export interface ITriggerActionProps {type: CHAT_ACTIONS , payload?: PayloadType; isResponseFirst?:boolean}
 export type IResponseAction = {
     [key in CHAT_ACTIONS]?: {
         replaceLatest?: boolean;
         messages: ILocalMessage[];
     };
 };
+
+export enum ServerMessageType {
+    Text = "text",
+    Transcript = "transcript_sent",
+    Video = "video_uploaded",
+    ChatCreated = "chat_created",
+    Document = "document_uploaded",
+    File = "resume_uploaded",
+    UnreadMessages = "unread_messages",
+    Date = "date",
+}
+
+export interface IPortionMessages extends ISnapshot<IMessage> {}

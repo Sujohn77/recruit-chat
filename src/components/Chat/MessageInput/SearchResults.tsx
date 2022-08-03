@@ -7,7 +7,7 @@ import { CHAT_ACTIONS } from "utils/types";
 import * as S from "./styles";
 import { searchItemheight } from "./styles";
 
-export const maxSearchHeight = 300;
+export const maxSearchHeight = 186;
 interface IGetOptionProps {
   option: any;
   index: number;
@@ -43,7 +43,6 @@ export const SearchResults: FC<PropsType> = ({
         key={`search-item-${type}-${index}`}
         {...optionProps}
         onClick={(e) => {
-          console.log(e);
           onClick && onClick(e);
           optionProps?.onClick && optionProps.onClick(e);
           setIsFocus(false);
@@ -55,8 +54,8 @@ export const SearchResults: FC<PropsType> = ({
     );
   });
   const searchOptionsHeight =
-    matchedItems.length < 10
-      ? searchItemheight * matchedItems.length
+    matchedItems.length < 6
+      ? searchItemheight * matchedItems.length + 1
       : maxSearchHeight;
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>

@@ -11,7 +11,8 @@ export const colors = {
     silver: '#cacaca',
     alabaster: '#FAFAFA',
     gray: '#868686',
-    gallery: '#f0eeee'
+    gallery: '#f0eeee',
+    scorpion: '#565656'
 }
 
 export const chatColors = {

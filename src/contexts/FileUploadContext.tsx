@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 import { IFileUploadContext } from "./types";
-import { fileUploadDefaultState, getChatResponseOnAction } from "utils/helpers";
+import { fileUploadDefaultState } from "utils/helpers";
 import { useChatMessanger } from "./MessangerContext";
 import { CHAT_ACTIONS } from "utils/types";
 
@@ -27,6 +27,7 @@ const FileUploadProvider = ({ children }: PropsType) => {
     triggerAction({
       type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
       payload: { item: file.name },
+      isResponseFirst: true,
     });
   };
 

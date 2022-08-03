@@ -2,14 +2,15 @@ import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { colors } from "utils/colors";
 
-export const searchItemheight = 32;
+export const searchItemheight = 31;
 export const searchHeaderHeight = 40;
+// export const searchInputHeight = 60;
 export const MessagesInput = styled(Box)`
   min-height: 50px;
   position: relative!important;
   display: flex;
   align-items: center;
-  padding: 15px 16px;
+  padding: 10px 16px;
   box-sizing: border-box;
   background: #efefef;
   border-bottom-left-radius: 5px;
@@ -47,6 +48,8 @@ export const SearchBody = styled.ul`
     margin: 0;
     list-style: none;
     padding: 0;
+    overflow: auto;
+    max-height: 186px;
     div {
         width: 100%
     }

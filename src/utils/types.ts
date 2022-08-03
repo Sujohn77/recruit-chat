@@ -22,6 +22,7 @@ export enum MessageType {
     DOCUMENT = "document_uploaded",
     UNREAD_MESSAGES = "unread_messages",
     DATE = "date",
+    EMAIL_FORM = 'email_form'
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -56,20 +57,24 @@ export interface IContent {
 
 
 export enum USER_INPUTS {
-  FIND_JOB = "find a job",
-  ASK_QUESTION = "ask a question",
-  UPLOAD_CV = 'upload cv',
-  ANSWER_QUESTIONS = 'answer questions',
-  UNKNOWN = "",
+  FIND_JOB = "Find a job",
+  ASK_QUESTION = "Ask a question",
+  UPLOAD_CV = 'Upload CV',
+  ANSWER_QUESTIONS = 'Answer questions',
 }
 
 export enum CHAT_ACTIONS {
-  SUCCESS_UPLOAD_CV = 'SUCCESS_UPLOAD_CV',
-  SET_CATEGORY = 'SET_CATEGORY',
-  SET_LOCATIONS = 'SET_LOCATIOBS',
-  SEND_LOCATIONS = 'SEND_LOCATIONS',
+  SUCCESS_UPLOAD_CV = 'success_upload_cv',
+  SET_CATEGORY = 'set_category',
+  SET_LOCATIONS = 'set_location',
+  SEND_LOCATIONS = 'send_locations',
   REFINE_SEARCH = 'refine_search',
-  SEND_MESSAGE = 'send_message'
+  SEND_MESSAGE = 'send_message',
+  FIND_JOB = 'find_job',
+  ASK_QUESTION = 'ask_question',
+  CHANGE_LANG = 'change_lang',
+  SAVE_TRANSCRIPT = 'save_transcript',
+  SEND_EMAIL = 'send_email'
 }
 
 export enum Status  {

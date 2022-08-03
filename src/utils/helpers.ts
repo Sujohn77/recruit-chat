@@ -10,9 +10,7 @@ import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
 
-// interface IGetMessageColorProps {
-//     isOwn?: boolean;
-// }
+export const capitalize = (str: string) => str = str.charAt(0).toUpperCase() + str.slice(1);
 
 export interface IMessageProps {
     color: string;
@@ -47,11 +45,26 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps  => {
   };
 };
 
-export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => {
+export const getChatResponseOnMessage = (userInput: string, isCategory = false): ILocalMessage[] => {
   const dateCreated = {seconds:moment().unix()}
-
+  if(isCategory) {
+    const content = {
+      subType: MessageType.TEXT,
+      text: responseMessages.refineSearch,
+      subTypeId: 1,
+    };
+    return [
+      {
+        dateCreated,
+        content,
+        _id: null,
+        localId: generateLocalId(),
+        isOwn: false,
+      },
+    ];
+  }
   switch (userInput.toLowerCase()) {
-    case USER_INPUTS.ASK_QUESTION: {
+    case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
       const content = {
         text: "Output of existing most popular questions",
         subType: MessageType.TEXT,
@@ -67,20 +80,13 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         },
       ];
     }
-    case USER_INPUTS.FIND_JOB: {
+    case USER_INPUTS.FIND_JOB.toLowerCase(): {
       const content = {
         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
         subType: MessageType.TEXT,
         subTypeId: 1,
       };
       return [
-        {
-          dateCreated,
-          content,
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: false,
-        },
         {
           dateCreated,
           content: {
@@ -101,7 +107,14 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
           isOwn: true,
           localId: generateLocalId(),
           _id: null,
-        }
+        },
+        {
+          dateCreated,
+          content,
+          localId: generateLocalId(),
+          _id: null,
+          isOwn: false,
+        },
         // {
         //   dateCreated,
         //   content: {
@@ -113,7 +126,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         // },
       ];
     }
-    case USER_INPUTS.UPLOAD_CV: {
+    case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
       return [
         {
           dateCreated,
@@ -126,7 +139,7 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         },
       ];
     }
-    case USER_INPUTS.ANSWER_QUESTIONS: {
+    case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
       return [
         {
           dateCreated,
@@ -140,12 +153,12 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
         },
       ];
     }
+    
 
    
     default: {
       const content = {
         subType: MessageType.REFINE_SERCH,
-        text: responseMessages.refineSearch,
         subTypeId: 1,
       };
       return [
@@ -163,52 +176,23 @@ export const getChatResponseOnMessage = (userInput: string): ILocalMessage[] => 
 interface IPayload {
   text?: string
 }
-export const getChatResponseOnAction = (userInput: CHAT_ACTIONS, payload: IPayload): ILocalMessage[] => {
+export const getResponseMessages = ({subType,text}: {subType: MessageType, text?: string}): ILocalMessage[] => {
   const dateCreated = {seconds:moment().unix()}
-
-  switch (userInput) {
-    case CHAT_ACTIONS.SET_CATEGORY: {
-      return [
-        {
-          _id: null,
-          dateCreated,
-          content: {
-            text: "bot message Where do you want to work? This can be your current location or a list of preferred locations.",
-            subType: MessageType.TEXT,
-          },
-          localId:generateLocalId(),
-          isOwn: false,
-        },
-      ];
-    }
-    case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
-      return [
-        {  
-          _id: null,
-          localId:generateLocalId(),
-          dateCreated,
-          content: {
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-            subType: MessageType.TEXT,
-          },
-        
-          isOwn: false,
-        },
-        {
-          _id: null,
-          localId: generateLocalId(),
-          dateCreated,
-          content: {
-            text: payload.text || '',
-            subType: MessageType.FILE,
-          },
-          isOwn: true,
-        },
-      
-      ];
-    }
+  const localId = generateLocalId();
+  const message:ILocalMessage = {
+    _id: null,
+    dateCreated,
+    content: {
+      subType,
+    },
+    localId,
+    isOwn: false,
   }
-  return []
+
+  if(text){
+     message.content.text = text;
+  }
+  return [message]
 };
 
 export const MessageTypeId: Record<ServerMessageType, number> = {
@@ -283,17 +267,18 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   chatOption: null,
   // serverMessages: [],
   // ownerId: null,
-  category: null,locations:[],
+  category: null,
+  locations:[],
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
   setOption: emptyFunc,
   chooseButtonOption: emptyFunc,
   popMessage: emptyFunc,
   triggerAction: emptyFunc, 
-  updateStateMessages: emptyFunc,
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
-  lastActionType: null
+  categories: [],
+  lastActionType: undefined
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -365,7 +350,7 @@ export const getParsedMessage = ({
     content,
     isOwn: !!isOwn,
     localId,
-    _id: null
+    _id: content.subType !== MessageType.FILE ? null: localId
   };
 };
 
@@ -385,27 +370,6 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
   })
  return parsedMessages;
 };
-
-
-
-
-
-
-
-
-
-
-
-// const INITIAL_STATE: QueuesState = {
-//   queues: [],
-//   queueIds: [],
-//   rooms: {},
-//   archivedRooms: [],
-//   totalUnread: 0,
-//   chatStatusFilter: [1, 2, 3, 4],
-//   changeStatusError: null,
-// };
-
 
 type Handler<A> = (state: QueuesState, action: A) => QueuesState;
 export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> = (
@@ -454,4 +418,14 @@ export const getMessageBySubtype = (subType: string | undefined) => {
     case CHAT_ACTIONS.REFINE_SEARCH: 
       return responseMessages.refineSearch
   }
+}
+
+export const getResponseMessageType = (type: CHAT_ACTIONS) => {
+  return
+}
+
+export const ResponseMessageTypes = {
+  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]:  MessageType.FILE,
+  [CHAT_ACTIONS.SAVE_TRANSCRIPT]:  MessageType.TEXT,
+  [CHAT_ACTIONS.SEND_EMAIL]:  MessageType.TEXT,
 }

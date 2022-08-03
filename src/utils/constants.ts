@@ -8,7 +8,10 @@ import BURGER from '../assets/icons/burger.svg'
 import INPUT_PLANE from '../assets/icons/plane.svg'
 import ATTACHED_FILE from '../assets/icons/attachedFile.svg'
 import { CHAT_OPTIONS } from 'screens/intro'
-import { HTTPStatusCodes } from './types'
+import { CHAT_ACTIONS, HTTPStatusCodes, MessageType } from './types'
+import { generateLocalId, getResponseMessages } from './helpers'
+import moment from 'moment'
+import { IResponseAction } from 'contexts/types'
 
 export const IMAGES = {
   UPLOAD_FILE,
@@ -71,3 +74,43 @@ export const HTTP_STATUSES: Record<HTTPStatusCodes, number> = {
 export enum ChannelName  {
   SMS = 'SMS'
 }
+
+export const initialChatMessage = {
+  _id: null,
+  localId: generateLocalId(),
+  content: {
+    subType: MessageType.INITIAL_MESSAGE,
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+  },
+  dateCreated: { seconds: moment().unix() },
+  isOwn: false,
+};
+
+export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
+  [CHAT_ACTIONS.SET_CATEGORY]: {
+    replaceLatest: true,
+    messages: getResponseMessages({
+      subType: MessageType.TEXT,
+      text: "bot message Where do you want to work? This can be your current location or a list of preferred locations."
+     })
+  },
+  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
+    messages: getResponseMessages({
+      subType: MessageType.TEXT,
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor'
+    })
+  },
+  [CHAT_ACTIONS.SAVE_TRANSCRIPT]: {
+    replaceLatest: true,
+    messages: getResponseMessages({
+      subType: MessageType.EMAIL_FORM,
+    })
+  },
+  [CHAT_ACTIONS.SEND_EMAIL]: {
+    replaceLatest: true,
+    messages: getResponseMessages({
+      subType: MessageType.TRANSCRIPT,
+    })
+  },
+
+};
