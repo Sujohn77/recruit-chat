@@ -6,6 +6,7 @@ import { getMessageProps } from 'utils/helpers';
 import { MessageType, IContent, ILocalMessage } from 'utils/types';
 import { BrowseFile } from '../BrowseFile';
 import { EmailForm } from '../EmailForm';
+import { JobOffers } from '../JobOffers';
 
 import { NoMatchJob } from '../NoMatchJob';
 import { Icon } from '../styles';
@@ -28,7 +29,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.UPLOAD_CV:
       return <BrowseFile />;
     case MessageType.EMAIL_FORM: {
-      return <EmailForm />;
+      return <JobOffers />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;

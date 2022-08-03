@@ -1,7 +1,8 @@
-import { Button } from "@mui/material";
-import * as React from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import { Button } from '@mui/material';
+import * as React from 'react';
+import i18n from 'services/localization';
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
@@ -30,9 +31,10 @@ export const Avatar = styled.div`
 `;
 
 export const TranscriptSent = () => {
+  const enterEmailTxt = i18n.t('chat_item_description:transcript_sent');
   return (
     <Wrapper>
-      <Title>Your transcript has been sent to your email</Title>
+      <Title>{enterEmailTxt}</Title>
       <Avatar />
     </Wrapper>
   );

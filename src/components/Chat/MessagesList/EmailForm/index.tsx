@@ -2,6 +2,7 @@ import { Button, FormControl, TextField } from '@mui/material';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import * as React from 'react';
 import { FC, useState } from 'react';
+import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
@@ -87,10 +88,11 @@ export const EmailForm: FC<PropsType> = () => {
       });
     }
   };
-
+  const enterEmailTxt = i18n.t('chat_item_description:enter_email_title');
+  const sendTxt = i18n.t('buttons:send');
   return (
     <Wrapper>
-      <Title>Please enter your email and we will send you an email</Title>
+      <Title>{enterEmailTxt}</Title>
       <FormControl>
         <Input
           value={value}
@@ -101,17 +103,17 @@ export const EmailForm: FC<PropsType> = () => {
           placeholder="Email"
         />
       </FormControl>
-      <FormButton onClick={() => onClick(value)}>Send</FormButton>
+      <FormButton onClick={() => onClick(value)}>{sendTxt}</FormButton>
     </Wrapper>
   );
 };
 
 const validate = (value: string) => {
   if (!value) {
-    return 'Required';
+    return i18n.t('labels:required');
   }
   if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    return 'Invalid email';
+    return i18n.t('labels:email_invalid');
   }
   return '';
 };

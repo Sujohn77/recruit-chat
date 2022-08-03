@@ -10,7 +10,7 @@ export const MessageBox = styled.div<IMessageProps>`
     line-height: 17px;
     box-sizing: border-box;
     width: fit-content;
-    max-width: 250px;
+    max-width: 270px;
 
     margin-left: ${({isOwn = false}) => isOwn ? 'auto' : 'initial'};
     color: ${({color = '#969696'})=> color};

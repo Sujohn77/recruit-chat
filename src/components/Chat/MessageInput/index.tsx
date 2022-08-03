@@ -1,21 +1,16 @@
-import React, { FC, useState, useEffect, ChangeEvent } from "react";
+import React, { FC, useState, useEffect, ChangeEvent } from 'react';
 
-import {
-  botTypingTxt,
-  categoryHeaderName,
-  ICONS,
-  locationHeaderName,
-  locations as searchLocations,
-} from "utils/constants";
-import * as S from "./styles";
+import { ICONS, locations as searchLocations } from 'utils/constants';
+import * as S from './styles';
 
-import { capitalizeFirstLetter, getMatchedItems } from "utils/helpers";
-import { useChatMessanger } from "contexts/MessangerContext";
-import { CHAT_ACTIONS } from "utils/types";
-import { useFileUploadContext } from "contexts/FileUploadContext";
-import { MultiSelectInput } from "components/Layout/Input/MultiSelectInput";
-import { Autocomplete } from "components/Layout/Input/Autocomplete";
-import BurgerMenu from "components/Layout/BurgerMenu";
+import { capitalizeFirstLetter, getMatchedItems } from 'utils/helpers';
+import { useChatMessanger } from 'contexts/MessangerContext';
+import { CHAT_ACTIONS } from 'utils/types';
+import { useFileUploadContext } from 'contexts/FileUploadContext';
+import { MultiSelectInput } from 'components/Layout/Input/MultiSelectInput';
+import { Autocomplete } from 'components/Layout/Input/Autocomplete';
+import BurgerMenu from 'components/Layout/BurgerMenu';
+import i18n from 'services/localization';
 
 type PropsType = {};
 
@@ -35,6 +30,7 @@ export const MessageInput: FC<PropsType> = () => {
     setDraftMessage(event.currentTarget.value);
     setNotification(null);
   };
+  const botTypingTxt = i18n.t('placeHolders:bot_typing');
 
   const onChangeLocations = (event: any, locations: string[]) => {
     triggerAction({
@@ -46,16 +42,16 @@ export const MessageInput: FC<PropsType> = () => {
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         event.preventDefault();
         draftMessage && onClick(draftMessage);
       }
     };
 
-    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener('keydown', keyDownHandler);
 
     return () => {
-      document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener('keydown', keyDownHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftMessage]);
@@ -63,12 +59,12 @@ export const MessageInput: FC<PropsType> = () => {
   const { searchItems, placeHolder, headerName } = category
     ? {
         searchItems: searchLocations,
-        placeHolder: "Reply to choose location...",
-        headerName: locationHeaderName,
+        placeHolder: i18n.t('placeHolders:chooseLocation'),
+        headerName: i18n.t('chat_item_description:locations_title'),
       }
     : {
         searchItems: categories,
-        headerName: categoryHeaderName,
+        headerName: i18n.t('chat_item_description:categories_title'),
         placeHolder: null,
       };
 
@@ -80,7 +76,13 @@ export const MessageInput: FC<PropsType> = () => {
     : searchItems;
 
   const onClick = (draftMessage: string) => {
-    addMessage({ text: draftMessage });
+    addMessage({
+      text: draftMessage,
+      isCategory:
+        !!matchedPositions.length &&
+        !!matchedPositions.findIndex((m) => m === ''),
+    });
+
     setDraftMessage(null);
     setIsFocus(false);
     setLastActionType(CHAT_ACTIONS.SEND_MESSAGE);
@@ -93,8 +95,8 @@ export const MessageInput: FC<PropsType> = () => {
       type,
       headerName: headerName,
       matchedItems: matchedPositions,
-      matchedPart: capitalizeFirstLetter(draftMessage || ""),
-      value: draftMessage || "",
+      matchedPart: capitalizeFirstLetter(draftMessage || ''),
+      value: draftMessage || '',
       placeHolder: placeHolder || botTypingTxt,
       setIsFocus,
       isFocus,

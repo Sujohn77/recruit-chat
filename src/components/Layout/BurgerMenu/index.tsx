@@ -1,12 +1,15 @@
-import { IconButton } from "@mui/material";
-import { useChatMessanger } from "contexts/MessangerContext";
-import { map } from "lodash";
-import { useCallback, useState } from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
-import { CHAT_ACTIONS } from "utils/types";
-import { ICONS } from "../../../utils/constants";
-import sizes from "../../../utils/sizes";
+import { IconButton } from '@mui/material';
+import { useChatMessanger } from 'contexts/MessangerContext';
+import { map } from 'lodash';
+import { useCallback, useState } from 'react';
+import i18n from 'services/localization';
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
+import { CHAT_ACTIONS } from 'utils/types';
+import { ICONS, languages } from '../../../utils/constants';
+import sizes from '../../../utils/sizes';
+import { DropDown } from './DropDown';
+import { IMenuItem, MenuItem } from './MenuItem';
 
 const BurgerButton = styled.div`
   height: 20px;
@@ -55,49 +58,30 @@ export const MenuItems = styled.div`
   }
 `;
 
-export const MenuItem = styled.div`
-  display: flex;
-  padding: 0 6px;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${colors.alabaster}
-  &:before {
-    content: "";
-    background: #d9d9d9;
-    display: inline-block;
-    margin-right: 8px;
-  }
-  padding: 11px 0;
-  &:not(:last-child){
-    border-bottom: 1px solid #c4c4c4;
-  }
-`;
-interface IMenuItem {
-  type: CHAT_ACTIONS;
-  text: string;
-}
-const menuItems = [
-  {
-    type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
-    text: "Save transcript",
-  },
-  {
-    type: CHAT_ACTIONS.CHANGE_LANG,
-    text: "Change language",
-  },
-  {
-    type: CHAT_ACTIONS.FIND_JOB,
-    text: "Find a job",
-  },
-  {
-    type: CHAT_ACTIONS.ASK_QUESTION,
-    text: "Ask a question",
-  },
-];
-
 const BurgerMenu = () => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction, changeLang } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
+
+  const menuItems = [
+    {
+      type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
+      text: i18n.t('chat_menu:save_transcript'),
+    },
+    {
+      type: CHAT_ACTIONS.CHANGE_LANG,
+      text: i18n.t('chat_menu:change_lang'),
+      isDropdown: true,
+      options: languages,
+    },
+    {
+      type: CHAT_ACTIONS.FIND_JOB,
+      text: i18n.t('chat_menu:find_job'),
+    },
+    {
+      type: CHAT_ACTIONS.ASK_QUESTION,
+      text: i18n.t('chat_menu:ask_question'),
+    },
+  ];
 
   const handleItemClick = ({ type, text }: IMenuItem) => {
     triggerAction({ type, payload: { item: text } });
@@ -108,11 +92,22 @@ const BurgerMenu = () => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const items = map(menuItems, (item, index) => (
-    <MenuItem onClick={() => handleItemClick(item)} key={`menu-item-${index}`}>
-      {item.text}
-    </MenuItem>
-  ));
+  const items = map(menuItems, (item, index) =>
+    item.isDropdown ? (
+      <MenuItem
+        key={`menu-item-${index}`}
+        item={item}
+        onClick={handleItemClick}
+        onDropDownClick={(lang: string) => changeLang(lang)}
+      />
+    ) : (
+      <MenuItem
+        key={`menu-item-${index}`}
+        item={item}
+        onClick={handleItemClick}
+      />
+    )
+  );
 
   return (
     <div onClick={handleBurgerClick}>

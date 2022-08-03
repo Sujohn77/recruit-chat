@@ -1,8 +1,9 @@
-import React, { ChangeEvent, FC, useRef } from "react";
-import { useFileUploadContext } from "contexts/FileUploadContext";
-import DragAndDrop from "components/DragAndDrop";
+import React, { ChangeEvent, FC, useRef } from 'react';
+import { useFileUploadContext } from 'contexts/FileUploadContext';
+import DragAndDrop from 'components/DragAndDrop';
 
-import * as S from "./styles";
+import * as S from './styles';
+import i18n from 'services/localization';
 
 type PropsType = {};
 
@@ -30,7 +31,8 @@ export const BrowseFile: FC<PropsType> = () => {
   const onClearFile = () => {
     resetFile();
   };
-
+  const browseTxt = i18n.t('buttons:browse');
+  const cancelTxt = i18n.t('buttons:cancel');
   return (
     <div>
       <S.Wrapper>
@@ -40,7 +42,7 @@ export const BrowseFile: FC<PropsType> = () => {
 
         <S.Text>Lorem ipsum dolor sit amet</S.Text>
         <S.Text>or</S.Text>
-        <S.Browse htmlFor="myfile">Browse</S.Browse>
+        <S.Browse htmlFor="myfile">{browseTxt}</S.Browse>
         <input
           type="file"
           id="myfile"
@@ -50,7 +52,7 @@ export const BrowseFile: FC<PropsType> = () => {
           hidden
           onChange={onChangeFile}
         />
-        <S.Cancel onClick={onClearFile}>Cancel</S.Cancel>
+        <S.Cancel onClick={onClearFile}>{cancelTxt}</S.Cancel>
       </S.Wrapper>
     </div>
   );

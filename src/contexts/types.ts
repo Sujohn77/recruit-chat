@@ -18,6 +18,7 @@ export interface IChatMessangerContext {
     locations:string[];
     setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[])=>void;
     setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
+    changeLang: (lang: string) => void;
     lastActionType: CHAT_ACTIONS | undefined;
 }
 
@@ -33,6 +34,8 @@ export interface IFileUploadContext {
 export interface IAddMessageProps {
     text: string;
     subType?: MessageType;
+    isCategory?:boolean
+    isChatMessage?:boolean;
 }
 type PayloadType = {
     item?: string | null;

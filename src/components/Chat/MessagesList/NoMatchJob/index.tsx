@@ -1,49 +1,55 @@
-import { Button } from "@mui/material";
-import * as React from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import { Button } from '@mui/material';
+import * as React from 'react';
+import i18n from 'services/localization';
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
   border-radius: 10px;
   padding: 24px 28px;
-  margin: 0 auto;
+  margin: 0 16px;
   display: flex;
   flex-flow: column;
-  gap: 20px;
-  // width: 306px;
+  max-width: 306px;
   margin-bottom: 24px;
 `;
 export const Title = styled.p`
-  margin: 0;
+  margin: 0 0 24px;
   font-size: 14px;
   line-height: 17px;
   color: ${colors.black};
+  text-align: center;
 `;
 export const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 69px;
+  height: 69px;
   border-radius: 50%;
-  margin: 0 0 32px;
+  margin: 0 auto 32px;
   background-color: ${colors.white};
 `;
 export const SetJobAlert = styled(Button)`
-  margin: 0 0 16px;
-  color: ${colors.boulder};
-  border: 1px solid ${colors.boulder};
+  margin: 0 0 16px !important;
+  color: ${colors.boulder}!important;
+  border: 1px solid ${colors.boulder}!important;
+  border-radius: 100px !important;
 `;
 export const RefineJobSearch = styled(Button)`
-  background: ${colors.boulder};
-  border-radius: 100px;
+  background-color: ${colors.boulder}!important;
+  border-radius: 100px !important;
+  color: ${colors.white}!important;
 `;
 
 export const NoMatchJob = () => {
+  const noMatchTxt = i18n.t('chat_item_description:no_match');
+  const jobAlertTxt = i18n.t('buttons:set_job_alert');
+  const refineSearchTxt = i18n.t('buttons:refine_search');
   return (
     <Wrapper>
-      <Title>Sorry, No match yet</Title>
+      <Title>{noMatchTxt}</Title>
       <Avatar />
-      <SetJobAlert>Set Job Alert</SetJobAlert>
-      <RefineJobSearch>Refine job search</RefineJobSearch>
+      <SetJobAlert>{jobAlertTxt}</SetJobAlert>
+      <RefineJobSearch>{refineSearchTxt}</RefineJobSearch>
     </Wrapper>
   );
 };

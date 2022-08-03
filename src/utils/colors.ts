@@ -9,6 +9,7 @@ export const colors = {
     boulder: '#787878',
     tundora: '#454545',
     silver: '#cacaca',
+    silverDark: '#C3C3C3',
     alabaster: '#FAFAFA',
     gray: '#868686',
     gallery: '#f0eeee',

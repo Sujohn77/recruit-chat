@@ -66,7 +66,7 @@ export const getChatResponseOnMessage = (userInput: string, isCategory = false):
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
       const content = {
-        text: "Output of existing most popular questions",
+        text: "OK! Here are a few popular questions to help you get started.",
         subType: MessageType.TEXT,
         subTypeId: 1,
       };
@@ -277,6 +277,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   triggerAction: emptyFunc, 
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
+  changeLang: emptyFunc,
   categories: [],
   lastActionType: undefined
 };
@@ -306,13 +307,13 @@ interface IIsMatches {
   compareItem: string
 }
 const isMatches = ({item,compareItem}:IIsMatches) => { 
-    const str = compareItem.toLowerCase();
-    const firstWord = item.toLowerCase().split(" ")[0];
-    return (
-      firstWord.length >= str.length &&
-      firstWord.slice(0, str.length) === str
-    );
+    const compareWord = compareItem.toLowerCase();
+    const searchItem = item.toLowerCase();
 
+    return (
+      searchItem.slice(0, compareWord.length) === compareWord &&
+      searchItem.includes(compareItem)
+    );
 }
 
 interface IGetMatchedItems {
@@ -407,16 +408,21 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
 };
 
 const responseMessages = {
-  refineSearch: "Let's try again to find a job"
+  refineSearch: "Let's try again to find a job",
+  changeLang: 'You changed the language to '
 }
 
-export const getMessageBySubtype = (subType: string | undefined) => {
+export const getMessageBySubtype = ({subType,value}:{subType: string | undefined, value?:string}) => {
   if(!subType) {
     return undefined;
   }
   switch(subType){
     case CHAT_ACTIONS.REFINE_SEARCH: 
       return responseMessages.refineSearch
+    case CHAT_ACTIONS.CHANGE_LANG: 
+      return responseMessages.changeLang + value
+      default:
+        return null
   }
 }
 

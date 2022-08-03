@@ -50,14 +50,9 @@ export const defaultChatHistory = {
 };
 
 // TODO: fix mock
-export const positions = ["Devops", "Developer ios", "Developer backend"];
 export const locations = ["Oslo", "Liverpool", "Toronto"];
 
-export const botTypingTxt = "Bot is typing...";
-export const wrongFormat = "Wrong format. Try again...";
 
-export const categoryHeaderName = 'Searched category title';
-export const locationHeaderName = 'Searched location';
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
@@ -112,5 +107,12 @@ export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
       subType: MessageType.TRANSCRIPT,
     })
   },
-
 };
+
+export enum EnvironmentMode {
+  Development = 'development',
+  Production = 'production',
+  Test = 'test',
+}
+
+export const languages = ['EN','FR','UA']

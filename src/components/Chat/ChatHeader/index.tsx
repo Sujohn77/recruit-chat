@@ -1,11 +1,11 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
-import styled from "styled-components";
+import React, { Dispatch, FC, SetStateAction } from 'react';
+import styled from 'styled-components';
 
-import { colors } from "../../../utils/colors";
+import { colors } from '../../../utils/colors';
 
-import { Close } from "../../../screens/intro/styles";
+import { Close } from '../../../screens/intro/styles';
 
-import { useChatMessanger } from "contexts/MessangerContext";
+import { useChatMessanger } from 'contexts/MessangerContext';
 
 export const Wrapper = styled.div`
   height: 60px;
@@ -28,7 +28,7 @@ export const Avatar = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-weight: 700;
+  font-family: Inter-Bold;
   font-size: 16px;
   line-height: 19px;
   margin: 0;
@@ -44,7 +44,7 @@ export const CloseChat = styled(Close)`
   cursor: pointer;
 `;
 
-const defaultTitle = "Career bot";
+const defaultTitle = 'Career bot';
 
 type PropsType = {
   title?: string;

@@ -4,28 +4,30 @@ import React, {
   useContext,
   useState,
   useEffect,
-} from "react";
+} from 'react';
 
-import { MessageType, ILocalMessage, CHAT_ACTIONS } from "utils/types";
-import { IMessage, ISnapshot } from "services/types";
-import { CHAT_OPTIONS } from "screens/intro";
-import { CHAT_ACTIONS_RESPONSE } from "utils/constants";
+import { MessageType, ILocalMessage, CHAT_ACTIONS } from 'utils/types';
+import { IMessage, ISnapshot } from 'services/types';
+import { CHAT_OPTIONS } from 'screens/intro';
+import { CHAT_ACTIONS_RESPONSE, languages } from 'utils/constants';
 import {
   chatMessangerDefaultState,
   generateLocalId,
   getChatResponseOnMessage,
+  getMessageBySubtype,
   getParsedMessage,
   getServerParsedMessages,
   ResponseMessageTypes,
-} from "utils/helpers";
+} from 'utils/helpers';
 import {
   IAddMessageProps,
   IChatMessangerContext,
   IPortionMessages,
   ITriggerActionProps,
-} from "./types";
-import { useCategories } from "services/hooks";
-import { getParsedSnapshots } from "services/utils";
+} from './types';
+import { useCategories } from 'services/hooks';
+import { getParsedSnapshots } from 'services/utils';
+import i18n from 'services/localization';
 
 type PropsType = {
   children: React.ReactNode;
@@ -44,7 +46,10 @@ const ChatProvider = ({ children }: PropsType) => {
   const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
   const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS>();
+  const [language, setLanguage] = useState(languages[0]);
   const categories = useCategories();
+
+  console.log('DEFAULT_LANG: ', language);
 
   // Effects
   useEffect(() => {
@@ -135,13 +140,22 @@ const ChatProvider = ({ children }: PropsType) => {
   const addMessage = ({
     text,
     subType = MessageType.TEXT,
+    isCategory = false,
+    isChatMessage = false,
   }: IAddMessageProps) => {
     const localId = generateLocalId();
     const message = getParsedMessage({ text, subType, localId });
+    isCategory && setCategory(text);
     // TODO: fix after backend is ready
-    const updatedMessages = getChatResponseOnMessage(text);
-    const actionType = updatedMessages[0].content.subType;
-    actionType && triggerAction({ type: actionType as any });
+    if (!isChatMessage) {
+      const updatedMessages = getChatResponseOnMessage(text, isCategory);
+      const actionType = updatedMessages[0].content.subType;
+      actionType && triggerAction({ type: actionType as any });
+      setMessages([...updatedMessages, message, ...messages]);
+    } else {
+      setMessages([message, ...messages]);
+    }
+
     // const serverMessage = {
     //   channelName: ChannelName.SMS,
     //   candidateId: 49530690,
@@ -153,12 +167,26 @@ const ChatProvider = ({ children }: PropsType) => {
     // ---------------------------------
 
     // sendMessage(serverMessage);
-    setMessages([...updatedMessages, message, ...messages]);
   };
 
   const setOption = (option: CHAT_OPTIONS) => {
     setChatOption(option);
   };
+
+  const changeLang = (lang: string) => {
+    const text = getMessageBySubtype({
+      subType: CHAT_ACTIONS.CHANGE_LANG,
+      value: lang,
+    });
+    text && addMessage({ text, isChatMessage: true });
+    setLanguage(lang);
+    // chrome.runtime.sendMessage({
+    //   messageType: ChromeMessageTypes.GlobalChangeLanguage,
+    //   msg: language,
+    // });
+    i18n.changeLanguage(lang.toLowerCase());
+  };
+
   // TODO: refactor
   const chooseButtonOption = (optionText: string) => {
     const updatedMessages = messages.filter((msg) => {
@@ -228,6 +256,7 @@ const ChatProvider = ({ children }: PropsType) => {
         categories,
         setLastActionType,
         lastActionType,
+        changeLang,
       }}
     >
       {children}
