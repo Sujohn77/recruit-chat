@@ -75,7 +75,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
-          addMessage({ text: payload?.item! });
+          addMessage({ text: payload?.item!, isCategory: true });
           payload?.item && setCategory(payload.item);
           break;
         }
@@ -113,8 +113,8 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.SEND_EMAIL: {
-          response.replaceLatest && popMessage();
-          pushMessages([...response.messages]);
+          const messages = popMessage(MessageType.EMAIL_FORM);
+          setMessages([...response.messages, ...messages]);
 
           break;
         }
@@ -233,10 +233,15 @@ const ChatProvider = ({ children }: PropsType) => {
     setNextMessages([]);
   };
 
-  const popMessage = () => {
-    const updatedMessages = messages;
-    updatedMessages.shift();
+  const popMessage = (type?: MessageType) => {
+    const updatedMessages = !type
+      ? messages
+      : messages.filter((msg) => msg.content.subType !== type);
+    console.log(updatedMessages);
+    !type && updatedMessages.shift();
+    console.log(updatedMessages);
     setMessages(updatedMessages);
+    return updatedMessages;
   };
 
   return (

@@ -4,7 +4,7 @@ export const ua = {
     submit: 'Підтвердити',
     cancel: 'Відмінити',
     browse: 'Переглянути',
-    set_job_alert: 'Установити сповіщення про роботу',
+    set_job_alert: 'Установити сповіщення',
     refine_search: 'Уточнити пошук роботи',
     find_job: 'Знайти роботу',
     ask_question: 'Задайте питання'

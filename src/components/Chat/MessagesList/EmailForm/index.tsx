@@ -85,6 +85,7 @@ export const EmailForm: FC<PropsType> = () => {
       triggerAction({
         type: CHAT_ACTIONS.SEND_EMAIL,
         payload: { item: value },
+        
       });
     }
   };

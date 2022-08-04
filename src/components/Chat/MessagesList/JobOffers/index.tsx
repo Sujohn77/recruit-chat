@@ -40,20 +40,21 @@ export const PrevSlide = styled.div`
   left: -10px;
   top: 50%;
   box-sizing: border-box;
-  padding: 8px 12px;
+
   transform: rotate(-135deg);
 `;
 export const Switchers = styled.div``;
 export const Slide = styled.div`
-  width: 5vmin;
-  height: 5vmin;
+  width: 1.75vmin;
+  height: 1.75vmin;
+  margin-right: 0.2em;
   box-sizing: border-box;
 
   &::before {
     content: '';
     width: 100%;
     height: 100%;
-    border-width: 0.8vmin 0.8vmin 0 0;
+    border-width: 0.3vmin 0.3vmin 0 0;
     border-style: solid;
     border-color: #fafafa;
     display: block;
@@ -66,7 +67,7 @@ export const Slide = styled.div`
     top: -100%;
     width: 100%;
     height: 100%;
-    border-width: 0 0.8vmin 0 0;
+    border-width: 0 0.3vmin 0 0;
     border-style: solid;
     border-color: #fafafa;
   }

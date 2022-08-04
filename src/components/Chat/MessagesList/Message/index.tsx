@@ -29,7 +29,8 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.UPLOAD_CV:
       return <BrowseFile />;
     case MessageType.EMAIL_FORM: {
-      return <JobOffers />;
+      return <EmailForm />;
+      // return <JobOffers />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;

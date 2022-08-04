@@ -80,7 +80,7 @@ export const MessageInput: FC<PropsType> = () => {
       text: draftMessage,
       isCategory:
         !!matchedPositions.length &&
-        !!matchedPositions.findIndex((m) => m === ''),
+        matchedPositions.findIndex((m) => m === '') !== -1,
     });
 
     setDraftMessage(null);
