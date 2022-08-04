@@ -58,6 +58,7 @@ export const MessageContent = styled.div<{isFile?:boolean}>`
             white-space: nowrap;
             width: 175px;
             overflow: hidden;
+            
         }
     `}
  
@@ -68,6 +69,8 @@ export const MessageText = styled.p`
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 218px;
+    white-space: pre-line;
+
 `;
 
 export const InitialMessage = styled.div`

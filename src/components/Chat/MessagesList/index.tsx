@@ -1,19 +1,22 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef } from 'react';
 
-import { Loader } from "components/Layout/Loader";
+import { Loader } from 'components/Layout/Loader';
 
-import * as S from "./styles";
-import { useChatMessanger } from "contexts/MessangerContext";
-import { MessageType, IContent, CHAT_ACTIONS } from "utils/types";
-import { useSocketContext } from "contexts/SocketContext";
-import { InfiniteScrollView } from "components/InfiniteScrollView";
-import { infiniteScrollStyle } from "./styles";
-import { Message } from "./Message";
-import { map } from "lodash";
+import * as S from './styles';
+import { useChatMessanger } from 'contexts/MessangerContext';
+import { MessageType, IContent, CHAT_ACTIONS } from 'utils/types';
+import { useSocketContext } from 'contexts/SocketContext';
+import { InfiniteScrollView } from 'components/InfiniteScrollView';
+import { infiniteScrollStyle } from './styles';
+import { Message } from './Message';
+import { map } from 'lodash';
+import { mockData } from '../mockData';
+import { getParsedMessage } from 'utils/helpers';
+import { InitialMessage } from '../styles';
 
 type PropsType = {};
 
-const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
+const MESSAGE_SCROLL_LIST_DIV_ID = 'message-scroll-list';
 
 export const MessagesList: FC<PropsType> = () => {
   const { messages, chooseButtonOption, lastActionType } = useChatMessanger();
@@ -47,7 +50,13 @@ export const MessagesList: FC<PropsType> = () => {
   };
 
   const isLastOwnMessage = messages[messages.length - 1]?.isOwn;
-  const chatMessages = [...messages];
+  const chatMessages = [
+    ...messages,
+    getParsedMessage({
+      text: mockData.introMessage,
+      subType: MessageType.INITIAL_MESSAGE,
+    }),
+  ];
   return (
     <S.MessagesArea>
       <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>

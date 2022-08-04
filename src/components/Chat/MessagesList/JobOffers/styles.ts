@@ -22,6 +22,7 @@ export const Category = styled.h3`
 
 export const OfferTitle = styled.p`
     margin: 0 12px;
+    height: 34px;
 `;
 
 export const ReadMore = styled.p`

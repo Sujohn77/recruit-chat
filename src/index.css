@@ -27,3 +27,9 @@ body {
   src: local('Inter-SemiBold'), url(/public/fonts/Inter-SemiBold.ttf) format('truetype');
   font-weight: 500;
 }
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: local('Inter-Medium'), url(/public/fonts/Inter-Medium.ttf) format('truetype');
+  font-weight: 500;
+}

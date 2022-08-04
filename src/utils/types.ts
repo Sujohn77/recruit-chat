@@ -74,7 +74,9 @@ export enum CHAT_ACTIONS {
   ASK_QUESTION = 'ask_question',
   CHANGE_LANG = 'change_lang',
   SAVE_TRANSCRIPT = 'save_transcript',
-  SEND_EMAIL = 'send_email'
+  SEND_EMAIL = 'send_email',
+  FETCH_JOBS = 'fetch_jobs',
+  SET_JOB_ALERT = 'set_job_alert'
 }
 
 export enum Status  {

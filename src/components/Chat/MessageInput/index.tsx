@@ -1,4 +1,11 @@
-import React, { FC, useState, useEffect, ChangeEvent } from 'react';
+import React, {
+  FC,
+  useState,
+  useEffect,
+  ChangeEvent,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { ICONS, locations as searchLocations } from 'utils/constants';
 import * as S from './styles';
@@ -11,6 +18,7 @@ import { MultiSelectInput } from 'components/Layout/Input/MultiSelectInput';
 import { Autocomplete } from 'components/Layout/Input/Autocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
+import { useTextField } from 'utils/hooks';
 
 type PropsType = {};
 
@@ -23,23 +31,44 @@ export const MessageInput: FC<PropsType> = () => {
     locations,
     setLastActionType,
     categories,
+    lastActionType,
   } = useChatMessanger();
+  // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
-  const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
-    setDraftMessage(event.currentTarget.value);
-    setNotification(null);
-  };
-  const botTypingTxt = i18n.t('placeHolders:bot_typing');
+  const { searchItems, placeHolder, headerName } = useTextField({
+    searchLocations,
+    categories,
+    category,
+    lastActionType,
+  });
+  const matchedPositions = useMemo(() => {
+    return draftMessage
+      ? getMatchedItems({
+          message: draftMessage,
+          searchItems,
+        })
+      : searchItems;
+  }, [searchItems, draftMessage]);
 
-  const onChangeLocations = (event: any, locations: string[]) => {
-    triggerAction({
-      type: CHAT_ACTIONS.SET_LOCATIONS,
-      payload: { items: locations },
-    });
-    setIsFocus(false);
-  };
+  // Callbacks
+  const onClick = useCallback(
+    (draftMessage: string) => {
+      addMessage({
+        text: draftMessage,
+        isCategory:
+          !!matchedPositions.length &&
+          matchedPositions.findIndex((m) => m === '') !== -1,
+      });
 
+      setDraftMessage(null);
+      setIsFocus(false);
+      setLastActionType(CHAT_ACTIONS.SEND_MESSAGE);
+    },
+    [matchedPositions, addMessage, setLastActionType]
+  );
+
+  // Effects
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -53,39 +82,20 @@ export const MessageInput: FC<PropsType> = () => {
     return () => {
       document.removeEventListener('keydown', keyDownHandler);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftMessage]);
+  }, [draftMessage, onClick]);
 
-  const { searchItems, placeHolder, headerName } = category
-    ? {
-        searchItems: searchLocations,
-        placeHolder: i18n.t('placeHolders:chooseLocation'),
-        headerName: i18n.t('chat_item_description:locations_title'),
-      }
-    : {
-        searchItems: categories,
-        headerName: i18n.t('chat_item_description:categories_title'),
-        placeHolder: null,
-      };
+  // Callbacks
+  const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
+    setDraftMessage(event.currentTarget.value);
+    setNotification(null);
+  };
 
-  const matchedPositions = draftMessage
-    ? getMatchedItems({
-        message: draftMessage,
-        searchItems,
-      })
-    : searchItems;
-
-  const onClick = (draftMessage: string) => {
-    addMessage({
-      text: draftMessage,
-      isCategory:
-        !!matchedPositions.length &&
-        matchedPositions.findIndex((m) => m === '') !== -1,
+  const onChangeLocations = (event: any, locations: string[]) => {
+    triggerAction({
+      type: CHAT_ACTIONS.SET_LOCATIONS,
+      payload: { items: locations },
     });
-
-    setDraftMessage(null);
     setIsFocus(false);
-    setLastActionType(CHAT_ACTIONS.SEND_MESSAGE);
   };
 
   const renderInput = (
@@ -115,6 +125,7 @@ export const MessageInput: FC<PropsType> = () => {
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
 
+  const botTypingTxt = i18n.t('placeHolders:bot_typing');
   const type = category
     ? CHAT_ACTIONS.SET_LOCATIONS
     : CHAT_ACTIONS.SET_CATEGORY;

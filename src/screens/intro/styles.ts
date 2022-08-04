@@ -43,8 +43,8 @@ export const Message = styled.div`
   border-radius: 25px;  
   box-shadow: ${messageShadow};
   padding: 10px 10px;
-  color: ${colors.shamrock};
-  border: 1px solid ${colors.shamrock};
+  color: ${colors.persian};
+  border: 1px solid ${colors.persian};
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
   text-align: center;

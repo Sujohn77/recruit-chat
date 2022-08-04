@@ -14,8 +14,10 @@ import {
   chatMessangerDefaultState,
   generateLocalId,
   getChatResponseOnMessage,
+  getJobMatches,
   getMessageBySubtype,
   getParsedMessage,
+  getResponseMessages,
   getServerParsedMessages,
   ResponseMessageTypes,
 } from 'utils/helpers';
@@ -41,6 +43,8 @@ const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
+  const [offerJobs, setOfferJobs] = useState<string[]>([]);
+  // const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
@@ -65,12 +69,14 @@ const ChatProvider = ({ children }: PropsType) => {
   }, [nextMessages]);
 
   // Callbacks
+  // TODO: refactor
   const triggerAction = useCallback(
     ({ type, payload }: ITriggerActionProps) => {
       let response = CHAT_ACTIONS_RESPONSE[type] || { messages: [] };
 
       if (!payload?.item) {
         response.messages.length && pushMessages(response.messages);
+        setLastActionType(type);
       }
 
       switch (type) {
@@ -80,11 +86,34 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
-          payload?.items && setLocations(payload.items);
+          if (payload?.items) {
+            setLocations(payload.items);
+          }
+
           break;
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
+          const locationsMessage = getResponseMessages([
+            {
+              subType: MessageType.TEXT,
+              text: locations.join('\r\n'),
+              isOwn: true,
+            },
+          ]);
+          const jobs = getJobMatches({ category: category!, locations });
+          if (!jobs?.length) {
+            pushMessages([
+              ...getChatResponseOnMessage(''),
+              ...locationsMessage,
+            ]);
+          } else {
+            const messages =
+              CHAT_ACTIONS_RESPONSE[CHAT_ACTIONS.FETCH_JOBS]?.messages;
+            setOfferJobs(jobs);
+            messages && pushMessages([...messages, ...locationsMessage]);
+          }
           setLocations([]);
+          setCategory(null);
           break;
         }
         case CHAT_ACTIONS.REFINE_SEARCH: {
@@ -123,7 +152,7 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
       }
     },
-    [messages]
+    [messages, locations.length]
   );
 
   const pushMessages = useCallback(
@@ -144,7 +173,7 @@ const ChatProvider = ({ children }: PropsType) => {
     isChatMessage = false,
   }: IAddMessageProps) => {
     const localId = generateLocalId();
-    const message = getParsedMessage({ text, subType, localId });
+    const message = getParsedMessage({ text, subType, localId, isChatMessage });
     isCategory && setCategory(text);
     // TODO: fix after backend is ready
     if (!isChatMessage) {
@@ -262,6 +291,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setLastActionType,
         lastActionType,
         changeLang,
+        offerJobs,
       }}
     >
       {children}

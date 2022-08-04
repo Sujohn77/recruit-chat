@@ -8,10 +8,10 @@ import BURGER from '../assets/icons/burger.svg'
 import INPUT_PLANE from '../assets/icons/plane.svg'
 import ATTACHED_FILE from '../assets/icons/attachedFile.svg'
 import { CHAT_OPTIONS } from 'screens/intro'
-import { CHAT_ACTIONS, HTTPStatusCodes, MessageType } from './types'
+import { CHAT_ACTIONS, HTTPStatusCodes, MessageType, USER_INPUTS } from './types'
 import { generateLocalId, getResponseMessages } from './helpers'
 import moment from 'moment'
-import { IResponseAction } from 'contexts/types'
+import { IResponseAction, IResponseInput } from 'contexts/types'
 
 export const IMAGES = {
   UPLOAD_FILE,
@@ -50,8 +50,7 @@ export const defaultChatHistory = {
 };
 
 // TODO: fix mock
-export const locations = ["Oslo", "Liverpool", "Toronto"];
-
+export const locations = ["Oslo, Oslo, Norway", "Oslavany, Jihomoravsky kraj, Czechia", "Oslomej, Oslomej, Macedonia","Oslo, Minnesota, United States"];
 
 
 export const HTTP_RESPONSES = {
@@ -84,29 +83,47 @@ export const initialChatMessage = {
 export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
   [CHAT_ACTIONS.SET_CATEGORY]: {
     replaceLatest: true,
-    messages: getResponseMessages({
+    messages: getResponseMessages([{
       subType: MessageType.TEXT,
       text: "bot message Where do you want to work? This can be your current location or a list of preferred locations."
-     })
+     }])
   },
   [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
-    messages: getResponseMessages({
+    messages: getResponseMessages([{
       subType: MessageType.TEXT,
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor'
-    })
+    }])
   },
   [CHAT_ACTIONS.SAVE_TRANSCRIPT]: {
     replaceLatest: true,
-    messages: getResponseMessages({
+    messages: getResponseMessages([{
       subType: MessageType.EMAIL_FORM,
-    })
+    }])
   },
   [CHAT_ACTIONS.SEND_EMAIL]: {
     replaceLatest: true,
-    messages: getResponseMessages({
+    messages: getResponseMessages([{
       subType: MessageType.TRANSCRIPT,
-    })
+    }])
   },
+  [CHAT_ACTIONS.FETCH_JOBS]: {
+    messages: getResponseMessages([{
+      subType: MessageType.JOB_POSITIONS
+    },{
+      subType: MessageType.TEXT,
+      text: 'Thanks Here are your job recommendations based on the information you provided.'
+    }])
+  },
+  [CHAT_ACTIONS.SET_JOB_ALERT]: {
+    messages: getResponseMessages([{
+      text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
+      subType: MessageType.TEXT
+    },{
+      subType: MessageType.TEXT,
+      text: 'Set Job Alert',
+      isOwn: true
+    }])
+  }
 };
 
 export enum EnvironmentMode {

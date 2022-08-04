@@ -9,6 +9,7 @@ import {  IApiMessage, IMessage, IUserSelf, ServerMessageType } from 'services/t
 import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
+import { jobOffers } from 'components/Chat/mockData';
 
 export const capitalize = (str: string) => str = str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -46,153 +47,62 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps  => {
 };
 
 export const getChatResponseOnMessage = (userInput: string, isCategory = false): ILocalMessage[] => {
-  const dateCreated = {seconds:moment().unix()}
   if(isCategory) {
-    const content = {
-      subType: MessageType.TEXT,
-      text: responseMessages.refineSearch,
-      subTypeId: 1,
-    };
-    return [
-      {
-        dateCreated,
-        content,
-        _id: null,
-        localId: generateLocalId(),
-        isOwn: false,
-      },
-    ];
+    return getResponseMessages([{subType: MessageType.TEXT, text: responseMessages.refineSearch}])
   }
+
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
-      const content = {
+      return getResponseMessages([{
         text: "OK! Here are a few popular questions to help you get started.",
-        subType: MessageType.TEXT,
-        subTypeId: 1,
-      };
-      return [
-        {
-          dateCreated,
-          content,
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: false,
-        },
-      ];
+        subType: MessageType.TEXT
+      }]);
     }
     case USER_INPUTS.FIND_JOB.toLowerCase(): {
-      const content = {
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-        subType: MessageType.TEXT,
-        subTypeId: 1,
-      };
-      return [
-        {
-          dateCreated,
-          content: {
-            subType: MessageType.BUTTON,
-            text: 'Upload CV',
-          },
-          localId: generateLocalId(),
-          isOwn: true,
-          _id: null,
-        },
-        {
-          dateCreated,
-          content: {
-            subType: MessageType.BUTTON,
-            text: 'Answer questions',
-            // subTypeId: 2,
-          },
-          isOwn: true,
-          localId: generateLocalId(),
-          _id: null,
-        },
-        {
-          dateCreated,
-          content,
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: false,
-        },
-        // {
-        //   dateCreated,
-        //   content: {
-        //     subType: MessageType.BROWSE,
-        //     // subTypeId: 2,
-        //   },
-        //   _id: Math.random() * 5000,
-        //   isOwn: true,
-        // },
-      ];
+      return getResponseMessages([
+        {  subType: MessageType.TEXT, text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor'},
+        {  subType: MessageType.BUTTON, text: 'Upload CV',},
+        {  subType: MessageType.BUTTON,text: 'Answer questions',}
+      ])
     }
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
-      return [
-        {
-          dateCreated,
-          content: {
-            subType: MessageType.UPLOAD_CV,
-          },
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: true,
-        },
-      ];
+      return getResponseMessages([{subType: MessageType.UPLOAD_CV}]);
     }
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
-      return [
-        {
-          dateCreated,
-          content: {
-            text: "What's your preferred job title? We'll try finding similar jobs.",
-            subType: MessageType.TEXT,
-          },
-          localId: generateLocalId(),
-          _id: null,
-          isOwn: false,
-        },
-      ];
+      return getResponseMessages([{  subType: MessageType.TEXT, text: "What's your preferred job title? We'll try finding similar jobs."}]);
     }
     
-
-   
     default: {
-      const content = {
-        subType: MessageType.REFINE_SERCH,
-        subTypeId: 1,
-      };
-      return [
-        {
-          dateCreated,
-          content,
-          _id: null,
-          localId: generateLocalId(),
-          isOwn: false,
-        },
-      ];
-    }
+      return getResponseMessages([
+        { subType: MessageType.REFINE_SERCH},
+        { subType:MessageType.TEXT, text: "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take."}
+    ])}
   }
 };
 interface IPayload {
   text?: string
 }
-export const getResponseMessages = ({subType,text}: {subType: MessageType, text?: string}): ILocalMessage[] => {
-  const dateCreated = {seconds:moment().unix()}
-  const localId = generateLocalId();
-  const message:ILocalMessage = {
-    _id: null,
-    dateCreated,
-    content: {
-      subType,
-    },
-    localId,
-    isOwn: false,
+export const getResponseMessages = (messages: {subType: MessageType, text?: string, isOwn?:boolean}[]): ILocalMessage[] => {
+  const responseMessages = []
+  for(const msg of messages){
+    const dateCreated = {seconds:moment().unix()}
+    const localId = generateLocalId();
+    const message:ILocalMessage = {
+      _id: null,
+      dateCreated,
+      content: {
+        subType:msg.subType,
+      },
+      localId,
+      isOwn: !!msg.isOwn,
+    }
+    if(msg.text){
+      message.content.text = msg.text;
+    }
+    responseMessages.push(message)
   }
-
-  if(text){
-     message.content.text = text;
-  }
-  return [message]
+  
+  return responseMessages;
 };
 
 export const MessageTypeId: Record<ServerMessageType, number> = {
@@ -278,7 +188,8 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
   changeLang: emptyFunc,
-  categories: [],
+  categories: [], 
+   offerJobs: [],
   lastActionType: undefined
 };
 
@@ -334,12 +245,14 @@ export const getParsedMessage = ({
   text,
   subType,
   isOwn  = true,
+  isChatMessage = false,
   localId = generateLocalId()
 }: {
   text: string;
   subType: MessageType;
   isOwn?: boolean;
   localId?:string;
+  isChatMessage?:boolean
 }) => {
   const dateCreated = { seconds: moment().unix()};
   const content: IContent = {
@@ -351,7 +264,7 @@ export const getParsedMessage = ({
     content,
     isOwn: !!isOwn,
     localId,
-    _id: content.subType !== MessageType.FILE ? null: localId
+    _id: content.subType !== MessageType.FILE && !isChatMessage? null: localId
   };
 };
 
@@ -409,7 +322,7 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
 
 const responseMessages = {
   refineSearch: "Let's try again to find a job",
-  changeLang: 'You changed the language to '
+  changeLang: 'You changed the \n language to '
 }
 
 export const getMessageBySubtype = ({subType,value}:{subType: string | undefined, value?:string}) => {
@@ -434,4 +347,18 @@ export const ResponseMessageTypes = {
   [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]:  MessageType.FILE,
   [CHAT_ACTIONS.SAVE_TRANSCRIPT]:  MessageType.TEXT,
   [CHAT_ACTIONS.SEND_EMAIL]:  MessageType.TEXT,
+}
+
+export const getJobMatches = ({category,locations}: {category:string,locations: string[]}) => {
+  const jobs =  jobOffers
+    .filter((offer)=> {
+      console.log(offer.category,category,offer.category===category)
+      return offer.category === category && locations.findIndex((l)=>l === offer.location) !== -1
+    })
+    .map((offer)=> offer.jobs);
+    console.log(jobs)
+  if(!jobs.length){
+    return null;
+  }
+  return jobs[0];
 }

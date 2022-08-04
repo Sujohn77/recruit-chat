@@ -1,8 +1,10 @@
 import { Button } from '@mui/material';
+import { useChatMessanger } from 'contexts/MessangerContext';
 import * as React from 'react';
 import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
+import { CHAT_ACTIONS } from 'utils/types';
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
@@ -33,14 +35,17 @@ export const SetJobAlert = styled(Button)`
   color: ${colors.boulder}!important;
   border: 1px solid ${colors.boulder}!important;
   border-radius: 100px !important;
+  text-transform: initial !important;
 `;
 export const RefineJobSearch = styled(Button)`
   background-color: ${colors.boulder}!important;
   border-radius: 100px !important;
   color: ${colors.white}!important;
+  text-transform: initial !important;
 `;
 
 export const NoMatchJob = () => {
+  const { triggerAction } = useChatMessanger();
   const noMatchTxt = i18n.t('chat_item_description:no_match');
   const jobAlertTxt = i18n.t('buttons:set_job_alert');
   const refineSearchTxt = i18n.t('buttons:refine_search');
@@ -48,8 +53,16 @@ export const NoMatchJob = () => {
     <Wrapper>
       <Title>{noMatchTxt}</Title>
       <Avatar />
-      <SetJobAlert>{jobAlertTxt}</SetJobAlert>
-      <RefineJobSearch>{refineSearchTxt}</RefineJobSearch>
+      <SetJobAlert
+        onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
+      >
+        {jobAlertTxt}
+      </SetJobAlert>
+      <RefineJobSearch
+        onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
+      >
+        {refineSearchTxt}
+      </RefineJobSearch>
     </Wrapper>
   );
 };

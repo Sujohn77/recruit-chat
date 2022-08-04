@@ -13,7 +13,8 @@ export const fr = {
 	  message: 'Taper un message',
 	  bot_typing: 'Le bot est en train de taper...',
 	  chooseLocation: "Répondre pour choisir l'emplacement...",
-	  email: 'E-mail'
+	  email: 'E-mail',
+	  alert_category: 'Reply to choose category...'
 	},
 	labels: {
 	  required: 'Requis',
@@ -31,7 +32,8 @@ export const fr = {
 	  enter_email_title: 'Veuillez entrer votre e-mail et nous vous enverrons un e-mail',
 	  transcript_sent: 'Votre relevé de notes a été envoyé à votre adresse e-mail',
 	  categories_title: 'Titre de la catégorie recherchée',
-	  locations_title: 'Localisation recherchée'
+	  locations_title: 'Localisation recherchée',
+	  all_categories: 'All Categories'
 	},
 	chat_menu: {
 	  save_transcript: 'Enregistrer la transcription',

@@ -39,6 +39,7 @@ export const Message = styled.div<{backColor?: string; color?: string;isOwn?: bo
 
 export const MessagesArea = styled.div`
   // height: 400px;
+  font-family: Inter-Medium;
   border-bottom: 1px solid ${colors.alto};
   position: relative;
 `;
@@ -48,11 +49,12 @@ export const MessageButton = styled(Message)`
 `;
 
 export const MessageListContainer = styled.div`
-  height: 300px;
+  height: 350px;
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
   padding: 16px;
+
 `;
 
 export const infiniteScrollStyle: React.CSSProperties = {

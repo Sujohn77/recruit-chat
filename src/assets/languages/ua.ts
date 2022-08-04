@@ -13,7 +13,8 @@ export const ua = {
     message: 'Повідомелння',
     bot_typing: 'Бот друкує...',
     chooseLocation: 'Відповісти для вибору місця...',
-    email: 'Пошта'
+    email: 'Пошта',
+    alert_category: 'Відповісти для вибору категорії...'
   },
   labels: {
     required: "Обов'язкове",
@@ -36,7 +37,8 @@ export const ua = {
     no_match: 'Вибачте, таких пропозицій ще немає',
     enter_email_title: 'Будь ласка, введіть свою електронну адресу, і ми надішлемо вам електронний лист',
     categories_title: 'Назва шуканої категорії',
-    locations_title: 'Місце пошуку'
+    locations_title: 'Місце пошуку',
+    all_categories: 'Усі категорії'
   },
  
   chat_menu: {

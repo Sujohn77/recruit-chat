@@ -30,7 +30,9 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <BrowseFile />;
     case MessageType.EMAIL_FORM: {
       return <EmailForm />;
-      // return <JobOffers />;
+    }
+    case MessageType.JOB_POSITIONS: {
+      return <JobOffers />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;
