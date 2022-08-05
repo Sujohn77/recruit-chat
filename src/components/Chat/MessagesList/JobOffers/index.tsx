@@ -8,6 +8,7 @@ import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
 export const Wrapper = styled.div`
   position: relative;
   font-family: Inter-SemiBold;
+  margin: 0 0 16px;
   button {
     opacity: 1;
   }
@@ -86,7 +87,7 @@ export const JobOffer = ({
   const interestedTxt = 'I’m interested';
   return (
     <JobOfferWrapper>
-      <Category>{category}</Category>
+      <Category>{'Engineering'}</Category>
       <OfferTitle>{title}</OfferTitle>
       <ReadMore onClick={handleReadMore}>{readMoreTxt}</ReadMore>
       <Button isBackground onClick={handleButtonClick}>
@@ -111,6 +112,7 @@ export const JobOffers: FC = () => {
   };
   const handleReadMore = () => {};
   const handleButtonClick = () => {};
+  // console.log(category);
   return (
     <Wrapper>
       <Carousel

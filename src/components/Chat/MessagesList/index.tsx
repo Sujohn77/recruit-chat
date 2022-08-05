@@ -52,10 +52,10 @@ export const MessagesList: FC<PropsType> = () => {
   const isLastOwnMessage = messages[messages.length - 1]?.isOwn;
   const chatMessages = [
     ...messages,
-    getParsedMessage({
-      text: mockData.introMessage,
-      subType: MessageType.INITIAL_MESSAGE,
-    }),
+    // getParsedMessage({
+    //   text: mockData.introMessage,
+    //   subType: MessageType.INITIAL_MESSAGE,
+    // }),
   ];
   return (
     <S.MessagesArea>

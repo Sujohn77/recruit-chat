@@ -44,7 +44,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<string[]>([]);
-  // const [alertCategory, setAlertCategory] = useState<string | null>(null);
+  const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
@@ -88,6 +88,18 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SET_LOCATIONS: {
           if (payload?.items) {
             setLocations(payload.items);
+          }
+          break;
+        }
+        case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
+          if (payload?.item) {
+            const message = getParsedMessage({
+              text: payload.item,
+              subType: MessageType.TEXT,
+              isChatMessage: true,
+            });
+            pushMessages([message]);
+            setAlertCategory(payload.item);
           }
 
           break;
@@ -136,7 +148,7 @@ const ChatProvider = ({ children }: PropsType) => {
               text: payload?.item!,
               subType: ResponseMessageTypes[type],
             });
-            pushMessages([...response.messages, message]);
+            pushMessages([message, ...response.messages]);
           }
 
           break;

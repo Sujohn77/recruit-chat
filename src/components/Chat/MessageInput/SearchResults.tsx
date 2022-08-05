@@ -16,7 +16,10 @@ type PropsType = {
   matchedItems: string[];
   matchedPart: string;
   headerName: string;
-  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS;
+  type:
+    | CHAT_ACTIONS.SET_CATEGORY
+    | CHAT_ACTIONS.SET_LOCATIONS
+    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
   getOptionProps?: ({
     option,

@@ -1,9 +1,16 @@
+import { useChatMessanger } from 'contexts/MessangerContext';
+import { map } from 'lodash';
 import moment from 'moment';
 import React, { FC } from 'react';
 import { ICONS, IMAGES } from 'utils/constants';
 import { getMessageProps } from 'utils/helpers';
 
-import { MessageType, IContent, ILocalMessage } from 'utils/types';
+import {
+  MessageType,
+  IContent,
+  ILocalMessage,
+  CHAT_ACTIONS,
+} from 'utils/types';
 import { BrowseFile } from '../BrowseFile';
 import { EmailForm } from '../EmailForm';
 import { JobOffers } from '../JobOffers';
@@ -14,6 +21,15 @@ import { TranscriptSent } from '../TranscriptSent';
 
 import * as S from './styles';
 
+export const getMessageOptions = (type: CHAT_ACTIONS) => {
+  switch (type) {
+    case CHAT_ACTIONS.SET_JOB_ALERT:
+      return ['Daily', 'Weekly', 'Monthly'];
+    default:
+      return [];
+  }
+};
+
 type PropsType = {
   message: ILocalMessage;
   onClick: (content: IContent) => void;
@@ -21,8 +37,11 @@ type PropsType = {
 
 export const MS_1000 = 1000;
 
+// TODO: refactor switch
 export const Message: FC<PropsType> = ({ message, onClick }) => {
+  const { lastActionType } = useChatMessanger();
   const subType = message.content.subType;
+  const messageProps = { ...getMessageProps(message) };
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
       return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
@@ -38,7 +57,6 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <TranscriptSent />;
     }
     case MessageType.TEXT:
-    case MessageType.JOB_POSITIONS:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
       const isFile = subType === MessageType.FILE;
@@ -65,7 +83,6 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
         </S.MessageBox>
       );
     case MessageType.BUTTON: {
-      console.log({ ...getMessageProps(message) });
       return (
         <S.MessageBox
           onClick={() => onClick(message.content)}
@@ -73,6 +90,19 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
         >
           <S.MessageText>{message.content.text}</S.MessageText>
         </S.MessageBox>
+      );
+    }
+    case MessageType.TEXT_WITH_CHOICE: {
+      return (
+        <>
+          <S.MessageBox {...messageProps} isText>
+            <S.MessageText>{message.content.text}</S.MessageText>
+          </S.MessageBox>
+          {lastActionType &&
+            map(getMessageOptions(lastActionType), (opt) => {
+              return <S.Option {...messageProps}>{opt}</S.Option>;
+            })}
+        </>
       );
     }
     case MessageType.REFINE_SERCH: {

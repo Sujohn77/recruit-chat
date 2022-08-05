@@ -1,107 +1,165 @@
 import randomString from 'random-string';
-import { MessageType,  ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IContent, QueuesState, UpdateQueueChatRoomMessagesAction, IQueueChatRoom, IMessageID } from "./types";
-import { colors } from "./colors";
+import {
+  MessageType,
+  ILocalMessage,
+  CHAT_ACTIONS,
+  USER_INPUTS,
+  IContent,
+  QueuesState,
+  UpdateQueueChatRoomMessagesAction,
+  IQueueChatRoom,
+  IMessageID,
+} from './types';
+import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext } from "contexts/types";
-import {  IApiMessage, IMessage, IUserSelf, ServerMessageType } from 'services/types';
+import { IChatMessangerContext, IFileUploadContext } from 'contexts/types';
+import {
+  IApiMessage,
+  IMessage,
+  IUserSelf,
+  ServerMessageType,
+} from 'services/types';
 
 import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
 import { jobOffers } from 'components/Chat/mockData';
 
-export const capitalize = (str: string) => str = str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalize = (str: string) =>
+  (str = str.charAt(0).toUpperCase() + str.slice(1));
 
 export interface IMessageProps {
-    color: string;
-    backColor: string
-    isOwn: boolean;
-    padding: string;
-    cursor?:string
-    isText?:boolean
+  color: string;
+  backColor: string;
+  isOwn: boolean;
+  padding: string;
+  cursor?: string;
+  isText?: boolean;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
 
-export const getMessageProps = (msg: ILocalMessage): IMessageProps  => {
-  const padding = msg.content.subType === MessageType.FILE? '8px': '12px 16px';
-  const cursor = msg.content.subType === MessageType.BUTTON? 'pointer': 'initial';
+export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
+  const padding =
+    msg.content.subType === MessageType.FILE ? '8px' : '12px 16px';
+  const cursor =
+    msg.content.subType === MessageType.BUTTON ? 'pointer' : 'initial';
 
   if (!msg.isOwn) {
     return {
-      color: colors.dustyGray ,
-      backColor:  colors.alto,
+      color: colors.dustyGray,
+      backColor: colors.alto,
       isOwn: !!msg.isOwn,
       padding,
-      cursor
+      cursor,
     };
   }
   return {
-    color:msg.content.subType === MessageType.BUTTON? colors.tundora : colors.white,
-    backColor: msg.content.subType === MessageType.BUTTON? colors.alto : colors.boulder,
+    color:
+      msg.content.subType === MessageType.BUTTON
+        ? colors.tundora
+        : colors.white,
+    backColor:
+      msg.content.subType === MessageType.BUTTON ? colors.alto : colors.boulder,
     padding,
     isOwn: !!msg.isOwn,
-    cursor
+    cursor,
   };
 };
 
-export const getChatResponseOnMessage = (userInput: string, isCategory = false): ILocalMessage[] => {
-  if(isCategory) {
-    return getResponseMessages([{subType: MessageType.TEXT, text: responseMessages.refineSearch}])
+export const getChatResponseOnMessage = (
+  userInput: string,
+  isCategory = false
+): ILocalMessage[] => {
+  if (isCategory) {
+    return getResponseMessages([
+      { subType: MessageType.TEXT, text: responseMessages.refineSearch },
+    ]);
   }
 
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
-      return getResponseMessages([{
-        text: "OK! Here are a few popular questions to help you get started.",
-        subType: MessageType.TEXT
-      }]);
+      return getResponseMessages([
+        {
+          text: 'OK! Here are a few popular questions to help you get started.',
+          subType: MessageType.TEXT,
+        },
+      ]);
     }
     case USER_INPUTS.FIND_JOB.toLowerCase(): {
       return getResponseMessages([
-        {  subType: MessageType.TEXT, text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor'},
-        {  subType: MessageType.BUTTON, text: 'Upload CV',},
-        {  subType: MessageType.BUTTON,text: 'Answer questions',}
-      ])
+        {
+          subType: MessageType.BUTTON,
+          text: 'Answer questions',
+          isOwn: true,
+          isChatMessage: true,
+        },
+        {
+          subType: MessageType.BUTTON,
+          text: 'Upload CV',
+          isOwn: true,
+          isChatMessage: true,
+        },
+        {
+          subType: MessageType.TEXT,
+          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+        },
+      ]);
     }
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
-      return getResponseMessages([{subType: MessageType.UPLOAD_CV}]);
+      return getResponseMessages([{ subType: MessageType.UPLOAD_CV }]);
     }
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
-      return getResponseMessages([{  subType: MessageType.TEXT, text: "What's your preferred job title? We'll try finding similar jobs."}]);
+      return getResponseMessages([
+        {
+          subType: MessageType.TEXT,
+          text: "What's your preferred job title? We'll try finding similar jobs.",
+        },
+      ]);
     }
-    
+
     default: {
       return getResponseMessages([
-        { subType: MessageType.REFINE_SERCH},
-        { subType:MessageType.TEXT, text: "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take."}
-    ])}
+        { subType: MessageType.REFINE_SERCH },
+        {
+          subType: MessageType.TEXT,
+          text: "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
+        },
+      ]);
+    }
   }
 };
 interface IPayload {
-  text?: string
+  text?: string;
 }
-export const getResponseMessages = (messages: {subType: MessageType, text?: string, isOwn?:boolean}[]): ILocalMessage[] => {
-  const responseMessages = []
-  for(const msg of messages){
-    const dateCreated = {seconds:moment().unix()}
+export const getResponseMessages = (
+  messages: {
+    subType: MessageType;
+    text?: string;
+    isOwn?: boolean;
+    isChatMessage?: boolean;
+  }[]
+): ILocalMessage[] => {
+  const responseMessages = [];
+  for (const msg of messages) {
+    const dateCreated = { seconds: moment().unix() };
     const localId = generateLocalId();
-    const message:ILocalMessage = {
-      _id: null,
+    const message: ILocalMessage = {
+      _id: !!msg.isChatMessage ? localId : null,
       dateCreated,
       content: {
-        subType:msg.subType,
+        subType: msg.subType,
       },
       localId,
       isOwn: !!msg.isOwn,
-    }
-    if(msg.text){
+    };
+    if (msg.text) {
       message.content.text = msg.text;
     }
-    responseMessages.push(message)
+    responseMessages.push(message);
   }
-  
+
   return responseMessages;
 };
 
@@ -137,8 +195,10 @@ export const MessageSubtypeId: Record<ServerMessageType, number | null> = {
   [MessageType.CHAT_CREATED]: 3,
 };
 
-
-export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf): IMessage => {
+export const getLocalMessage = (
+  requestMessage: IApiMessage,
+  sender: IUserSelf
+): IMessage => {
   const currentUnixTime = moment().unix();
 
   return {
@@ -165,9 +225,9 @@ export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf):
   };
 };
 
-export const capitalizeFirstLetter = (str: string)=> {
+export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
+};
 
 // CONTEXT
 
@@ -178,19 +238,19 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   // serverMessages: [],
   // ownerId: null,
   category: null,
-  locations:[],
+  locations: [],
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
   setOption: emptyFunc,
   chooseButtonOption: emptyFunc,
   popMessage: emptyFunc,
-  triggerAction: emptyFunc, 
+  triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
   changeLang: emptyFunc,
-  categories: [], 
-   offerJobs: [],
-  lastActionType: undefined
+  categories: [],
+  offerJobs: [],
+  lastActionType: undefined,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -205,56 +265,56 @@ export const fileUploadDefaultState: IFileUploadContext = {
 enum FILE_TYPES {
   PDF = 'pdf',
   DOCX = 'docx',
-  DOC = 'doc'
+  DOC = 'doc',
 }
 
 export const isRightFormat = (type: string) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return (<any>Object).values(FILE_TYPES).includes(type);
-}
+};
 
 interface IIsMatches {
   item: string;
-  compareItem: string
+  compareItem: string;
 }
-const isMatches = ({item,compareItem}:IIsMatches) => { 
-    const compareWord = compareItem.toLowerCase();
-    const searchItem = item.toLowerCase();
+const isMatches = ({ item, compareItem }: IIsMatches) => {
+  const compareWord = compareItem.toLowerCase();
+  const searchItem = item.toLowerCase();
 
-    return (
-      searchItem.slice(0, compareWord.length) === compareWord &&
-      searchItem.includes(compareItem)
-    );
-}
+  return (
+    searchItem.slice(0, compareWord.length) === compareWord &&
+    searchItem.includes(compareItem)
+  );
+};
 
 interface IGetMatchedItems {
   message: string | null;
-  searchItems: string[]
+  searchItems: string[];
 }
-export const getMatchedItems = ({message,searchItems}:IGetMatchedItems) => { 
-  const compareItem = message?.toLowerCase()
-  if(compareItem?.length){
+export const getMatchedItems = ({ message, searchItems }: IGetMatchedItems) => {
+  const compareItem = message?.toLowerCase();
+  if (compareItem?.length) {
     return searchItems
-      .filter((item) => isMatches({item, compareItem}))
-      .map((p) => p.slice(compareItem.length, p.length))
+      .filter((item) => isMatches({ item, compareItem }))
+      .map((p) => p.slice(compareItem.length, p.length));
   }
-  return []
- }
+  return [];
+};
 
 export const getParsedMessage = ({
   text,
   subType,
-  isOwn  = true,
+  isOwn = true,
   isChatMessage = false,
-  localId = generateLocalId()
+  localId = generateLocalId(),
 }: {
   text: string;
   subType: MessageType;
   isOwn?: boolean;
-  localId?:string;
-  isChatMessage?:boolean
+  localId?: string;
+  isChatMessage?: boolean;
 }) => {
-  const dateCreated = { seconds: moment().unix()};
+  const dateCreated = { seconds: moment().unix() };
   const content: IContent = {
     subType,
     text,
@@ -264,38 +324,38 @@ export const getParsedMessage = ({
     content,
     isOwn: !!isOwn,
     localId,
-    _id: content.subType !== MessageType.FILE && !isChatMessage? null: localId
+    _id:
+      content.subType !== MessageType.FILE && !isChatMessage ? null : localId,
   };
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
-  const parsedMessages = messages.map((msg)=>{
+  const parsedMessages = messages.map((msg) => {
     const content: IContent = {
       subType: msg.content.subType,
-      text:msg.content.text
+      text: msg.content.text,
     };
     return {
-      dateCreated:msg.dateCreated,
+      dateCreated: msg.dateCreated,
       content,
       isOwn: msg.sender.id === profile.id,
       localId: msg.localId,
       _id: msg.chatItemId,
     };
-  })
- return parsedMessages;
+  });
+  return parsedMessages;
 };
 
 type Handler<A> = (state: QueuesState, action: A) => QueuesState;
-export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> = (
-  state,
-  { messagesSnapshots, chatId, queueId },
-) => {
+export const updateChatRoomMessages: Handler<
+  UpdateQueueChatRoomMessagesAction
+> = (state, { messagesSnapshots, chatId, queueId }) => {
   const chatRooms: IQueueChatRoom[] = [...state.rooms[queueId]];
 
   // Find room
   const foundRoomIndex = findIndex(
     state.rooms[queueId],
-    (room) => room.chatId?.toString() === chatId,
+    (room) => room.chatId?.toString() === chatId
   );
 
   if (foundRoomIndex !== -1) {
@@ -306,9 +366,9 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
         messagesSnapshots,
         'chatItemId',
         [],
-        'localId',
+        'localId'
       ),
-      (message) => -message.dateCreated.seconds,
+      (message) => -message.dateCreated.seconds
     );
 
     chatRooms[foundRoomIndex] = {
@@ -322,43 +382,58 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
 
 const responseMessages = {
   refineSearch: "Let's try again to find a job",
-  changeLang: 'You changed the \n language to '
-}
+  changeLang: 'You changed the \n language to ',
+};
 
-export const getMessageBySubtype = ({subType,value}:{subType: string | undefined, value?:string}) => {
-  if(!subType) {
+export const getMessageBySubtype = ({
+  subType,
+  value,
+}: {
+  subType: string | undefined;
+  value?: string;
+}) => {
+  if (!subType) {
     return undefined;
   }
-  switch(subType){
-    case CHAT_ACTIONS.REFINE_SEARCH: 
-      return responseMessages.refineSearch
-    case CHAT_ACTIONS.CHANGE_LANG: 
-      return responseMessages.changeLang + value
-      default:
-        return null
+  switch (subType) {
+    case CHAT_ACTIONS.REFINE_SEARCH:
+      return responseMessages.refineSearch;
+    case CHAT_ACTIONS.CHANGE_LANG:
+      return responseMessages.changeLang + value;
+    default:
+      return null;
   }
-}
+};
 
 export const getResponseMessageType = (type: CHAT_ACTIONS) => {
-  return
-}
+  return;
+};
 
 export const ResponseMessageTypes = {
-  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]:  MessageType.FILE,
-  [CHAT_ACTIONS.SAVE_TRANSCRIPT]:  MessageType.TEXT,
-  [CHAT_ACTIONS.SEND_EMAIL]:  MessageType.TEXT,
-}
+  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: MessageType.FILE,
+  [CHAT_ACTIONS.SAVE_TRANSCRIPT]: MessageType.TEXT,
+  [CHAT_ACTIONS.SEND_EMAIL]: MessageType.TEXT,
+};
 
-export const getJobMatches = ({category,locations}: {category:string,locations: string[]}) => {
-  const jobs =  jobOffers
-    .filter((offer)=> {
-      console.log(offer.category,category,offer.category===category)
-      return offer.category === category && locations.findIndex((l)=>l === offer.location) !== -1
+export const getJobMatches = ({
+  category,
+  locations,
+}: {
+  category: string;
+  locations: string[];
+}) => {
+  const jobs = jobOffers
+    .filter((offer) => {
+      console.log(offer.category, category, offer.category === category);
+      return (
+        offer.category === category &&
+        locations.findIndex((l) => l === offer.location) !== -1
+      );
     })
-    .map((offer)=> offer.jobs);
-    console.log(jobs)
-  if(!jobs.length){
+    .map((offer) => offer.jobs);
+  console.log(jobs);
+  if (!jobs.length) {
     return null;
   }
   return jobs[0];
-}
+};

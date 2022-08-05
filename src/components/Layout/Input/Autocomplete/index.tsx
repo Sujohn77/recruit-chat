@@ -1,14 +1,14 @@
-import { SearchResults } from "components/Chat/MessageInput/SearchResults";
-import { useChatMessanger } from "contexts/MessangerContext";
+import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
+import { useChatMessanger } from 'contexts/MessangerContext';
 import React, {
   ChangeEvent,
   Dispatch,
   FC,
   MouseEvent,
   SetStateAction,
-} from "react";
-import { CHAT_ACTIONS } from "utils/types";
-import { TextField } from "..";
+} from 'react';
+import { CHAT_ACTIONS } from 'utils/types';
+import { TextField } from '..';
 
 type PropsType = {
   value: string;
@@ -18,7 +18,10 @@ type PropsType = {
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeHolder: string;
-  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS;
+  type:
+    | CHAT_ACTIONS.SET_CATEGORY
+    | CHAT_ACTIONS.SET_LOCATIONS
+    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
   setIsFocus: Dispatch<SetStateAction<boolean>>;
   isFocus: boolean;
 };

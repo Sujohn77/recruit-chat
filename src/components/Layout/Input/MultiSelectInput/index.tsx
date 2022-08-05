@@ -1,4 +1,4 @@
-import { SearchResults } from "components/Chat/MessageInput/SearchResults";
+import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
 import React, {
   Dispatch,
   FC,
@@ -6,21 +6,21 @@ import React, {
   SyntheticEvent,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import * as S from "./styles";
-import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
+import * as S from './styles';
+import { AutocompleteGetTagProps } from '@mui/base/AutocompleteUnstyled';
 
-import { useAutocomplete } from "@mui/material";
-import { Input } from "..";
-import { CHAT_ACTIONS } from "utils/types";
-import { useChatMessanger } from "contexts/MessangerContext";
+import { useAutocomplete } from '@mui/material';
+import { Input } from '..';
+import { CHAT_ACTIONS } from 'utils/types';
+import { useChatMessanger } from 'contexts/MessangerContext';
 import {
   SearchBody,
   SearchPosition,
-} from "components/Chat/MessageInput/styles";
-import { Close } from "screens/intro/styles";
-import { colors } from "utils/colors";
+} from 'components/Chat/MessageInput/styles';
+import { Close } from 'screens/intro/styles';
+import { colors } from 'utils/colors';
 
 type PropsType = {
   value: string;
@@ -32,7 +32,7 @@ type PropsType = {
   onChange: (event: any, values: string[]) => void;
   placeHolder: string;
   options: string[];
-  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS;
+  type: CHAT_ACTIONS.SET_LOCATIONS;
   setIsFocus: Dispatch<SetStateAction<boolean>>;
   isFocus: boolean;
 };
@@ -75,7 +75,7 @@ export const MultiSelectInput: FC<PropsType> = ({
     focused,
     setAnchorEl,
   } = useAutocomplete({
-    id: "customized-hook-demo",
+    id: 'customized-hook-demo',
     multiple: true,
     options,
     getOptionLabel: (option: any) => option,
@@ -104,7 +104,7 @@ export const MultiSelectInput: FC<PropsType> = ({
         />
       )}
 
-      <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
+      <S.InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
         {selectedValues.map((option: string, index: number) => (
           <Tag
             label={option}

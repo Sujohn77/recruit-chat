@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const JobOfferWrapper = styled.div`
-    background: ${colors.alto};
-    border-radius: 10px;
-    padding: 20px 18px;
-    color: ${colors.black};
-    font-size: 14px;
-    line-height: 17px;
-    margin: 0 18px;
-    height: 239px;
-    box-sizing: border-box;
+  background: ${colors.alto};
+  border-radius: 10px;
+  padding: 20px 18px;
+  color: ${colors.black};
+  font-size: 14px;
+  line-height: 17px;
+  margin: 0 18px;
+  height: 239px;
+  box-sizing: border-box;
 `;
 
 export const Category = styled.h3`
@@ -21,8 +21,8 @@ export const Category = styled.h3`
 `;
 
 export const OfferTitle = styled.p`
-    margin: 0 12px;
-    height: 34px;
+  margin: 0 12px;
+  height: 34px;
 `;
 
 export const ReadMore = styled.p`

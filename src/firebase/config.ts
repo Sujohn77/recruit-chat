@@ -1,6 +1,5 @@
-
-import firebase from "firebase";
-import { findIndex, remove, sortBy } from "lodash";
+import firebase from 'firebase';
+import { findIndex, remove, sortBy } from 'lodash';
 
 import {
   IChatRoom,
@@ -8,23 +7,23 @@ import {
   I_id,
   ISnapshot,
   SnapshotType,
-} from "services/types";
+} from 'services/types';
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain:process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId:process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
-export const FIREBASE_TOKEN = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxNTQzMiIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLW5qc3k0QGxvb3AtbWVzc2VuZ2VyLWZpcmViYXNlLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbmpzeTRAbG9vcC1tZXNzZW5nZXItZmlyZWJhc2UuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTY1OTU5NzM0NywiaWF0IjoxNjU5NTkzNzQ3fQ.SW0Bf29Jgjr6DqStyVyDtLqUVBO0tgYqvXyYrrLb_cfsNdfZg45vV_RuO39ycheuAC4KivSdT7tcMAH_HitJYDZxtIg1Yqgdua_H67Kb0EkWfGOZXlsJBL2-7bVK04ZYE8faLI6cVxetnzCrz1DxCHN7M-ltzCy6Hrns58A4po9iPJUeBYog0nRShofoXDsCAUCPP9Y1CTv9wvbJ7hFOFgMVY3Edtxxpf74UbveyYYlN7u00DeMlbhfhVPkUn7aCUzKpmk6KwaBBIxJi_LfzJLwxymwBcT8ziwb_y9MLnvcAFBYOLWk6T5zI0FlUFDx3r0uBi-IJcaTarUAinqINCg';
-export const ACCESS_TOKEN = "voxDypGTjNUoH_WV7X5JztZRrF12AlAAjZzm-7ZGEhkaCI1Cu9BAPqKB4RCv9kxEC0QTYBXdq8gaRbqb7ZWkxGPIuohXMm2mD0VMKRBKA362svxvwCwbEurdnYK4Xpd3HaNBtIBs2yZ8Cq9Y-EWiSL2bpLncMCPFHw13pK7v5hi-cO1e7yQ18dFi9WhrU8-jgAEHgVCHadq9NU6Eli_pxccMs68Rgz8WQ2WljPSLtpyflCGDwAB9RE2ldwSjizONJQdczYJwxh8UhGKaDh124-dp13GToncjkm_QWD3oAKpyvuonl-j6RmYwklPv-P53sZgMcgSSjEMMtLuMnznP8vKiou5rIOESuv2jbnbW6B82LZeiTwDZka9JihMd03y6BIb65yzyHkW8UTrvo-BYxpsExp5YpUtHP1bOoU3yqN_6eLYe9aO3GBouJo0RA26oTBabJBgKiHcs9sWf-ql5CDLp4QeSz1j12e-WXfnxhjj4O0fTMsV94zQHfZMhO9USpuqMmUVeWOH_wpiEQMkfimnyR2orw7NeMrQ3FEAk3g_sTKtLwbIawUUH5VNyN7_zla0HltQWxYMNwtsElEplnSNjxKnS7LA5EJ1jYgtHvZ08vGUE-tlVMsCIi4DRN-VYF52nV2Hcae3aqFrn1QANU_m_6BxJoSgt9avuKo-nKhxOF-Pdkdxd-I-N3YKCh-IU6xk0I2XqDNXSZD37Kxgxpws2-7ArkJee3T2VG28oH5TuuW6Z04guMne4uBRr1jSOORqm5sMgXn-5da0wHBpZ-jdBNMN7VUVLTWjLOUjAoKtGKKpr7suC9yfdW-bjJ9h4rgedFJ7e6XUVgs34_7wUckouKV3WB8jioI143GkwHjcIfizC99Sc42vURE2Y8dFl63Y86kz4SOmX9LFj0g7YaCFBstD5e-XzfFAo52vhuR6pLwRR7SZ5aUi4wP5pbnVOIjv5yvkocDpXxFsi3OWTqW-uB58wiO8N6YMYODK9zNM3Vd6mb0I_aouB3hYDOOELeKHbZkOwIYBrx-Rhf6cJ0Kt1tc4UpNkkDYvTeD_fIGdcyg2qGK_8utfaYUPPNExD1M9brt3XQmythvPeeI20dI-9ZqNDZsBOtOoFfagshSAsjsrGLeiZyItYNqxwrmup150CcdTyZknUPIcph29MSZd60qCrbkGDL1N5vmznc-z-H6rD9QLoHpNE4KQ0_wTBvI3HrfT7Ro0rJUSotm81H5m95BFrWUrF_kuMYoTOzlFxVPD85Gt7v0TybT3CWkqzUSNvOhQV2_Dpkr0Hutu3Tnih5_OWjTIEMUoKQjEgOU-zrl4YGEY4kJle5ghdrkKLYzHrPR0DasWAQQTZaVVv9lDL3JqzK-6GAKDdcwYMy_M";
+export const FIREBASE_TOKEN =
+  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxNTQzMiIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLW5qc3k0QGxvb3AtbWVzc2VuZ2VyLWZpcmViYXNlLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbmpzeTRAbG9vcC1tZXNzZW5nZXItZmlyZWJhc2UuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTY1OTY4OTcwMiwiaWF0IjoxNjU5Njg2MTAyfQ.WPixB0MvyLYW4NBP2RX7Xeu4Ow0Hmvi0uI9aMqmI8ElxvNWJ9ljyzkx1g-7Tt85hCoQgVvIAR3FBEubhbrZgECbQwNwUwMWId9hKp5cSRzj1oKRcSf5MpHHEk2uyD63qcCE0oBS4erz8ZC06qjKE7UrEeRiMXDb_ICLNmxmv-6Kl6d3RYLhTvDaEBxWXLoQEdWElx8r33eTBv2VbugzevlO5TMoz5ks67sZv__VJoUWS4A5uRZ2OZQEanFqz_sQdQI9B3fVAGKxdmpvaAsgkHLI8xlIdbGmsh1vXg1npleZLj-MDpwtYAMmyFI9EvAVKIwQlLrxbfLTpsf2DGojGmg';
+export const ACCESS_TOKEN =
+  'XulGho0NCEib4bNqkMjE2st-EHOkY3jlLbyYFGd6tUeZB05rEJc1JwDeawvTuGJmLnsEYJtcLnskm-DblSvSK3nMeSvtvq9qRdNXN43VAiPx_GqjUocw4AkvoZ5SmEgycP5dJgVQTW-usT_FOEag65NBZ9DtUKPg3Ga2hqRD_X9hCvyhU0SrgwoY4hS2ajBPZ3uO8LDQWLKizijj239n_at7I11guYY9JpQfF3Zv6VzGtcTPqkOrWnqU90NS7JPmsnTrBduRMwOG8GmphoQKUukDuiLpydTv1-4Qpc0C6_Ux0nzTKB5yPDty40zbmhhCEVJzPsdZWygwkQVQWEivXYz8nM-mJubLnhfV_8yEKCYgEjNkqBpDq0lYTJH9XUk_1GaTxXmvM4dcqk0DTmA2EgmYgw0DgHL2iSQyglWnyhAGfR6tPoEJasfORI4unI3HMhZ5BAwi87b63aTuR5v7pSd7So6ZU5H_9rVknWGTwrqEDv5JdZdbyRagnd5kgYwalp9QYZVxLPsLw3Aetb0QjCjCQX-9oypxbZsjNwOIvOPXze76H-LEAkC1tEwiN03WXn3Oee4KTlXoaoIFC9hAJnHR99BnPSJYKlkQgB8xstyZ9KzlT-Q_L4QReyZMuZRmZsUrd8WC-LUU_p0MkeWjL5Aw7mY8O2R04Ybkp-aO9Ll5foes33zhsACUVG7E0y7bnyTT58csgin-1tYB9_sK90Vc4fxecEhTAcJMkw6sI7H-cA7YQSyxvGf7YqC_-7cJu0XYNQGYg4ve1oA_zkWMihHdlCdR7hvB0RpZyYQqH16MmfdF3cyMXSY99yteiMGmT_a3BN3RqDZEAdlchwq8Xtywswb7lAa2NB8-pZM8kYBHr5eShm0Qh59mk6fn9DTKFzs712lunwIeBTb2KYNgyc-4ImKPDR97XfZdtHfHtVWSJtDAORhsErtf56UjW5DKc_3DWjwcxPjklSdxneciLUgtfgbgStC7oma0D2YJjrakr-TlqJTtMgQSxHcpH-r4Ja1FEaos83-Dv_X4V3wj8ds58iLmFc9Dr4pgngKYSq1A2tqld69tKx8HjzrDYj1WxtpttqyL38lM8qbtYgQZXlNpxcZg40PFSJmG_Fx1_aWxJwz4eeKxI91I8tOWs_Y8Nl077ZgxVAub-tDcizfFIHIlwRg-SxE3j5VqPwu_rt1Axmi1nLNTt9RzHQeslYtdVync5d32EdXIgQYQHh-11gV_tusBaeoYsxz0yDiZgLAJOHuRqSai5pTdmUo936Szopmanpm_pS7vTKxnm-dzyOlBH8lwD62lL5Q7elFaVk3tK7N96ytzfqPTy0bybmjJWItFubWyjsd2_u6PKZbTbA';
 export const app = firebase.initializeApp(firebaseConfig);
 export const db = app.firestore();
-
-
 
 const auth = firebase.auth();
 
@@ -47,7 +46,7 @@ export const getProcessedSnapshots = <TId, TItem extends TId>(
   localIdField: keyof TItem | null = null
 ): TItem[] => {
   let newItemsArray: TItem[] = initialItems.slice();
-console.log(initialItems)
+  console.log(initialItems);
   snapshots.forEach((snapshot) => {
     const { type: snapshotType, data: snapshotData } = snapshot;
 
@@ -127,13 +126,13 @@ export const updateChatRoomMessages = (
   );
   if (foundRoomIndex !== -1) {
     // Update whole room (link) with new messages
-    const processedSnapshots:IMessage[] = sortBy(
+    const processedSnapshots: IMessage[] = sortBy(
       getProcessedSnapshots<I_id, IMessage>(
         updatedRooms[foundRoomIndex].messages || [],
         messagesSnapshots,
-        "chatItemId",
+        'chatItemId',
         [],
-        "localId"
+        'localId'
       ),
       (message: any) => -message.dateCreated.seconds
     );

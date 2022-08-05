@@ -2,27 +2,28 @@ import { DocumentChangeType } from '@firebase/firestore-types';
 import { CHAT_OPTIONS } from 'screens/intro';
 import { IChatRoomID, IMessage, IMuteStatus, IUserSelf } from 'services/types';
 export interface ISnapshot<T = Object> {
-    type: DocumentChangeType;
-    data: T;
+  type: DocumentChangeType;
+  data: T;
 }
 
 export enum MessageType {
-    TEXT = 'text',
-    NO_MATCH_JOB = 'no_match_job',
-    JOB_POSITIONS = 'job_positions',
-    REFINE_SERCH = 'refine_search',
-    RECOMMENDATIONS = 'recommendations',
-    UPLOAD_CV = 'upload_cv',
-    BUTTON = 'button',
-    FILE = 'resume_uploaded',
-    INITIAL_MESSAGE = 'initial_message',
-    TRANSCRIPT = "transcript_sent",
-    VIDEO = "video_uploaded",
-    CHAT_CREATED = "chat_created",
-    DOCUMENT = "document_uploaded",
-    UNREAD_MESSAGES = "unread_messages",
-    DATE = "date",
-    EMAIL_FORM = 'email_form'
+  TEXT = 'text',
+  NO_MATCH_JOB = 'no_match_job',
+  JOB_POSITIONS = 'job_positions',
+  REFINE_SERCH = 'refine_search',
+  RECOMMENDATIONS = 'recommendations',
+  UPLOAD_CV = 'upload_cv',
+  BUTTON = 'button',
+  FILE = 'resume_uploaded',
+  INITIAL_MESSAGE = 'initial_message',
+  TRANSCRIPT = 'transcript_sent',
+  VIDEO = 'video_uploaded',
+  CHAT_CREATED = 'chat_created',
+  DOCUMENT = 'document_uploaded',
+  UNREAD_MESSAGES = 'unread_messages',
+  DATE = 'date',
+  EMAIL_FORM = 'email_form',
+  TEXT_WITH_CHOICE = 'text_with_choice',
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -30,22 +31,22 @@ export interface IState {
   serverMessages: IMessage[];
   ownerId?: string;
   chatId?: string;
-  status: Status
+  status: Status;
 }
 // type IMessage = IMessageString | IMessageNoMatchJob | IMessageJobPositions
 
 export interface ILocalMessage {
-  _id: number | string | null; 
+  _id: number | string | null;
   localId?: string | number;
-  dateCreated?: {seconds:number},
-  content: IContent
-  isOwn?: boolean
+  dateCreated?: { seconds: number };
+  content: IContent;
+  isOwn?: boolean;
 }
 
 export interface IContent {
-    subType: MessageType;
-    // subTypeId: number | null;
-    text?: string;
+  subType: MessageType;
+  // subTypeId: number | null;
+  text?: string;
 }
 // interface IMessageNoMatchJob {
 //     type: MessageType.NO_MATCH_JOB,
@@ -55,10 +56,9 @@ export interface IContent {
 //     positions: string[]
 // }
 
-
 export enum USER_INPUTS {
-  FIND_JOB = "Find a job",
-  ASK_QUESTION = "Ask a question",
+  FIND_JOB = 'Find a job',
+  ASK_QUESTION = 'Ask a question',
   UPLOAD_CV = 'Upload CV',
   ANSWER_QUESTIONS = 'Answer questions',
 }
@@ -76,12 +76,13 @@ export enum CHAT_ACTIONS {
   SAVE_TRANSCRIPT = 'save_transcript',
   SEND_EMAIL = 'send_email',
   FETCH_JOBS = 'fetch_jobs',
-  SET_JOB_ALERT = 'set_job_alert'
+  SET_JOB_ALERT = 'set_job_alert',
+  SET_ALERT_CATEGORY = 'set_alert_category',
 }
 
-export enum Status  {
+export enum Status {
   PENDING = 'PENDING',
-  DONE = 'DONE'
+  DONE = 'DONE',
 }
 
 export interface IChatRoom extends IChatRoomID {
@@ -113,7 +114,7 @@ export interface IChatRoom extends IChatRoomID {
 export interface IQueue {
   name: string;
   queueId: number | string;
-  rooms: IChatRoom[]
+  rooms: IChatRoom[];
 }
 
 export interface IQueuesRooms {
@@ -138,7 +139,7 @@ export interface UpdateQueueChatRoomMessagesAction {
 }
 
 export interface IQueueChatRoom extends IChatRoom {
-  statusId?: number
+  statusId?: number;
 }
 
 interface QueuesActionTypes {
@@ -162,15 +163,12 @@ export interface IMessageID {
 }
 
 export interface IQueueItem {
-  queueId: string 
-  name: string
+  queueId: string;
+  name: string;
 }
-
-
 
 export enum HTTPStatusCodes {
   UNAUTHORIZED_401 = 'UNAUTHORIZED_401',
   NOT_FOUND_404 = 'NOT_FOUND_404',
   FORBIDDEN_403 = 'FORBIDDEN_403',
 }
-

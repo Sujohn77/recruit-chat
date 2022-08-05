@@ -99,7 +99,10 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const renderInput = (
-    type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS
+    type:
+      | CHAT_ACTIONS.SET_CATEGORY
+      | CHAT_ACTIONS.SET_LOCATIONS
+      | CHAT_ACTIONS.SET_ALERT_CATEGORY
   ) => {
     const inputProps = {
       type,
@@ -112,10 +115,11 @@ export const MessageInput: FC<PropsType> = () => {
       isFocus,
       setInputValue: (value: string) => setDraftMessage(value),
     };
-    if (inputProps.type === CHAT_ACTIONS.SET_LOCATIONS) {
+    if (type === CHAT_ACTIONS.SET_LOCATIONS) {
       return (
         <MultiSelectInput
           {...inputProps}
+          type={CHAT_ACTIONS.SET_LOCATIONS}
           options={searchItems}
           onChange={onChangeLocations}
           values={locations}
@@ -126,9 +130,12 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
-  const type = category
-    ? CHAT_ACTIONS.SET_LOCATIONS
-    : CHAT_ACTIONS.SET_CATEGORY;
+  const type =
+    lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
+      ? CHAT_ACTIONS.SET_ALERT_CATEGORY
+      : category
+      ? CHAT_ACTIONS.SET_LOCATIONS
+      : CHAT_ACTIONS.SET_CATEGORY;
 
   return (
     <S.MessagesInput position="static">
