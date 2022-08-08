@@ -80,6 +80,7 @@ export enum CHAT_ACTIONS {
   SET_ALERT_CATEGORY = 'set_alert_category',
   SET_ALERT_PERIOD = 'set_alert_period',
   SET_ALERT_EMAIL = 'set_alert_email',
+  INTERESTED_IN = 'insterested_in',
 }
 
 export enum Status {

@@ -22,10 +22,12 @@ export interface IChatMessangerContext {
   setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
   changeLang: (lang: string) => void;
   lastActionType: CHAT_ACTIONS | undefined;
-  offerJobs: string[];
+  offerJobs: IJobPosition[];
   alertCategory: string | null;
   error: string | null;
   setError: Dispatch<React.SetStateAction<string | null>>;
+  viewJob: IJobPosition | null;
+  setViewJob: Dispatch<React.SetStateAction<IJobPosition | null>>;
 }
 
 export interface IFileUploadContext {
@@ -77,3 +79,13 @@ export enum ServerMessageType {
 }
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}
+
+export interface IJobPosition {
+  _id: number | string;
+  title: string;
+  location: string;
+  postedDate: string;
+  fullTime: string;
+  introDescription: string;
+  description: string;
+}

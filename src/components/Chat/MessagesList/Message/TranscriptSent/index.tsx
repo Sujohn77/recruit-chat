@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import * as React from 'react';
 import i18n from 'services/localization';
 import styled from 'styled-components';

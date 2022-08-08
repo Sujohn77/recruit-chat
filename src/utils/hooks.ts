@@ -40,10 +40,10 @@ export const useTextField = ({
       return {
         searchItems: categories,
         headerName: i18n.t('chat_item_description:categories_title'),
-        placeHolder: null,
+        placeHolder: i18n.t('placeHolders:message'),
       };
     },
-    [lastActionType, categories, searchLocations, category]
+    []
   );
 
   return getTextFieldProps({

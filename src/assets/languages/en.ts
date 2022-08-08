@@ -33,6 +33,7 @@ export const en = {
   chat_item_description: {
     lookingFor: 'Hi! Are you looking for a job',
     title: 'Career bot',
+    view_job_title: 'View job',
     no_match: 'Sorry, No match yet',
     enter_email_title: 'Please enter your email and we will send you an email',
     transcript_sent: 'Your transcript has been sent to your email',

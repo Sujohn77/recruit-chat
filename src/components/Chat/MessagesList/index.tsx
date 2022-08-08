@@ -4,15 +4,12 @@ import { Loader } from 'components/Layout/Loader';
 
 import * as S from './styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
-import { MessageType, IContent, CHAT_ACTIONS } from 'utils/types';
+import { MessageType, IContent } from 'utils/types';
 import { useSocketContext } from 'contexts/SocketContext';
 import { InfiniteScrollView } from 'components/InfiniteScrollView';
 import { infiniteScrollStyle } from './styles';
 import { Message } from './Message';
 import { map } from 'lodash';
-import { mockData } from '../mockData';
-import { getParsedMessage } from 'utils/helpers';
-import { InitialMessage } from '../styles';
 
 type PropsType = {};
 
@@ -76,8 +73,6 @@ export const MessagesList: FC<PropsType> = () => {
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>
-
-      {/* {isLastOwnMessage && <Loader isShow={isLastOwnMessage} />} */}
     </S.MessagesArea>
   );
 };

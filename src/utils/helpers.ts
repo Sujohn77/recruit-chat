@@ -13,7 +13,11 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext } from 'contexts/types';
+import {
+  IChatMessangerContext,
+  IFileUploadContext,
+  IJobPosition,
+} from 'contexts/types';
 import {
   IApiMessage,
   IMessage,
@@ -25,7 +29,7 @@ import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
 import { jobOffers } from 'components/Chat/mockData';
-import { Message } from '@mui/icons-material';
+
 import i18n from 'services/localization';
 
 export const capitalize = (str: string) =>
@@ -132,9 +136,7 @@ export const getChatResponseOnMessage = (
     }
   }
 };
-interface IPayload {
-  text?: string;
-}
+
 export const getParsedMessages = (
   messages: {
     subType?: MessageType;
@@ -236,10 +238,14 @@ export const capitalizeFirstLetter = (str: string) => {
 const emptyFunc = () => console.log();
 export const chatMessangerDefaultState: IChatMessangerContext = {
   messages: [],
-  // serverMessages: [],
-  // ownerId: null,
   category: null,
   locations: [],
+  categories: [],
+  offerJobs: [],
+  lastActionType: undefined,
+  alertCategory: null,
+  error: null,
+  viewJob: null,
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
   chooseButtonOption: emptyFunc,
@@ -249,11 +255,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   setLastActionType: emptyFunc,
   changeLang: emptyFunc,
   setError: emptyFunc,
-  categories: [],
-  offerJobs: [],
-  lastActionType: undefined,
-  alertCategory: null,
-  error: null,
+  setViewJob: emptyFunc,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -434,7 +436,7 @@ export const getJobMatches = ({
 }: {
   category: string;
   locations: string[];
-}) => {
+}): IJobPosition[] => {
   const jobs = jobOffers
     .filter((offer) => {
       console.log(offer.category, category, offer.category === category);
@@ -444,9 +446,8 @@ export const getJobMatches = ({
       );
     })
     .map((offer) => offer.jobs);
-  console.log(jobs);
   if (!jobs.length) {
-    return null;
+    return [];
   }
-  return jobs[0];
+  return jobs[0] as IJobPosition[];
 };

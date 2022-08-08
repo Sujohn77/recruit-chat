@@ -3,6 +3,7 @@ import { useChatMessanger } from 'contexts/MessangerContext';
 import React, { FC } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import styled from 'styled-components';
+import { CHAT_ACTIONS } from 'utils/types';
 import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
 
 export const Wrapper = styled.div`
@@ -97,21 +98,16 @@ export const JobOffer = ({
   );
 };
 
-const offers = [
-  'DevOps Junior Engineer',
-  'DevOps Middle Engineer',
-  'DevOps Senior Engineer',
-];
-
 export const JobOffers: FC = () => {
-  const { offerJobs, category } = useChatMessanger();
+  const { offerJobs, category, setViewJob, triggerAction } = useChatMessanger();
   const [index, setIndex] = React.useState(0);
 
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
-  const handleReadMore = () => {};
-  const handleButtonClick = () => {};
+  const handleSubmitClick = () => {
+    triggerAction({ type: CHAT_ACTIONS.INTERESTED_IN });
+  };
   // console.log(category);
   return (
     <Wrapper>
@@ -127,10 +123,10 @@ export const JobOffers: FC = () => {
         {offerJobs.map((item, index) => (
           <JobOffer
             key={`job-offer-${index}`}
-            title={item}
+            title={item.title}
             category={category}
-            handleReadMore={handleReadMore}
-            handleButtonClick={handleButtonClick}
+            handleReadMore={() => setViewJob(item)}
+            handleButtonClick={handleSubmitClick}
           />
         ))}
       </Carousel>
@@ -139,7 +135,7 @@ export const JobOffers: FC = () => {
           <Slide />
         </PrevSlide>
       )}
-      {index !== offers.length - 1 && (
+      {index !== offerJobs.length - 1 && (
         <NextSide onClick={() => setIndex(index + 1)}>
           <Slide />
         </NextSide>

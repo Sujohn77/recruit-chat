@@ -5,7 +5,7 @@ import { colors } from 'utils/colors';
 export const searchItemheight = 31;
 export const searchHeaderHeight = 40;
 // export const searchInputHeight = 60;
-export const MessagesInput = styled(Box)`
+export const MessagesInput = styled(Box)<{ isOffset: boolean }>`
   min-height: 50px;
   position: relative !important;
   display: flex;
@@ -15,6 +15,7 @@ export const MessagesInput = styled(Box)`
   background: #efefef;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  margin-top: ${({ isOffset }) => isOffset && '-30px'};
   > button {
     padding: 0px;
     margin: 0;

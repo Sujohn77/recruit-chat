@@ -161,6 +161,15 @@ export const getChatActionMessages = (type: CHAT_ACTIONS) => {
           text: "You've successfully subscribed to Weekly job alerts.",
         },
       ];
+    case CHAT_ACTIONS.INTERESTED_IN:
+      return [
+        {
+          text: 'Please provide your name',
+        },
+        {
+          text: 'Thanks for applying for this position',
+        },
+      ];
     default:
       return [];
   }

@@ -4,6 +4,7 @@ import { colors } from 'utils/colors';
 export const Wrapper = styled.div`
   background: ${colors.white};
   position: relative;
+  overflow: hidden;
 `;
 
 export const Message = styled.div<{

@@ -68,7 +68,7 @@ export const MessageInput: FC<PropsType> = () => {
   const sendMessage = useCallback(
     (draftMessage: string) => {
       const isAlertEmail = lastActionType === CHAT_ACTIONS.SET_ALERT_EMAIL;
-      console.log(lastActionType, validateEmail(draftMessage));
+
       if (!isAlertEmail) {
         addMessage({ text: draftMessage });
       }
@@ -88,6 +88,7 @@ export const MessageInput: FC<PropsType> = () => {
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       matchedPositions,
       addMessage,
@@ -180,7 +181,9 @@ export const MessageInput: FC<PropsType> = () => {
 
   const isEmptyTextField = !draftMessage && !file && !locations.length;
   return (
-    <S.MessagesInput position="static">
+    <S.MessagesInput
+      isOffset={type === CHAT_ACTIONS.SET_LOCATIONS && !!locations.length}
+    >
       <BurgerMenu />
 
       {renderInput({ type })}

@@ -13,7 +13,8 @@ export const MessagesArea = styled.div`
 `;
 
 export const MessageListContainer = styled.div`
-  height: 350px;
+  height: 480px;
+  box-sizing: border-box;
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;

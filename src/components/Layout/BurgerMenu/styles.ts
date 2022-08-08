@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const MenuItemWrapper = styled.div`
   display: flex;
@@ -10,7 +10,7 @@ export const MenuItemWrapper = styled.div`
   color: ${colors.dustyGray};
 
   &:before {
-    content: "";
+    content: '';
     background: #d9d9d9;
     display: inline-block;
     margin-right: 8px;
@@ -18,7 +18,7 @@ export const MenuItemWrapper = styled.div`
     border-radius: 50%;
   }
   padding: 11px 0;
-  &:not(:last-child){
+  &:not(:last-child) {
     border-bottom: 1px solid #c4c4c4;
   }
 `;

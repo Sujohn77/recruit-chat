@@ -63,7 +63,6 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
             white-space: nowrap;
             width: 175px;
             overflow: hidden;
-            
         }
     `}
 `;

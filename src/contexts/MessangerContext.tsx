@@ -16,14 +16,13 @@ import {
   getJobMatches,
   getMessageBySubtype,
   getParsedMessage,
-  getParsedMessages,
   getServerParsedMessages,
-  ResponseMessageTypes,
   validateEmail,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
   IChatMessangerContext,
+  IJobPosition,
   IPortionMessages,
   ITriggerActionProps,
 } from './types';
@@ -38,16 +37,19 @@ type PropsType = {
 const ChatContext = createContext<IChatMessangerContext>(
   chatMessangerDefaultState
 );
-const defaultMessages = { messages: [] };
+const noMatchMessages = getChatResponseOnMessage('');
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
-  const [offerJobs, setOfferJobs] = useState<string[]>([]);
-
+  const [offerJobs, setOfferJobs] = useState<IJobPosition[]>([]);
+  const [viewJob, setViewJob] = useState<IJobPosition | null>(null);
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [alertEmail, setAlertEmail] = useState<string | null>(null);
+
+  console.log(alertPeriod);
+  console.log(alertEmail);
 
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
@@ -71,31 +73,15 @@ const ChatProvider = ({ children }: PropsType) => {
       setServerMessages(serverMessages);
       setLastActionType(undefined);
     }
-  }, [nextMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextMessages, setServerMessages, serverMessages]);
 
   // Callbacks
   // TODO: refactor
   const triggerAction = useCallback(
     ({ type, payload }: ITriggerActionProps) => {
       const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
-      const isValidation = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
-      const isValidEmail = !validateEmail(payload?.item!).length;
-      // TODO: refactor
-      const isAdditinalPushCondition =
-        type === CHAT_ACTIONS.SEND_LOCATIONS || (isValidation && !isValidEmail);
-
       let response = getChatActionResponse(type);
-
-      if (response.messages.length && !isAdditinalPushCondition) {
-        if (text) {
-          const localMessage = getParsedMessage({ text });
-          const updatedMessages = popMessage(response.replaceType);
-          setMessages([...response.messages, localMessage, ...updatedMessages]);
-        } else {
-          pushMessages(response.messages);
-          setLastActionType(type);
-        }
-      }
 
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
@@ -121,27 +107,20 @@ const ChatProvider = ({ children }: PropsType) => {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
             setAlertEmail(payload.item);
+            setLastActionType(undefined);
           } else {
             setError(error);
           }
-
           break;
         }
-        // TODO: refacor
         case CHAT_ACTIONS.SEND_LOCATIONS: {
-          const text = locations.join('\r\n');
-          const locationsMessage = getParsedMessages([{ text, isOwn: true }]);
-          const jobs = getJobMatches({ category: category!, locations });
+          const jobs = getJobMatches({
+            category: category!,
+            locations,
+          });
+          response.messages = jobs.length ? response.messages : noMatchMessages;
 
-          if (jobs?.length) {
-            setOfferJobs(jobs);
-          }
-
-          const responseMessages = jobs?.length
-            ? response.messages
-            : getChatResponseOnMessage();
-
-          pushMessages([...responseMessages, ...locationsMessage]);
+          setOfferJobs(jobs);
           clearFilters();
           break;
         }
@@ -152,8 +131,24 @@ const ChatProvider = ({ children }: PropsType) => {
         default:
           break;
       }
+
+      const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
+      const isValidPush =
+        !isAlertEmail || !validateEmail(payload?.item!).length;
+
+      if (response.messages.length && isValidPush) {
+        if (text) {
+          const localMessage = getParsedMessage({ text });
+          const updatedMessages = popMessage(response.replaceType);
+          setMessages([...response.messages, localMessage, ...updatedMessages]);
+        } else if (type !== lastActionType) {
+          pushMessages(response.messages);
+          setLastActionType(type);
+        }
+      }
     },
-    [messages, locations.length]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [messages, locations.length, lastActionType]
   );
 
   const clearFilters = () => {
@@ -296,6 +291,8 @@ const ChatProvider = ({ children }: PropsType) => {
         alertCategory,
         error,
         setError,
+        viewJob,
+        setViewJob,
       }}
     >
       {children}
