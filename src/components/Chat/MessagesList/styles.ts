@@ -1,40 +1,8 @@
-
-import styled from "styled-components";
-import { colors } from "utils/colors";
-
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
-    background: ${colors.white};
-`;
-
-export const Message = styled.div<{backColor?: string; color?: string;isOwn?: boolean}>`
-    position: relative;
-    border-radius: 10px;
-    min-height: 41px;
-    padding: 12px 16px;
-    font-size: 14px;
-    line-height: 17px;
-    background: ${({backColor = '#D9D9D9'})=> backColor};
-    color: ${({color = '#969696'})=> color};
-    box-sizing: border-box;
-    width: fit-content;
-    margin-left: ${({isOwn = false}) => isOwn ? 'auto' : 'initial'};
-    margin-bottom: 24px;
-    &:after {
-        content: '';
-        width: 0; 
-        height: 0; 
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 20px 20px 0 0;
-        border-color: ${({backColor = '#D9D9D9'})=> backColor} transparent transparent transparent;
-        position: absolute;
-        bottom: -10px;
-        transform: ${({isOwn = false}) => isOwn && 'matrix(-1, 0, 0, 1, 0, 0)'};
-        left: ${({isOwn = false}) => isOwn ? 'calc(100% - 20px)' : '0'};
-    }   
-  
+  background: ${colors.white};
 `;
 
 export const MessagesArea = styled.div`
@@ -44,41 +12,18 @@ export const MessagesArea = styled.div`
   position: relative;
 `;
 
-export const MessageButton = styled(Message)`
-  cursor: pointer;
-`;
-
 export const MessageListContainer = styled.div`
   height: 350px;
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
   padding: 16px;
-
 `;
 
 export const infiniteScrollStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column-reverse',
 };
-
-export const Notification = styled.div`
-  color: ${colors.black};
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  padding: 12px 16px;
-  box-sizing: border-box;
-  height: 40px;
-  width: 100%;
-  background-color: ${colors.alabaster};
-  position: relative;
-`;
-export const NotificationText = styled.p`
-  font-weight: 500;
-  font-size: 12px;
-  margin: 0;
-`;
 
 export const Icon = styled.img`
   width: 16px;

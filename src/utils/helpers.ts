@@ -25,6 +25,8 @@ import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
 import { jobOffers } from 'components/Chat/mockData';
+import { Message } from '@mui/icons-material';
+import i18n from 'services/localization';
 
 export const capitalize = (str: string) =>
   (str = str.charAt(0).toUpperCase() + str.slice(1));
@@ -69,18 +71,18 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 };
 
 export const getChatResponseOnMessage = (
-  userInput: string,
+  userInput = '',
   isCategory = false
 ): ILocalMessage[] => {
-  if (isCategory) {
-    return getResponseMessages([
-      { subType: MessageType.TEXT, text: responseMessages.refineSearch },
-    ]);
-  }
+  // if (isCategory) {
+  //   return getParsedMessages([
+  //     { subType: MessageType.TEXT, text: responseMessages.refineSearch },
+  //   ]);
+  // }
 
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
-      return getResponseMessages([
+      return getParsedMessages([
         {
           text: 'OK! Here are a few popular questions to help you get started.',
           subType: MessageType.TEXT,
@@ -88,7 +90,7 @@ export const getChatResponseOnMessage = (
       ]);
     }
     case USER_INPUTS.FIND_JOB.toLowerCase(): {
-      return getResponseMessages([
+      return getParsedMessages([
         {
           subType: MessageType.BUTTON,
           text: 'Answer questions',
@@ -108,10 +110,10 @@ export const getChatResponseOnMessage = (
       ]);
     }
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
-      return getResponseMessages([{ subType: MessageType.UPLOAD_CV }]);
+      return getParsedMessages([{ subType: MessageType.UPLOAD_CV }]);
     }
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
-      return getResponseMessages([
+      return getParsedMessages([
         {
           subType: MessageType.TEXT,
           text: "What's your preferred job title? We'll try finding similar jobs.",
@@ -120,7 +122,7 @@ export const getChatResponseOnMessage = (
     }
 
     default: {
-      return getResponseMessages([
+      return getParsedMessages([
         { subType: MessageType.REFINE_SERCH },
         {
           subType: MessageType.TEXT,
@@ -133,9 +135,9 @@ export const getChatResponseOnMessage = (
 interface IPayload {
   text?: string;
 }
-export const getResponseMessages = (
+export const getParsedMessages = (
   messages: {
-    subType: MessageType;
+    subType?: MessageType;
     text?: string;
     isOwn?: boolean;
     isChatMessage?: boolean;
@@ -149,7 +151,7 @@ export const getResponseMessages = (
       _id: !!msg.isChatMessage ? localId : null,
       dateCreated,
       content: {
-        subType: msg.subType,
+        subType: msg.subType || MessageType.TEXT,
       },
       localId,
       isOwn: !!msg.isOwn,
@@ -234,23 +236,24 @@ export const capitalizeFirstLetter = (str: string) => {
 const emptyFunc = () => console.log();
 export const chatMessangerDefaultState: IChatMessangerContext = {
   messages: [],
-  chatOption: null,
   // serverMessages: [],
   // ownerId: null,
   category: null,
   locations: [],
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
-  setOption: emptyFunc,
   chooseButtonOption: emptyFunc,
   popMessage: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
   changeLang: emptyFunc,
+  setError: emptyFunc,
   categories: [],
   offerJobs: [],
   lastActionType: undefined,
+  alertCategory: null,
+  error: null,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -271,6 +274,16 @@ enum FILE_TYPES {
 export const isRightFormat = (type: string) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return (<any>Object).values(FILE_TYPES).includes(type);
+};
+
+export const validateEmail = (value: string) => {
+  if (!value) {
+    return i18n.t('labels:required');
+  }
+  if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+    return i18n.t('labels:email_invalid');
+  }
+  return '';
 };
 
 interface IIsMatches {
@@ -309,14 +322,14 @@ export const getParsedMessage = ({
   localId = generateLocalId(),
 }: {
   text: string;
-  subType: MessageType;
+  subType?: MessageType;
   isOwn?: boolean;
   localId?: string;
   isChatMessage?: boolean;
 }) => {
   const dateCreated = { seconds: moment().unix() };
   const content: IContent = {
-    subType,
+    subType: subType || MessageType.TEXT,
     text,
   };
   return {

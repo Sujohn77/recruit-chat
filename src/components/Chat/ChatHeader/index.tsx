@@ -55,7 +55,6 @@ export const ChatHeader: FC<PropsType> = ({
   title = defaultTitle,
   setIsSelectedOption,
 }) => {
-  const { setOption } = useChatMessanger();
   return (
     <Wrapper>
       <Avatar />
@@ -63,7 +62,6 @@ export const ChatHeader: FC<PropsType> = ({
       <CloseChat
         onClick={() => {
           setIsSelectedOption(false);
-          setOption(null);
         }}
       />
     </Wrapper>

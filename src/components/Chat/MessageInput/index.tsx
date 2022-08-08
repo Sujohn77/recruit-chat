@@ -10,7 +10,11 @@ import React, {
 import { ICONS, locations as searchLocations } from 'utils/constants';
 import * as S from './styles';
 
-import { capitalizeFirstLetter, getMatchedItems } from 'utils/helpers';
+import {
+  capitalizeFirstLetter,
+  getMatchedItems,
+  validateEmail,
+} from 'utils/helpers';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
 import { useFileUploadContext } from 'contexts/FileUploadContext';
@@ -21,7 +25,12 @@ import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';
 
 type PropsType = {};
-
+interface IRenderInputProps {
+  type:
+    | CHAT_ACTIONS.SET_CATEGORY
+    | CHAT_ACTIONS.SET_LOCATIONS
+    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
+}
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
   const {
@@ -32,6 +41,9 @@ export const MessageInput: FC<PropsType> = () => {
     setLastActionType,
     categories,
     lastActionType,
+    alertCategory,
+    setError,
+    error,
   } = useChatMessanger();
   // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
@@ -42,6 +54,7 @@ export const MessageInput: FC<PropsType> = () => {
     category,
     lastActionType,
   });
+
   const matchedPositions = useMemo(() => {
     return draftMessage
       ? getMatchedItems({
@@ -52,20 +65,37 @@ export const MessageInput: FC<PropsType> = () => {
   }, [searchItems, draftMessage]);
 
   // Callbacks
-  const onClick = useCallback(
+  const sendMessage = useCallback(
     (draftMessage: string) => {
-      addMessage({
-        text: draftMessage,
-        isCategory:
-          !!matchedPositions.length &&
-          matchedPositions.findIndex((m) => m === '') !== -1,
-      });
+      const isAlertEmail = lastActionType === CHAT_ACTIONS.SET_ALERT_EMAIL;
+      console.log(lastActionType, validateEmail(draftMessage));
+      if (!isAlertEmail) {
+        addMessage({ text: draftMessage });
+      }
 
-      setDraftMessage(null);
       setIsFocus(false);
-      setLastActionType(CHAT_ACTIONS.SEND_MESSAGE);
+      setDraftMessage(null);
+
+      const isCategory = matchedPositions.findIndex((m) => m === '') !== -1;
+      const actionType = alertCategory
+        ? lastActionType!
+        : isCategory && CHAT_ACTIONS.SET_CATEGORY;
+
+      if (actionType) {
+        triggerAction({
+          type: actionType,
+          payload: { item: draftMessage },
+        });
+      }
     },
-    [matchedPositions, addMessage, setLastActionType]
+    [
+      matchedPositions,
+      addMessage,
+      setLastActionType,
+      alertCategory,
+      lastActionType,
+      triggerAction,
+    ]
   );
 
   // Effects
@@ -73,7 +103,7 @@ export const MessageInput: FC<PropsType> = () => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        draftMessage && onClick(draftMessage);
+        draftMessage && sendMessage(draftMessage);
       }
     };
 
@@ -82,11 +112,16 @@ export const MessageInput: FC<PropsType> = () => {
     return () => {
       document.removeEventListener('keydown', keyDownHandler);
     };
-  }, [draftMessage, onClick]);
+  }, [draftMessage, sendMessage]);
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
+    if (error) {
+      const updatedError = validateEmail(event.currentTarget.value);
+      !updatedError && setError(updatedError);
+    }
+
     setNotification(null);
   };
 
@@ -98,12 +133,7 @@ export const MessageInput: FC<PropsType> = () => {
     setIsFocus(false);
   };
 
-  const renderInput = (
-    type:
-      | CHAT_ACTIONS.SET_CATEGORY
-      | CHAT_ACTIONS.SET_LOCATIONS
-      | CHAT_ACTIONS.SET_ALERT_CATEGORY
-  ) => {
+  const renderInput = ({ type }: IRenderInputProps) => {
     const inputProps = {
       type,
       headerName: headerName,
@@ -129,6 +159,17 @@ export const MessageInput: FC<PropsType> = () => {
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
 
+  const onClick = () => {
+    if (file) {
+      sendFile(file);
+    } else if (draftMessage) {
+      sendMessage(draftMessage);
+    } else if (locations) {
+      const items = locations;
+      triggerAction({ type: CHAT_ACTIONS.SEND_LOCATIONS, payload: { items } });
+    }
+  };
+
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
   const type =
     lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
@@ -137,26 +178,15 @@ export const MessageInput: FC<PropsType> = () => {
       ? CHAT_ACTIONS.SET_LOCATIONS
       : CHAT_ACTIONS.SET_CATEGORY;
 
+  const isEmptyTextField = !draftMessage && !file && !locations.length;
   return (
     <S.MessagesInput position="static">
       <BurgerMenu />
 
-      {renderInput(type)}
+      {renderInput({ type })}
 
-      {(draftMessage || file || !!locations.length) && (
-        <S.PlaneIcon
-          src={ICONS.INPUT_PLANE}
-          width="16"
-          onClick={() => {
-            if (file) {
-              sendFile(file);
-            } else if (draftMessage) {
-              onClick(draftMessage);
-            } else if (locations) {
-              triggerAction({ type: CHAT_ACTIONS.SEND_LOCATIONS });
-            }
-          }}
-        />
+      {!isEmptyTextField && (
+        <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
       )}
     </S.MessagesInput>
   );

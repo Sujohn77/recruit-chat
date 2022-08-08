@@ -28,7 +28,7 @@ type PropsType = {
 
 export const Autocomplete: FC<PropsType> = (props) => {
   // const [isFocus, setIsFocus] = useState(false);
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction, addMessage, lastActionType } = useChatMessanger();
   const {
     matchedItems,
     value,
@@ -50,16 +50,17 @@ export const Autocomplete: FC<PropsType> = (props) => {
   return (
     <div>
       {((!!matchedItems?.length && isFocus && matchedPart) ||
-        (!matchedPart && isFocus)) && (
-        <SearchResults
-          type={type}
-          headerName={headerName}
-          matchedItems={matchedItems}
-          matchedPart={matchedPart}
-          onClick={onClick}
-          setIsFocus={setIsFocus}
-        />
-      )}
+        (!matchedPart && isFocus)) &&
+        lastActionType !== CHAT_ACTIONS.SET_ALERT_EMAIL && (
+          <SearchResults
+            type={type}
+            headerName={headerName}
+            matchedItems={matchedItems}
+            matchedPart={matchedPart}
+            onClick={onClick}
+            setIsFocus={setIsFocus}
+          />
+        )}
 
       <TextField
         value={value}

@@ -5,6 +5,7 @@ import { FC, useState } from 'react';
 import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
+import { validateEmail } from 'utils/helpers';
 import { CHAT_ACTIONS } from 'utils/types';
 
 export const Wrapper = styled.div`
@@ -71,21 +72,20 @@ export const EmailForm: FC<PropsType> = () => {
 
   const onChange = (e: any) => {
     if (error) {
-      const updatedError = validate(value);
+      const updatedError = validateEmail(value);
       updatedError !== error && setError(updatedError);
     }
     setValue(e.target.value);
   };
 
   const onClick = (value: string) => {
-    const error = validate(value);
+    const error = validateEmail(value);
     if (error) {
       error && setError(error);
     } else {
       triggerAction({
         type: CHAT_ACTIONS.SEND_EMAIL,
         payload: { item: value },
-        
       });
     }
   };
@@ -107,14 +107,4 @@ export const EmailForm: FC<PropsType> = () => {
       <FormButton onClick={() => onClick(value)}>{sendTxt}</FormButton>
     </Wrapper>
   );
-};
-
-const validate = (value: string) => {
-  if (!value) {
-    return i18n.t('labels:required');
-  }
-  if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    return i18n.t('labels:email_invalid');
-  }
-  return '';
 };

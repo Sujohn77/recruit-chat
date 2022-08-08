@@ -99,9 +99,3 @@ export const TimeText = styled.div`
   width: fit-content;
   display: inline-block;
 `;
-
-export const Option = styled(MessageBox)`
-  &:before {
-    display: none;
-  }
-`;

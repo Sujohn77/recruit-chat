@@ -8,6 +8,7 @@ import QUESTION from '../../assets/imgs/question.png';
 import ROB_FACE from '../../assets/imgs/rob-face.png';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import i18n from 'services/localization';
+import { CHAT_ACTIONS, USER_INPUTS } from 'utils/types';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -23,12 +24,20 @@ type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
+const getInitialMessage = (option: CHAT_OPTIONS) => {
+  return option === CHAT_OPTIONS.FIND_JOB
+    ? USER_INPUTS.FIND_JOB
+    : USER_INPUTS.ASK_QUESTION;
+};
+
 export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
-  const { setOption } = useChatMessanger();
+  const { addMessage } = useChatMessanger();
 
   const onClick = (option: CHAT_OPTIONS) => {
     setIsSelectedOption(true);
-    setOption(option);
+    // addMessage({
+    //   text: getInitialMessage(option),
+    // });
   };
 
   const messages = {

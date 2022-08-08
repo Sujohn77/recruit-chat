@@ -10,12 +10,10 @@ import {
 
 export interface IChatMessangerContext {
   messages: ILocalMessage[];
-  chatOption: CHAT_OPTIONS | null;
   categories: string[];
   category: string | null;
   addMessage: (props: IAddMessageProps) => void;
   pushMessages: (message: ILocalMessage[]) => void;
-  setOption: (option: CHAT_OPTIONS | null) => void;
   chooseButtonOption: (text: string) => void;
   popMessage: () => void;
   triggerAction: (action: ITriggerActionProps) => void;
@@ -25,6 +23,9 @@ export interface IChatMessangerContext {
   changeLang: (lang: string) => void;
   lastActionType: CHAT_ACTIONS | undefined;
   offerJobs: string[];
+  alertCategory: string | null;
+  error: string | null;
+  setError: Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface IFileUploadContext {
@@ -39,7 +40,6 @@ export interface IFileUploadContext {
 export interface IAddMessageProps {
   text: string;
   subType?: MessageType;
-  isCategory?: boolean;
   isChatMessage?: boolean;
 }
 type PayloadType = {
@@ -51,6 +51,7 @@ export interface ITriggerActionProps {
   payload?: PayloadType;
   isResponseFirst?: boolean;
 }
+
 export type IResponseAction = {
   [key in CHAT_ACTIONS]?: {
     replaceLatest?: boolean;

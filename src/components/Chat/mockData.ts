@@ -6,7 +6,7 @@ export const mockData = {
 export const jobOffers = [
   {
     location: 'Oslo, Oslo, Norway',
-    category: 'Senior Software Engineer',
+    category: 'Customer Success Manager',
     jobs: [
       'Android Software Engineer Manager',
       'Senior Software Engineering Manager, GraphQL',

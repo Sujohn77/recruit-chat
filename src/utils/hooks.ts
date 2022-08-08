@@ -23,7 +23,6 @@ export const useTextField = ({
       searchLocations,
       category,
     }: IUseTextField) => {
-      console.log(lastActionType);
       if (lastActionType === CHAT_ACTIONS.SET_JOB_ALERT) {
         return {
           searchItems: searchAlertCategories,

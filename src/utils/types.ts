@@ -78,6 +78,8 @@ export enum CHAT_ACTIONS {
   FETCH_JOBS = 'fetch_jobs',
   SET_JOB_ALERT = 'set_job_alert',
   SET_ALERT_CATEGORY = 'set_alert_category',
+  SET_ALERT_PERIOD = 'set_alert_period',
+  SET_ALERT_EMAIL = 'set_alert_email',
 }
 
 export enum Status {

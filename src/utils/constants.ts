@@ -14,7 +14,7 @@ import {
   MessageType,
   USER_INPUTS,
 } from './types';
-import { generateLocalId, getResponseMessages } from './helpers';
+import { generateLocalId, getParsedMessages } from './helpers';
 import moment from 'moment';
 import { IResponseAction, IResponseInput } from 'contexts/types';
 
@@ -89,74 +89,184 @@ export const initialChatMessage = {
   isOwn: false,
 };
 
-export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
-  [CHAT_ACTIONS.SET_CATEGORY]: {
-    replaceLatest: true,
-    messages: getResponseMessages([
-      {
-        subType: MessageType.TEXT,
-        text: 'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
-    messages: getResponseMessages([
-      {
-        subType: MessageType.TEXT,
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.SAVE_TRANSCRIPT]: {
-    replaceLatest: true,
-    messages: getResponseMessages([
-      {
-        subType: MessageType.EMAIL_FORM,
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.SEND_EMAIL]: {
-    replaceLatest: true,
-    messages: getResponseMessages([
-      {
-        subType: MessageType.TRANSCRIPT,
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.FETCH_JOBS]: {
-    messages: getResponseMessages([
-      {
-        subType: MessageType.JOB_POSITIONS,
-      },
-      {
-        subType: MessageType.TEXT,
-        text: 'Thanks Here are your job recommendations based on the information you provided.',
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.SET_JOB_ALERT]: {
-    messages: getResponseMessages([
-      {
-        text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
-        subType: MessageType.TEXT,
-      },
-      {
-        subType: MessageType.TEXT,
-        text: 'Set Job Alert',
-        isOwn: true,
-        isChatMessage: true,
-      },
-    ]),
-  },
-  [CHAT_ACTIONS.SET_ALERT_CATEGORY]: {
-    messages: getResponseMessages([
-      {
-        subType: MessageType.TEXT_WITH_CHOICE,
-        text: 'How often would you like to receive your job alerts?',
-      },
-    ]),
-  },
+export const getChatActionMessages = (type: CHAT_ACTIONS) => {
+  switch (type) {
+    case CHAT_ACTIONS.SET_CATEGORY:
+      return [
+        {
+          subType: MessageType.TEXT,
+          text: 'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
+        },
+      ];
+    case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
+      return [
+        {
+          subType: MessageType.TEXT,
+          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+        },
+      ];
+    case CHAT_ACTIONS.SAVE_TRANSCRIPT:
+      return [
+        {
+          subType: MessageType.EMAIL_FORM,
+        },
+      ];
+    case CHAT_ACTIONS.SEND_EMAIL:
+      return [
+        {
+          subType: MessageType.TRANSCRIPT,
+        },
+      ];
+    case CHAT_ACTIONS.SEND_LOCATIONS:
+      return [
+        {
+          subType: MessageType.JOB_POSITIONS,
+        },
+        {
+          subType: MessageType.TEXT,
+          text: 'Thanks Here are your job recommendations based on the information you provided.',
+        },
+      ];
+    case CHAT_ACTIONS.SET_JOB_ALERT:
+      return [
+        {
+          text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
+          subType: MessageType.TEXT,
+        },
+        {
+          subType: MessageType.TEXT,
+          text: 'Set Job Alert',
+          isOwn: true,
+          isChatMessage: true,
+        },
+      ];
+    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
+      return [
+        {
+          subType: MessageType.TEXT_WITH_CHOICE,
+          text: 'How often would you like to receive your job alerts?',
+        },
+      ];
+    case CHAT_ACTIONS.SET_ALERT_PERIOD:
+      return [
+        {
+          subType: MessageType.TEXT,
+          text: "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
+        },
+      ];
+    case CHAT_ACTIONS.SET_ALERT_EMAIL:
+      return [
+        {
+          subType: MessageType.TEXT,
+          text: "You've successfully subscribed to Weekly job alerts.",
+        },
+      ];
+    default:
+      return [];
+  }
 };
+
+export const getReplaceMessageType = (type: CHAT_ACTIONS) => {
+  switch (type) {
+    case CHAT_ACTIONS.SAVE_TRANSCRIPT:
+      return MessageType.TEXT;
+    case CHAT_ACTIONS.SEND_EMAIL:
+      return MessageType.EMAIL_FORM;
+    default:
+      return undefined;
+  }
+};
+
+export const getChatActionResponse = (type: CHAT_ACTIONS) => {
+  const messages = getChatActionMessages(type);
+  const replaceType = getReplaceMessageType(type);
+  return { messages: getParsedMessages(messages), replaceType };
+};
+
+// export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
+//   [CHAT_ACTIONS.SET_CATEGORY]: {
+//     replaceLatest: true,
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TEXT,
+//         text: 'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TEXT,
+//         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SAVE_TRANSCRIPT]: {
+//     replaceLatest: true,
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.EMAIL_FORM,
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SEND_EMAIL]: {
+//     replaceLatest: true,
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TRANSCRIPT,
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.FETCH_JOBS]: {
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.JOB_POSITIONS,
+//       },
+//       {
+//         subType: MessageType.TEXT,
+//         text: 'Thanks Here are your job recommendations based on the information you provided.',
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SET_JOB_ALERT]: {
+//     messages: getParsedMessages([
+//       {
+//         text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
+//         subType: MessageType.TEXT,
+//       },
+//       {
+//         subType: MessageType.TEXT,
+//         text: 'Set Job Alert',
+//         isOwn: true,
+//         isChatMessage: true,
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SET_ALERT_CATEGORY]: {
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TEXT_WITH_CHOICE,
+//         text: 'How often would you like to receive your job alerts?',
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SET_ALERT_PERIOD]: {
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TEXT,
+//         text: "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
+//       },
+//     ]),
+//   },
+//   [CHAT_ACTIONS.SET_ALERT_EMAIL]: {
+//     messages: getParsedMessages([
+//       {
+//         subType: MessageType.TEXT,
+//         text: "You've successfully subscribed to Weekly job alerts.",
+//       },
+//     ]),
+//   },
+// };
 
 export enum EnvironmentMode {
   Development = 'development',

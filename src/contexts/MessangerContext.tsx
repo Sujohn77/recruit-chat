@@ -8,8 +8,7 @@ import React, {
 
 import { MessageType, ILocalMessage, CHAT_ACTIONS } from 'utils/types';
 import { IMessage, ISnapshot } from 'services/types';
-import { CHAT_OPTIONS } from 'screens/intro';
-import { CHAT_ACTIONS_RESPONSE, languages } from 'utils/constants';
+import { getChatActionResponse, languages } from 'utils/constants';
 import {
   chatMessangerDefaultState,
   generateLocalId,
@@ -17,9 +16,10 @@ import {
   getJobMatches,
   getMessageBySubtype,
   getParsedMessage,
-  getResponseMessages,
+  getParsedMessages,
   getServerParsedMessages,
   ResponseMessageTypes,
+  validateEmail,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
@@ -38,19 +38,23 @@ type PropsType = {
 const ChatContext = createContext<IChatMessangerContext>(
   chatMessangerDefaultState
 );
-
+const defaultMessages = { messages: [] };
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<string[]>([]);
+
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
+  const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
+  const [alertEmail, setAlertEmail] = useState<string | null>(null);
+
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
-  const [chatOption, setChatOption] = useState<CHAT_OPTIONS | null>(null);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
   const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS>();
   const [language, setLanguage] = useState(languages[0]);
+  const [error, setError] = useState<string | null>(null);
   const categories = useCategories();
 
   console.log('DEFAULT_LANG: ', language);
@@ -65,6 +69,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
       updateMessages(processedSnapshots);
       setServerMessages(serverMessages);
+      setLastActionType(undefined);
     }
   }, [nextMessages]);
 
@@ -72,100 +77,89 @@ const ChatProvider = ({ children }: PropsType) => {
   // TODO: refactor
   const triggerAction = useCallback(
     ({ type, payload }: ITriggerActionProps) => {
-      let response = CHAT_ACTIONS_RESPONSE[type] || { messages: [] };
+      const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
+      const isValidation = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
+      const isValidEmail = !validateEmail(payload?.item!).length;
+      // TODO: refactor
+      const isAdditinalPushCondition =
+        type === CHAT_ACTIONS.SEND_LOCATIONS || (isValidation && !isValidEmail);
 
-      if (!payload?.item) {
-        response.messages.length && pushMessages(response.messages);
-        setLastActionType(type);
+      let response = getChatActionResponse(type);
+
+      if (response.messages.length && !isAdditinalPushCondition) {
+        if (text) {
+          const localMessage = getParsedMessage({ text });
+          const updatedMessages = popMessage(response.replaceType);
+          setMessages([...response.messages, localMessage, ...updatedMessages]);
+        } else {
+          pushMessages(response.messages);
+          setLastActionType(type);
+        }
       }
 
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
-          addMessage({ text: payload?.item!, isCategory: true });
-          payload?.item && setCategory(payload.item);
+          setCategory(payload?.item!);
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
-          if (payload?.items) {
-            setLocations(payload.items);
-          }
+          setLocations(payload?.items!);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
-          if (payload?.item) {
-            const message = getParsedMessage({
-              text: payload.item,
-              subType: MessageType.TEXT,
-              isChatMessage: true,
-            });
-            pushMessages([message]);
-            setAlertCategory(payload.item);
+          setAlertCategory(payload?.item!);
+          setLastActionType(CHAT_ACTIONS.SET_ALERT_PERIOD);
+          break;
+        }
+        case CHAT_ACTIONS.SET_ALERT_PERIOD: {
+          setAlertPeriod(payload?.item!);
+          setLastActionType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+          break;
+        }
+        case CHAT_ACTIONS.SET_ALERT_EMAIL: {
+          const error = validateEmail(payload?.item!);
+          if (payload?.item && !error?.length) {
+            setAlertEmail(payload.item);
+          } else {
+            setError(error);
           }
 
           break;
         }
+        // TODO: refacor
         case CHAT_ACTIONS.SEND_LOCATIONS: {
-          const locationsMessage = getResponseMessages([
-            {
-              subType: MessageType.TEXT,
-              text: locations.join('\r\n'),
-              isOwn: true,
-            },
-          ]);
+          const text = locations.join('\r\n');
+          const locationsMessage = getParsedMessages([{ text, isOwn: true }]);
           const jobs = getJobMatches({ category: category!, locations });
-          if (!jobs?.length) {
-            pushMessages([
-              ...getChatResponseOnMessage(''),
-              ...locationsMessage,
-            ]);
-          } else {
-            const messages =
-              CHAT_ACTIONS_RESPONSE[CHAT_ACTIONS.FETCH_JOBS]?.messages;
+
+          if (jobs?.length) {
             setOfferJobs(jobs);
-            messages && pushMessages([...messages, ...locationsMessage]);
           }
-          setLocations([]);
-          setCategory(null);
+
+          const responseMessages = jobs?.length
+            ? response.messages
+            : getChatResponseOnMessage();
+
+          pushMessages([...responseMessages, ...locationsMessage]);
+          clearFilters();
           break;
         }
         case CHAT_ACTIONS.REFINE_SEARCH: {
-          setLocations([]);
-          setCategory(null);
+          clearFilters();
           break;
         }
-        case CHAT_ACTIONS.FIND_JOB:
-        case CHAT_ACTIONS.ASK_QUESTION: {
-          addMessage({
-            text: payload?.item!,
-          });
-          break;
-        }
-        case CHAT_ACTIONS.SAVE_TRANSCRIPT:
-        case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
-          response.replaceLatest && popMessage();
-          if (payload?.item) {
-            const message = getParsedMessage({
-              text: payload?.item!,
-              subType: ResponseMessageTypes[type],
-            });
-            pushMessages([message, ...response.messages]);
-          }
-
-          break;
-        }
-        case CHAT_ACTIONS.SEND_EMAIL: {
-          const messages = popMessage(MessageType.EMAIL_FORM);
-          setMessages([...response.messages, ...messages]);
-
-          break;
-        }
-
         default:
           break;
       }
     },
     [messages, locations.length]
   );
+
+  const clearFilters = () => {
+    setLocations([]);
+    setCategory(null);
+  };
 
   const pushMessages = useCallback(
     (chatMessages: ILocalMessage[]) => {
@@ -181,15 +175,13 @@ const ChatProvider = ({ children }: PropsType) => {
   const addMessage = ({
     text,
     subType = MessageType.TEXT,
-    isCategory = false,
     isChatMessage = false,
   }: IAddMessageProps) => {
     const localId = generateLocalId();
     const message = getParsedMessage({ text, subType, localId, isChatMessage });
-    isCategory && setCategory(text);
     // TODO: fix after backend is ready
     if (!isChatMessage) {
-      const updatedMessages = getChatResponseOnMessage(text, isCategory);
+      const updatedMessages = getChatResponseOnMessage(text);
       const actionType = updatedMessages[0].content.subType;
       actionType && triggerAction({ type: actionType as any });
       setMessages([...updatedMessages, message, ...messages]);
@@ -208,10 +200,6 @@ const ChatProvider = ({ children }: PropsType) => {
     // ---------------------------------
 
     // sendMessage(serverMessage);
-  };
-
-  const setOption = (option: CHAT_OPTIONS) => {
-    setChatOption(option);
   };
 
   const changeLang = (lang: string) => {
@@ -275,13 +263,16 @@ const ChatProvider = ({ children }: PropsType) => {
   };
 
   const popMessage = (type?: MessageType) => {
+    if (!type) {
+      return messages;
+    }
+
     const updatedMessages = !type
       ? messages
       : messages.filter((msg) => msg.content.subType !== type);
-    console.log(updatedMessages);
+
     !type && updatedMessages.shift();
-    console.log(updatedMessages);
-    setMessages(updatedMessages);
+
     return updatedMessages;
   };
 
@@ -291,8 +282,6 @@ const ChatProvider = ({ children }: PropsType) => {
         messages,
         addMessage,
         pushMessages,
-        chatOption,
-        setOption,
         setSnapshotMessages,
         popMessage,
         chooseButtonOption,
@@ -304,6 +293,9 @@ const ChatProvider = ({ children }: PropsType) => {
         lastActionType,
         changeLang,
         offerJobs,
+        alertCategory,
+        error,
+        setError,
       }}
     >
       {children}

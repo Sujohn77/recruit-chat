@@ -24,7 +24,7 @@ export const MessagesList: FC<PropsType> = () => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (lastActionType === CHAT_ACTIONS.SEND_MESSAGE) {
+    if (lastActionType) {
       scrollToBottom();
     }
   }, [lastActionType, messages.length]);
