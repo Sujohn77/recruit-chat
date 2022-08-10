@@ -1,6 +1,7 @@
 export const fr = {
   buttons: {
     send: 'Envoyer',
+    sent: 'Expédié',
     submit: 'Soumettre',
     cancel: 'Annuler',
     browse: 'Parcourir ',
@@ -36,7 +37,7 @@ export const fr = {
       'Votre relevé de notes a été envoyé à votre adresse e-mail',
     categories_title: 'Titre de la catégorie recherchée',
     locations_title: 'Localisation recherchée',
-    all_categories: 'All Categories',
+    all_categories: 'Toutes les catégories',
   },
   chat_menu: {
     save_transcript: 'Enregistrer la transcription',

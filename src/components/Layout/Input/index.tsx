@@ -10,10 +10,10 @@ import styled from 'styled-components';
 import { colors } from 'utils/colors';
 
 type PropsType = {
-  placeHolder: string;
+  placeHolder?: string;
   value: string;
   onChange: (value: ChangeEvent<HTMLInputElement>) => void;
-  setIsInputFocus: Dispatch<SetStateAction<boolean>>;
+  setIsInputFocus?: Dispatch<SetStateAction<boolean>>;
 };
 
 export const Input = styled.input`
@@ -47,7 +47,7 @@ export const TextField: FC<PropsType> = ({
         placeholder={!isFocus ? placeHolder : ''}
         onChange={onChange}
         onClick={() => {
-          setIsInputFocus(true);
+          setIsInputFocus && setIsInputFocus(true);
         }}
         onFocus={() => {
           setIsFocus(true);

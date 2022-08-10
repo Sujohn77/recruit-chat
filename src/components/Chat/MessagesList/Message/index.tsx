@@ -15,6 +15,9 @@ import { TranscriptSent } from './TranscriptSent';
 
 import * as S from './styles';
 import { TextMessage } from './TextMessage';
+import { InterestedIn } from './InterestedIn';
+import { HiringHelp } from './HiringHelp';
+import { SalaryForm } from './SalaryForm';
 
 type PropsType = {
   message: ILocalMessage;
@@ -54,8 +57,16 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
         </S.MessageBox>
       );
     }
+    case MessageType.INTERESTED_IN:
+      return <InterestedIn message={message} />;
     case MessageType.TEXT_WITH_CHOICE: {
       return <TextWithOptions text={message.content.text!} {...messageProps} />;
+    }
+    case MessageType.HIRING_PROCESS: {
+      return <HiringHelp message={message} />;
+    }
+    case MessageType.SALARY_FORM: {
+      return <SalaryForm message={message} />;
     }
     case MessageType.REFINE_SERCH: {
       return <NoMatchJob />;

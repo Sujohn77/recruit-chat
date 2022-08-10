@@ -24,6 +24,9 @@ export enum MessageType {
   DATE = 'date',
   EMAIL_FORM = 'email_form',
   TEXT_WITH_CHOICE = 'text_with_choice',
+  INTERESTED_IN = 'interested_in',
+  HIRING_PROCESS = 'hiring_process',
+  SALARY_FORM = 'salary_form',
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -61,6 +64,9 @@ export enum USER_INPUTS {
   ASK_QUESTION = 'Ask a question',
   UPLOAD_CV = 'Upload CV',
   ANSWER_QUESTIONS = 'Answer questions',
+  HOW_MUCH_EXPERIENCE = 'How much work experience do I need for your company?',
+  HOW_SUBMIT_CV = 'Can I submit my CV',
+  HIRING_PROCESS = 'What is the hiring process?',
 }
 
 export enum CHAT_ACTIONS {
@@ -81,6 +87,8 @@ export enum CHAT_ACTIONS {
   SET_ALERT_PERIOD = 'set_alert_period',
   SET_ALERT_EMAIL = 'set_alert_email',
   INTERESTED_IN = 'insterested_in',
+  APPLY_POSITION = 'apply_position',
+  LEAVE_FEEDBACK = 'leave_feedback',
 }
 
 export enum Status {

@@ -29,7 +29,7 @@ const App = () => {
   }, []);
 
   const renderContent = () => {
-    if (!isSelectedOption) {
+    if (isSelectedOption) {
       return <Chat setIsSelectedOption={setIsSelectedOption} />;
     }
     return <Intro setIsSelectedOption={setIsSelectedOption} />;

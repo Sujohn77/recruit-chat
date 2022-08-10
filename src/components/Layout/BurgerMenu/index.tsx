@@ -45,7 +45,7 @@ export const MenuItems = styled.div`
   left: 20px;
   animation: fade-in 0.1s ease-in forwards;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
   @keyframes fade-in {
     0% {
       opacity: 0;

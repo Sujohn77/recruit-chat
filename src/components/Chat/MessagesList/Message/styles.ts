@@ -1,3 +1,4 @@
+import { InfoItem } from 'components/Chat/ViewJob/styles';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { IMessageProps } from 'utils/helpers';
@@ -97,4 +98,8 @@ export const TimeText = styled.div`
   margin-left: 8px;
   width: fit-content;
   display: inline-block;
+`;
+
+export const MessageItem = styled(InfoItem)`
+  
 `;

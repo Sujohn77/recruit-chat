@@ -12,6 +12,8 @@ import i18n from 'services/localization';
 import { ViewJob } from './ViewJob';
 
 import { useChatMessanger } from 'contexts/MessangerContext';
+import { IJobPosition } from 'contexts/types';
+import { CHAT_ACTIONS } from 'utils/types';
 
 type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -22,16 +24,27 @@ export const chatId = 2433044;
 
 // TODO: refactor notification's part
 export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
-  const { viewJob } = useChatMessanger();
+  const { viewJob, setViewJob, triggerAction } = useChatMessanger();
   const { file, notification, resetFile } = useFileUploadContext();
   const title = viewJob
     ? i18n.t('chat_item_description:view_job_title')
     : i18n.t('chat_item_description:title');
+
+  const handleApplyJobClick = (viewJob: IJobPosition) => {
+    setViewJob(null);
+    triggerAction({
+      type: CHAT_ACTIONS.APPLY_POSITION,
+      // payload: { item: `${viewJob._id}` },
+    });
+  };
+
   return (
     <S.Wrapper>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
       <MessagesList />
-      {viewJob && <ViewJob item={viewJob} />}
+      {viewJob && (
+        <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
+      )}
       {(file || notification) && (
         <S.Notification>
           {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}

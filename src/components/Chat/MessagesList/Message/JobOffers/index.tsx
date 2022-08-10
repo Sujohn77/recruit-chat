@@ -105,8 +105,11 @@ export const JobOffers: FC = () => {
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
-  const handleSubmitClick = () => {
-    triggerAction({ type: CHAT_ACTIONS.INTERESTED_IN });
+  const handleSubmitClick = (id: string | number) => {
+    triggerAction({
+      type: CHAT_ACTIONS.INTERESTED_IN,
+      payload: { item: `${id}` },
+    });
   };
   // console.log(category);
   return (
@@ -126,7 +129,7 @@ export const JobOffers: FC = () => {
             title={item.title}
             category={category}
             handleReadMore={() => setViewJob(item)}
-            handleButtonClick={handleSubmitClick}
+            handleButtonClick={() => handleSubmitClick(item._id)}
           />
         ))}
       </Carousel>

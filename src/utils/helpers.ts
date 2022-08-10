@@ -17,6 +17,7 @@ import {
   IChatMessangerContext,
   IFileUploadContext,
   IJobPosition,
+  ITriggerActionProps,
 } from 'contexts/types';
 import {
   IApiMessage,
@@ -31,6 +32,7 @@ import { profile } from 'contexts/mockData';
 import { jobOffers } from 'components/Chat/mockData';
 
 import i18n from 'services/localization';
+import { getChatActionResponse } from './constants';
 
 export const capitalize = (str: string) =>
   (str = str.charAt(0).toUpperCase() + str.slice(1));
@@ -78,15 +80,30 @@ export const getChatResponseOnMessage = (
   userInput = '',
   isCategory = false
 ): ILocalMessage[] => {
-  // if (isCategory) {
-  //   return getParsedMessages([
-  //     { subType: MessageType.TEXT, text: responseMessages.refineSearch },
-  //   ]);
-  // }
-
+  console.log(
+    (userInput.toLowerCase(), USER_INPUTS.HIRING_PROCESS.toLowerCase())
+  );
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
       return getParsedMessages([
+        {
+          text: 'What is the hiring process?',
+          subType: MessageType.BUTTON,
+          isChatMessage: true,
+          isOwn: true,
+        },
+        {
+          text: 'Can I submit my CV',
+          subType: MessageType.BUTTON,
+          isChatMessage: true,
+          isOwn: true,
+        },
+        {
+          text: 'How much work experience do I need for your company?',
+          subType: MessageType.BUTTON,
+          isChatMessage: true,
+          isOwn: true,
+        },
         {
           text: 'OK! Here are a few popular questions to help you get started.',
           subType: MessageType.TEXT,
@@ -115,6 +132,9 @@ export const getChatResponseOnMessage = (
     }
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
       return getParsedMessages([{ subType: MessageType.UPLOAD_CV }]);
+    }
+    case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
+      return getParsedMessages([{ subType: MessageType.HIRING_PROCESS }]);
     }
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
       return getParsedMessages([
@@ -246,10 +266,10 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   alertCategory: null,
   error: null,
   viewJob: null,
+  prefferedJob: null,
   addMessage: emptyFunc,
   pushMessages: emptyFunc,
   chooseButtonOption: emptyFunc,
-  popMessage: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
@@ -450,4 +470,54 @@ export const getJobMatches = ({
     return [];
   }
   return jobs[0] as IJobPosition[];
+};
+
+export const getItemById = (items: any[], id: string) => {
+  return items.find((job) => job._id === Number(id));
+};
+
+export const getUpdatedMessages = (
+  action: ITriggerActionProps,
+  messages: ILocalMessage[]
+) => {
+  const { type, payload } = action;
+
+  const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
+  const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
+  const isValidPush = !isAlertEmail || !validateEmail(payload?.item!).length;
+
+  let response = getChatActionResponse(type);
+
+  if (response.messages.length && isValidPush) {
+    const updatedMessages = popMessage({
+      type: response.replaceType,
+      messages,
+    });
+    if (text && response.isPushMessage) {
+      const localMessage = getParsedMessage({ text });
+      return [...response.messages, localMessage, ...updatedMessages];
+    } else {
+      return [...response.messages, ...updatedMessages];
+    }
+  }
+};
+
+const popMessage = ({
+  type,
+  messages,
+}: {
+  type: MessageType | undefined;
+  messages: ILocalMessage[];
+}) => {
+  if (!type) {
+    return messages;
+  }
+
+  const updatedMessages = !type
+    ? messages
+    : messages.filter((msg) => msg.content.subType !== type);
+
+  !type && updatedMessages.shift();
+
+  return updatedMessages;
 };

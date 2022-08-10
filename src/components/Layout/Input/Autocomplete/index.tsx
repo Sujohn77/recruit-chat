@@ -49,8 +49,8 @@ export const Autocomplete: FC<PropsType> = (props) => {
 
   return (
     <div>
-      {((!!matchedItems?.length && isFocus && matchedPart) ||
-        (!matchedPart && isFocus)) &&
+      {isFocus &&
+        ((!!matchedItems?.length && matchedPart) || !matchedPart) &&
         lastActionType !== CHAT_ACTIONS.SET_ALERT_EMAIL && (
           <SearchResults
             type={type}

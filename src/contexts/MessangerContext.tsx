@@ -13,6 +13,7 @@ import {
   chatMessangerDefaultState,
   generateLocalId,
   getChatResponseOnMessage,
+  getItemById,
   getJobMatches,
   getMessageBySubtype,
   getParsedMessage,
@@ -44,6 +45,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const [locations, setLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IJobPosition[]>([]);
   const [viewJob, setViewJob] = useState<IJobPosition | null>(null);
+  const [prefferedJob, setPrefferedJob] = useState<IJobPosition | null>(null);
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [alertEmail, setAlertEmail] = useState<string | null>(null);
@@ -79,7 +81,8 @@ const ChatProvider = ({ children }: PropsType) => {
   // Callbacks
   // TODO: refactor
   const triggerAction = useCallback(
-    ({ type, payload }: ITriggerActionProps) => {
+    (action: ITriggerActionProps) => {
+      const { type, payload } = action;
       const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
       let response = getChatActionResponse(type);
 
@@ -124,6 +127,11 @@ const ChatProvider = ({ children }: PropsType) => {
           clearFilters();
           break;
         }
+        case CHAT_ACTIONS.INTERESTED_IN: {
+          const job = getItemById(offerJobs, payload?.item!);
+          setPrefferedJob(job!);
+          break;
+        }
         case CHAT_ACTIONS.REFINE_SEARCH: {
           clearFilters();
           break;
@@ -132,20 +140,27 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
       }
 
+      if (type === lastActionType) {
+        return null;
+      }
+
       const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
       const isValidPush =
         !isAlertEmail || !validateEmail(payload?.item!).length;
 
       if (response.messages.length && isValidPush) {
-        if (text) {
+        const updatedMessages = popMessage(response.replaceType);
+        if (text && response.isPushMessage) {
           const localMessage = getParsedMessage({ text });
           const updatedMessages = popMessage(response.replaceType);
           setMessages([...response.messages, localMessage, ...updatedMessages]);
-        } else if (type !== lastActionType) {
-          pushMessages(response.messages);
-          setLastActionType(type);
+        } else {
+          setMessages([...response.messages, ...updatedMessages]);
         }
       }
+      const updatedMessages = getUpdatedMessages(action, messages);
+      setMessages(updatedMessages);
+      setLastActionType(type);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [messages, locations.length, lastActionType]
@@ -278,7 +293,6 @@ const ChatProvider = ({ children }: PropsType) => {
         addMessage,
         pushMessages,
         setSnapshotMessages,
-        popMessage,
         chooseButtonOption,
         triggerAction,
         category,
@@ -293,6 +307,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setError,
         viewJob,
         setViewJob,
+        prefferedJob,
       }}
     >
       {children}

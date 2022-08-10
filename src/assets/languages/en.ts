@@ -1,6 +1,7 @@
 export const en = {
   buttons: {
     send: 'Send',
+    sent: 'Sent',
     submit: 'Submit',
     cancel: 'Cancel',
     browse: 'Browse',
@@ -40,6 +41,10 @@ export const en = {
     categories_title: 'Searched category title',
     locations_title: 'Searched location',
     all_categories: 'All Categories',
+    hiring_help_title:
+      'Great question. Check out our help section to learn more on how we hire.',
+    hiring_help_text: 'Help',
+    hiring_helpful_text: 'Has this reply has been helpful?',
   },
   chat_menu: {
     save_transcript: 'Save transcript',

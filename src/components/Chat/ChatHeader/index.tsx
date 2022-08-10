@@ -48,7 +48,7 @@ export const CloseChat = styled(Close)`
   height: 12px;
   width: 12px;
   top: initial;
-  right: initial;
+  right: 10px;
   cursor: pointer;
 `;
 

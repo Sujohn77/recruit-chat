@@ -1,9 +1,14 @@
 import { IJobPosition } from 'contexts/types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import * as S from './styles';
 
-export const ViewJob = ({ item }: { item: IJobPosition }) => {
+type PropsType = {
+  item: IJobPosition;
+  onClick: () => void;
+};
+
+export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
   return (
     <S.ViewBody>
       <S.ViewShortInfo>
@@ -13,12 +18,16 @@ export const ViewJob = ({ item }: { item: IJobPosition }) => {
           <S.InfoItem>{item.postedDate}</S.InfoItem>
           <S.InfoItem>{item.fullTime}</S.InfoItem>
         </S.ShortItems>
-        <S.SubmitButton isBackground>Apply</S.SubmitButton>
+        <S.SubmitButton isBackground onClick={onClick}>
+          Apply
+        </S.SubmitButton>
       </S.ViewShortInfo>
       <S.ViewText>{item.introDescription}</S.ViewText>
       <S.TextTitle>Job description: </S.TextTitle>
       <S.ViewText>{item.description}</S.ViewText>
-      <S.SubmitButton isBackground>Apply</S.SubmitButton>
+      <S.SubmitButton isBackground onClick={onClick}>
+        Apply
+      </S.SubmitButton>
     </S.ViewBody>
   );
 };

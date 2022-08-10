@@ -15,7 +15,6 @@ export interface IChatMessangerContext {
   addMessage: (props: IAddMessageProps) => void;
   pushMessages: (message: ILocalMessage[]) => void;
   chooseButtonOption: (text: string) => void;
-  popMessage: () => void;
   triggerAction: (action: ITriggerActionProps) => void;
   locations: string[];
   setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[]) => void;
@@ -28,6 +27,7 @@ export interface IChatMessangerContext {
   setError: Dispatch<React.SetStateAction<string | null>>;
   viewJob: IJobPosition | null;
   setViewJob: Dispatch<React.SetStateAction<IJobPosition | null>>;
+  prefferedJob: IJobPosition | null;
 }
 
 export interface IFileUploadContext {

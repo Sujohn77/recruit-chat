@@ -19,7 +19,7 @@ export const Wrapper = styled.div`
 
 export const Close = styled.div<{ height?: string }>`
   position: absolute;
-  right: 20px;
+  right: 25px;
   top: 10px;
   cursor: pointer;
   &:before,
@@ -30,7 +30,8 @@ export const Close = styled.div<{ height?: string }>`
     background: ${({ color = '#000' }) => color};
     display: inline-block;
     position: absolute;
-    top: 0px;
+    top: 1px;
+    left: 9px;
   }
   &:before {
     transform: rotate(-45deg);

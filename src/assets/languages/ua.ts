@@ -1,6 +1,7 @@
 export const ua = {
   buttons: {
     send: 'Надіслати',
+    sent: 'Надіслано',
     submit: 'Підтвердити',
     cancel: 'Відмінити',
     browse: 'Переглянути',

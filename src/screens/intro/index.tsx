@@ -24,20 +24,21 @@ type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
-const getInitialMessage = (option: CHAT_OPTIONS) => {
-  return option === CHAT_OPTIONS.FIND_JOB
-    ? USER_INPUTS.FIND_JOB
-    : USER_INPUTS.ASK_QUESTION;
-};
+interface IOption {
+  icon: string;
+  message: string;
+  type: CHAT_ACTIONS;
+  size: string;
+  text: string;
+}
 
 export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
-  const { addMessage } = useChatMessanger();
+  const { triggerAction } = useChatMessanger();
 
-  const onClick = (option: CHAT_OPTIONS) => {
+  const onClick = (option: IOption) => {
+    const { text: item, type } = option;
     setIsSelectedOption(true);
-    // addMessage({
-    //   text: getInitialMessage(option),
-    // });
+    triggerAction({ type, payload: { item } });
   };
 
   const messages = {
@@ -45,20 +46,22 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
       {
         icon: Images.SEARCH_ICON,
         message: i18n.t('buttons:find_job'),
-        option: CHAT_OPTIONS.FIND_JOB,
+        type: CHAT_ACTIONS.FIND_JOB,
         size: '20px',
+        text: 'Find a job',
       },
       {
         icon: Images.QUESTION,
         message: i18n.t('buttons:ask_question'),
-        option: CHAT_OPTIONS.ASK_QUESTION,
+        type: CHAT_ACTIONS.ASK_QUESTION,
         size: '16px',
+        text: 'Ask a question',
       },
     ],
   };
 
   const chooseOptions = messages.options.map((opt, index) => (
-    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt.option)}>
+    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={''} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>
