@@ -8,9 +8,10 @@ import React, {
 
 import { MessageType, ILocalMessage, CHAT_ACTIONS } from 'utils/types';
 import { IMessage, ISnapshot } from 'services/types';
-import { getChatActionResponse, languages } from 'utils/constants';
+import { ChannelName, getChatActionResponse, languages } from 'utils/constants';
 import {
   chatMessangerDefaultState,
+  replaceItemsWithType,
   generateLocalId,
   getChatResponseOnMessage,
   getItemById,
@@ -18,6 +19,7 @@ import {
   getMessageBySubtype,
   getParsedMessage,
   getServerParsedMessages,
+  getUpdatedMessages,
   validateEmail,
 } from 'utils/helpers';
 import {
@@ -27,7 +29,7 @@ import {
   IPortionMessages,
   ITriggerActionProps,
 } from './types';
-import { useCategories } from 'services/hooks';
+import { sendMessage, useCategories } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 
@@ -50,18 +52,19 @@ const ChatProvider = ({ children }: PropsType) => {
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [alertEmail, setAlertEmail] = useState<string | null>(null);
 
-  console.log(alertPeriod);
-  console.log(alertEmail);
-
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
   const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS>();
+  const [initialAction, setInitialAction] = useState<ITriggerActionProps>();
   const [language, setLanguage] = useState(languages[0]);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setInitialized] = useState(false);
   const categories = useCategories();
 
   console.log('DEFAULT_LANG: ', language);
+  console.log('ALERT PERIOD: ', alertPeriod);
+  console.log('ALERT EMAIL: ', alertEmail);
 
   // Effects
   useEffect(() => {
@@ -72,20 +75,28 @@ const ChatProvider = ({ children }: PropsType) => {
       });
 
       updateMessages(processedSnapshots);
-      setServerMessages(serverMessages);
+      setServerMessages(processedSnapshots);
       setLastActionType(undefined);
+      !isInitialized && setInitialized(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nextMessages, setServerMessages, serverMessages]);
+  }, [nextMessages, setServerMessages, serverMessages, messages.length]);
+
+  useEffect(() => {
+    initialAction && triggerAction(initialAction);
+  }, [isInitialized]);
 
   // Callbacks
-  // TODO: refactor
   const triggerAction = useCallback(
     (action: ITriggerActionProps) => {
       const { type, payload } = action;
-      const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
-      let response = getChatActionResponse(type);
 
+      if (action.type === lastActionType || !isInitialized) {
+        !isInitialized && setInitialAction(action);
+        return null;
+      }
+
+      let response = getChatActionResponse(type);
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           setCategory(payload?.item!);
@@ -117,14 +128,14 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
-          const jobs = getJobMatches({
-            category: category!,
-            locations,
-          });
-          response.messages = jobs.length ? response.messages : noMatchMessages;
-
-          setOfferJobs(jobs);
-          clearFilters();
+          if (category) {
+            const jobs = getJobMatches({ category, locations });
+            response.messages = jobs.length
+              ? response.messages
+              : noMatchMessages;
+            setOfferJobs(jobs);
+            clearFilters();
+          }
           break;
         }
         case CHAT_ACTIONS.INTERESTED_IN: {
@@ -140,30 +151,17 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
       }
 
-      if (type === lastActionType) {
-        return null;
-      }
+      const updatedMessages = getUpdatedMessages({
+        action,
+        messages,
+        responseAction: response,
+      });
 
-      const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
-      const isValidPush =
-        !isAlertEmail || !validateEmail(payload?.item!).length;
-
-      if (response.messages.length && isValidPush) {
-        const updatedMessages = popMessage(response.replaceType);
-        if (text && response.isPushMessage) {
-          const localMessage = getParsedMessage({ text });
-          const updatedMessages = popMessage(response.replaceType);
-          setMessages([...response.messages, localMessage, ...updatedMessages]);
-        } else {
-          setMessages([...response.messages, ...updatedMessages]);
-        }
-      }
-      const updatedMessages = getUpdatedMessages(action, messages);
-      setMessages(updatedMessages);
+      updatedMessages?.length && setMessages(updatedMessages);
       setLastActionType(type);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [messages, locations.length, lastActionType]
+    [messages.length, locations.length, lastActionType]
   );
 
   const clearFilters = () => {
@@ -179,7 +177,7 @@ const ChatProvider = ({ children }: PropsType) => {
   );
 
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
-    setNextMessages(messagesSnapshots);
+    !nextMessages.length && setNextMessages(messagesSnapshots);
   };
 
   const addMessage = ({
@@ -199,17 +197,17 @@ const ChatProvider = ({ children }: PropsType) => {
       setMessages([message, ...messages]);
     }
 
-    // const serverMessage = {
-    //   channelName: ChannelName.SMS,
-    //   candidateId: 49530690,
-    //   contextId: null,
-    //   msg: text,
-    //   images: [],
-    //   localId,
-    // };
+    const serverMessage = {
+      channelName: ChannelName.SMS,
+      candidateId: 49530690,
+      contextId: null,
+      msg: text,
+      images: [],
+      localId,
+    };
     // ---------------------------------
 
-    // sendMessage(serverMessage);
+    sendMessage(serverMessage);
   };
 
   const changeLang = (lang: string) => {
@@ -219,71 +217,30 @@ const ChatProvider = ({ children }: PropsType) => {
     });
     text && addMessage({ text, isChatMessage: true });
     setLanguage(lang);
+    i18n.changeLanguage(lang.toLowerCase());
     // chrome.runtime.sendMessage({
     //   messageType: ChromeMessageTypes.GlobalChangeLanguage,
     //   msg: language,
     // });
-    i18n.changeLanguage(lang.toLowerCase());
   };
 
-  // TODO: refactor
-  const chooseButtonOption = (optionText: string) => {
-    const updatedMessages = messages.filter((msg) => {
-      const subType = msg.content.subType;
-      const text = msg.content.text;
-      return (
-        subType !== MessageType.BUTTON ||
-        (text === optionText && subType === MessageType.BUTTON)
-      );
+  const chooseButtonOption = (excludeItem: string) => {
+    const updatedMessages = replaceItemsWithType({
+      type: MessageType.BUTTON,
+      messages,
+      excludeItem,
     });
-    updatedMessages[0].content.subType = MessageType.TEXT;
-    const lastMessageText = updatedMessages[0].content.text;
 
+    const lastMessageText = updatedMessages[0].content.text;
     if (lastMessageText) {
       const newMessages = getChatResponseOnMessage(lastMessageText);
       setMessages([...newMessages, ...updatedMessages]);
     }
   };
-  // TODO: refactor
   const updateMessages = (serverMessages: IMessage[]) => {
     const parsedMessages = getServerParsedMessages(serverMessages);
-
-    const isMessagesWithoutId = messages.some((msg) => !msg._id);
-    const updatedMessages = isMessagesWithoutId
-      ? messages.map((msg) => {
-          if (!msg._id) {
-            const updatedMessage = parsedMessages.find(
-              (updateMsg) => updateMsg.localId === msg.localId
-            );
-            return updatedMessage
-              ? {
-                  ...updatedMessage,
-                  content: {
-                    ...updatedMessage?.content,
-                  },
-                }
-              : msg;
-          }
-          return msg;
-        })
-      : [...messages, ...parsedMessages];
-
-    setMessages(updatedMessages);
+    setMessages(parsedMessages);
     setNextMessages([]);
-  };
-
-  const popMessage = (type?: MessageType) => {
-    if (!type) {
-      return messages;
-    }
-
-    const updatedMessages = !type
-      ? messages
-      : messages.filter((msg) => msg.content.subType !== type);
-
-    !type && updatedMessages.shift();
-
-    return updatedMessages;
   };
 
   return (

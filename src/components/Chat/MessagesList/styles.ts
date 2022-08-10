@@ -19,6 +19,10 @@ export const MessageListContainer = styled.div`
   display: flex;
   flex-direction: column-reverse;
   padding: 16px;
+
+  .infinite-scroll-component > div {
+    margin-bottom: 32px;
+  }
 `;
 
 export const infiniteScrollStyle: React.CSSProperties = {

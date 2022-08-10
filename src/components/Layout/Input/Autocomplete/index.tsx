@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { CHAT_ACTIONS } from 'utils/types';
 import { TextField } from '..';
+import { INPUT_TYPES } from '../types';
 
 type PropsType = {
   value: string;
@@ -63,6 +64,7 @@ export const Autocomplete: FC<PropsType> = (props) => {
         )}
 
       <TextField
+        type={INPUT_TYPES.TEXT}
         value={value}
         onChange={onChange}
         placeHolder={placeHolder}

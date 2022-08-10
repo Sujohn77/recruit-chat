@@ -1,4 +1,6 @@
 import { Button, FormControl, TextField } from '@mui/material';
+import { FormInput } from 'components/Layout/Input/styles';
+
 import { useChatMessanger } from 'contexts/MessangerContext';
 import * as React from 'react';
 import { FC, useState } from 'react';
@@ -27,28 +29,6 @@ export const Title = styled.p`
   color: ${colors.scorpion};
   text-align: center;
   font-weight: 500;
-`;
-
-export const Input = styled(TextField)`
-  input {
-    background: #f3f2f2;
-    border-radius: 10px;
-
-    padding: 7px 12px;
-    font-family: Inter;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-    height: 32px;
-  }
-  fieldset {
-    border: none;
-  }
-  p {
-    position: absolute;
-    top: 12px;
-    right: 8px;
-  }
 `;
 
 export const FormButton = styled(Button)`
@@ -95,7 +75,7 @@ export const EmailForm: FC<PropsType> = () => {
     <Wrapper>
       <Title>{enterEmailTxt}</Title>
       <FormControl>
-        <Input
+        <FormInput
           value={value}
           onChange={onChange}
           error={!!error}

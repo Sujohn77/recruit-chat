@@ -2,6 +2,7 @@ import { Button } from 'components/Layout/styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import React, { FC } from 'react';
 import Carousel from 'react-material-ui-carousel';
+import i18n from 'services/localization';
 import styled from 'styled-components';
 import { CHAT_ACTIONS } from 'utils/types';
 import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
@@ -84,8 +85,8 @@ export const JobOffer = ({
   handleReadMore,
   handleButtonClick,
 }: any) => {
-  const readMoreTxt = 'Read more';
-  const interestedTxt = 'I’m interested';
+  const readMoreTxt = i18n.t('chat_item_description:read_more');
+  const interestedTxt = i18n.t('chat_item_description:interested_in');
   return (
     <JobOfferWrapper>
       <Category>{'Engineering'}</Category>

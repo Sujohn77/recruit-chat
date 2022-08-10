@@ -9,6 +9,9 @@ import {
   UpdateQueueChatRoomMessagesAction,
   IQueueChatRoom,
   IMessageID,
+  IGetUpdatedMessages,
+  IFilterItemsWithType,
+  IReplaceLocalMessages,
 } from './types';
 import { colors } from './colors';
 import moment from 'moment';
@@ -146,13 +149,7 @@ export const getChatResponseOnMessage = (
     }
 
     default: {
-      return getParsedMessages([
-        { subType: MessageType.REFINE_SERCH },
-        {
-          subType: MessageType.TEXT,
-          text: "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
-        },
-      ]);
+      return [];
     }
   }
 };
@@ -476,28 +473,27 @@ export const getItemById = (items: any[], id: string) => {
   return items.find((job) => job._id === Number(id));
 };
 
-export const getUpdatedMessages = (
-  action: ITriggerActionProps,
-  messages: ILocalMessage[]
-) => {
+export const getUpdatedMessages = ({
+  action,
+  messages,
+  responseAction,
+}: IGetUpdatedMessages) => {
   const { type, payload } = action;
 
   const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
   const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
   const isValidPush = !isAlertEmail || !validateEmail(payload?.item!).length;
 
-  let response = getChatActionResponse(type);
-
-  if (response.messages.length && isValidPush) {
+  if (responseAction.messages.length && isValidPush) {
     const updatedMessages = popMessage({
-      type: response.replaceType,
+      type: responseAction.replaceType,
       messages,
     });
-    if (text && response.isPushMessage) {
+    if (text && responseAction.isPushMessage) {
       const localMessage = getParsedMessage({ text });
-      return [...response.messages, localMessage, ...updatedMessages];
+      return [...responseAction.messages, localMessage, ...updatedMessages];
     } else {
-      return [...response.messages, ...updatedMessages];
+      return [...responseAction.messages, ...updatedMessages];
     }
   }
 };
@@ -520,4 +516,32 @@ const popMessage = ({
   !type && updatedMessages.shift();
 
   return updatedMessages;
+};
+
+export const replaceItemsWithType = ({
+  type,
+  messages,
+  excludeItem,
+}: IFilterItemsWithType) => {
+  const updatedMessages = messages.filter((msg) => {
+    const { text, subType } = msg.content;
+    return subType !== type || (text === excludeItem && subType === type);
+  });
+  updatedMessages[0].content.subType = MessageType.TEXT;
+  return updatedMessages;
+};
+
+export const replaceLocalMessages = ({
+  messages,
+  parsedMessages,
+}: IReplaceLocalMessages) => {
+  return messages.map((msg) => {
+    if (!msg._id) {
+      const updatedMessage = parsedMessages.find(
+        (updateMsg) => updateMsg.localId === msg.localId
+      );
+      return updatedMessage || msg;
+    }
+    return msg;
+  });
 };

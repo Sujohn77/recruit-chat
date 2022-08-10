@@ -25,31 +25,6 @@ export const ICONS = {
   FINGER_UP,
 };
 
-export const defaultChatHistory = {
-  [CHAT_OPTIONS.FIND_JOB]: {
-    initialMessages: [
-      {
-        text: 'Lorem ipsum dolor sit amet',
-      },
-      {
-        isOwner: true,
-        text: 'Find a job',
-      },
-    ],
-  },
-  [CHAT_OPTIONS.ASK_QUESTION]: {
-    initialMessages: [
-      {
-        text: 'Lorem ipsum dolor sit amet',
-      },
-      {
-        isOwner: true,
-        text: 'Ask a question',
-      },
-    ],
-  },
-};
-
 export const currencies = ['$', '€'];
 
 // TODO: fix mock

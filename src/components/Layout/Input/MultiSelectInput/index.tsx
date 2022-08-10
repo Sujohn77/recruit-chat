@@ -1,24 +1,13 @@
 import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
-import React, {
-  Dispatch,
-  FC,
-  SetStateAction,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 
 import * as S from './styles';
 import { AutocompleteGetTagProps } from '@mui/base/AutocompleteUnstyled';
 
 import { useAutocomplete } from '@mui/material';
-import { Input } from '..';
+import { TextInput } from '..';
 import { CHAT_ACTIONS } from 'utils/types';
-import { useChatMessanger } from 'contexts/MessangerContext';
-import {
-  SearchBody,
-  SearchPosition,
-} from 'components/Chat/MessageInput/styles';
+
 import { Close } from 'screens/intro/styles';
 import { colors } from 'utils/colors';
 
@@ -112,7 +101,7 @@ export const MultiSelectInput: FC<PropsType> = ({
             onDelete={() => onDelete(index)}
           />
         ))}
-        <Input
+        <TextInput
           {...getInputProps()}
           placeholder={placeHolder}
           value={value}

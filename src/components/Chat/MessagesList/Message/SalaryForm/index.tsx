@@ -7,7 +7,7 @@ import { currencies, ICONS } from 'utils/constants';
 
 import { ILocalMessage } from 'utils/types';
 import { getMessageProps } from 'utils/helpers';
-import { Options } from '../TextWithOptions/styles';
+
 import { map } from 'lodash';
 import { TextField } from 'components/Layout/Input';
 

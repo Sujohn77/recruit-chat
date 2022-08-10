@@ -39,7 +39,7 @@ export const MessageBox = styled.div<IMessageProps>`
     `
       : `
         border-radius: 100px;
-        margin-bottom: 16px;
+        margin-bottom: 16px!important;
     `};
 `;
 
@@ -100,6 +100,4 @@ export const TimeText = styled.div`
   display: inline-block;
 `;
 
-export const MessageItem = styled(InfoItem)`
-  
-`;
+export const MessageItem = styled(InfoItem)``;

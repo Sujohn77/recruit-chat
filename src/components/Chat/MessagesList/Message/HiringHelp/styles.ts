@@ -8,12 +8,6 @@ export const Wrapper = styled(MessageBox)`
   width: 250px;
 `;
 
-export const Title = styled.p`
-  margin: 0 0 24px;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${colors.black};
-`;
 export const Section = styled.div`
   border-bottom: 1px solid ${colors.silverChalice};
 
@@ -22,7 +16,9 @@ export const Section = styled.div`
     width: calc(100% - 12px) !important;
   }
 `;
-
+export const Title = styled.p`
+  margin: 0 0 16px;
+`;
 export const Text = styled.p`
   margin: 16px 0;
 `;

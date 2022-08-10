@@ -18,6 +18,8 @@ import { TextMessage } from './TextMessage';
 import { InterestedIn } from './InterestedIn';
 import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
+import { QuestionForm } from './QuestionForm';
+import { ThanksMessage } from './ThanksMessage';
 
 type PropsType = {
   message: ILocalMessage;
@@ -63,7 +65,10 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <TextWithOptions text={message.content.text!} {...messageProps} />;
     }
     case MessageType.HIRING_PROCESS: {
-      return <HiringHelp message={message} />;
+      return <ThanksMessage />;
+    }
+    case MessageType.QUESTION_FORM: {
+      return <QuestionForm />;
     }
     case MessageType.SALARY_FORM: {
       return <SalaryForm message={message} />;
@@ -71,8 +76,11 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.REFINE_SERCH: {
       return <NoMatchJob />;
     }
+    case MessageType.THANKS: {
+      return <ThanksMessage />;
+    }
     default: {
-      return <NoMatchJob />;
+      return null;
     }
   }
 };

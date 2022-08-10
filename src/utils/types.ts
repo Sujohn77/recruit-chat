@@ -1,4 +1,5 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
+import { ITriggerActionProps } from 'contexts/types';
 import { CHAT_OPTIONS } from 'screens/intro';
 import { IChatRoomID, IMessage, IMuteStatus, IUserSelf } from 'services/types';
 export interface ISnapshot<T = Object> {
@@ -27,6 +28,8 @@ export enum MessageType {
   INTERESTED_IN = 'interested_in',
   HIRING_PROCESS = 'hiring_process',
   SALARY_FORM = 'salary_form',
+  QUESTION_FORM = 'question_form',
+  THANKS = 'thankss',
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -42,13 +45,15 @@ export interface ILocalMessage {
   _id: number | string | null;
   localId?: string | number;
   dateCreated?: { seconds: number };
-  content: IContent;
+  content: {
+    subType: MessageType;
+    text?: string;
+  };
   isOwn?: boolean;
 }
 
 export interface IContent {
   subType: MessageType;
-  // subTypeId: number | null;
   text?: string;
 }
 // interface IMessageNoMatchJob {
@@ -182,4 +187,21 @@ export enum HTTPStatusCodes {
   UNAUTHORIZED_401 = 'UNAUTHORIZED_401',
   NOT_FOUND_404 = 'NOT_FOUND_404',
   FORBIDDEN_403 = 'FORBIDDEN_403',
+}
+
+export interface IGetUpdatedMessages {
+  action: ITriggerActionProps;
+  messages: ILocalMessage[];
+  responseAction: any;
+}
+
+export interface IFilterItemsWithType {
+  type: MessageType;
+  messages: ILocalMessage[];
+  excludeItem: string;
+}
+
+export interface IReplaceLocalMessages {
+  messages: ILocalMessage[];
+  parsedMessages: ILocalMessage[];
 }

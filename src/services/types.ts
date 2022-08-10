@@ -35,17 +35,17 @@ export interface IUpdateMessagesResponse {
   unreadMsgCount: number;
 }
 export interface IApiMessage {
-  channelName: "SMS";
+  channelName: 'SMS';
   candidateId: number;
   contextId: string | null;
   msg: string;
-  images: Record<"url", string>[];
+  images: Record<'url', string>[];
   messageTemplateId?: string;
   localId: string;
 }
 
 export enum UserLicenseTypes {
-  Standard = "Standart",
+  Standard = 'Standart',
 }
 export type AppKeyType = {
   appKey: string;
@@ -95,14 +95,14 @@ export interface IMessageContentInnerInfo {
   url: null | string;
 }
 export enum ServerMessageType {
-  Text = "text",
-  Transcript = "transcript_sent",
-  Video = "video_uploaded",
-  ChatCreated = "chat_created",
-  Document = "document_uploaded",
-  File = "resume_uploaded",
-  UnreadMessages = "unread_messages",
-  Date = "date",
+  Text = 'text',
+  Transcript = 'transcript_sent',
+  Video = 'video_uploaded',
+  ChatCreated = 'chat_created',
+  Document = 'document_uploaded',
+  File = 'resume_uploaded',
+  UnreadMessages = 'unread_messages',
+  Date = 'date',
 }
 export interface IMessageOption {
   id: number;
@@ -180,9 +180,9 @@ export interface ChatsState {
 }
 
 export enum SnapshotType {
-  Added = "added",
-  Modified = "modified",
-  Removed = "removed",
+  Added = 'added',
+  Modified = 'modified',
+  Removed = 'removed',
 }
 
 export type Handler<A> = (state: ChatsState, action: A) => ChatsState;

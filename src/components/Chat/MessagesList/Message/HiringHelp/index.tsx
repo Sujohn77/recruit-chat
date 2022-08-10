@@ -23,7 +23,7 @@ export const HiringHelp: FC<PropsType> = ({ message }) => {
   return (
     <S.Wrapper {...messagesProps} isText>
       <S.Section>
-        <S.Text>{title}</S.Text>
+        <S.Title>{title}</S.Title>
         <Button>{helpTxt}</Button>
       </S.Section>
       <S.Text>{helpfulTxt}</S.Text>

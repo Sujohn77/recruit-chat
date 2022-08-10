@@ -1,16 +1,16 @@
-import { chatId } from "components/Chat";
+import { chatId } from 'components/Chat';
 
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
-} from "react";
+} from 'react';
 
-import { FirebaseSocketReactivePagination } from "socket";
-import { SocketCollectionPreset } from "socket/socket.options";
-import { IMessage, ISnapshot } from "services/types";
-import { useChatMessanger } from "./MessangerContext";
+import { FirebaseSocketReactivePagination } from 'socket';
+import { SocketCollectionPreset } from 'socket/socket.options';
+import { IMessage, ISnapshot } from 'services/types';
+import { useChatMessanger } from './MessangerContext';
 
 type PropsType = {
   children: React.ReactNode;
@@ -26,7 +26,7 @@ const SocketProvider = ({ children }: PropsType) => {
     (messagesSnapshots: ISnapshot<IMessage>[]) => {
       setSnapshotMessages(messagesSnapshots);
     },
-    [chatId, messages]
+    [chatId]
   );
   console.log(messages);
   /* ------ Socket Connection ------ */
