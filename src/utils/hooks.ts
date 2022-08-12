@@ -1,6 +1,7 @@
 import { searchAlertCategories } from 'components/Chat/mockData';
 import { useCallback } from 'react';
 import i18n from 'services/localization';
+import { URLSearchParams } from 'url';
 import { CHAT_ACTIONS } from './types';
 
 interface IUseTextField {
@@ -52,4 +53,22 @@ export const useTextField = ({
     searchLocations,
     category,
   });
+};
+
+
+export const useApiKey = () => {
+  const url: any = new URL(window.location.href);
+  let apiKey: undefined | string = undefined;
+
+  for(const p of url.searchParams.entries()) {
+
+    const [key, value] = p;
+
+    if(key === 'apikey') {
+      apiKey = value;
+      break;
+    }
+  }
+
+  return apiKey;
 };

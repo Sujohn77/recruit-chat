@@ -12,6 +12,8 @@ import { FIREBASE_TOKEN } from 'firebase/config';
 import { handleSignInWithCustomToken } from 'firebase/config';
 import { FileUploadProvider } from 'contexts/FileUploadContext';
 import defaultTheme from 'utils/theme/default';
+import { useApiKey } from 'utils/hooks';
+import { api } from "utils/api";
 
 export const Container = styled.div`
   width: 370px;
@@ -21,6 +23,16 @@ export const Container = styled.div`
 
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState(false);
+
+  const [testData, setTestData] = React.useState<any>(null);
+  const apiKey: any = useApiKey();
+
+  useEffect(() => {
+    api.test(apiKey).then((data: any) => {
+      console.log('Bot Data', data.data)
+      setTestData(data.data);
+    });
+  }, [apiKey]);
 
   useEffect(() => {
     // DELETE: after backend is ready
