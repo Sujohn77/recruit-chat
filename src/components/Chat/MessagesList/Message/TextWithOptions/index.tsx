@@ -1,7 +1,7 @@
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { map } from 'lodash';
 import React, { FC } from 'react';
-import { IMessageProps } from 'utils/helpers';
+import { getNextActionType, IMessageProps } from 'utils/helpers';
 import { CHAT_ACTIONS } from 'utils/types';
 import { MessageBox, MessageText } from '../styles';
 import * as S from './styles';
@@ -17,7 +17,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
   const onClick = (opt: string) => {
     if (lastActionType) {
       triggerAction({
-        type: lastActionType,
+        type: getNextActionType(lastActionType),
         payload: { item: opt },
       });
     }
@@ -45,8 +45,10 @@ export const TextWithOptions: FC<IProps> = (props) => {
 
 export const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
-    case CHAT_ACTIONS.SET_ALERT_PERIOD:
+    case CHAT_ACTIONS.SET_CATEGORY:
       return ['Daily', 'Weekly', 'Monthly'];
+    case CHAT_ACTIONS.APPLY_AGE:
+      return ['Yes', 'No'];
     default:
       return [];
   }

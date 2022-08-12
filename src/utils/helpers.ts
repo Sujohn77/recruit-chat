@@ -472,7 +472,16 @@ export const getJobMatches = ({
 export const getItemById = (items: any[], id: string) => {
   return items.find((job) => job._id === Number(id));
 };
-
+export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
+  switch (type) {
+    case CHAT_ACTIONS.SET_ALERT_EMAIL:
+    case CHAT_ACTIONS.GET_USER_EMAIL:
+    case CHAT_ACTIONS.APPLY_EMAIL: {
+      return !validateEmail(item).length;
+    }
+  }
+  return true;
+};
 export const getUpdatedMessages = ({
   action,
   messages,
@@ -481,10 +490,9 @@ export const getUpdatedMessages = ({
   const { type, payload } = action;
 
   const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
-  const isAlertEmail = type === CHAT_ACTIONS.SET_ALERT_EMAIL;
-  const isValidPush = !isAlertEmail || !validateEmail(payload?.item!).length;
+  const isValid = isValidEmailOrText(type, payload?.item!);
 
-  if (responseAction.messages.length && isValidPush) {
+  if (responseAction.messages.length && isValid) {
     const updatedMessages = popMessage({
       type: responseAction.replaceType,
       messages,
@@ -544,4 +552,29 @@ export const replaceLocalMessages = ({
     }
     return msg;
   });
+};
+
+export const getNextActionType = (lastActionType: CHAT_ACTIONS | undefined) => {
+  switch (lastActionType) {
+    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
+      return CHAT_ACTIONS.SET_ALERT_PERIOD;
+    case CHAT_ACTIONS.SET_ALERT_PERIOD:
+      return CHAT_ACTIONS.SET_ALERT_EMAIL;
+    case CHAT_ACTIONS.SET_ALERT_EMAIL:
+      return CHAT_ACTIONS.SET_CATEGORY;
+    case CHAT_ACTIONS.INTERESTED_IN:
+      return CHAT_ACTIONS.GET_USER_NAME;
+    case CHAT_ACTIONS.GET_USER_NAME:
+      return CHAT_ACTIONS.GET_USER_EMAIL;
+    case CHAT_ACTIONS.APPLY_POSITION:
+      return CHAT_ACTIONS.APPLY_NAME;
+    case CHAT_ACTIONS.APPLY_NAME:
+      return CHAT_ACTIONS.APPLY_EMAIL;
+    case CHAT_ACTIONS.APPLY_EMAIL:
+      return CHAT_ACTIONS.APPLY_AGE;
+    case CHAT_ACTIONS.APPLY_AGE:
+      return CHAT_ACTIONS.SET_WORK_PERMIT;
+    default:
+      return CHAT_ACTIONS.SET_CATEGORY;
+  }
 };

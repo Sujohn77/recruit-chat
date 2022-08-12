@@ -28,7 +28,7 @@ const SocketProvider = ({ children }: PropsType) => {
     },
     [chatId]
   );
-  console.log(messages);
+
   /* ------ Socket Connection ------ */
   const messagesSocketConnection = React.useRef(
     new FirebaseSocketReactivePagination<IMessage>(

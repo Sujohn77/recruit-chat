@@ -31,7 +31,7 @@ export const ua = {
   messages: {
     initialMessage: 'Hi! Are you looking for a job?',
     uploadCV: 'Upload CV',
-    answerQeustions: 'Answer questions',
+    answerQuestions: 'Answer questions',
     whatJobTitle:
       "What's your preferred job title? We'll try finding similar jobs.",
     botMessageYou:
@@ -49,8 +49,8 @@ export const ua = {
     successSubscribed: "You've successfully subscribed to Weekly job alerts.",
     thanks: 'Thanks!',
     contactLater: 'We will only contact you for potential job opportunities.',
-    niceToMeet: 'Nice to meet you, Jack',
-    reactEmail: "What's the best email address or phone number to reach you?",
+    niceToMeet: 'Nice to meet you, {{name}}',
+    reachEmail: "What's the best email address or phone number to reach you?",
     whatFullName: "What's your full name?",
     fewQuestions:
       'We have a few questions about your background and experience to get your application started.',
@@ -60,7 +60,7 @@ export const ua = {
     applyThanks: 'Thanks for applying for this position',
     provideName: 'Please provide your name',
     provideEmail: 'Please provide your email',
-    yourAge: 'Please provide your age',
+    provideAge: 'Please provide your age',
     allowPlaceFor: 'Are you allowed to work in US?',
     yes: 'Yes',
     no: 'No',
@@ -68,13 +68,15 @@ export const ua = {
     ethnic: 'What’s your ethnic background?',
     wishNotSay: 'Do not wish to say',
     ethnicWhite: 'White',
-    ethnicBlack: 'Black',
+    ethnicHispanic: 'Hispanic',
     permitApply:
       'Sorry, you can not apply for this position, since your don’t have work permit',
     changeLang: 'You changed the language to {{lang}}',
     howMuchExperience: 'How much work experience do I need for your company?',
     howSubmitCV: 'Can I submit my CV',
     whatHiring: 'What is the hiring process?',
+    popularQuestions:
+      'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
   },
   chat_item_description: {
@@ -93,7 +95,7 @@ export const ua = {
     hiring_help_text: 'Help',
     hiring_helpful_text: 'Has this reply has been helpful?',
     interested_in: 'Я зацікавлений',
-    readMore: 'Дізнатись більше',
+    read_more: 'Дізнатись більше',
   },
 
   chat_menu: {

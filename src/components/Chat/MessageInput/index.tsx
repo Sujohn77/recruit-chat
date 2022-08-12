@@ -13,6 +13,7 @@ import * as S from './styles';
 import {
   capitalizeFirstLetter,
   getMatchedItems,
+  getNextActionType,
   validateEmail,
 } from 'utils/helpers';
 import { useChatMessanger } from 'contexts/MessangerContext';
@@ -67,20 +68,10 @@ export const MessageInput: FC<PropsType> = () => {
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string) => {
-      const isAlertEmail = lastActionType === CHAT_ACTIONS.SET_ALERT_EMAIL;
-
-      if (!isAlertEmail) {
-        addMessage({ text: draftMessage });
-      }
-
       setIsFocus(false);
       setDraftMessage(null);
 
-      const isCategory = matchedPositions.findIndex((m) => m === '') !== -1;
-      const actionType = alertCategory
-        ? lastActionType!
-        : isCategory && CHAT_ACTIONS.SET_CATEGORY;
-
+      const actionType = getNextActionType(lastActionType);
       if (actionType) {
         triggerAction({
           type: actionType,

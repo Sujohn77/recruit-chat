@@ -22,7 +22,6 @@ type PropsType = {
 
 export const chatId = 2433044;
 
-// TODO: refactor notification's part
 export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
   const { viewJob, setViewJob, triggerAction } = useChatMessanger();
   const { file, notification, resetFile } = useFileUploadContext();
@@ -34,7 +33,6 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
     setViewJob(null);
     triggerAction({
       type: CHAT_ACTIONS.APPLY_POSITION,
-      // payload: { item: `${viewJob._id}` },
     });
   };
 
@@ -42,6 +40,7 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
     <S.Wrapper>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
       <MessagesList />
+
       {viewJob && (
         <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
       )}

@@ -6,6 +6,7 @@ import i18n from 'services/localization';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { validateEmail } from 'utils/helpers';
 import { useChatMessanger } from 'contexts/MessangerContext';
+import { CHAT_ACTIONS } from 'utils/types';
 
 type PropsType = {};
 const rows = 3;

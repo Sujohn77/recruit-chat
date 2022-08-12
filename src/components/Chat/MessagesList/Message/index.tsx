@@ -65,7 +65,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <TextWithOptions text={message.content.text!} {...messageProps} />;
     }
     case MessageType.HIRING_PROCESS: {
-      return <ThanksMessage />;
+      return <HiringHelp message={message} />;
     }
     case MessageType.QUESTION_FORM: {
       return <QuestionForm />;
@@ -73,8 +73,9 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.SALARY_FORM: {
       return <SalaryForm message={message} />;
     }
+    case MessageType.NO_MATCH:
     case MessageType.REFINE_SERCH: {
-      return <NoMatchJob />;
+      return <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SERCH} />;
     }
     case MessageType.THANKS: {
       return <ThanksMessage />;

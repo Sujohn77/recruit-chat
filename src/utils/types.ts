@@ -11,6 +11,7 @@ export enum MessageType {
   TEXT = 'text',
   NO_MATCH_JOB = 'no_match_job',
   JOB_POSITIONS = 'job_positions',
+  NO_MATCH = 'no_match',
   REFINE_SERCH = 'refine_search',
   RECOMMENDATIONS = 'recommendations',
   UPLOAD_CV = 'upload_cv',
@@ -94,6 +95,17 @@ export enum CHAT_ACTIONS {
   INTERESTED_IN = 'insterested_in',
   APPLY_POSITION = 'apply_position',
   LEAVE_FEEDBACK = 'leave_feedback',
+  GET_USER_NAME = 'get_user_name',
+  GET_USER_EMAIL = 'get_user_email',
+  GET_USER_AGE = 'get_user_age',
+  SET_WORK_PERMIT = 'SET_WORK_PERMIT',
+  APPLY_NAME = 'apply_name',
+  APPLY_EMAIL = 'apply_email',
+  APPLY_AGE = 'apply_age',
+  APPLY_PERMIT = 'apply_permit',
+  SET_SALARY = 'set_salary',
+  NO_PERMIT_WORK = 'no_permit_work',
+  HELP = 'help',
 }
 
 export enum Status {

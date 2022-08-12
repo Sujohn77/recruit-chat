@@ -12,6 +12,7 @@ import { CHAT_OPTIONS } from 'screens/intro';
 import { CHAT_ACTIONS, HTTPStatusCodes, MessageType } from './types';
 import { generateLocalId, getParsedMessages } from './helpers';
 import moment from 'moment';
+import i18n from 'services/localization';
 
 export const IMAGES = {
   UPLOAD_FILE,
@@ -62,13 +63,13 @@ export const initialChatMessage = {
   isOwn: false,
 };
 
-export const getChatActionMessages = (type: CHAT_ACTIONS) => {
+export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [
         {
           subType: MessageType.TEXT,
-          text: 'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
+          text: i18n.t('messages:botMessageYou'),
         },
       ];
     case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
@@ -97,18 +98,18 @@ export const getChatActionMessages = (type: CHAT_ACTIONS) => {
         },
         {
           subType: MessageType.TEXT,
-          text: 'Thanks Here are your job recommendations based on the information you provided.',
+          text: i18n.t('messages:jobRecommendations'),
         },
       ];
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return [
         {
-          text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
+          text: i18n.t('messages:interstedCategories'),
           subType: MessageType.TEXT,
         },
         {
           subType: MessageType.TEXT,
-          text: 'Set Job Alert',
+          text: i18n.t('messages:setJobAlert'),
           isOwn: true,
           isChatMessage: true,
         },
@@ -117,39 +118,39 @@ export const getChatActionMessages = (type: CHAT_ACTIONS) => {
       return [
         {
           subType: MessageType.TEXT_WITH_CHOICE,
-          text: 'How often would you like to receive your job alerts?',
+          text: i18n.t('messages:alertPeriod'),
         },
       ];
     case CHAT_ACTIONS.SET_ALERT_PERIOD:
       return [
         {
           subType: MessageType.TEXT,
-          text: "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
+          text: i18n.t('messages:reachYou'),
         },
       ];
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
       return [
         {
           subType: MessageType.TEXT,
-          text: "You've successfully subscribed to Weekly job alerts.",
+          text: i18n.t('messages:successSubcribed'),
         },
       ];
     case CHAT_ACTIONS.APPLY_POSITION:
       return [
         {
-          text: 'Please provide your name',
+          text: i18n.t('messages:provideName'),
         },
         {
-          text: 'Thanks for applying for this position',
+          text: i18n.t('messages:applyThanks'),
         },
       ];
     case CHAT_ACTIONS.INTERESTED_IN:
       return [
         {
-          text: "What's your full name?",
+          text: i18n.t('messages:whatFullName'),
         },
         {
-          text: 'We have a few questions about your background and experience to get your application started.',
+          text: i18n.t('messages:fewQuestions'),
         },
         {
           subType: MessageType.INTERESTED_IN,
@@ -161,13 +162,13 @@ export const getChatActionMessages = (type: CHAT_ACTIONS) => {
       return [
         {
           subType: MessageType.BUTTON,
-          text: 'Answer questions',
+          text: i18n.t('messages:answerQuestions'),
           isOwn: true,
           isChatMessage: true,
         },
         {
           subType: MessageType.BUTTON,
-          text: 'Upload CV',
+          text: i18n.t('messages:uploadCV'),
           isOwn: true,
           isChatMessage: true,
         },
@@ -179,28 +180,99 @@ export const getChatActionMessages = (type: CHAT_ACTIONS) => {
     case CHAT_ACTIONS.ASK_QUESTION:
       return [
         {
-          text: 'What is the hiring process?',
+          text: i18n.t('messages:whatHiring'),
           subType: MessageType.BUTTON,
           isChatMessage: true,
           isOwn: true,
         },
         {
-          text: 'Can I submit my CV',
+          text: i18n.t('messages:howSubmitCV'),
           subType: MessageType.BUTTON,
           isChatMessage: true,
           isOwn: true,
         },
         {
-          text: 'How much work experience do I need for your company?',
+          text: i18n.t('messages:howMuchExperience'),
           subType: MessageType.BUTTON,
           isChatMessage: true,
           isOwn: true,
         },
         {
-          text: 'OK! Here are a few popular questions to help you get started.',
+          text: i18n.t('messages:popularQuestions'),
           subType: MessageType.TEXT,
         },
       ];
+    case CHAT_ACTIONS.GET_USER_NAME:
+      return [
+        {
+          text: i18n.t('messages:reachEmail'),
+          subType: MessageType.TEXT,
+        },
+        {
+          text: i18n.t('messages:niceToMeet', { name: param }),
+          subType: MessageType.TEXT,
+        },
+      ];
+    case CHAT_ACTIONS.GET_USER_EMAIL:
+      return [
+        {
+          subType: MessageType.THANKS,
+        },
+        {
+          text: i18n.t('messages:contactLater'),
+          subType: MessageType.TEXT,
+        },
+        {
+          text: i18n.t('messages:thanks'),
+          subType: MessageType.TEXT,
+        },
+      ];
+    case CHAT_ACTIONS.APPLY_NAME:
+      return [{ text: i18n.t('messages:provideEmail') }];
+    case CHAT_ACTIONS.APPLY_EMAIL:
+      return [{ text: i18n.t('messages:provideAge') }];
+    case CHAT_ACTIONS.APPLY_AGE:
+      return [
+        {
+          text: i18n.t('messages:permitWork'),
+          subType: MessageType.TEXT_WITH_CHOICE,
+        },
+      ];
+    case CHAT_ACTIONS.SET_WORK_PERMIT: {
+      return [
+        { subType: MessageType.SALARY_FORM },
+        { text: i18n.t('messages:desireSalary') },
+      ];
+    }
+    case CHAT_ACTIONS.NO_PERMIT_WORK: {
+      return [
+        { subType: MessageType.REFINE_SERCH },
+        { text: i18n.t('messages:noPermitWork') },
+      ];
+    }
+    case CHAT_ACTIONS.SET_SALARY: {
+      return [
+        {
+          text: i18n.t('messages:ethnicHispanic'),
+          subType: MessageType.BUTTON,
+          isOwn: true,
+        },
+        {
+          text: i18n.t('messages:ethnicWhite'),
+          subType: MessageType.BUTTON,
+          isOwn: true,
+        },
+        {
+          text: i18n.t('messages:wishNotSay'),
+          subType: MessageType.BUTTON,
+          isOwn: true,
+        },
+        { text: i18n.t('messages:ethnic') },
+      ];
+    }
+    case CHAT_ACTIONS.HELP: {
+      return [{ subType: MessageType.QUESTION_FORM }];
+    }
 
     default:
       return [];
@@ -224,8 +296,8 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
   return type !== CHAT_ACTIONS.INTERESTED_IN;
 };
 
-export const getChatActionResponse = (type: CHAT_ACTIONS) => {
-  const messages = getChatActionMessages(type);
+export const getChatActionResponse = (type: CHAT_ACTIONS, param?: string) => {
+  const messages = getChatActionMessages(type, param);
   const replaceType = getReplaceMessageType(type);
   const isPushMessage = isPushMessageType(type);
   return { messages: getParsedMessages(messages), replaceType, isPushMessage };

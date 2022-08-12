@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import { Flex } from 'screens/intro/styles';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
@@ -29,11 +30,13 @@ export const Title = styled.p`
   color: ${colors.black};
 `;
 
-export const Option = styled.div`
-  background: ${colors.gray};
-  border-radius: 100px;
-  width: 100px;
-  color: ${colors.white};
+export const Option = styled(Button)<{ isActive?: boolean }>`
+  background: ${({ isActive }) =>
+    isActive ? colors.dimgray : colors.gray}!important;
+
+  border-radius: 100px !important;
+  width: 100px !important;
+  color: ${colors.white}!important;
   text-align: center;
   line-height: 32px;
   cursor: pointer;

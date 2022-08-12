@@ -22,24 +22,37 @@ export interface ISocketPresetOptions {
   queueChatStatusIds?: number[];
 }
 
-export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPresetOptions> = {
+export const SOCKET_PRESET_OPTIONS: Record<
+  SocketCollectionPreset,
+  ISocketPresetOptions
+> = {
   [SocketCollectionPreset.Chats]: {
     pageSize: 20,
     sortField: 'dateModified',
     onGetCollectionRef: (userId: string) =>
-      firebaseApp.firestore().collection('chats').where('participantIds', 'array-contains', userId),
+      firebaseApp
+        .firestore()
+        .collection('chats')
+        .where('participantIds', 'array-contains', userId),
   },
   [SocketCollectionPreset.Messages]: {
-    pageSize: 20,
+    pageSize: 10,
     sortField: 'dateCreated',
     onGetCollectionRef: (chatId: number) =>
-      firebaseApp.firestore().collection('chats').doc(chatId.toString()).collection('messages'),
+      firebaseApp
+        .firestore()
+        .collection('chats')
+        .doc(chatId.toString())
+        .collection('messages'),
   },
   [SocketCollectionPreset.ArchivedChats]: {
     pageSize: 20,
     sortField: 'dateModified',
     onGetCollectionRef: (userId: string) =>
-      firebaseApp.firestore().collection('chats').where('archived', 'array-contains', userId),
+      firebaseApp
+        .firestore()
+        .collection('chats')
+        .where('archived', 'array-contains', userId),
   },
   [SocketCollectionPreset.Users]: {
     pageSize: 20,
@@ -48,7 +61,7 @@ export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPreset
       firebaseApp.firestore().collection('users').where('id', '==', userId),
   },
   [SocketCollectionPreset.QueuesChatMessages]: {
-    pageSize: 20,
+    pageSize: 10,
     sortField: 'dateModified',
     onGetCollectionRef: (queueId: string | number, chatId: string | number) =>
       firebaseApp
@@ -60,7 +73,7 @@ export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPreset
         .collection('messages'),
   },
   [SocketCollectionPreset.QueueChats]: {
-    pageSize: 20,
+    pageSize: 10,
     sortField: 'dateModified',
     onGetCollectionRef: (queueId: string, queueChatStatusIds?: number[]) =>
       isArray(queueChatStatusIds) && queueChatStatusIds?.length
@@ -70,7 +83,10 @@ export const SOCKET_PRESET_OPTIONS: Record<SocketCollectionPreset, ISocketPreset
             .doc(queueId?.toString())
             .collection('chats')
             .where('statusId', 'in', queueChatStatusIds)
-        : firebaseApp.firestore().collection('queues').doc(queueId?.toString()).collection('chats'),
+        : firebaseApp
+            .firestore()
+            .collection('queues')
+            .doc(queueId?.toString())
+            .collection('chats'),
   },
 };
-

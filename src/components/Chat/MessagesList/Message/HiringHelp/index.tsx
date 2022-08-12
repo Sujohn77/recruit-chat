@@ -5,31 +5,36 @@ import i18n from 'services/localization';
 import { Button } from 'components/Layout/styles';
 import { ICONS } from 'utils/constants';
 
-import { ILocalMessage } from 'utils/types';
+import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
 import { getMessageProps } from 'utils/helpers';
+import { useChatMessanger } from 'contexts/MessangerContext';
 
 type PropsType = { message: ILocalMessage };
 
 export const HiringHelp: FC<PropsType> = ({ message }) => {
-  // const { } = useChatMessanger();
+  const { triggerAction } = useChatMessanger();
 
   const messagesProps = getMessageProps(message);
   const title = i18n.t('chat_item_description:hiring_help_title');
   const helpTxt = i18n.t('chat_item_description:hiring_help_text');
   const helpfulTxt = i18n.t('chat_item_description:hiring_helpful_text');
 
-  const onClick = () => {};
+  const onClick = () => {
+    triggerAction({ type: CHAT_ACTIONS.HELP });
+  };
+
+  const handleFeedBackClick = () => {};
 
   return (
     <S.Wrapper {...messagesProps} isText>
       <S.Section>
         <S.Title>{title}</S.Title>
-        <Button>{helpTxt}</Button>
+        <Button onClick={onClick}>{helpTxt}</Button>
       </S.Section>
       <S.Text>{helpfulTxt}</S.Text>
       <S.FeedBackIcons>
-        <FeedBackIcon isReversed onClick={onClick} />
-        <FeedBackIcon onClick={onClick} />
+        <FeedBackIcon isReversed onClick={handleFeedBackClick} />
+        <FeedBackIcon onClick={handleFeedBackClick} />
       </S.FeedBackIcons>
     </S.Wrapper>
   );

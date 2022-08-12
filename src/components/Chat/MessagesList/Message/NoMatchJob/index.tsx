@@ -6,14 +6,15 @@ import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   background: ${colors.alto};
   border-radius: 10px;
   padding: 24px 28px;
-  margin: 0 16px;
+  margin: ${({ isRefineOnly }) => isRefineOnly && '0 16px'};
   display: flex;
   flex-flow: column;
   max-width: 306px;
+  box-sizing: border-box;
   margin-bottom: 24px;
 `;
 export const Title = styled.p`
@@ -44,11 +45,25 @@ export const RefineJobSearch = styled(Button)`
   text-transform: initial !important;
 `;
 
-export const NoMatchJob = () => {
+export const NoMatchJob = ({ isRefineOnly = false }) => {
   const { triggerAction } = useChatMessanger();
   const noMatchTxt = i18n.t('chat_item_description:no_match');
   const jobAlertTxt = i18n.t('buttons:set_job_alert');
   const refineSearchTxt = i18n.t('buttons:refine_search');
+
+  if (isRefineOnly) {
+    return (
+      <Wrapper isRefineOnly>
+        <Avatar />
+        <RefineJobSearch
+          onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
+        >
+          {refineSearchTxt}
+        </RefineJobSearch>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <Title>{noMatchTxt}</Title>

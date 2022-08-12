@@ -13,7 +13,6 @@ import {
   chatMessangerDefaultState,
   replaceItemsWithType,
   generateLocalId,
-  getChatResponseOnMessage,
   getItemById,
   getJobMatches,
   getMessageBySubtype,
@@ -21,6 +20,8 @@ import {
   getServerParsedMessages,
   getUpdatedMessages,
   validateEmail,
+  getChatResponseOnMessage,
+  isValidEmailOrText,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
@@ -29,7 +30,7 @@ import {
   IPortionMessages,
   ITriggerActionProps,
 } from './types';
-import { sendMessage, useCategories } from 'services/hooks';
+import { useCategories } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 
@@ -40,7 +41,17 @@ type PropsType = {
 const ChatContext = createContext<IChatMessangerContext>(
   chatMessangerDefaultState
 );
-const noMatchMessages = getChatResponseOnMessage('');
+interface IUser {
+  name?: string;
+  email?: string;
+  age?: string;
+  isPermitWork?: boolean;
+  wishSalary?: number;
+  salaryCurrency?: string;
+}
+// const noMatchResponse = [];
+const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
+
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
@@ -49,22 +60,25 @@ const ChatProvider = ({ children }: PropsType) => {
   const [viewJob, setViewJob] = useState<IJobPosition | null>(null);
   const [prefferedJob, setPrefferedJob] = useState<IJobPosition | null>(null);
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [alertEmail, setAlertEmail] = useState<string | null>(null);
+  const [language, setLanguage] = useState(languages[0]);
+  const [applyUser, setApplyUser] = useState<IUser | null>(null);
 
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
   const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS>();
   const [initialAction, setInitialAction] = useState<ITriggerActionProps>();
-  const [language, setLanguage] = useState(languages[0]);
+
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setInitialized] = useState(false);
   const categories = useCategories();
 
-  console.log('DEFAULT_LANG: ', language);
-  console.log('ALERT PERIOD: ', alertPeriod);
-  console.log('ALERT EMAIL: ', alertEmail);
+  // console.log('DEFAULT_LANG: ', language);
+  // console.log('ALERT PERIOD: ', alertPeriod);
+  // console.log('ALERT EMAIL: ', alertEmail);
 
   // Effects
   useEffect(() => {
@@ -83,6 +97,7 @@ const ChatProvider = ({ children }: PropsType) => {
   }, [nextMessages, setServerMessages, serverMessages, messages.length]);
 
   useEffect(() => {
+    console.log('triggerAction');
     initialAction && triggerAction(initialAction);
   }, [isInitialized]);
 
@@ -96,7 +111,7 @@ const ChatProvider = ({ children }: PropsType) => {
         return null;
       }
 
-      let response = getChatActionResponse(type);
+      let response = getChatActionResponse(type, payload?.item!);
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           setCategory(payload?.item!);
@@ -104,17 +119,14 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
           setLocations(payload?.items!);
-          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
           setAlertCategory(payload?.item!);
-          setLastActionType(CHAT_ACTIONS.SET_ALERT_PERIOD);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_PERIOD: {
           setAlertPeriod(payload?.item!);
-          setLastActionType(CHAT_ACTIONS.SET_ALERT_EMAIL);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
@@ -130,9 +142,7 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
             const jobs = getJobMatches({ category, locations });
-            response.messages = jobs.length
-              ? response.messages
-              : noMatchMessages;
+            response.messages = jobs.length ? response.messages : [];
             setOfferJobs(jobs);
             clearFilters();
           }
@@ -143,6 +153,67 @@ const ChatProvider = ({ children }: PropsType) => {
           setPrefferedJob(job!);
           break;
         }
+        case CHAT_ACTIONS.GET_USER_NAME: {
+          setUser({ name: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.GET_USER_EMAIL: {
+          const error = validateEmail(payload?.item!);
+          if (payload?.item && !error?.length) {
+            setUser({ email: payload?.item! });
+            setLastActionType(undefined);
+          } else {
+            setError(error);
+          }
+
+          break;
+        }
+        case CHAT_ACTIONS.GET_USER_AGE: {
+          setUser({ age: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.APPLY_NAME: {
+          setApplyUser({ name: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.APPLY_EMAIL: {
+          const error = validateEmail(payload?.item!);
+          if (payload?.item && !error?.length) {
+            setApplyUser({ email: payload?.item! });
+            setLastActionType(undefined);
+          } else {
+            setError(error);
+          }
+
+          break;
+        }
+        case CHAT_ACTIONS.APPLY_AGE: {
+          setApplyUser({ age: payload?.item! });
+
+          break;
+        }
+
+        case CHAT_ACTIONS.SET_WORK_PERMIT: {
+          const isPermitWork = payload?.item === 'Yes';
+          setUser({ isPermitWork });
+          response.messages = isPermitWork
+            ? response.messages
+            : noPermitWorkReponse.messages;
+          break;
+        }
+
+        case CHAT_ACTIONS.SET_SALARY: {
+          if (payload?.item) {
+            const salaryInfo = payload?.item.split(' ');
+            setUser({
+              wishSalary: Number(salaryInfo[0]),
+              salaryCurrency: salaryInfo[1],
+            });
+          }
+
+          break;
+        }
+
         case CHAT_ACTIONS.REFINE_SEARCH: {
           clearFilters();
           break;
@@ -157,11 +228,11 @@ const ChatProvider = ({ children }: PropsType) => {
         responseAction: response,
       });
 
+      isValidEmailOrText(type, payload?.item!) && setLastActionType(type);
       updatedMessages?.length && setMessages(updatedMessages);
-      setLastActionType(type);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [messages.length, locations.length, lastActionType]
+    [messages.length, locations.length, lastActionType, user]
   );
 
   const clearFilters = () => {
@@ -207,7 +278,7 @@ const ChatProvider = ({ children }: PropsType) => {
     };
     // ---------------------------------
 
-    sendMessage(serverMessage);
+    // sendMessage(serverMessage);
   };
 
   const changeLang = (lang: string) => {
@@ -239,7 +310,15 @@ const ChatProvider = ({ children }: PropsType) => {
   };
   const updateMessages = (serverMessages: IMessage[]) => {
     const parsedMessages = getServerParsedMessages(serverMessages);
-    setMessages(parsedMessages);
+    const filteredMessages = parsedMessages.filter((msg) => {
+      return (
+        messages.findIndex((localMsg) => localMsg.localId === msg.localId) ===
+        -1
+      );
+    });
+
+    setMessages([...messages, ...filteredMessages]);
+
     setNextMessages([]);
   };
 
