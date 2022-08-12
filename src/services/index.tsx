@@ -1,22 +1,25 @@
-import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
-import { handleSignInWithCustomToken } from "firebase/config";
+import apisauce, { ApiResponse, ApisauceInstance } from 'apisauce';
+import { handleSignInWithCustomToken } from 'firebase/config';
 
 import {
   AppKeyType,
   IApiMessage,
   IApiSignedRequest,
+  ICreationCandidatePayload,
   IGetAllRequisitions,
   IRequisitionsResponse,
+  ISearchJobsPayload,
   ISendMessageResponse,
   IUpdateMessagesResponse,
+  IUploadCVPayload,
   IUserSelf,
-} from "./types";
+} from './types';
 
 export const FORM_URLENCODED = {
-  "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 };
 
-const BASE_API_URL = "https://qa-integrations.loopworks.com/";
+const BASE_API_URL = 'https://qa-integrations.loopworks.com/';
 class Api {
   private client: ApisauceInstance;
 
@@ -25,40 +28,47 @@ class Api {
       baseURL,
       timeout: 10000,
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
       },
       transformResponse: (response: any) => JSON.parse(response),
     });
   }
 
   setAuthHeader = (token: string) =>
-    this.client.setHeader("Authorization", `Bearer ${token}`);
+    this.client.setHeader('Authorization', `Bearer ${token}`);
 
-  setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
+  setAuthHeaderToNull = () => this.client.setHeader('Authorization', '');
   sendMessage = (payload: IApiMessage) =>
-    this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
+    this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
 
   markChatRead = (chatId?: number) =>
     this.client.post<IUpdateMessagesResponse>(
-      "/api/messenger/chat/acknowledge",
+      '/api/messenger/chat/acknowledge',
       { chatId }
     );
 
   getUserSelf = (data: AppKeyType) =>
-    this.client.get<IUserSelf>("api/user/self", data);
+    this.client.get<IUserSelf>('api/user/self', data);
   loginUserCodeCheck = (data: { grantType: string }) =>
-    this.client.post<any>("api/auth/token", data.grantType, {
+    this.client.post<any>('api/auth/token', data.grantType, {
       headers: FORM_URLENCODED,
     });
 
-  loginUser = (data: any) => this.client.post<any>("api/auth/login", data);
+  loginUser = (data: any) => this.client.post<any>('api/auth/login', data);
 
   searchRequisitions = (data: IGetAllRequisitions & IApiSignedRequest) =>
-    this.client.post<IRequisitionsResponse>("api/requisition/search", data);
+    this.client.post<IRequisitionsResponse>('api/requisition/search', data);
+
+  searchJobs = (data: ISearchJobsPayload) =>
+    this.client.post<any>('api/requisition/search', data);
+  uploadCV = (data: IUploadCVPayload) =>
+    this.client.post<any>('api/candidate/resume/upload', data);
+  createCandidate = (data: ICreationCandidatePayload) =>
+    this.client.post<any>('api/candidate/create', data);
 }
 
-export const APP_VERSION = "1.0.3";
+export const APP_VERSION = '1.0.3';
 export const getSignedRequest = <T,>(data: T): T & any => ({
   ...data,
   // @ts-ignore
@@ -81,7 +91,7 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
   } else if (!response.data?.errors?.length && response.data?.authcode) {
     // Without 2FA flow
     const info: any = {
-      grant_type: "password",
+      grant_type: 'password',
       username: payload!.username,
       password: payload!.password,
       twofactorauthcode: response.data?.authcode!.toString(),
@@ -128,9 +138,9 @@ export const generateGrantType: any = (userData: any) => {
   for (const property in userData) {
     const encodedKey = encodeURIComponent(property);
     const encodedValue = encodeURIComponent(userData[property]);
-    form.push(encodedKey + "=" + encodedValue);
+    form.push(encodedKey + '=' + encodedValue);
   }
-  return form.join("&");
+  return form.join('&');
 };
 
 export const setUserDataAfterVerify = async (data: any) => {
@@ -149,7 +159,7 @@ export const parseResponseWithToken: any = (data: any) => ({
   sasSubscriberAttachment: data.sas_subscriber_attachment,
   sasSubscriberResume: data.sas_subscriber_resume,
   sasSubscriberAvatar: data.sas_subscriber_avatar,
-  issuedTokenDate: data[".issued"],
-  expiresTokenDate: data[".expires"],
+  issuedTokenDate: data['.issued'],
+  expiresTokenDate: data['.expires'],
   firebase_access_token: data.firebase_access_token,
 });

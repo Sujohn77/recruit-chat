@@ -8,7 +8,7 @@ export const fr = {
     set_job_alert: 'Définir une alerte emploi',
     refine_search: "Affiner la recherche d'emploi",
     find_job: 'Trouver un emploi',
-    ask_question: 'Poser une question',
+    ask_questions: 'Poser une questions',
   },
   placeHolders: {
     message: 'Taper un message',
@@ -75,7 +75,6 @@ export const fr = {
     emailAnswer: 'Thanks! We will send you an answer on email',
   },
   chat_item_description: {
-    lookingFor: 'Salut! Cherchez-vous un emploi',
     title: 'Bot de carrière',
     view_job_title: 'View job',
     no_match: 'Désolé, encore rien trouvé',

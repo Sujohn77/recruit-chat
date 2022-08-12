@@ -8,7 +8,7 @@ export const en = {
     set_job_alert: 'Set Job Alert',
     refine_search: 'Refine job search',
     find_job: 'Find a job',
-    ask_question: 'Ask a question',
+    ask_questions: 'Ask a questions',
   },
   placeHolders: {
     message: 'Type a message',

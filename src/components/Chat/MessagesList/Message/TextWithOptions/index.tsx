@@ -35,7 +35,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
   ));
   return (
     <div>
-      <MessageBox {...messageProps} isText>
+      <MessageBox {...messageProps}>
         <MessageText>{text}</MessageText>
       </MessageBox>
       <S.Options>{lastActionType && optionItems}</S.Options>

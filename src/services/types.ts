@@ -215,3 +215,97 @@ export interface IRequisitionsResponse {
   requisitionCount: number;
   requisitions: any[];
 }
+
+// Loop
+
+export interface ISearchJobsPayload {
+  pageSize: number;
+  page: number;
+  keyword: string;
+  companyId: string;
+  minDatePosted: string;
+  categories: string[];
+  location: {
+    city: string;
+    state: null;
+    postalCode: null;
+    country: null;
+    latitude: null;
+    longitude: null;
+    radius: null;
+    radiusUnit: 'km';
+  };
+  externalSystemId: number;
+}
+
+export interface IUploadCVPayload {
+  candidateId: number;
+  fileName: string;
+  lastModified: string;
+  blob: Blob;
+}
+
+export interface ICreationCandidatePayload {
+  title: string;
+  firstName: string;
+  lastName: string;
+  status: null;
+  sourceType: 'Social Media';
+  source: 'Twitter';
+  companyID: 4;
+  addresses: {
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    type: 'home';
+    zip: string;
+    country: string;
+  }[];
+  contactMethods: {
+    type: 'phone';
+    address: string;
+    location: string;
+    isPrimary: true;
+  }[];
+  employmentExperience: {
+    organizationName: string;
+    jobTitle: string;
+    startDate: Date;
+    endDate: Date;
+  }[];
+  educationHistoryModel: {
+    institution: string;
+    institutionTypeId: string;
+    educationType: string;
+    courseTitle: string;
+    measureSystem: null;
+    measureValue: null;
+    startDate: Date;
+    endDate: Date;
+  }[];
+  profile: {
+    headine: string;
+    summary: string;
+    photoURL: string;
+    currentEmployer: string;
+    currentJobTitle: string;
+    educationLevel: string;
+    jobFunction: string;
+    jobSpeciality: string;
+    yearsExperience: string;
+    willingToRelocate: 'true';
+    communicationLanguage: 'French';
+  };
+  social: {
+    type: 'facebook' | 'linkedin';
+    url: string;
+  }[];
+  tags: string[];
+  skills: {
+    name: string;
+    dateLastUsed: Date;
+    totalMonths: number;
+    proficiencyID: null;
+  }[];
+}

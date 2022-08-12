@@ -16,6 +16,7 @@ export const colors = {
   scorpion: '#565656',
   persian: '#00a881',
   dimgray: '#696969',
+  torchRed: '#FF2121',
 };
 
 export const chatColors = {

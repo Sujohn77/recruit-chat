@@ -1,15 +1,16 @@
 import { Button } from '@mui/material';
+import { MessageBox } from 'components/Chat/MessagesList/Message/styles';
 import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
 const borderWidth = '1.5px';
 const introQuestionShadow = '5px 5px 25px 10px rgb(0 0 0 / 8%);';
-const messageShadow = '5px 5px 25px 10px rgb(0 0 0 / 8%);';
 
 export const Flex = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 13px;
   width: 100%;
 `;
 export const Wrapper = styled.div`
@@ -42,39 +43,87 @@ export const Close = styled.div<{ height?: string }>`
 `;
 
 export const Message = styled.div`
-  border-radius: 25px;
-  box-shadow: ${messageShadow};
+  border-radius: 20px;
   padding: 10px 10px;
   color: ${colors.persian};
-  border: 1px solid ${colors.persian};
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
   text-align: center;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  background: ${colors.alto};
+
+  animation: opacity 0.3s ease-in;
+
+  &:nth-child(2) {
+    animation: opacity 0.6s ease-in;
+  }
+
+  @keyframes opacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 `;
 
-export const Question = styled(Message)`
+export const Question = styled(MessageBox)`
   box-shadow: ${introQuestionShadow};
-  padding: 20px 60px 20px 20px;
+  padding: 0 16px;
+  line-height: 41px;
   border: none;
   color: ${colors.zambesi};
   font-weight: 600;
+  height: 41px;
+  box-sizing: border-box;
+  margin-bottom: 22px;
+  animation: fade 0.3s ease-in;
+  @keyframes fade {
+    0% {
+      transform: scale(0.85) translate(-30px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1) translate(0);
+      opacity: 1;
+    }
+  }
 `;
 
 export const Text = styled.span`
-  font-size: 13px;
+  font-size: 14px;
+  font-family: Inter-Medium;
+  color: ${colors.black};
 `;
 
 export const Image = styled.img<{ size?: string }>`
   width: ${({ size = '20px' }) => size};
   height: ${({ size = '20px' }) => size};
-  border-radius: 50%;
 `;
-export const IntroImage = styled(Image)`
-  animation: pulsing 2.5s infinite ease-in-out;
+export const IntroImage = styled(Image)``;
+export const Options = styled(Flex)`
+  margin-left: auto;
+  width: fit-content;
+  gap: 8px;
+  animation: fade 0.4s ease-in;
+`;
+
+export const InfoContent = styled.div``;
+
+export const ImageButton = styled(Button)`
+  min-width: 34px !important;
+  height: 34px;
+  width: 34px;
+  border-radius: 50% !important;
+  background: ${colors.alto}!important;
+  text-aling: center !important;
+  line-height: 34px;
+  box-sizing: border-box;
   
   @keyframes pulsing {
     0% {
@@ -94,16 +143,4 @@ export const IntroImage = styled(Image)`
       transform: scale(1);
     }
   }
-`;
-export const Options = styled(Flex)`
-  margin-left: auto;
-  width: fit-content;
-  gap: 5px;
-`;
-
-export const InfoContent = styled.div``;
-
-export const ImageButton = styled(Button)`
-  width: 60px;
-  border-radius: 50% !important;
 `;

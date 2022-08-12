@@ -31,7 +31,7 @@ export const SalaryForm: FC<PropsType> = ({ message }) => {
     </S.Option>
   ));
   return (
-    <S.Wrapper {...messagesProps} isText>
+    <S.Wrapper {...messagesProps}>
       <TextField
         value={salary}
         onChange={(e: any) => setSalary(e.target.value)}

@@ -48,20 +48,20 @@ export const Autocomplete: FC<PropsType> = (props) => {
     triggerAction({ type, payload: { item: e.currentTarget.textContent } });
   };
 
+  // TODO: test
+  const isShowResults = isFocus && !!matchedItems.length;
   return (
     <div>
-      {isFocus &&
-        ((!!matchedItems?.length && matchedPart) || !matchedPart) &&
-        lastActionType !== CHAT_ACTIONS.SET_ALERT_EMAIL && (
-          <SearchResults
-            type={type}
-            headerName={headerName}
-            matchedItems={matchedItems}
-            matchedPart={matchedPart}
-            onClick={onClick}
-            setIsFocus={setIsFocus}
-          />
-        )}
+      {isShowResults && (
+        <SearchResults
+          type={type}
+          headerName={headerName}
+          matchedItems={matchedItems}
+          matchedPart={matchedPart}
+          onClick={onClick}
+          setIsFocus={setIsFocus}
+        />
+      )}
 
       <TextField
         type={INPUT_TYPES.TEXT}

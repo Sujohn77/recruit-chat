@@ -8,7 +8,9 @@ import BURGER from '../assets/icons/burger.svg';
 import INPUT_PLANE from '../assets/icons/plane.svg';
 import ATTACHED_FILE from '../assets/icons/attachedFile.svg';
 import FINGER_UP from '../assets/icons/fingerUp.svg';
-import { CHAT_OPTIONS } from 'screens/intro';
+import LOGO from '../assets/icons/logo.svg';
+import SEARCH_ICON from '../assets/icons/search.svg';
+import QUESTION from '../assets/icons/question.svg';
 import { CHAT_ACTIONS, HTTPStatusCodes, MessageType } from './types';
 import { generateLocalId, getParsedMessages } from './helpers';
 import moment from 'moment';
@@ -24,6 +26,9 @@ export const ICONS = {
   INPUT_PLANE,
   ATTACHED_FILE,
   FINGER_UP,
+  LOGO,
+  SEARCH_ICON,
+  QUESTION,
 };
 
 export const currencies = ['$', '€'];

@@ -14,14 +14,13 @@ export const MessageBox = styled.div<IMessageProps>`
   max-width: 270px;
 
   margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
-  color: ${({ color = '#969696' }) => color};
+  color: ${({ theme: { message }, isOwn }) =>
+    isOwn ? message.own.color : message.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ backColor }) => backColor};
-  ${({ isText = false, backColor = '#D9D9D9', isOwn = false }) =>
-    isText
-      ? `
-        margin-bottom: 24px;
+  background: ${({ isOwn, theme: { message } }) =>
+    isOwn ? message.own.background : message.chat.background};
+  ${({ backColor = '#D9D9D9', isOwn = false }) => `margin-bottom: 24px;
         &:after {
             content: '';
             width: 0; 
@@ -36,11 +35,27 @@ export const MessageBox = styled.div<IMessageProps>`
             transform:  ${isOwn && 'matrix(-1, 0, 0, 1, 0, 0)'} ;
             left:  ${isOwn ? 'calc(100% - 20px)' : '0'} ;
         }   
-    `
-      : `
-        border-radius: 100px;
-        margin-bottom: 16px!important;
     `};
+`;
+
+export const MessageButton = styled.div<IMessageProps>`
+  position: relative;
+  border-radius: 10px;
+  min-height: 41px;
+  font-size: 14px;
+  line-height: 17px;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 270px;
+  margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
+  color: ${({ theme: { button }, isOwn }) =>
+    isOwn ? button.own.color : button.chat.color};
+  cursor: ${({ cursor }) => cursor};
+  padding: ${({ padding }) => padding};
+  background: ${({ isOwn, theme: { button } }) =>
+    isOwn ? button.own.background : button.chat.background};
+  border-radius: 100px;
+  margin-bottom: 16px !important;
 `;
 
 export const MessageContent = styled.div<{ isFile?: boolean }>`

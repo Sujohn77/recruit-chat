@@ -26,7 +26,7 @@ export const HiringHelp: FC<PropsType> = ({ message }) => {
   const handleFeedBackClick = () => {};
 
   return (
-    <S.Wrapper {...messagesProps} isText>
+    <S.Wrapper {...messagesProps}>
       <S.Section>
         <S.Title>{title}</S.Title>
         <Button onClick={onClick}>{helpTxt}</Button>

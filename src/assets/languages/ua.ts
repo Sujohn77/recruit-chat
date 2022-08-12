@@ -8,7 +8,7 @@ export const ua = {
     set_job_alert: 'Установити сповіщення',
     refine_search: 'Уточнити пошук роботи',
     find_job: 'Знайти роботу',
-    ask_question: 'Задайте питання',
+    ask_questions: 'Задати питання',
   },
   placeHolders: {
     message: 'Повідомелння',
@@ -81,7 +81,6 @@ export const ua = {
   },
   chat_item_description: {
     transcript_sent: 'Стенограма надіслана на вашу пошту ',
-    lookingFor: 'Привіт! Ви шукаєте роботу?',
     title: "Кар'єрний бот",
     view_job_title: 'Переглянути роботу',
     no_match: 'Вибачте, таких пропозицій ще немає',

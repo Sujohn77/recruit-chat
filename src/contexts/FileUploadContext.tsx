@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
-import { IFileUploadContext } from "./types";
-import { fileUploadDefaultState } from "utils/helpers";
-import { useChatMessanger } from "./MessangerContext";
-import { CHAT_ACTIONS } from "utils/types";
+import { IFileUploadContext } from './types';
+import { fileUploadDefaultState } from 'utils/helpers';
+import { useChatMessanger } from './MessangerContext';
+import { CHAT_ACTIONS } from 'utils/types';
+import { apiInstance } from 'services';
 
 type PropsType = {
   children: React.ReactNode;
@@ -22,18 +23,26 @@ const FileUploadProvider = ({ children }: PropsType) => {
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
-  const sendFile = (file: File) => {
-    setFile(null);
+  const sendFile = async (file: File) => {
     triggerAction({
       type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
       payload: { item: file.name },
       isResponseFirst: true,
     });
+    setFile(null);
+
+    // const data = {
+    //   candidateId: 12345,
+    //   fileName: file.name,
+    //   lastModified: `${file.lastModified}`,
+    //   blob: new Blob([new Uint8Array(await file.arrayBuffer())]),
+    // };
+    // apiInstance.uploadCV(data);
   };
 
   const saveFile = (file: File) => {
     if (file.size > 2097152) {
-      setNotification("File may not be more than 2MB");
+      setNotification('File may not be more than 2MB');
       setFile(null);
       return;
     }

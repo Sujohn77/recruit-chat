@@ -49,7 +49,7 @@ interface IUser {
   wishSalary?: number;
   salaryCurrency?: string;
 }
-// const noMatchResponse = [];
+
 const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
 
 const ChatProvider = ({ children }: PropsType) => {
@@ -97,7 +97,6 @@ const ChatProvider = ({ children }: PropsType) => {
   }, [nextMessages, setServerMessages, serverMessages, messages.length]);
 
   useEffect(() => {
-    console.log('triggerAction');
     initialAction && triggerAction(initialAction);
   }, [isInitialized]);
 
@@ -184,15 +183,12 @@ const ChatProvider = ({ children }: PropsType) => {
           } else {
             setError(error);
           }
-
           break;
         }
         case CHAT_ACTIONS.APPLY_AGE: {
           setApplyUser({ age: payload?.item! });
-
           break;
         }
-
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
           const isPermitWork = payload?.item === 'Yes';
           setUser({ isPermitWork });
@@ -210,7 +206,6 @@ const ChatProvider = ({ children }: PropsType) => {
               salaryCurrency: salaryInfo[1],
             });
           }
-
           break;
         }
 
@@ -289,10 +284,6 @@ const ChatProvider = ({ children }: PropsType) => {
     text && addMessage({ text, isChatMessage: true });
     setLanguage(lang);
     i18n.changeLanguage(lang.toLowerCase());
-    // chrome.runtime.sendMessage({
-    //   messageType: ChromeMessageTypes.GlobalChangeLanguage,
-    //   msg: language,
-    // });
   };
 
   const chooseButtonOption = (excludeItem: string) => {
@@ -308,6 +299,7 @@ const ChatProvider = ({ children }: PropsType) => {
       setMessages([...newMessages, ...updatedMessages]);
     }
   };
+
   const updateMessages = (serverMessages: IMessage[]) => {
     const parsedMessages = getServerParsedMessages(serverMessages);
     const filteredMessages = parsedMessages.filter((msg) => {
@@ -318,7 +310,6 @@ const ChatProvider = ({ children }: PropsType) => {
     });
 
     setMessages([...messages, ...filteredMessages]);
-
     setNextMessages([]);
   };
 

@@ -23,7 +23,7 @@ export const InterestedIn: FC<IProps> = ({
   }
   console.log(prefferedJob);
   return (
-    <MessageBox {...messageProps} isText>
+    <MessageBox {...messageProps}>
       <S.InterestedInText>I’m interested</S.InterestedInText>
       <S.InterestedInTitle>{prefferedJob.title}</S.InterestedInTitle>
       <S.MessageJobItem>{prefferedJob.location}</S.MessageJobItem>

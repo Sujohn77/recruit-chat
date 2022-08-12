@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { ICONS, IMAGES } from 'utils/constants';
 import { getMessageProps } from 'utils/helpers';
 
@@ -51,12 +51,12 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <TextMessage message={message} />;
     case MessageType.BUTTON: {
       return (
-        <S.MessageBox
+        <S.MessageButton
           onClick={() => onClick(message.content)}
           {...messageProps}
         >
           <S.MessageText>{message.content.text}</S.MessageText>
-        </S.MessageBox>
+        </S.MessageButton>
       );
     }
     case MessageType.INTERESTED_IN:

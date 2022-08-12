@@ -22,7 +22,7 @@ export const TextMessage: FC<IProps> = ({ message }) => {
   );
 
   const renderSendingTime = (message: ILocalMessage) => {
-    if (message._id) {
+    if (message._id && message.isOwn) {
       return <S.TimeText>{createdAt}</S.TimeText>;
     }
     if (message.isOwn) {
@@ -32,7 +32,7 @@ export const TextMessage: FC<IProps> = ({ message }) => {
   };
 
   return (
-    <S.MessageBox {...messageProps} isText>
+    <S.MessageBox {...messageProps}>
       <S.MessageContent isFile={isFile}>
         {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 

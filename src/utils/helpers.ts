@@ -41,12 +41,11 @@ export const capitalize = (str: string) =>
   (str = str.charAt(0).toUpperCase() + str.slice(1));
 
 export interface IMessageProps {
-  color: string;
-  backColor: string;
-  isOwn: boolean;
-  padding: string;
+  color?: string;
+  backColor?: string;
+  isOwn?: boolean;
+  padding?: string;
   cursor?: string;
-  isText?: boolean;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
@@ -441,12 +440,6 @@ export const getResponseMessageType = (type: CHAT_ACTIONS) => {
   return;
 };
 
-export const ResponseMessageTypes = {
-  [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: MessageType.FILE,
-  [CHAT_ACTIONS.SAVE_TRANSCRIPT]: MessageType.TEXT,
-  [CHAT_ACTIONS.SEND_EMAIL]: MessageType.TEXT,
-};
-
 export const getJobMatches = ({
   category,
   locations,
@@ -493,12 +486,27 @@ export const getUpdatedMessages = ({
   const isValid = isValidEmailOrText(type, payload?.item!);
 
   if (responseAction.messages.length && isValid) {
-    const updatedMessages = popMessage({
+    let updatedMessages = popMessage({
       type: responseAction.replaceType,
       messages,
     });
+    if (!messages.length) {
+      updatedMessages = [
+        ...updatedMessages,
+        ...getParsedMessages([
+          {
+            text: i18n.t('messages:initialMessage'),
+            isChatMessage: true,
+          },
+        ]),
+      ];
+    }
     if (text && responseAction.isPushMessage) {
-      const localMessage = getParsedMessage({ text });
+      const subType =
+        type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV
+          ? MessageType.FILE
+          : MessageType.TEXT;
+      const localMessage = getParsedMessage({ text, subType });
       return [...responseAction.messages, localMessage, ...updatedMessages];
     } else {
       return [...responseAction.messages, ...updatedMessages];
