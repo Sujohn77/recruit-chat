@@ -36,7 +36,6 @@ import { profile } from 'contexts/mockData';
 import { jobOffers } from 'components/Chat/mockData';
 
 import i18n from 'services/localization';
-import { getChatActionResponse } from './constants';
 
 export const capitalize = (str: string) =>
   (str = str.charAt(0).toUpperCase() + str.slice(1));
@@ -259,7 +258,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   locations: [],
   categories: [],
   offerJobs: [],
-  lastActionType: undefined,
+  lastActionType: null,
   alertCategory: null,
   error: null,
   viewJob: null,
@@ -450,7 +449,6 @@ export const getJobMatches = ({
 }): IJobPosition[] => {
   const jobs = jobOffers
     .filter((offer) => {
-      console.log(offer.category, category, offer.category === category);
       return (
         offer.category === category &&
         locations.findIndex((l) => l === offer.location) !== -1
@@ -484,38 +482,35 @@ export const getUpdatedMessages = ({
   const { type, payload } = action;
 
   const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
-  const isValid = isValidEmailOrText(type, payload?.item!);
 
-  if (responseAction.messages.length && isValid) {
-    let updatedMessages = popMessage({
-      type: responseAction.replaceType,
-      messages,
+  let updatedMessages = popMessage({
+    type: responseAction.replaceType,
+    messages,
+  });
+  if (!messages.length) {
+    updatedMessages = [
+      ...updatedMessages,
+      ...getParsedMessages([
+        {
+          text: i18n.t('messages:initialMessage'),
+          isChatMessage: true,
+        },
+      ]),
+    ];
+  }
+  if (text && responseAction.isPushMessage) {
+    const isFileUpload = type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
+    const localMessage = getParsedMessage({
+      text,
+      subType: isFileUpload ? MessageType.FILE : MessageType.TEXT,
+      isChatMessage: action.payload?.isOwn || true,
     });
-    if (!messages.length) {
-      updatedMessages = [
-        ...updatedMessages,
-        ...getParsedMessages([
-          {
-            text: i18n.t('messages:initialMessage'),
-            isChatMessage: true,
-          },
-        ]),
-      ];
+    if (responseAction.isFirstResponse) {
+      return [localMessage, ...responseAction.messages, ...updatedMessages];
     }
-    if (text && responseAction.isPushMessage) {
-      const subType =
-        type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV
-          ? MessageType.FILE
-          : MessageType.TEXT;
-      const localMessage = getParsedMessage({
-        text,
-        subType,
-        isChatMessage: action.payload?.isOwn || true,
-      });
-      return [...responseAction.messages, localMessage, ...updatedMessages];
-    } else {
-      return [...responseAction.messages, ...updatedMessages];
-    }
+    return [...responseAction.messages, localMessage, ...updatedMessages];
+  } else {
+    return [...responseAction.messages, ...updatedMessages];
   }
 };
 
@@ -567,7 +562,7 @@ export const replaceLocalMessages = ({
   });
 };
 
-export const getNextActionType = (lastActionType: CHAT_ACTIONS | undefined) => {
+export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
   switch (lastActionType) {
     case CHAT_ACTIONS.SET_ALERT_CATEGORY:
       return CHAT_ACTIONS.SET_ALERT_PERIOD;
@@ -615,4 +610,16 @@ export const getSearchJobsData = (
     },
     externalSystemId: 789,
   };
+};
+
+export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
+  switch (type) {
+    case CHAT_ACTIONS.APPLY_AGE:
+    case CHAT_ACTIONS.SET_WORK_PERMIT:
+    case CHAT_ACTIONS.SET_SALARY:
+    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
+      return false;
+    default:
+      return true;
+  }
 };

@@ -20,7 +20,7 @@ export interface IChatMessangerContext {
   setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[]) => void;
   setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
   changeLang: (lang: string) => void;
-  lastActionType: CHAT_ACTIONS | undefined;
+  lastActionType: CHAT_ACTIONS | null;
   offerJobs: IJobPosition[];
   alertCategory: string | null;
   error: string | null;
@@ -52,7 +52,6 @@ type PayloadType = {
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;
   payload?: PayloadType;
-  isResponseFirst?: boolean;
 }
 
 export type IResponseAction = {

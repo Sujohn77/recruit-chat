@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import * as S from './styles';
 import i18n from 'services/localization';
-import { Button } from 'components/Layout/styles';
+import { DarkButton, DefaultButton } from 'components/Layout/styles';
 import { ICONS } from 'utils/constants';
 
 import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
@@ -29,7 +29,7 @@ export const HiringHelp: FC<PropsType> = ({ message }) => {
     <S.Wrapper {...messagesProps}>
       <S.Section>
         <S.Title>{title}</S.Title>
-        <Button onClick={onClick}>{helpTxt}</Button>
+        <DarkButton onClick={onClick}>{helpTxt}</DarkButton>
       </S.Section>
       <S.Text>{helpfulTxt}</S.Text>
       <S.FeedBackIcons>

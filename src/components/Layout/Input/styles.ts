@@ -23,7 +23,7 @@ export const FormInput = styled(TextField)`
   }
   p {
     position: absolute;
-    top: 12px;
+    top: 7px;
     right: 8px;
   }
 

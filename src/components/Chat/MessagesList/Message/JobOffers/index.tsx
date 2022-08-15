@@ -1,4 +1,4 @@
-import { Button } from 'components/Layout/styles';
+import { DarkButton, DefaultButton } from 'components/Layout/styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import React, { FC } from 'react';
 import Carousel from 'react-material-ui-carousel';
@@ -92,9 +92,7 @@ export const JobOffer = ({
       <Category>{'Engineering'}</Category>
       <OfferTitle>{title}</OfferTitle>
       <ReadMore onClick={handleReadMore}>{readMoreTxt}</ReadMore>
-      <Button isBackground onClick={handleButtonClick}>
-        {interestedTxt}
-      </Button>
+      <DarkButton onClick={handleButtonClick}>{interestedTxt}</DarkButton>
     </JobOfferWrapper>
   );
 };

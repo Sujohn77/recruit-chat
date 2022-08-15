@@ -137,7 +137,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t('messages:successSubscribed'),
+          text: i18n.t('messages:successSubscribed', { period: param }),
         },
       ];
     case CHAT_ACTIONS.APPLY_POSITION:
@@ -290,14 +290,11 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.QUESTION_RESPONSE: {
       return [{ text: i18n.t('messages:emailAnswer') }];
     }
+    case CHAT_ACTIONS.SET_LOCATIONS: {
+      return [];
+    }
     default:
-      return [
-        { subType: MessageType.REFINE_SERCH },
-        {
-          subType: MessageType.TEXT,
-          text: i18n.t('messages:noMatchMessage'),
-        },
-      ];
+      return [];
   }
 };
 
@@ -322,93 +319,13 @@ export const getChatActionResponse = (type: CHAT_ACTIONS, param?: string) => {
   const messages = getChatActionMessages(type, param);
   const replaceType = getReplaceMessageType(type);
   const isPushMessage = isPushMessageType(type);
-  return { messages: getParsedMessages(messages), replaceType, isPushMessage };
+  return {
+    messages: getParsedMessages(messages),
+    replaceType,
+    isPushMessage,
+    isFirstResponse: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
+  };
 };
-
-// export const CHAT_ACTIONS_RESPONSE: IResponseAction = {
-//   [CHAT_ACTIONS.SET_CATEGORY]: {
-//     replaceLatest: true,
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TEXT,
-//         text: 'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SUCCESS_UPLOAD_CV]: {
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TEXT,
-//         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SAVE_TRANSCRIPT]: {
-//     replaceLatest: true,
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.EMAIL_FORM,
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SEND_EMAIL]: {
-//     replaceLatest: true,
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TRANSCRIPT,
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.FETCH_JOBS]: {
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.JOB_POSITIONS,
-//       },
-//       {
-//         subType: MessageType.TEXT,
-//         text: 'Thanks Here are your job recommendations based on the information you provided.',
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SET_JOB_ALERT]: {
-//     messages: getParsedMessages([
-//       {
-//         text: 'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
-//         subType: MessageType.TEXT,
-//       },
-//       {
-//         subType: MessageType.TEXT,
-//         text: 'Set Job Alert',
-//         isOwn: true,
-//         isChatMessage: true,
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SET_ALERT_CATEGORY]: {
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TEXT_WITH_CHOICE,
-//         text: 'How often would you like to receive your job alerts?',
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SET_ALERT_PERIOD]: {
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TEXT,
-//         text: "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
-//       },
-//     ]),
-//   },
-//   [CHAT_ACTIONS.SET_ALERT_EMAIL]: {
-//     messages: getParsedMessages([
-//       {
-//         subType: MessageType.TEXT,
-//         text: "You've successfully subscribed to Weekly job alerts.",
-//       },
-//     ]),
-//   },
-// };
 
 export enum EnvironmentMode {
   Development = 'development',

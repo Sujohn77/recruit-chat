@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 
 import * as S from './styles';
 import i18n from 'services/localization';
-import { Button } from 'components/Layout/styles';
+import { DarkButton, DefaultButton } from 'components/Layout/styles';
 import { currencies, ICONS } from 'utils/constants';
 
 import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
@@ -38,17 +38,16 @@ export const SalaryForm: FC<PropsType> = ({ message }) => {
         placeHolder={'0'}
       />
       <S.Options>{optionItems}</S.Options>
-      <Button
+      <DarkButton
         onClick={() =>
           triggerAction({
             type: CHAT_ACTIONS.SET_SALARY,
             payload: { item: `${salary} ${currency}` },
           })
         }
-        isBackground
       >
         {buttonTxt}
-      </Button>
+      </DarkButton>
     </S.Wrapper>
   );
 };

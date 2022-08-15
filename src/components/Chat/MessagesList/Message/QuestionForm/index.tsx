@@ -79,9 +79,7 @@ export const QuestionForm: FC<PropsType> = () => {
           error={!!descriptionError}
           helperText={descriptionError}
         />
-        <S.SubmitButton onClick={onSubmit} isBackground>
-          {sendTxt}
-        </S.SubmitButton>
+        <S.SubmitButton onClick={onSubmit}>{sendTxt}</S.SubmitButton>
       </S.Wrapper>
     </div>
   );

@@ -12,6 +12,7 @@ import * as S from './styles';
 
 import {
   capitalizeFirstLetter,
+  getAccessWriteType,
   getMatchedItems,
   getNextActionType,
   validateEmail,
@@ -32,6 +33,18 @@ interface IRenderInputProps {
     | CHAT_ACTIONS.SET_LOCATIONS
     | CHAT_ACTIONS.SET_ALERT_CATEGORY;
 }
+
+export const isResultsType = (type: CHAT_ACTIONS | null) => {
+  return (
+    !type ||
+    type === CHAT_ACTIONS.FIND_JOB ||
+    type === CHAT_ACTIONS.ASK_QUESTION ||
+    type === CHAT_ACTIONS.SET_JOB_ALERT ||
+    type === CHAT_ACTIONS.SET_CATEGORY ||
+    type === CHAT_ACTIONS.GET_USER_EMAIL ||
+    type === CHAT_ACTIONS.SET_ALERT_EMAIL
+  );
+};
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
   const {
@@ -71,8 +84,10 @@ export const MessageInput: FC<PropsType> = () => {
       setIsFocus(false);
       setDraftMessage(null);
 
+      const matchedPart = capitalizeFirstLetter(draftMessage || '');
       const isNotValidMessage =
-        !alertCategory && !matchedPositions.length && !category;
+        isResultsType(lastActionType) && matchedPositions[0] !== matchedPart;
+
       const actionType = isNotValidMessage
         ? CHAT_ACTIONS.REFINE_SEARCH
         : getNextActionType(lastActionType);
@@ -167,23 +182,23 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
-  const type =
+  const inputType =
     lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
       ? CHAT_ACTIONS.SET_ALERT_CATEGORY
       : category
       ? CHAT_ACTIONS.SET_LOCATIONS
       : CHAT_ACTIONS.SET_CATEGORY;
 
-  const isEmptyTextField = !draftMessage && !file && !locations.length;
+  const isWriteAccess = getAccessWriteType(lastActionType) || file;
   return (
     <S.MessagesInput
-      isOffset={type === CHAT_ACTIONS.SET_LOCATIONS && !!locations.length}
+      isOffset={inputType === CHAT_ACTIONS.SET_LOCATIONS && !!locations.length}
     >
       <BurgerMenu />
 
-      {renderInput({ type })}
+      {isWriteAccess && renderInput({ type: inputType })}
 
-      {!isEmptyTextField && (
+      {isWriteAccess && (
         <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
       )}
     </S.MessagesInput>

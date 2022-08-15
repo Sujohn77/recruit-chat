@@ -71,7 +71,9 @@ const ChatProvider = ({ children }: PropsType) => {
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
-  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS>();
+  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(
+    null
+  );
   const [initialAction, setInitialAction] = useState<ITriggerActionProps>();
 
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +94,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
       updateMessages(processedSnapshots);
       setServerMessages(processedSnapshots);
-      setLastActionType(undefined);
+      // setLastActionType(null);
       !isInitialized && setInitialized(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,7 +114,13 @@ const ChatProvider = ({ children }: PropsType) => {
         return null;
       }
 
-      let response = getChatActionResponse(type, payload?.item!);
+      const isAlertLastType =
+        type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
+      const param = isAlertLastType ? alertPeriod : payload?.item;
+
+      let response = getChatActionResponse(type, param!);
+      let isValidPush = true;
+
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           setCategory(payload?.item!);
@@ -124,20 +132,22 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
           setAlertCategory(payload?.item!);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_PERIOD: {
           setAlertPeriod(payload?.item!);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
             setAlertEmail(payload.item);
-            setLastActionType(undefined);
-            setAlertCategory(null);
+            clearFilters();
           } else {
             setError(error);
+            isValidPush = false;
           }
           break;
         }
@@ -149,7 +159,10 @@ const ChatProvider = ({ children }: PropsType) => {
             response.messages = jobs.length
               ? response.messages
               : noMathReponse.messages;
+
             setOfferJobs(jobs);
+            setLastActionType(type);
+            setCategory(null);
             clearFilters();
           }
           break;
@@ -157,43 +170,51 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.INTERESTED_IN: {
           const job = getItemById(offerJobs, payload?.item!);
           setPrefferedJob(job!);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.GET_USER_NAME: {
           setUser({ name: payload?.item! });
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.GET_USER_EMAIL: {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
             setUser({ email: payload?.item! });
-            setLastActionType(undefined);
+            clearFilters();
+            setLastActionType(type);
           } else {
             setError(error);
+            isValidPush = false;
           }
 
           break;
         }
         case CHAT_ACTIONS.GET_USER_AGE: {
           setUser({ age: payload?.item! });
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.APPLY_NAME: {
           setApplyUser({ name: payload?.item! });
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.APPLY_EMAIL: {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
             setApplyUser({ email: payload?.item! });
-            setLastActionType(undefined);
+            setLastActionType(type);
           } else {
             setError(error);
+            isValidPush = false;
           }
           break;
         }
         case CHAT_ACTIONS.APPLY_AGE: {
           setApplyUser({ age: payload?.item! });
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
@@ -202,6 +223,7 @@ const ChatProvider = ({ children }: PropsType) => {
           response.messages = isPermitWork
             ? response.messages
             : noPermitWorkReponse.messages;
+          setLastActionType(type);
           break;
         }
 
@@ -212,6 +234,7 @@ const ChatProvider = ({ children }: PropsType) => {
               wishSalary: Number(salaryInfo[0]),
               salaryCurrency: salaryInfo[1],
             });
+            setLastActionType(type);
           }
           break;
         }
@@ -220,26 +243,30 @@ const ChatProvider = ({ children }: PropsType) => {
           clearFilters();
           break;
         }
-        default:
-          break;
+        default: {
+          setLastActionType(type);
+        }
       }
 
-      const updatedMessages = getUpdatedMessages({
-        action,
-        messages,
-        responseAction: response,
-      });
+      // isValidEmailOrText(type, payload?.item!) && setLastActionType(type);
 
-      isValidEmailOrText(type, payload?.item!) && setLastActionType(type);
-      updatedMessages?.length && setMessages(updatedMessages);
+      if (response.messages.length && isValidPush) {
+        const updatedMessages = getUpdatedMessages({
+          action,
+          messages,
+          responseAction: response,
+        });
+        updatedMessages?.length && setMessages(updatedMessages);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [messages.length, locations.length, lastActionType, user]
+    [messages, locations.length, lastActionType, user]
   );
 
   const clearFilters = () => {
-    setLocations([]);
     setCategory(null);
+    setLastActionType(null);
+    setAlertCategory(null);
   };
 
   const pushMessages = useCallback(
@@ -252,7 +279,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
     !nextMessages.length && setNextMessages(messagesSnapshots);
   };
-
+  // TODO: refator
   const addMessage = ({
     text,
     subType = MessageType.TEXT,
@@ -292,7 +319,7 @@ const ChatProvider = ({ children }: PropsType) => {
     setLanguage(lang);
     i18n.changeLanguage(lang.toLowerCase());
   };
-
+  // TODO: refator
   const chooseButtonOption = (excludeItem: string) => {
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,

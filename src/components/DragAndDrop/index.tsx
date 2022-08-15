@@ -1,6 +1,6 @@
-import React, { Component, ReactNode, RefObject } from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import React, { Component, ReactNode, RefObject } from 'react';
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 interface IProps {
   handleDrop: (files: any) => void;
@@ -8,15 +8,17 @@ interface IProps {
 }
 
 export const Wrapper = styled.div`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  margin: 0 0 16px;
-  background: ${colors.white};
+  background: ${colors.alto};
+  border-radius: 10px;
+  padding: 32px 17px 16px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
+  flex-flow: column;
+  width: 220px;
   align-items: center;
-  cursor: pointer;
+  color: ${colors.dustyGray};
+  margin-bottom: 24px;
+  position: relative;
 `;
 
 class DragAndDrop extends Component<IProps> {
@@ -63,20 +65,20 @@ class DragAndDrop extends Component<IProps> {
     let div = this.dropRef.current;
 
     if (div) {
-      div.addEventListener("dragenter", this.handleDragIn);
-      div.addEventListener("dragleave", this.handleDragOut);
-      div.addEventListener("dragover", this.handleDrag);
-      div.addEventListener("drop", this.handleDrop);
+      div.addEventListener('dragenter', this.handleDragIn);
+      div.addEventListener('dragleave', this.handleDragOut);
+      div.addEventListener('dragover', this.handleDrag);
+      div.addEventListener('drop', this.handleDrop);
     }
   }
   componentWillUnmount() {
     let div = this.dropRef.current;
 
     if (div) {
-      div.removeEventListener("dragenter", this.handleDragIn);
-      div.removeEventListener("dragleave", this.handleDragOut);
-      div.removeEventListener("dragover", this.handleDrag);
-      div.removeEventListener("drop", this.handleDrop);
+      div.removeEventListener('dragenter', this.handleDragIn);
+      div.removeEventListener('dragleave', this.handleDragOut);
+      div.removeEventListener('dragover', this.handleDrag);
+      div.removeEventListener('drop', this.handleDrop);
     }
   }
   render() {
@@ -85,9 +87,9 @@ class DragAndDrop extends Component<IProps> {
         {this.state.dragging && (
           <div
             style={{
-              border: "dashed grey 4px",
-              backgroundColor: "rgba(255,255,255,.8)",
-              position: "absolute",
+              border: 'dashed grey 4px',
+              backgroundColor: 'rgba(255,255,255,.8)',
+              position: 'absolute',
               top: 0,
               bottom: 0,
               left: 0,
@@ -97,12 +99,12 @@ class DragAndDrop extends Component<IProps> {
           >
             <div
               style={{
-                position: "absolute",
-                top: "50%",
+                position: 'absolute',
+                top: '50%',
                 right: 0,
                 left: 0,
-                textAlign: "center",
-                color: "grey",
+                textAlign: 'center',
+                color: 'grey',
                 fontSize: 36,
               }}
             >
