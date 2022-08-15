@@ -73,6 +73,8 @@ export const fr = {
     popularQuestions:
       'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
+    noMatchMessage:
+      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
   },
   chat_item_description: {
     title: 'Bot de carrière',

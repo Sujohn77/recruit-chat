@@ -25,6 +25,7 @@ import {
 import {
   IApiMessage,
   IMessage,
+  ISearchJobsPayload,
   IUserSelf,
   ServerMessageType,
 } from 'services/types';
@@ -506,7 +507,11 @@ export const getUpdatedMessages = ({
         type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV
           ? MessageType.FILE
           : MessageType.TEXT;
-      const localMessage = getParsedMessage({ text, subType });
+      const localMessage = getParsedMessage({
+        text,
+        subType,
+        isChatMessage: action.payload?.isOwn || true,
+      });
       return [...responseAction.messages, localMessage, ...updatedMessages];
     } else {
       return [...responseAction.messages, ...updatedMessages];
@@ -585,4 +590,29 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | undefined) => {
     default:
       return CHAT_ACTIONS.SET_CATEGORY;
   }
+};
+
+export const getSearchJobsData = (
+  category: string,
+  locations: string[]
+): ISearchJobsPayload => {
+  return {
+    pageSize: 25,
+    page: 0,
+    keyword: '*',
+    companyId: '1234',
+    minDatePosted: '2016-11-13T00:00:00',
+    categories: [category],
+    location: {
+      city: locations[0],
+      state: null,
+      postalCode: null,
+      country: null,
+      latitude: null,
+      longitude: null,
+      radius: null,
+      radiusUnit: 'km',
+    },
+    externalSystemId: 789,
+  };
 };

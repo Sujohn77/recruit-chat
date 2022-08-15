@@ -10,7 +10,7 @@ export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   background: ${colors.alto};
   border-radius: 10px;
   padding: 24px 28px;
-  margin: ${({ isRefineOnly }) => isRefineOnly && '0 16px'};
+  margin: ${({ isRefineOnly }) => !isRefineOnly && '0 16px'};
   display: flex;
   flex-flow: column;
   max-width: 306px;

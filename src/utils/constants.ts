@@ -130,14 +130,14 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t('messages:reachYou'),
+          text: i18n.t('messages:reachEmail'),
         },
       ];
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t('messages:successSubcribed'),
+          text: i18n.t('messages:successSubscribed'),
         },
       ];
     case CHAT_ACTIONS.APPLY_POSITION:
@@ -278,9 +278,26 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.HELP: {
       return [{ subType: MessageType.QUESTION_FORM }];
     }
-
+    case CHAT_ACTIONS.REFINE_SEARCH: {
+      return [
+        { subType: MessageType.NO_MATCH },
+        {
+          subType: MessageType.TEXT,
+          text: i18n.t('messages:noMatchMessage'),
+        },
+      ];
+    }
+    case CHAT_ACTIONS.QUESTION_RESPONSE: {
+      return [{ text: i18n.t('messages:emailAnswer') }];
+    }
     default:
-      return [];
+      return [
+        { subType: MessageType.REFINE_SERCH },
+        {
+          subType: MessageType.TEXT,
+          text: i18n.t('messages:noMatchMessage'),
+        },
+      ];
   }
 };
 

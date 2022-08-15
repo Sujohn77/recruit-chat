@@ -22,12 +22,14 @@ export const TextMessage: FC<IProps> = ({ message }) => {
   );
 
   const renderSendingTime = (message: ILocalMessage) => {
-    if (message._id && message.isOwn) {
-      return <S.TimeText>{createdAt}</S.TimeText>;
-    }
-    if (message.isOwn) {
+    if (message.localId !== message._id && message.isOwn) {
+      if (message._id) {
+        return <S.TimeText>{createdAt}</S.TimeText>;
+      }
+
       return <S.MessageUnsendIcon src={IMAGES.CLOCK} />;
     }
+
     return null;
   };
 

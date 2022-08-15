@@ -45,7 +45,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
 
 export const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
-    case CHAT_ACTIONS.SET_CATEGORY:
+    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
       return ['Daily', 'Weekly', 'Monthly'];
     case CHAT_ACTIONS.APPLY_AGE:
       return ['Yes', 'No'];

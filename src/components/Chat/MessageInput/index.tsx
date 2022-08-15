@@ -71,7 +71,11 @@ export const MessageInput: FC<PropsType> = () => {
       setIsFocus(false);
       setDraftMessage(null);
 
-      const actionType = getNextActionType(lastActionType);
+      const isNotValidMessage =
+        !alertCategory && !matchedPositions.length && !category;
+      const actionType = isNotValidMessage
+        ? CHAT_ACTIONS.REFINE_SEARCH
+        : getNextActionType(lastActionType);
       if (actionType) {
         triggerAction({
           type: actionType,

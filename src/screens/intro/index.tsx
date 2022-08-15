@@ -22,16 +22,15 @@ interface IOption {
   message: string;
   type: CHAT_ACTIONS;
   size: string;
-  text: string;
 }
 
 export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   const { triggerAction } = useChatMessanger();
 
   const onClick = (option: IOption) => {
-    const { text: item, type } = option;
+    const { message: item, type } = option;
     setIsSelectedOption(true);
-    triggerAction({ type, payload: { item } });
+    triggerAction({ type, payload: { item, isOwn: false } });
   };
 
   const messages = {
@@ -41,14 +40,12 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
         message: i18n.t('buttons:find_job'),
         type: CHAT_ACTIONS.FIND_JOB,
         size: '16px',
-        text: 'Find a job',
       },
       {
         icon: ICONS.QUESTION,
         message: i18n.t('buttons:ask_questions'),
         type: CHAT_ACTIONS.ASK_QUESTION,
         size: '16px',
-        text: 'Ask a question',
       },
     ],
   };

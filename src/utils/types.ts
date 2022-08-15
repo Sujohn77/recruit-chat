@@ -81,6 +81,7 @@ export enum CHAT_ACTIONS {
   SET_LOCATIONS = 'set_location',
   SEND_LOCATIONS = 'send_locations',
   REFINE_SEARCH = 'refine_search',
+  NO_MATCH = 'no_match',
   SEND_MESSAGE = 'send_message',
   FIND_JOB = 'find_job',
   ASK_QUESTION = 'ask_question',
@@ -106,6 +107,7 @@ export enum CHAT_ACTIONS {
   SET_SALARY = 'set_salary',
   NO_PERMIT_WORK = 'no_permit_work',
   HELP = 'help',
+  QUESTION_RESPONSE = 'question_response',
 }
 
 export enum Status {

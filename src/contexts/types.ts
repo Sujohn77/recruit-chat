@@ -47,6 +47,7 @@ export interface IAddMessageProps {
 type PayloadType = {
   item?: string | null;
   items?: string[];
+  isOwn?: boolean;
 };
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;

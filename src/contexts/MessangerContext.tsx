@@ -22,6 +22,7 @@ import {
   validateEmail,
   getChatResponseOnMessage,
   isValidEmailOrText,
+  getSearchJobsData,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
@@ -33,6 +34,7 @@ import {
 import { useCategories } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
+import { apiInstance } from 'services';
 
 type PropsType = {
   children: React.ReactNode;
@@ -49,7 +51,7 @@ interface IUser {
   wishSalary?: number;
   salaryCurrency?: string;
 }
-
+const noMathReponse = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
 const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
 
 const ChatProvider = ({ children }: PropsType) => {
@@ -102,7 +104,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
   // Callbacks
   const triggerAction = useCallback(
-    (action: ITriggerActionProps) => {
+    async (action: ITriggerActionProps) => {
       const { type, payload } = action;
 
       if (action.type === lastActionType || !isInitialized) {
@@ -133,6 +135,7 @@ const ChatProvider = ({ children }: PropsType) => {
           if (payload?.item && !error?.length) {
             setAlertEmail(payload.item);
             setLastActionType(undefined);
+            setAlertCategory(null);
           } else {
             setError(error);
           }
@@ -140,8 +143,12 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
+            // const data = getSearchJobsData(category, locations);
+            // const jobs = await apiInstance.searchJobs(data);
             const jobs = getJobMatches({ category, locations });
-            response.messages = jobs.length ? response.messages : [];
+            response.messages = jobs.length
+              ? response.messages
+              : noMathReponse.messages;
             setOfferJobs(jobs);
             clearFilters();
           }

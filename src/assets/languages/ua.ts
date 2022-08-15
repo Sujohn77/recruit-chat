@@ -40,7 +40,7 @@ export const ua = {
     setJobAlert: 'Set Job Alert',
     interstedCategories:
       'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
-    emailPeriod: 'How often would you like to receive your job alerts?',
+    alertPeriod: 'How often would you like to receive your job alerts?',
     monthy: 'Monthly',
     weekly: 'Weekly',
     daily: 'Daily',
@@ -78,6 +78,8 @@ export const ua = {
     popularQuestions:
       'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
+    noMatchMessage:
+      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
   },
   chat_item_description: {
     transcript_sent: 'Стенограма надіслана на вашу пошту ',

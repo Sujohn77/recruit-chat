@@ -72,11 +72,10 @@ export const Message = styled.div`
 `;
 
 export const Question = styled(MessageBox)`
-  box-shadow: ${introQuestionShadow};
   padding: 0 16px;
   line-height: 41px;
   border: none;
-  color: ${colors.zambesi};
+  color: ${colors.dustyGray};
   font-weight: 600;
   height: 41px;
   box-sizing: border-box;
@@ -124,23 +123,4 @@ export const ImageButton = styled(Button)`
   text-aling: center !important;
   line-height: 34px;
   box-sizing: border-box;
-  
-  @keyframes pulsing {
-    0% {
-      transform: scale(1);
-      box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 60%)
-    }
-   
-    50% {
-      box-shadow: 0px 0px 0px 10px rgb(0 0 0 / 0%)
-    }
-    75% {
-      transform: scale(1.1);
-    }
-  
-    100% {
-      box-shadow: 0px 0px 0px 8px rgb(0 0 0 / 0%)
-      transform: scale(1);
-    }
-  }
 `;
