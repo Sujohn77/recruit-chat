@@ -112,3 +112,6 @@ dist
 .vscode/
 
 .vercel
+
+
+.idea/
