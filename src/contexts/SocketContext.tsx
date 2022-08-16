@@ -17,7 +17,7 @@ type PropsType = {
 };
 
 const socketDefaultState = {};
-const SocketContext = createContext<any>(socketDefaultState);
+const SocketContext = createContext<any>({ socketDefaultState });
 
 const SocketProvider = ({ children }: PropsType) => {
   const { messages, setSnapshotMessages } = useChatMessanger();

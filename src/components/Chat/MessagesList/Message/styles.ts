@@ -12,14 +12,17 @@ export const MessageBox = styled.div<IMessageProps>`
   box-sizing: border-box;
   width: fit-content;
   max-width: 270px;
-
   margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
   color: ${({ theme: { message }, isOwn }) =>
-    isOwn ? message.own.color : message.chat.color};
+    isOwn
+      ? message?.own.color || colors.white
+      : message?.chat.color || colors.dustyGray};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   background: ${({ isOwn, theme: { message } }) =>
-    isOwn ? message.own.background : message.chat.background};
+    isOwn
+      ? message?.own.background || colors.boulder
+      : message?.chat.background || colors.alto};
   ${({ backColor = '#D9D9D9', isOwn = false }) => `margin-bottom: 24px;
         &:after {
             content: '';

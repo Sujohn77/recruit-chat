@@ -20,6 +20,7 @@ import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
 import { ThanksMessage } from './ThanksMessage';
+import { useThemeContext } from 'contexts/ThemeContext';
 
 type PropsType = {
   message: ILocalMessage;
@@ -28,6 +29,7 @@ type PropsType = {
 
 export const MS_1000 = 1000;
 export const Message: FC<PropsType> = ({ message, onClick }) => {
+  const { theme } = useThemeContext();
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -52,6 +54,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.BUTTON: {
       return (
         <S.MessageButton
+          theme={theme}
           onClick={() => onClick(message.content)}
           {...messageProps}
         >

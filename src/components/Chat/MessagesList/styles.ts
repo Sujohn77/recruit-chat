@@ -6,7 +6,8 @@ export const Wrapper = styled.div`
 `;
 
 export const MessagesArea = styled.div`
-  // height: 400px;
+  max-height: calc(100% - 120px);
+  overflow: hidden;
   font-family: Inter-Medium;
   border-bottom: 1px solid ${colors.alto};
   position: relative;

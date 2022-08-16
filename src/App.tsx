@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 
 import { Chat } from './components/Chat';
 
@@ -13,7 +13,8 @@ import { handleSignInWithCustomToken } from 'firebase/config';
 import { FileUploadProvider } from 'contexts/FileUploadContext';
 import defaultTheme from 'utils/theme/default';
 import { useApiKey } from 'utils/hooks';
-import { api } from "utils/api";
+import { api } from 'utils/api';
+import { ThemeProvider } from 'contexts/ThemeContext';
 
 export const Container = styled.div`
   width: 370px;
@@ -23,13 +24,27 @@ export const Container = styled.div`
 
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState(false);
-
-  const [testData, setTestData] = React.useState<any>(null);
+  const [theme, setTheme] = useState<any>(null);
   const apiKey: any = useApiKey();
 
   useEffect(() => {
+    if (apiKey) {
+      api.test(apiKey).then((res) => {
+        console.log('Bot data: ', res.data);
+        setTheme({
+          color: res.data.fontColor,
+          backgroundColor: res.data.backgroundColor,
+          backgroundImage: `url("${res.data.imageUrl}")`,
+        });
+      });
+    }
+  }, [apiKey]);
+
+  const [testData, setTestData] = React.useState<any>(null);
+
+  useEffect(() => {
     api.test(apiKey).then((data: any) => {
-      console.log('Bot Data', data.data)
+      console.log('Bot Data', data.data);
       setTestData(data.data);
     });
   }, [apiKey]);
@@ -49,7 +64,7 @@ const App = () => {
   return (
     <Container>
       <ChatProvider>
-        <ThemeProvider theme={defaultTheme}>
+        <ThemeProvider>
           <FileUploadProvider>
             <SocketProvider>{renderContent()}</SocketProvider>{' '}
           </FileUploadProvider>

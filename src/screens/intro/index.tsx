@@ -2,11 +2,12 @@ import React, { Dispatch, FC, SetStateAction } from 'react';
 
 import * as S from './styles';
 
-import { ICONS, IMAGES } from '../../utils/constants';
+import { ICONS } from '../../utils/constants';
 
 import { useChatMessanger } from 'contexts/MessangerContext';
 import i18n from 'services/localization';
 import { CHAT_ACTIONS } from 'utils/types';
+import { useThemeContext } from 'contexts/ThemeContext';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -27,6 +28,7 @@ interface IOption {
 
 export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   const { triggerAction } = useChatMessanger();
+  const { theme } = useThemeContext();
 
   const onClick = (option: IOption) => {
     const { text: item, type } = option;
@@ -52,9 +54,13 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
       },
     ],
   };
-
+  console.log(theme);
   const chooseOptions = messages.options.map((opt, index) => (
-    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
+    <S.Message
+      key={`chat-option-${index}`}
+      onClick={() => onClick(opt)}
+      themes={theme}
+    >
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={''} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>
@@ -64,7 +70,11 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
     <S.Wrapper>
       <S.Flex>
         <S.ImageButton>
-          <S.IntroImage src={ICONS.LOGO} size="20px" alt="rob-face" />
+          <S.IntroImage
+            src={theme?.imageUrl || ICONS.LOGO}
+            size="20px"
+            alt="rob-face"
+          />
         </S.ImageButton>
         <S.InfoContent>
           <S.Question>{lookingForJobTxt}</S.Question>

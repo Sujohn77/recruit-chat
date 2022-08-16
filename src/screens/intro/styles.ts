@@ -16,6 +16,7 @@ export const Flex = styled.div`
 export const Wrapper = styled.div`
   position: relative;
   width: 365px;
+  margin-top: 520px;
 `;
 
 export const Close = styled.div<{ height?: string }>`
@@ -42,10 +43,13 @@ export const Close = styled.div<{ height?: string }>`
   }
 `;
 
-export const Message = styled.div`
+export const Message = styled.div<{ themes?: any }>`
   border-radius: 20px;
   padding: 10px 10px;
-  color: ${colors.persian};
+
+  background: ${({ themes }) =>
+    themes?.backgroundColor || colors.alto}!important;
+
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
   text-align: center;
@@ -53,8 +57,9 @@ export const Message = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: ${colors.alto};
-
+  span {
+    color: ${({ themes }) => themes?.fontColor || colors.persian}!important;
+  }
   animation: opacity 0.3s ease-in;
 
   &:nth-child(2) {
@@ -106,6 +111,12 @@ export const Image = styled.img<{ size?: string }>`
   height: ${({ size = '20px' }) => size};
 `;
 export const IntroImage = styled(Image)``;
+export const IntroImageBackground = styled.div<{ source: string }>`
+  width: 20px;
+  height: 20px;
+  background: ${({ source }) => source} no-repeat;
+  background-size: cover;
+`;
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;

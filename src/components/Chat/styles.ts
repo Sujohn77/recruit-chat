@@ -5,6 +5,22 @@ export const Wrapper = styled.div`
   background: ${colors.white};
   position: relative;
   overflow: hidden;
+  animation: open 0.5s ease-in;
+  overflow: hidden;
+
+  @keyframes open {
+    0% {
+      height: 180px;
+      margin-top: 450px;
+      opacity: 0;
+    }
+
+    100% {
+      height: 600px;
+      margin-top: 30px;
+      opacity: 1;
+    }
+  }
 `;
 
 export const MessagesArea = styled.div`
