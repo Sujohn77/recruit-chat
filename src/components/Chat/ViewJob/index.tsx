@@ -18,16 +18,12 @@ export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
           <S.InfoItem>{item.postedDate}</S.InfoItem>
           <S.InfoItem>{item.fullTime}</S.InfoItem>
         </S.ShortItems>
-        <S.SubmitButton isBackground onClick={onClick}>
-          Apply
-        </S.SubmitButton>
+        <S.SubmitButton onClick={onClick}>Apply</S.SubmitButton>
       </S.ViewShortInfo>
       <S.ViewText>{item.introDescription}</S.ViewText>
       <S.TextTitle>Job description: </S.TextTitle>
       <S.ViewText>{item.description}</S.ViewText>
-      <S.SubmitButton isBackground onClick={onClick}>
-        Apply
-      </S.SubmitButton>
+      <S.SubmitButton onClick={onClick}>Apply</S.SubmitButton>
     </S.ViewBody>
   );
 };

@@ -5,7 +5,7 @@ import { URLSearchParams } from 'url';
 import { CHAT_ACTIONS } from './types';
 
 interface IUseTextField {
-  lastActionType: string | undefined;
+  lastActionType: string | null;
   searchLocations: string[];
   category: string | null;
   categories: string[];

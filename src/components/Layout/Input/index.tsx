@@ -44,7 +44,7 @@ export const TextAreaInput = styled.textarea`
 export const ErrorText = styled.span`
   position: absolute;
   right: 42px;
-  top: 25px;
+  top: 20px;
   font-size: 13px;
   color: #d32f2f;
 `;
@@ -84,6 +84,7 @@ export const TextField: FC<PropsType> = ({
   return (
     <div>
       <TextInput
+        type={type}
         value={value}
         placeholder={!isFocus ? placeHolder : ''}
         onChange={onChange}

@@ -40,13 +40,14 @@ export const en = {
     setJobAlert: 'Set Job Alert',
     interstedCategories:
       'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
-    emailPeriod: 'How often would you like to receive your job alerts?',
+    alertPeriod: 'How often would you like to receive your job alerts?',
     monthy: 'Monthly',
     weekly: 'Weekly',
     daily: 'Daily',
     alertEmail:
       "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
-    successSubscribed: "You've successfully subscribed to Weekly job alerts.",
+    successSubscribed:
+      "You've successfully subscribed to {{period}} job alerts.",
     thanks: 'Thanks!',
     contactLater: 'We will only contact you for potential job opportunities.',
     niceToMeet: 'Nice to meet you, {{name}}',
@@ -78,6 +79,8 @@ export const en = {
     popularQuestions:
       'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
+    noMatchMessage:
+      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
   },
   chat_item_description: {
     lookingFor: 'Hi! Are you looking for a job',
@@ -99,7 +102,7 @@ export const en = {
   chat_menu: {
     save_transcript: 'Save transcript',
     change_lang: 'Change language',
-    ask_question: 'Ask a question',
+    ask_questions: 'Ask a questions',
     find_job: 'Find a job',
   },
 };

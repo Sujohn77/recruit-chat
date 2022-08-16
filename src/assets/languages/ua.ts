@@ -29,18 +29,18 @@ export const ua = {
     ua: 'Ukrainian',
   },
   messages: {
-    initialMessage: 'Hi! Are you looking for a job?',
-    uploadCV: 'Upload CV',
-    answerQuestions: 'Answer questions',
+    initialMessage: 'Привіт! Ви шукаєте роботу?',
+    uploadCV: 'Завантажити CV',
+    answerQuestions: 'Відповісти на запитання',
     whatJobTitle:
-      "What's your preferred job title? We'll try finding similar jobs.",
+      "Яка посада вам подобається? Спробуємо знайти схожу роботу.",
     botMessageYou:
-      'bot message Where do you want to work? This can be your current location or a list of preferred locations.',
+      'повідомлення бота де ти хочеш працювати? Це може бути ваше поточне місцезнаходження або список бажаних місць.',
     whatCategoryJob: "What's your preferred job category title?",
     setJobAlert: 'Set Job Alert',
     interstedCategories:
       'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
-    emailPeriod: 'How often would you like to receive your job alerts?',
+    alertPeriod: 'How often would you like to receive your job alerts?',
     monthy: 'Monthly',
     weekly: 'Weekly',
     daily: 'Daily',
@@ -78,6 +78,8 @@ export const ua = {
     popularQuestions:
       'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
+    noMatchMessage:
+      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
   },
   chat_item_description: {
     transcript_sent: 'Стенограма надіслана на вашу пошту ',

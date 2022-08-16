@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { MessageBox } from '../styles';
+import { MessageBox, MessageButton } from '../styles';
 
-export const Option = styled(MessageBox)`
+export const Option = styled(MessageButton)`
   width: 100px;
   text-align: center;
   cursor: pointer;

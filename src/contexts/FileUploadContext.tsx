@@ -27,17 +27,16 @@ const FileUploadProvider = ({ children }: PropsType) => {
     triggerAction({
       type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
       payload: { item: file.name },
-      isResponseFirst: true,
     });
     setFile(null);
 
-    // const data = {
-    //   candidateId: 12345,
-    //   fileName: file.name,
-    //   lastModified: `${file.lastModified}`,
-    //   blob: new Blob([new Uint8Array(await file.arrayBuffer())]),
-    // };
-    // apiInstance.uploadCV(data);
+    const data = {
+      candidateId: 12345,
+      fileName: file.name,
+      lastModified: `${file.lastModified}`,
+      blob: new Blob([new Uint8Array(await file.arrayBuffer())]),
+    };
+    apiInstance.uploadCV(data);
   };
 
   const saveFile = (file: File) => {

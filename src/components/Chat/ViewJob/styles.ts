@@ -3,7 +3,7 @@ import { colors } from 'utils/colors';
 
 import { Slide } from '../MessagesList/Message/JobOffers';
 import { MenuItemWrapper } from '../../Layout/BurgerMenu/styles';
-import { Button } from 'components/Layout/styles';
+import { DarkButton, DefaultButton } from 'components/Layout/styles';
 
 export const ViewBody = styled.div`
   position: absolute;
@@ -89,7 +89,7 @@ export const TextHeaderTitle = styled.div`
   margin: 24px 0px;
 `;
 
-export const SubmitButton = styled(Button)`
+export const SubmitButton = styled(DarkButton)`
   width: 262px;
   text-align: center;
   margin: 0 auto !important;

@@ -35,10 +35,10 @@ export const BrowseFile: FC<PropsType> = () => {
   const cancelTxt = i18n.t('buttons:cancel');
   return (
     <div>
-      <S.Wrapper>
-        <DragAndDrop handleDrop={handleDrop}>
+      <DragAndDrop handleDrop={handleDrop}>
+        <S.Circle>
           <S.Avatar onClick={onHandleUpload} />
-        </DragAndDrop>
+        </S.Circle>
 
         <S.Text>Lorem ipsum dolor sit amet</S.Text>
         <S.Text>or</S.Text>
@@ -53,7 +53,7 @@ export const BrowseFile: FC<PropsType> = () => {
           onChange={onChangeFile}
         />
         <S.Cancel onClick={onClearFile}>{cancelTxt}</S.Cancel>
-      </S.Wrapper>
+      </DragAndDrop>
     </div>
   );
 };

@@ -3,7 +3,7 @@ export const colors = {
   white: '#ffffff',
   shamrock: '#3FC3A2',
   zambesi: '#5f5f5f',
-  alto: '#d1d1d1',
+  alto: '#d9d9d9',
   dustyGray: '#969696',
   silverChalice: '#a7a7a7',
   boulder: '#787878',

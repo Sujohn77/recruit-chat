@@ -1,5 +1,5 @@
 import { FormInput } from 'components/Layout/Input/styles';
-import { Button } from 'components/Layout/styles';
+import { DarkButton, DefaultButton } from 'components/Layout/styles';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { IMAGES } from 'utils/constants';
@@ -23,7 +23,7 @@ export const Title = styled.p`
   text-align: center;
 `;
 
-export const SubmitButton = styled(Button)`
+export const SubmitButton = styled(DarkButton)`
   margin: 21px 0 0;
 `;
 

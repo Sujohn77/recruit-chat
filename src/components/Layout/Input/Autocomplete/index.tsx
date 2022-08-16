@@ -1,3 +1,4 @@
+import { isResultsType } from 'components/Chat/MessageInput';
 import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import React, {
@@ -49,7 +50,12 @@ export const Autocomplete: FC<PropsType> = (props) => {
   };
 
   // TODO: test
-  const isShowResults = isFocus && !!matchedItems.length;
+  console.log(lastActionType);
+  const isShowResults = isFocus && isResultsType(lastActionType);
+  const inputType =
+    lastActionType !== CHAT_ACTIONS.APPLY_EMAIL
+      ? INPUT_TYPES.TEXT
+      : INPUT_TYPES.NUMBER;
   return (
     <div>
       {isShowResults && (
@@ -64,7 +70,7 @@ export const Autocomplete: FC<PropsType> = (props) => {
       )}
 
       <TextField
-        type={INPUT_TYPES.TEXT}
+        type={inputType}
         value={value}
         onChange={onChange}
         placeHolder={placeHolder}

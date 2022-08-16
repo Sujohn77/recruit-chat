@@ -1,7 +1,6 @@
-
-import styled from "styled-components";
-import { colors } from "utils/colors";
-import { IMAGES } from "utils/constants";
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
+import { IMAGES } from 'utils/constants';
 
 export const Wrapper = styled.div`
   background: ${colors.alto};
@@ -13,7 +12,6 @@ export const Wrapper = styled.div`
   width: 220px;
   align-items: center;
   color: ${colors.dustyGray};
-  border-radius: 10px;
   margin-bottom: 24px;
   position: relative;
 `;
@@ -51,7 +49,7 @@ export const Cancel = styled.div`
   font-size: 14px;
   line-height: 17px;
   border-bottom: 1px solid ${colors.black};
-  color:${colors.black};
+  color: ${colors.black};
   cursor: pointer;
 `;
 
@@ -63,8 +61,6 @@ export const FileWrapper = styled.div`
   gap: 5px;
 `;
 
-
-
 export const FileName = styled.p`
   margin: 0;
   color: ${colors.alto};
@@ -72,3 +68,15 @@ export const FileName = styled.p`
 `;
 
 export const FileError = styled(FileName)``;
+
+export const Circle = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 0 16px;
+  background: ${colors.white};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
