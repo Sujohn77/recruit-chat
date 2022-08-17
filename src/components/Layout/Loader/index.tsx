@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import { colors } from "utils/colors";
+import React from 'react';
+import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const Dot = styled.span<{ isShow?: boolean }>`
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   animation: fade 1.5s infinite;
   @keyframes fade {
     0% {
@@ -32,7 +32,7 @@ export const Wrapper = styled.div`
 
 export const Loader = ({ isShow }: { isShow?: boolean }) => {
   const dots = Array.from({ length: 3 }).map((v, index) => (
-    <Dot key={"dot-" + index} isShow={isShow} />
+    <Dot key={'dot-' + index} isShow={isShow} />
   ));
 
   return <Wrapper>{dots}</Wrapper>;

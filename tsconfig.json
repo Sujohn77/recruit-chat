@@ -23,7 +23,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strictNullChecks": true,
-    "typeRoots" : ["node_modules/@types", "src/types"]
+    "typeRoots" : ["node_modules/@types", "src/types"],
+    "includes": ["styled-components.d.ts"]
   },
   "include": [
     "src"

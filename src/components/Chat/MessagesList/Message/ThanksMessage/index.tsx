@@ -4,7 +4,7 @@ import { colors } from 'utils/colors';
 const Wrapper = styled.div`
   width: 100%;
   border-radius: 20px;
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   line-height: 155px;
   text-align: center;
 `;

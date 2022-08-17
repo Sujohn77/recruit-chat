@@ -16,7 +16,7 @@ export const ua = {
     chooseLocation: 'Відповісти для вибору місця...',
     email: 'Пошта',
     alert_category: 'Відповісти для вибору категорії...',
-    startTyping: 'Start typint to select a job title...',
+    startTyping: 'Start typing to select a job title...',
   },
   labels: {
     required: "Обов'язкове",
@@ -32,8 +32,7 @@ export const ua = {
     initialMessage: 'Привіт! Ви шукаєте роботу?',
     uploadCV: 'Завантажити CV',
     answerQuestions: 'Відповісти на запитання',
-    whatJobTitle:
-      "Яка посада вам подобається? Спробуємо знайти схожу роботу.",
+    whatJobTitle: 'Яка посада вам подобається? Спробуємо знайти схожу роботу.',
     botMessageYou:
       'повідомлення бота де ти хочеш працювати? Це може бути ваше поточне місцезнаходження або список бажаних місць.',
     whatCategoryJob: "What's your preferred job category title?",

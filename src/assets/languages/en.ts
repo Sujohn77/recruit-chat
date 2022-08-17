@@ -8,7 +8,7 @@ export const en = {
     set_job_alert: 'Set Job Alert',
     refine_search: 'Refine job search',
     find_job: 'Find a job',
-    ask_questions: 'Ask a questions',
+    ask_questions: 'Ask a question',
   },
   placeHolders: {
     message: 'Type a message',
@@ -16,7 +16,7 @@ export const en = {
     chooseLocation: 'Reply to choose location...',
     email: 'Email',
     alert_category: 'Reply to choose category...',
-    startTyping: 'Start typint to select a job title...',
+    startTyping: 'Start typing to select a job title...',
   },
   labels: {
     required: 'Required',
@@ -104,7 +104,7 @@ export const en = {
   chat_menu: {
     save_transcript: 'Save transcript',
     change_lang: 'Change language',
-    ask_questions: 'Ask a questions',
+    ask_question: 'Ask a question',
     find_job: 'Find a job',
   },
 };

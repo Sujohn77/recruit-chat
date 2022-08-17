@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import i18n from 'services/localization';
 import styled from 'styled-components';
+import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
 import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
 
@@ -57,7 +58,7 @@ export const Slide = styled.div`
     height: 100%;
     border-width: 0.25vmin 0.25vmin 0 0;
     border-style: solid;
-    border-color: #fafafa;
+    border-color: ${colors.alabaster};
     display: block;
   }
 
@@ -70,7 +71,7 @@ export const Slide = styled.div`
     height: 100%;
     border-width: 0 0.25vmin 0 0;
     border-style: solid;
-    border-color: #fafafa;
+    border-color: ${colors.alabaster};
   }
 `;
 export const NextSide = styled(PrevSlide)`

@@ -30,7 +30,7 @@ type PropsType = {
 
 export const Autocomplete: FC<PropsType> = (props) => {
   // const [isFocus, setIsFocus] = useState(false);
-  const { triggerAction, addMessage, lastActionType } = useChatMessanger();
+  const { triggerAction, lastActionType } = useChatMessanger();
   const {
     matchedItems,
     value,
@@ -50,15 +50,15 @@ export const Autocomplete: FC<PropsType> = (props) => {
   };
 
   // TODO: test
-  console.log(lastActionType);
   const isShowResults = isFocus && isResultsType(lastActionType);
   const inputType =
     lastActionType !== CHAT_ACTIONS.APPLY_EMAIL
       ? INPUT_TYPES.TEXT
       : INPUT_TYPES.NUMBER;
+
   return (
     <div>
-      {isShowResults && (
+      {isShowResults && !!matchedItems.length && (
         <SearchResults
           type={type}
           headerName={headerName}

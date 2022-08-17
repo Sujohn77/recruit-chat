@@ -9,7 +9,7 @@ import { BackButton } from '../ViewJob/styles';
 
 export const ChatHeaderWrapper = styled.div`
   height: 60px;
-  background: #d9d9d9;
+  background: ${(props) => props.theme.header.color};
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 14px 12px;
@@ -87,6 +87,7 @@ export const ChatHeader: FC<PropsType> = ({
             onClick={() => {
               setIsSelectedOption(false);
             }}
+            color={colors.black}
           />
         </>
       )}

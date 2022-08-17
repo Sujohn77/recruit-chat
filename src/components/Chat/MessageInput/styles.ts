@@ -12,7 +12,7 @@ export const MessagesInput = styled(Box)<{ isOffset: boolean }>`
   align-items: center;
   padding: 10px 16px;
   box-sizing: border-box;
-  background: #efefef;
+  background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   margin-top: ${({ isOffset }) => isOffset && '-30px'};
@@ -29,14 +29,13 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   left: 0;
   top: ${({ searchOptionsHeight }) =>
     -searchOptionsHeight - searchHeaderHeight + 'px'};
-  color: ${({ theme: { searchResuls } }) => searchResuls.items.color};
+  color: ${({ theme: { searchResults } }) => searchResults.color};
   font-weight: 500;
   z-index: 1;
 `;
 
 export const SearchHeader = styled.div`
-  background: ${({ theme: { searchResuls } }) =>
-    searchResuls.header.background};
+  background: ${(props) => props.theme.header.color};
   padding: 7px 16px;
   height: ${searchHeaderHeight}px;
   box-sizing: border-box;
@@ -46,7 +45,8 @@ export const SearchHeader = styled.div`
   align-items: center;
 `;
 export const SearchBody = styled.ul`
-  background: ${({ theme: { searchResuls } }) => searchResuls.items.background};
+  background-color: ${({ theme: { searchResults } }) =>
+    searchResults.items.backgroundColor};
   display: flex;
   flex-direction: column;
   margin: 0;

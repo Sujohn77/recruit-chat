@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 
-import { MessageType, ILocalMessage, CHAT_ACTIONS } from 'utils/types';
+import {
+  MessageType,
+  ILocalMessage,
+  CHAT_ACTIONS,
+  USER_INPUTS,
+} from 'utils/types';
 import { IMessage, ISnapshot } from 'services/types';
 import { ChannelName, getChatActionResponse, languages } from 'utils/constants';
 import {
@@ -268,6 +273,7 @@ const ChatProvider = ({ children }: PropsType) => {
     setCategory(null);
     setLastActionType(null);
     setAlertCategory(null);
+    setLocations([]);
   };
 
   const pushMessages = useCallback(
@@ -308,7 +314,7 @@ const ChatProvider = ({ children }: PropsType) => {
     };
     // ---------------------------------
 
-    // sendMessage(serverMessage);
+    // sendMessage(serverMessage);=
   };
 
   const changeLang = (lang: string) => {
@@ -327,7 +333,9 @@ const ChatProvider = ({ children }: PropsType) => {
       messages,
       excludeItem,
     });
-
+    if (excludeItem === USER_INPUTS.ANSWER_QUESTIONS) {
+      setLastActionType(CHAT_ACTIONS.ANSWER_QUESTIONS);
+    }
     const lastMessageText = updatedMessages[0].content.text;
     if (lastMessageText) {
       const newMessages = getChatResponseOnMessage(lastMessageText);

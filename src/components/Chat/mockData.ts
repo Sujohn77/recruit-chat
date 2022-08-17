@@ -6,7 +6,7 @@ export const mockData = {
 export const jobOffers = [
   {
     location: 'Oslo, Oslo, Norway',
-    category: 'Senior Data Engineer',
+    category: 'RPA Controller',
     jobs: [
       {
         _id: Math.random(),

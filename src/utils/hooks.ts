@@ -41,7 +41,10 @@ export const useTextField = ({
       return {
         searchItems: categories,
         headerName: i18n.t('chat_item_description:categories_title'),
-        placeHolder: i18n.t('placeHolders:message'),
+        placeHolder:
+          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
+            ? i18n.t('placeHolders:startTyping')
+            : i18n.t('placeHolders:message'),
       };
     },
     []
@@ -55,16 +58,14 @@ export const useTextField = ({
   });
 };
 
-
 export const useApiKey = () => {
   const url: any = new URL(window.location.href);
   let apiKey: undefined | string = undefined;
 
-  for(const p of url.searchParams.entries()) {
-
+  for (const p of url.searchParams.entries()) {
     const [key, value] = p;
 
-    if(key === 'apikey') {
+    if (key === 'apikey') {
       apiKey = value;
       break;
     }

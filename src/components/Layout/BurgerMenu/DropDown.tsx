@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   position: absolute;
   border-radius: 5px;
   padding: 0 17px;
@@ -42,7 +42,7 @@ export const Option = styled.li`
   line-height: 17px;
   text-transform: uppercase;
   margin: 0;
-  color: ${colors.dustyGray};
+  color: ${(props) => props.theme.primaryColor};
 `;
 export const DropDown: FC<PropsType> = ({ options, onClick }) => {
   const items = options.map((opt, index) => (

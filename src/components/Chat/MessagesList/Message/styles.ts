@@ -14,16 +14,12 @@ export const MessageBox = styled.div<IMessageProps>`
   max-width: 270px;
   margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
   color: ${({ theme: { message }, isOwn }) =>
-    isOwn
-      ? message?.own.color || colors.white
-      : message?.chat.color || colors.dustyGray};
+    isOwn ? message?.own.color : message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ isOwn, theme: { message } }) =>
-    isOwn
-      ? message?.own.background || colors.boulder
-      : message?.chat.background || colors.alto};
-  ${({ backColor = '#D9D9D9', isOwn = false }) => `margin-bottom: 24px;
+  background: ${({ isOwn, theme }) =>
+    isOwn ? theme.primaryColor : theme.message.chat.backgroundColor};
+  ${({ backColor = '#D9D9D9', isOwn = false, theme }) => `margin-bottom: 24px;
         &:after {
             content: '';
             width: 0; 
@@ -32,7 +28,9 @@ export const MessageBox = styled.div<IMessageProps>`
             height: 0;
             border-style: solid;
             border-width: 20px 20px 0 0;
-            border-color: ${backColor} transparent transparent transparent;
+            border-color: ${
+              isOwn ? theme.primaryColor : theme.message.chat.backgroundColor
+            } transparent transparent transparent;
             position: absolute;
             bottom: -12px;
             transform:  ${isOwn && 'matrix(-1, 0, 0, 1, 0, 0)'} ;
@@ -51,12 +49,14 @@ export const MessageButton = styled.div<IMessageProps>`
   width: fit-content;
   max-width: 270px;
   margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
-  color: ${({ theme: { button }, isOwn }) =>
-    isOwn ? button.own.color : button.chat.color};
+  color: ${({
+    theme: {
+      message: { button },
+    },
+  }) => button.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ isOwn, theme: { button } }) =>
-    isOwn ? button.own.background : button.chat.background};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 100px;
   margin-bottom: 16px !important;
 `;
@@ -65,10 +65,10 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
   align-items: center;
   display: flex;
   gap: 8px;
-  ${({ isFile, theme: { message } }) =>
+  ${({ isFile, theme }) =>
     isFile &&
     `
-        background:${message.file.background}
+        background:${colors.white};
         border-radius: 8px;
         padding: 8px;
         height: 35px;
@@ -82,6 +82,7 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
             white-space: nowrap;
             width: 175px;
             overflow: hidden;
+            color: ${theme.primaryColor}
         }
     `}
 `;
@@ -95,7 +96,7 @@ export const MessageText = styled.p`
 `;
 
 export const InitialMessage = styled.div`
-  color: ${({ theme: { message } }) => message.initial.color};
+  color: ${({ theme: { message } }) => message.chat.color};
   font-size: 14px;
   line-height: 17px;
   margin-bottom: 32px;

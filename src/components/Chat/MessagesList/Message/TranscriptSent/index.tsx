@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 16px 18px;
   display: flex;
@@ -18,7 +18,7 @@ export const Title = styled.p`
   margin: 0;
   font-size: 14px;
   line-height: 17px;
-  color: ${colors.scorpion};
+  color: ${({ theme: { message } }) => message.transcriptForm.color};
   text-align: center;
 `;
 export const Avatar = styled.div`

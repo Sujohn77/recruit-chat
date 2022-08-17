@@ -14,6 +14,8 @@ import { ViewJob } from './ViewJob';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { IJobPosition } from 'contexts/types';
 import { CHAT_ACTIONS } from 'utils/types';
+import { useTheme } from 'styled-components';
+import { ThemeType } from 'utils/theme/default';
 
 type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -23,6 +25,7 @@ type PropsType = {
 export const chatId = 2433044;
 
 export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
+  const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, triggerAction } = useChatMessanger();
   const { file, notification, resetFile } = useFileUploadContext();
   const title = viewJob
@@ -48,7 +51,9 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
         <S.Notification>
           {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}
           <S.NotificationText>{file?.name || notification}</S.NotificationText>
-          {file?.name && <Close onClick={() => resetFile()} />}
+          {file?.name && (
+            <Close onClick={() => resetFile()} color={theme.primaryColor} />
+          )}
         </S.Notification>
       )}
       <MessageInput />

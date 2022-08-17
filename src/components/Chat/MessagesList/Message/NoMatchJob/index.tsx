@@ -7,7 +7,7 @@ import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
 
 export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 24px 28px;
   margin: ${({ isRefineOnly }) => !isRefineOnly && '0 16px'};
@@ -21,7 +21,7 @@ export const Title = styled.p`
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 17px;
-  color: ${colors.black};
+  color: ${({ theme: { text } }) => text.color};
   text-align: center;
 `;
 export const Avatar = styled.div`
@@ -33,15 +33,16 @@ export const Avatar = styled.div`
 `;
 export const SetJobAlert = styled(Button)`
   margin: 0 0 16px !important;
-  color: ${colors.boulder}!important;
-  border: 1px solid ${colors.boulder}!important;
+  color: ${(props) => props.theme.primaryColor}!important;
+  border: 1px solid ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
   text-transform: initial !important;
 `;
 export const RefineJobSearch = styled(Button)`
-  background-color: ${colors.boulder}!important;
+  background-color: ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
-  color: ${colors.white}!important;
+  color: ${({ theme: { button } }) =>
+    button.secondaryColor}!important;!important;
   text-transform: initial !important;
 `;
 

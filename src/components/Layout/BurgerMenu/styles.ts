@@ -7,11 +7,11 @@ export const MenuItemWrapper = styled.div`
   font-size: 14px;
   line-height: 17px;
   cursor: pointer;
-  color: ${colors.dustyGray};
+  color: ${(props) => props.theme.primaryColor};
 
   &:before {
     content: '';
-    background: #d9d9d9;
+    background: ${(props) => props.theme.primaryColor};
     display: inline-block;
     margin-right: 8px;
     width: 16px;

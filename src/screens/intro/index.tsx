@@ -7,7 +7,9 @@ import { ICONS } from '../../utils/constants';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import i18n from 'services/localization';
 import { CHAT_ACTIONS } from 'utils/types';
-import { useThemeContext } from 'contexts/ThemeContext';
+
+import { useTheme } from 'styled-components';
+import { ThemeType } from 'utils/theme/default';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -27,7 +29,7 @@ interface IOption {
 
 export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   const { triggerAction } = useChatMessanger();
-  const { theme } = useThemeContext();
+  const theme = useTheme() as ThemeType;
 
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
@@ -51,13 +53,9 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
       },
     ],
   };
-  console.log(theme);
+
   const chooseOptions = messages.options.map((opt, index) => (
-    <S.Message
-      key={`chat-option-${index}`}
-      onClick={() => onClick(opt)}
-      themes={theme}
-    >
+    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={''} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>

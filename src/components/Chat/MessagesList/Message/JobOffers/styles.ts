@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { colors } from 'utils/colors';
 
 export const JobOfferWrapper = styled.div`
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 20px 18px;
   color: ${({ theme: { message } }) => message.jobOffer.color};

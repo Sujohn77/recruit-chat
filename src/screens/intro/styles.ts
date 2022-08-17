@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
 const borderWidth = '1.5px';
-const introQuestionShadow = '5px 5px 25px 10px rgb(0 0 0 / 8%);';
 
 export const Flex = styled.div`
   display: flex;
@@ -19,7 +18,7 @@ export const Wrapper = styled.div`
   margin-top: 520px;
 `;
 
-export const Close = styled.div<{ height?: string }>`
+export const Close = styled.div<{ height?: string; color?: string }>`
   position: absolute;
   right: 25px;
   top: 10px;
@@ -29,7 +28,7 @@ export const Close = styled.div<{ height?: string }>`
     content: '';
     height: ${({ height = '17px' }) => height};
     width: ${borderWidth};
-    background: ${({ color = '#000' }) => color};
+    background: ${({ color }) => color};
     display: inline-block;
     position: absolute;
     top: 1px;
@@ -43,12 +42,12 @@ export const Close = styled.div<{ height?: string }>`
   }
 `;
 
-export const Message = styled.div<{ themes?: any }>`
+export const Message = styled.div`
   border-radius: 20px;
   padding: 10px 10px;
 
-  background: ${({ themes }) =>
-    themes?.backgroundColor || colors.alto}!important;
+  background: ${({ theme: { message } }) =>
+    message.chat.backgroundColor}!important;
 
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
@@ -58,7 +57,7 @@ export const Message = styled.div<{ themes?: any }>`
   align-items: center;
   gap: 8px;
   span {
-    color: ${({ themes }) => themes?.fontColor || colors.persian}!important;
+    color: ${({ theme }) => theme?.message.initialColor}!important;
   }
   animation: opacity 0.3s ease-in;
 
@@ -80,7 +79,7 @@ export const Question = styled(MessageBox)`
   padding: 0 16px;
   line-height: 41px;
   border: none;
-  color: ${colors.dustyGray};
+  color: ${({ theme: { message } }) => message.chat.color};
   font-weight: 600;
   height: 41px;
   box-sizing: border-box;
@@ -102,7 +101,7 @@ export const Question = styled(MessageBox)`
 export const Text = styled.span`
   font-size: 14px;
   font-family: Inter-Medium;
-  color: ${colors.black};
+  color: ${(props) => props.theme.initialColor};
 `;
 
 export const Image = styled.img<{ size?: string }>`

@@ -14,7 +14,7 @@ import { FileUploadProvider } from 'contexts/FileUploadContext';
 import defaultTheme from 'utils/theme/default';
 import { useApiKey } from 'utils/hooks';
 import { api } from 'utils/api';
-import { ThemeProvider } from 'contexts/ThemeContext';
+import { ThemeContextProvider } from 'contexts/ThemeContext';
 
 export const Container = styled.div`
   width: 370px;
@@ -40,11 +40,11 @@ const App = () => {
   return (
     <Container>
       <ChatProvider>
-        <ThemeProvider>
+        <ThemeContextProvider>
           <FileUploadProvider>
             <SocketProvider>{renderContent()}</SocketProvider>{' '}
           </FileUploadProvider>
-        </ThemeProvider>
+        </ThemeContextProvider>
       </ChatProvider>
     </Container>
   );

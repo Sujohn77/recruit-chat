@@ -27,7 +27,7 @@ export const Title = styled.p`
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 17px;
-  color: ${colors.black};
+  color: ${({ theme: { message } }) => message.secondaryColor};
 `;
 
 export const Option = styled(Button)<{ isActive?: boolean }>`
@@ -36,7 +36,7 @@ export const Option = styled(Button)<{ isActive?: boolean }>`
 
   border-radius: 100px !important;
   width: 100px !important;
-  color: ${colors.white}!important;
+  color: ${({ theme: { button } }) => button.secondaryColor}!important;
   text-align: center;
   line-height: 32px;
   cursor: pointer;

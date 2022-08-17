@@ -1,52 +1,46 @@
 import { DefaultTheme } from 'styled-components';
 import { colors } from 'utils/colors';
 const PRIMARY_COLOR = '#379970';
-const REVERSED_COLOR = 'rgba(255, 255, 255, 0.5)';
+const defaultTheme = {
+  primaryColor: colors.boulder,
+  secondaryColor: colors.alto,
 
-const defaultTheme: DefaultTheme = {
-  primary: PRIMARY_COLOR,
-  reversed: REVERSED_COLOR,
+  header: {
+    color: colors.alto,
+  },
 
   loader: {
     background: '#d3d3d370',
   },
 
-  searchResuls: {
-    header: {
-      color: colors.dustyGray,
-      background: colors.alto,
-    },
+  searchResults: {
+    color: colors.dustyGray,
     items: {
-      background: colors.silver,
+      backgroundColor: colors.silver,
     },
   },
 
   notification: {
-    color: colors.black,
+    color: colors.silverChalice,
     backgroundColor: colors.alabaster,
   },
 
   message: {
-    initial: {
-      color: colors.dustyGray,
-    },
+    backgroundColor: colors.alto,
+    primaryColor: colors.dustyGray,
+    secondaryColor: colors.black,
     own: {
       color: colors.white,
-      background: colors.boulder,
     },
     chat: {
       color: colors.dustyGray,
-      background: colors.alto,
+      backgroundColor: colors.alto,
     },
     file: {
-      background: '#B0B0B0',
+      backgroundColor: '#B0B0B0',
       color: colors.alto,
     },
-    browse: {
-      color: colors.dustyGray,
-      buttonColor: colors.black,
-    },
-    emailForm: {
+    transcriptForm: {
       color: colors.scorpion,
       buttonColor: colors.white,
     },
@@ -56,32 +50,22 @@ const defaultTheme: DefaultTheme = {
     jobOffer: {
       color: colors.black,
     },
+    button: {
+      borderColor: colors.boulder,
+      color: colors.black,
+      backgroundColor: colors.alto,
+    },
+    postedDate: colors.alabaster,
+    initialColor: '#454545',
   },
 
   text: {
-    postedDate: colors.alabaster,
-    own: colors.white,
-    bot: colors.dustyGray,
-    link: PRIMARY_COLOR,
-    error: colors.torchRed,
-    title: colors.black,
-    file: {
-      color: colors.white,
-      background: '#B0B0B0',
-    },
+    color: colors.black,
   },
 
   button: {
-    border: colors.boulder,
-    chat: {
-      color: colors.dustyGray,
-      background: colors.alto,
-    },
-
-    own: {
-      color: colors.black,
-      background: colors.alto,
-    },
+    primaryColor: colors.boulder,
+    secondaryColor: colors.white,
   },
 
   select: {
@@ -92,7 +76,7 @@ const defaultTheme: DefaultTheme = {
   },
 
   input: {
-    background: '#EFEFEF',
+    backgroundColor: colors.gallery,
     color: colors.silverChalice,
   },
 
@@ -104,3 +88,5 @@ const defaultTheme: DefaultTheme = {
   },
 };
 export default defaultTheme;
+
+export type ThemeType = typeof defaultTheme;

@@ -26,6 +26,7 @@ import { Autocomplete } from 'components/Layout/Input/Autocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';
+import { INPUT_TYPES } from 'components/Layout/Input/types';
 
 type PropsType = {};
 interface IRenderInputProps {
@@ -43,7 +44,10 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.SET_JOB_ALERT ||
     type === CHAT_ACTIONS.SET_CATEGORY ||
     type === CHAT_ACTIONS.GET_USER_EMAIL ||
-    type === CHAT_ACTIONS.SET_ALERT_EMAIL
+    type === CHAT_ACTIONS.SET_ALERT_EMAIL ||
+    type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
+    type === CHAT_ACTIONS.REFINE_SEARCH ||
+    type === CHAT_ACTIONS.ANSWER_QUESTIONS
   );
 };
 export const MessageInput: FC<PropsType> = () => {
@@ -85,10 +89,16 @@ export const MessageInput: FC<PropsType> = () => {
       setIsFocus(false);
       setDraftMessage(null);
 
-      const matchedPart = capitalizeFirstLetter(draftMessage || '');
-      const isNotValidMessage =
-        isResultsType(lastActionType) && matchedPositions[0] !== matchedPart;
+      if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL) {
+        const age = Number(draftMessage);
+        if (age < 15 || age > 80) {
+          setError('Incorrect age');
+          return null;
+        }
+      }
 
+      const isNotValidMessage =
+        isResultsType(lastActionType) && matchedPositions[0] !== '';
       const actionType = isNotValidMessage
         ? CHAT_ACTIONS.REFINE_SEARCH
         : getNextActionType(lastActionType);
@@ -113,7 +123,8 @@ export const MessageInput: FC<PropsType> = () => {
   // Effects
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
+      const isWriteAccess = getAccessWriteType(lastActionType) || file;
+      if (event.key === 'Enter' && isWriteAccess) {
         event.preventDefault();
         draftMessage && sendMessage(draftMessage);
       }
@@ -128,7 +139,16 @@ export const MessageInput: FC<PropsType> = () => {
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.currentTarget.value;
     setDraftMessage(event.currentTarget.value);
+
+    if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL && error) {
+      const age = Number(value);
+      if (age < 15 || age > 80) {
+        setError('');
+      }
+    }
+
     if (error) {
       const isEmailAndPhoneError =
         lastActionType === CHAT_ACTIONS.GET_USER_NAME;
@@ -182,7 +202,7 @@ export const MessageInput: FC<PropsType> = () => {
       sendFile(file);
     } else if (draftMessage) {
       sendMessage(draftMessage);
-    } else if (locations) {
+    } else if (locations.length) {
       const items = locations;
       triggerAction({ type: CHAT_ACTIONS.SEND_LOCATIONS, payload: { items } });
     }
@@ -196,14 +216,19 @@ export const MessageInput: FC<PropsType> = () => {
       ? CHAT_ACTIONS.SET_LOCATIONS
       : CHAT_ACTIONS.SET_CATEGORY;
 
-  const isWriteAccess = getAccessWriteType(lastActionType) || file;
+  const isWriteAccess =
+    getAccessWriteType(lastActionType) &&
+    (file || draftMessage || !!locations.length);
+
+  console.log(searchItems, draftMessage);
+
   return (
     <S.MessagesInput
       isOffset={inputType === CHAT_ACTIONS.SET_LOCATIONS && !!locations.length}
     >
       <BurgerMenu />
 
-      {isWriteAccess && renderInput({ type: inputType })}
+      {renderInput({ type: inputType })}
 
       {isWriteAccess && (
         <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />

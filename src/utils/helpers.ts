@@ -595,6 +595,8 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
       return CHAT_ACTIONS.APPLY_AGE;
     case CHAT_ACTIONS.APPLY_AGE:
       return CHAT_ACTIONS.SET_WORK_PERMIT;
+    case CHAT_ACTIONS.SET_JOB_ALERT:
+      return CHAT_ACTIONS.SET_ALERT_CATEGORY;
     default:
       return CHAT_ACTIONS.SET_CATEGORY;
   }

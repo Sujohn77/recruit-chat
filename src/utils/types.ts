@@ -108,6 +108,7 @@ export enum CHAT_ACTIONS {
   NO_PERMIT_WORK = 'no_permit_work',
   HELP = 'help',
   QUESTION_RESPONSE = 'question_response',
+  ANSWER_QUESTIONS = 'answer_questions',
 }
 
 export enum Status {

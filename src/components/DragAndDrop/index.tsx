@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export const Wrapper = styled.div`
-  background: ${colors.alto};
+  background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 32px 17px 16px;
   margin: 0 auto;
@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
   flex-flow: column;
   width: 220px;
   align-items: center;
-  color: ${colors.dustyGray};
+  color: ${({ theme: { message } }) => message.primaryColor};
   margin-bottom: 24px;
   position: relative;
 `;

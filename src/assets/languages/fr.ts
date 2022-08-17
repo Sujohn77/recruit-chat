@@ -16,7 +16,7 @@ export const fr = {
     chooseLocation: "Répondre pour choisir l'emplacement...",
     email: 'E-mail',
     alert_category: 'Reply to choose category...',
-    startTyping: 'Start typint to select a job title...',
+    startTyping: 'Start typing to select a job title...',
   },
   labels: {
     required: 'Requis',

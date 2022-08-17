@@ -36,7 +36,7 @@ export const InputMessage = styled.span`
 `;
 
 export const Notification = styled.div`
-  color: ${({ theme: { message } }) => message.initial.color};
+  background: ${({ theme: { notification } }) => notification.backgroundColor};
   display: flex;
   gap: 8px;
   align-items: center;
@@ -44,7 +44,6 @@ export const Notification = styled.div`
   box-sizing: border-box;
   height: 40px;
   width: 100%;
-  color: ${({ theme: { message } }) => message.initial.backgroundColor};
   position: absolute;
   bottom: 60px;
 `;
@@ -52,6 +51,7 @@ export const NotificationText = styled.p`
   font-weight: 500;
   font-size: 12px;
   margin: 0;
+  color: ${({ theme: { notification } }) => notification.color};
 `;
 
 export const Icon = styled.img`
