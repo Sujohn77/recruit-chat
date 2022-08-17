@@ -11,7 +11,25 @@ const defaultTheme: DefaultTheme = {
     background: '#d3d3d370',
   },
 
+  searchResuls: {
+    header: {
+      color: colors.dustyGray,
+      background: colors.alto,
+    },
+    items: {
+      background: colors.silver,
+    },
+  },
+
+  notification: {
+    color: colors.black,
+    backgroundColor: colors.alabaster,
+  },
+
   message: {
+    initial: {
+      color: colors.dustyGray,
+    },
     own: {
       color: colors.white,
       background: colors.boulder,
@@ -20,9 +38,28 @@ const defaultTheme: DefaultTheme = {
       color: colors.dustyGray,
       background: colors.alto,
     },
+    file: {
+      background: '#B0B0B0',
+      color: colors.alto,
+    },
+    browse: {
+      color: colors.dustyGray,
+      buttonColor: colors.black,
+    },
+    emailForm: {
+      color: colors.scorpion,
+      buttonColor: colors.white,
+    },
+    interestedJob: {
+      color: colors.white,
+    },
+    jobOffer: {
+      color: colors.black,
+    },
   },
 
   text: {
+    postedDate: colors.alabaster,
     own: colors.white,
     bot: colors.dustyGray,
     link: PRIMARY_COLOR,

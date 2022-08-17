@@ -130,7 +130,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t('messages:reachEmail'),
+          text: i18n.t('messages:alertEmail'),
         },
       ];
     case CHAT_ACTIONS.SET_ALERT_EMAIL:

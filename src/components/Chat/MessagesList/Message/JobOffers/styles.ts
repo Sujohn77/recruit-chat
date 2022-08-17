@@ -5,7 +5,7 @@ export const JobOfferWrapper = styled.div`
   background: ${colors.alto};
   border-radius: 10px;
   padding: 20px 18px;
-  color: ${colors.black};
+  color: ${({ theme: { message } }) => message.jobOffer.color};
   font-size: 14px;
   line-height: 17px;
   margin: 0 18px;
@@ -28,7 +28,7 @@ export const OfferTitle = styled.p`
 export const ReadMore = styled.p`
   text-transform: uppercase;
   margin: 55px 12px 17px;
-  color: ${colors.black};
-  border-bottom: 1px solid ${colors.black};
+  color: ${({ theme: { message } }) => message.jobOffer.color};
+  border-bottom: 1px solid ${({ theme: { message } }) => message.jobOffer.color};
   width: fit-content;
 `;

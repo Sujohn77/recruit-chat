@@ -24,30 +24,6 @@ export const Container = styled.div`
 
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState(false);
-  const [theme, setTheme] = useState<any>(null);
-  const apiKey: any = useApiKey();
-
-  useEffect(() => {
-    if (apiKey) {
-      api.test(apiKey).then((res) => {
-        console.log('Bot data: ', res.data);
-        setTheme({
-          color: res.data.fontColor,
-          backgroundColor: res.data.backgroundColor,
-          backgroundImage: `url("${res.data.imageUrl}")`,
-        });
-      });
-    }
-  }, [apiKey]);
-
-  const [testData, setTestData] = React.useState<any>(null);
-
-  useEffect(() => {
-    api.test(apiKey).then((data: any) => {
-      console.log('Bot Data', data.data);
-      setTestData(data.data);
-    });
-  }, [apiKey]);
 
   useEffect(() => {
     // DELETE: after backend is ready

@@ -16,6 +16,7 @@ import {
   getMatchedItems,
   getNextActionType,
   validateEmail,
+  validateEmailOrPhone,
 } from 'utils/helpers';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
@@ -129,7 +130,13 @@ export const MessageInput: FC<PropsType> = () => {
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     setDraftMessage(event.currentTarget.value);
     if (error) {
-      const updatedError = validateEmail(event.currentTarget.value);
+      const isEmailAndPhoneError =
+        lastActionType === CHAT_ACTIONS.GET_USER_NAME;
+
+      const updatedError = isEmailAndPhoneError
+        ? validateEmailOrPhone(event.currentTarget.value)
+        : validateEmail(event.currentTarget.value);
+
       !updatedError && setError(updatedError);
     }
 

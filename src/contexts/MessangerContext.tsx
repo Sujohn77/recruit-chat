@@ -23,6 +23,7 @@ import {
   getChatResponseOnMessage,
   isValidEmailOrText,
   getSearchJobsData,
+  validateEmailOrPhone,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
@@ -179,7 +180,7 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.GET_USER_EMAIL: {
-          const error = validateEmail(payload?.item!);
+          const error = validateEmailOrPhone(payload?.item!);
           if (payload?.item && !error?.length) {
             setUser({ email: payload?.item! });
             clearFilters();

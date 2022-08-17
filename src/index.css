@@ -9,6 +9,17 @@ body {
   font-family: Inter;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
 @font-face {
   font-family: 'Inter';
   src: local('Inter-Regular'), url(/public/fonts/Inter-Regular.ttf) format('truetype');

@@ -65,10 +65,10 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
   align-items: center;
   display: flex;
   gap: 8px;
-  ${({ isFile }) =>
+  ${({ isFile, theme: { message } }) =>
     isFile &&
     `
-        background: #B0B0B0;
+        background:${message.file.background}
         border-radius: 8px;
         padding: 8px;
         height: 35px;
@@ -95,7 +95,7 @@ export const MessageText = styled.p`
 `;
 
 export const InitialMessage = styled.div`
-  color: ${colors.dustyGray};
+  color: ${({ theme: { message } }) => message.initial.color};
   font-size: 14px;
   line-height: 17px;
   margin-bottom: 32px;
@@ -104,11 +104,9 @@ export const MessageUnsendIcon = styled.img`
   width: 12px;
   height: 12px;
   filter: invert(1);
-  // position: absolute;
-  // right: 10px;
 `;
 export const TimeText = styled.div`
-  color: ${colors.alabaster};
+  color: ${({ theme: { text } }) => text.postedDate};
   white-space: nowrap;
   font-size: 10px;
   line-height: 12px;

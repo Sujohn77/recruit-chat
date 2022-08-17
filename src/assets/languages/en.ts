@@ -22,6 +22,7 @@ export const en = {
     required: 'Required',
     email_invalid: 'Email is invalid',
     max_length: 'File may be no larger than 2MB',
+    email_or_phone_invalid: 'Email or phone is invalid',
   },
   languages: {
     en: 'English',
@@ -51,7 +52,8 @@ export const en = {
     thanks: 'Thanks!',
     contactLater: 'We will only contact you for potential job opportunities.',
     niceToMeet: 'Nice to meet you, {{name}}',
-    reachEmail: "What's the best email address or phone number to reach you?",
+    reachEmail:
+      "What's the best email address or phone number to reach you? \n \n We will only contact you for potential job opportunities.",
     whatFullName: "What's your full name?",
     fewQuestions:
       'We have a few questions about your background and experience to get your application started.',

@@ -31,7 +31,7 @@ export const MS_1000 = 1000;
 export const Message: FC<PropsType> = ({ message, onClick }) => {
   const { theme } = useThemeContext();
   const subType = message.content.subType;
-  const messageProps = { ...getMessageProps(message) };
+  const messageProps = { ...getMessageProps(message), theme };
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
@@ -54,7 +54,6 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
     case MessageType.BUTTON: {
       return (
         <S.MessageButton
-          theme={theme}
           onClick={() => onClick(message.content)}
           {...messageProps}
         >

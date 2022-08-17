@@ -304,6 +304,19 @@ export const validateEmail = (value: string) => {
   return '';
 };
 
+export const validateEmailOrPhone = (value: string) => {
+  if (!value) {
+    return i18n.t('labels:required');
+  }
+  const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
+  const phoneRegExp =
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
+    return i18n.t('labels:email_or_phone_invalid');
+  }
+  return '';
+};
+
 interface IIsMatches {
   item: string;
   compareItem: string;

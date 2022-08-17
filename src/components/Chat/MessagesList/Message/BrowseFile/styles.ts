@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   flex-flow: column;
   width: 220px;
   align-items: center;
-  color: ${colors.dustyGray};
+  color: ${({ theme: { message } }) => message.browse.color}
   margin-bottom: 24px;
   position: relative;
 `;
@@ -20,7 +20,7 @@ export const Title = styled.p`
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 17px;
-  color: ${colors.black};
+  color: ${({ theme: { message } }) => message.browse.buttonColor};
 `;
 
 export const Avatar = styled.div`
@@ -33,7 +33,7 @@ export const Avatar = styled.div`
 
 export const Browse = styled.label`
   margin: 11px 0 16px;
-  color: ${colors.black};
+  color: ${({ theme: { message } }) => message.browse.buttonColor}
   background: ${colors.silverChalice};
   padding: 11px 0;
   text-align: center;
@@ -48,8 +48,9 @@ export const Browse = styled.label`
 export const Cancel = styled.div`
   font-size: 14px;
   line-height: 17px;
-  border-bottom: 1px solid ${colors.black};
-  color: ${colors.black};
+  border-bottom: 1px solid
+    ${({ theme: { message } }) => message.browse.buttonColor};
+  color: ${({ theme: { message } }) => message.browse.buttonColor};
   cursor: pointer;
 `;
 
@@ -63,7 +64,7 @@ export const FileWrapper = styled.div`
 
 export const FileName = styled.p`
   margin: 0;
-  color: ${colors.alto};
+  color: ${({ theme: { message } }) => message.file.color}
   font-size: 14px;
 `;
 

@@ -29,13 +29,14 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   left: 0;
   top: ${({ searchOptionsHeight }) =>
     -searchOptionsHeight - searchHeaderHeight + 'px'};
-  color: ${colors.dustyGray};
+  color: ${({ theme: { searchResuls } }) => searchResuls.items.color};
   font-weight: 500;
   z-index: 1;
 `;
 
 export const SearchHeader = styled.div`
-  background: ${colors.alto};
+  background: ${({ theme: { searchResuls } }) =>
+    searchResuls.header.background};
   padding: 7px 16px;
   height: ${searchHeaderHeight}px;
   box-sizing: border-box;
@@ -45,7 +46,7 @@ export const SearchHeader = styled.div`
   align-items: center;
 `;
 export const SearchBody = styled.ul`
-  background: ${colors.silver};
+  background: ${({ theme: { searchResuls } }) => searchResuls.items.background};
   display: flex;
   flex-direction: column;
   margin: 0;

@@ -32,18 +32,11 @@ export const MessagesArea = styled.div`
 `;
 
 export const InputMessage = styled.span`
-  color: ${colors.silverChalice};
-`;
-
-export const InitialMessage = styled.div`
-  color: ${colors.dustyGray};
-  font-size: 14px;
-  line-height: 17px;
-  margin-bottom: 32px;
+  color: ${({ theme: { input } }) => input.color};
 `;
 
 export const Notification = styled.div`
-  color: ${colors.black};
+  color: ${({ theme: { message } }) => message.initial.color};
   display: flex;
   gap: 8px;
   align-items: center;
@@ -51,7 +44,7 @@ export const Notification = styled.div`
   box-sizing: border-box;
   height: 40px;
   width: 100%;
-  background-color: ${colors.alabaster};
+  color: ${({ theme: { message } }) => message.initial.backgroundColor};
   position: absolute;
   bottom: 60px;
 `;

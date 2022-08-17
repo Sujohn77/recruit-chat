@@ -11,5 +11,9 @@ export const InterestedInTitle = styled.p`
 
 export const MessageJobItem = styled(MessageItem)`
   margin: 0 0 4px;
-  color: ${colors.white};
+  color: ${({
+    theme: {
+      message: { interestedJob },
+    },
+  }) => interestedJob.color};
 `;

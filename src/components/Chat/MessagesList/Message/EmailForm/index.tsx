@@ -26,7 +26,7 @@ export const Title = styled.p`
   margin: 0;
   font-size: 14px;
   line-height: 17px;
-  color: ${colors.scorpion};
+  color: ${({ theme: { message } }) => message.emailForm.color};
   text-align: center;
   font-weight: 500;
 `;
@@ -35,7 +35,8 @@ export const FormButton = styled(Button)`
   background: ${colors.boulder}!important;
   border-radius: 100px !important;
   font-weight: 500 !important;
-  color: ${colors.white}!important;
+  color: ${({ theme: { message } }) =>
+    message.emailForm.buttonColor};!important;
   font-size: 14px !important;
   line-height: 17px !important;
   height: 40px;
