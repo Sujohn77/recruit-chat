@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   FC,
   useState,
@@ -35,7 +36,7 @@ interface IRenderInputProps {
     | CHAT_ACTIONS.SET_LOCATIONS
     | CHAT_ACTIONS.SET_ALERT_CATEGORY;
 }
-
+// TODO: utils
 export const isResultsType = (type: CHAT_ACTIONS | null) => {
   return (
     !type ||
@@ -53,11 +54,9 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
   const {
-    addMessage,
     category,
     triggerAction,
     locations,
-    setLastActionType,
     categories,
     lastActionType,
     alertCategory,
@@ -96,12 +95,10 @@ export const MessageInput: FC<PropsType> = () => {
           return null;
         }
       }
-
-      const isNotValidMessage =
+      // TODO: matchedPositions[0] = "" = (!matchedPositions[0])
+      const isNoJobMacthes =
         isResultsType(lastActionType) && matchedPositions[0] !== '';
-      const actionType = isNotValidMessage
-        ? CHAT_ACTIONS.REFINE_SEARCH
-        : getNextActionType(lastActionType);
+      const actionType = getNextActionType(lastActionType, isNoJobMacthes);
       if (actionType) {
         triggerAction({
           type: actionType,
@@ -109,15 +106,7 @@ export const MessageInput: FC<PropsType> = () => {
         });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      matchedPositions,
-      addMessage,
-      setLastActionType,
-      alertCategory,
-      lastActionType,
-      triggerAction,
-    ]
+    [lastActionType, matchedPositions.length]
   );
 
   // Effects
@@ -129,7 +118,6 @@ export const MessageInput: FC<PropsType> = () => {
         draftMessage && sendMessage(draftMessage);
       }
     };
-
     document.addEventListener('keydown', keyDownHandler);
 
     return () => {
@@ -148,7 +136,7 @@ export const MessageInput: FC<PropsType> = () => {
         setError('');
       }
     }
-
+    // TODO: refactor
     if (error) {
       const isEmailAndPhoneError =
         lastActionType === CHAT_ACTIONS.GET_USER_NAME;
@@ -197,6 +185,7 @@ export const MessageInput: FC<PropsType> = () => {
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
 
+  // TODO: refactor
   const onClick = () => {
     if (file) {
       sendFile(file);
@@ -209,6 +198,7 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
+  // TODO: refactor
   const inputType =
     lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
       ? CHAT_ACTIONS.SET_ALERT_CATEGORY
@@ -216,11 +206,10 @@ export const MessageInput: FC<PropsType> = () => {
       ? CHAT_ACTIONS.SET_LOCATIONS
       : CHAT_ACTIONS.SET_CATEGORY;
 
+  // TODO: refactor
   const isWriteAccess =
     getAccessWriteType(lastActionType) &&
     (file || draftMessage || !!locations.length);
-
-  console.log(searchItems, draftMessage);
 
   return (
     <S.MessagesInput

@@ -13,6 +13,8 @@ import {
   IUpdateMessagesResponse,
   IUploadCVPayload,
   IUserSelf,
+  IUploadResponse,
+  ICreateCandidateResponse,
 } from './types';
 
 export const FORM_URLENCODED = {
@@ -61,11 +63,11 @@ class Api {
     this.client.post<IRequisitionsResponse>('api/requisition/search', data);
 
   searchJobs = (data: ISearchJobsPayload) =>
-    this.client.post<any>('api/requisition/search', data);
+    this.client.post<IRequisitionsResponse>('api/requisition/search', data);
   uploadCV = (data: IUploadCVPayload) =>
-    this.client.post<any>('api/candidate/resume/upload', data);
+    this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
   createCandidate = (data: ICreationCandidatePayload) =>
-    this.client.post<any>('api/candidate/create', data);
+    this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
 }
 
 export const APP_VERSION = '1.0.3';

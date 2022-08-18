@@ -11,9 +11,6 @@ import { SocketProvider } from 'contexts/SocketContext';
 import { FIREBASE_TOKEN } from 'firebase/config';
 import { handleSignInWithCustomToken } from 'firebase/config';
 import { FileUploadProvider } from 'contexts/FileUploadContext';
-import defaultTheme from 'utils/theme/default';
-import { useApiKey } from 'utils/hooks';
-import { api } from 'utils/api';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
 
 export const Container = styled.div`
@@ -26,7 +23,6 @@ const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState(false);
 
   useEffect(() => {
-    // DELETE: after backend is ready
     handleSignInWithCustomToken(FIREBASE_TOKEN);
   }, []);
 

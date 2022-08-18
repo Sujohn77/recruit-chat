@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
-import { CHAT_OPTIONS } from 'screens/intro';
 import { IMessage, ISnapshot } from 'services/types';
 import {
   CHAT_ACTIONS,
   MessageType,
   ILocalMessage,
   USER_INPUTS,
+  IRequisition,
 } from 'utils/types';
 
 export interface IChatMessangerContext {
@@ -21,13 +21,13 @@ export interface IChatMessangerContext {
   setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
   changeLang: (lang: string) => void;
   lastActionType: CHAT_ACTIONS | null;
-  offerJobs: IJobPosition[];
+  offerJobs: IRequisition[];
   alertCategory: string | null;
   error: string | null;
   setError: Dispatch<React.SetStateAction<string | null>>;
-  viewJob: IJobPosition | null;
-  setViewJob: Dispatch<React.SetStateAction<IJobPosition | null>>;
-  prefferedJob: IJobPosition | null;
+  viewJob: IRequisition | null;
+  setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
+  prefferedJob: IRequisition | null;
 }
 
 export interface IFileUploadContext {
@@ -37,6 +37,17 @@ export interface IFileUploadContext {
   resetFile: () => void;
   notification: string | null;
   setNotification: Dispatch<SetStateAction<string | null>>;
+}
+
+export interface IFileData {
+  lastModified: number;
+  name: string;
+  readonly size: number;
+  readonly type: string;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  slice(start?: number, end?: number, contentType?: string): Blob;
+  stream(): ReadableStream;
+  text(): Promise<string>;
 }
 
 export interface IAddMessageProps {
@@ -80,12 +91,12 @@ export enum ServerMessageType {
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}
 
-export interface IJobPosition {
-  _id: number | string;
-  title: string;
-  location: string;
-  postedDate: string;
-  fullTime: string;
-  introDescription: string;
-  description: string;
-}
+// export interface IRequisition {
+//   _id: number | string;
+//   title: string;
+//   location: string;
+//   postedDate: string;
+//   fullTime: string;
+//   introDescription: string;
+//   description: string;
+// }

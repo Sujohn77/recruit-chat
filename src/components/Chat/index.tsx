@@ -12,7 +12,6 @@ import i18n from 'services/localization';
 import { ViewJob } from './ViewJob';
 
 import { useChatMessanger } from 'contexts/MessangerContext';
-import { IJobPosition } from 'contexts/types';
 import { CHAT_ACTIONS } from 'utils/types';
 import { useTheme } from 'styled-components';
 import { ThemeType } from 'utils/theme/default';
@@ -43,10 +42,8 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
     <S.Wrapper>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
       <MessagesList />
+      <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
 
-      {viewJob && (
-        <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
-      )}
       {(file || notification) && (
         <S.Notification>
           {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}

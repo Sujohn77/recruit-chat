@@ -2,6 +2,20 @@ import { DocumentChangeType } from '@firebase/firestore-types';
 import { ITriggerActionProps } from 'contexts/types';
 import { CHAT_OPTIONS } from 'screens/intro';
 import { IChatRoomID, IMessage, IMuteStatus, IUserSelf } from 'services/types';
+
+export interface IWithID {
+  id: string | number;
+}
+
+export interface ILocation {
+  location: {
+    city: string;
+    state?: string | null;
+    country: string;
+    zip: null | string;
+  };
+}
+
 export interface ISnapshot<T = Object> {
   type: DocumentChangeType;
   data: T;
@@ -104,11 +118,14 @@ export enum CHAT_ACTIONS {
   APPLY_EMAIL = 'apply_email',
   APPLY_AGE = 'apply_age',
   APPLY_PERMIT = 'apply_permit',
+  APPLY_ETHNIC = 'apply_ethnic',
   SET_SALARY = 'set_salary',
   NO_PERMIT_WORK = 'no_permit_work',
   HELP = 'help',
   QUESTION_RESPONSE = 'question_response',
   ANSWER_QUESTIONS = 'answer_questions',
+  HIRING_PROCESS = 'hiring_process',
+  UPLOAD_CV = 'upload_cv',
 }
 
 export enum Status {
@@ -219,4 +236,19 @@ export interface IFilterItemsWithType {
 export interface IReplaceLocalMessages {
   messages: ILocalMessage[];
   parsedMessages: ILocalMessage[];
+}
+
+export interface IRequisition extends IWithID, ILocation {
+  jobRef: string;
+  title: string;
+  description: string;
+  positionID: null | string;
+  externalID: string | null;
+  datePosted: string | null;
+  categories: string[] | null;
+  company: string | null;
+  status: string | null;
+  hiringType: string | null;
+  jobURL: string | null;
+  applyURL: string | null;
 }

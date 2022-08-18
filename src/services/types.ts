@@ -1,5 +1,5 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
-import { MessageType } from 'utils/types';
+import { IRequisition, MessageType } from 'utils/types';
 
 export interface IUpdateMessagesResponse {
   errorOccurrenceId: null;
@@ -79,6 +79,7 @@ export interface IUserSelf {
   employer?: string | null;
   type?: string;
 }
+
 export interface I_id {
   chatItemId: number;
 }
@@ -211,11 +212,6 @@ export interface IApiSignedRequest {
   codeVersion: string;
 }
 
-export interface IRequisitionsResponse {
-  requisitionCount: number;
-  requisitions: any[];
-}
-
 // Loop
 
 export interface ISearchJobsPayload {
@@ -242,18 +238,23 @@ export interface IUploadCVPayload {
   candidateId: number;
   fileName: string;
   lastModified: string;
-  blob: Blob;
+  blob: string | ArrayBuffer;
+}
+
+export enum ContactType {
+  EMAIL = 'email',
+  Phone = 'phone',
 }
 
 export interface ICreationCandidatePayload {
-  title: string;
+  title?: string;
   firstName: string;
   lastName: string;
-  status: null;
-  sourceType: 'Social Media';
-  source: 'Twitter';
-  companyID: 4;
-  addresses: {
+  status?: null;
+  sourceType?: 'Social Media';
+  source?: 'Twitter';
+  companyID?: 4;
+  addresses?: {
     line1: string;
     line2: string;
     city: string;
@@ -263,18 +264,18 @@ export interface ICreationCandidatePayload {
     country: string;
   }[];
   contactMethods: {
-    type: 'phone';
+    type: ContactType;
     address: string;
     location: string;
-    isPrimary: true;
+    isPrimary: boolean;
   }[];
-  employmentExperience: {
+  employmentExperience?: {
     organizationName: string;
     jobTitle: string;
     startDate: Date;
     endDate: Date;
   }[];
-  educationHistoryModel: {
+  educationHistoryModel?: {
     institution: string;
     institutionTypeId: string;
     educationType: string;
@@ -285,27 +286,67 @@ export interface ICreationCandidatePayload {
     endDate: Date;
   }[];
   profile: {
-    headine: string;
-    summary: string;
-    photoURL: string;
+    headine?: string;
+    summary?: string;
+    photoURL?: string;
     currentEmployer: string;
     currentJobTitle: string;
-    educationLevel: string;
-    jobFunction: string;
-    jobSpeciality: string;
-    yearsExperience: string;
-    willingToRelocate: 'true';
-    communicationLanguage: 'French';
+    educationLevel?: string;
+    jobFunction?: string;
+    jobSpeciality?: string;
+    yearsExperience?: string;
+    willingToRelocate?: 'true';
+    communicationLanguage?: 'French';
   };
-  social: {
+  social?: {
     type: 'facebook' | 'linkedin';
     url: string;
   }[];
-  tags: string[];
-  skills: {
+  tags?: string[];
+  skills?: {
     name: string;
     dateLastUsed: Date;
     totalMonths: number;
     proficiencyID: null;
   }[];
+}
+
+// Api responses
+
+export interface IUploadResponse {
+  errorOccurrenceId: null;
+  errors: [];
+  fileName: string | undefined;
+  postedAt: string | null;
+  redirectUri: string | null;
+  resumeId: number;
+  status: string | null;
+  statusCode: null;
+  url: string;
+}
+
+export interface ICreateCandidateResponse {
+  errorOccurrenceId: null;
+  errors: [];
+  id: number;
+  message: null;
+  status: null;
+  statusCode: null | number;
+  success: boolean;
+}
+
+export interface IRequisitionsResponse {
+  facets: {
+    Categories: IFacentsValue[];
+    City: IFacentsValue[];
+    Country: IFacentsValue[];
+    State: IFacentsValue[];
+  };
+  requisitionCount: number;
+  requisitions: IRequisition[];
+}
+
+export interface IFacentsValue {
+  value: string;
+  count: number;
 }

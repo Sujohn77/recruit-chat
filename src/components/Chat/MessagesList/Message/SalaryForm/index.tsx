@@ -40,6 +40,8 @@ export const SalaryForm: FC<PropsType> = ({ message }) => {
       <S.Options>{optionItems}</S.Options>
       <DarkButton
         onClick={() =>
+          Number(salary) > 400 &&
+          Number(salary) < 15000 &&
           triggerAction({
             type: CHAT_ACTIONS.SET_SALARY,
             payload: { item: `${salary} ${currency}` },

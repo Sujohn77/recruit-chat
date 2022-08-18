@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { IFileUploadContext } from './types';
 import { fileUploadDefaultState } from 'utils/helpers';
@@ -14,28 +15,40 @@ const FileUploadContext = createContext<IFileUploadContext>(
   fileUploadDefaultState
 );
 
-// enum NOTIFICATIONS {
-//   SUCCESS_SEND = "Your CV was uploaded",
-// }
-
 const FileUploadProvider = ({ children }: PropsType) => {
   const { triggerAction } = useChatMessanger();
   const [file, setFile] = useState<File | null>(null);
+  const [fileResult, setFileResult] = useState<string | ArrayBuffer | null>(
+    null
+  );
   const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    let reader = new FileReader();
+
+    reader.onloadend = () => {
+      if (fileResult !== reader.result && file && reader.result) {
+        const result = reader.result as string;
+        setFileResult(result.replace(`data:${file.type};base64,`, ''));
+      }
+    };
+
+    file && reader.readAsDataURL(file);
+  }, [file?.size]);
 
   const sendFile = async (file: File) => {
     triggerAction({
       type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
       payload: { item: file.name },
     });
-    setFile(null);
 
     const data = {
-      candidateId: 12345,
+      candidateId: 50994334,
       fileName: file.name,
-      lastModified: `${file.lastModified}`,
-      blob: new Blob([new Uint8Array(await file.arrayBuffer())]),
+      lastModified: `${new Date(file.lastModified).toISOString()}`,
+      blob: fileResult!,
     };
+
     apiInstance.uploadCV(data);
   };
 

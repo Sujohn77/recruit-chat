@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useCallback,
@@ -11,8 +12,9 @@ import {
   ILocalMessage,
   CHAT_ACTIONS,
   USER_INPUTS,
+  IRequisition,
 } from 'utils/types';
-import { IMessage, ISnapshot } from 'services/types';
+import { ContactType, IMessage, ISnapshot } from 'services/types';
 import { ChannelName, getChatActionResponse, languages } from 'utils/constants';
 import {
   chatMessangerDefaultState,
@@ -25,10 +27,11 @@ import {
   getServerParsedMessages,
   getUpdatedMessages,
   validateEmail,
-  getChatResponseOnMessage,
-  isValidEmailOrText,
-  getSearchJobsData,
   validateEmailOrPhone,
+  getActionTypeByOption,
+  getNextActionType,
+  getChatResponseOnMessage,
+  getSearchJobsData,
 } from 'utils/helpers';
 import {
   IAddMessageProps,
@@ -57,16 +60,16 @@ interface IUser {
   wishSalary?: number;
   salaryCurrency?: string;
 }
-const noMathReponse = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
+const noMatchReponse = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
 const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
 
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
-  const [offerJobs, setOfferJobs] = useState<IJobPosition[]>([]);
-  const [viewJob, setViewJob] = useState<IJobPosition | null>(null);
-  const [prefferedJob, setPrefferedJob] = useState<IJobPosition | null>(null);
+  const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
+  const [viewJob, setViewJob] = useState<IRequisition | null>(null);
+  const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
@@ -103,7 +106,6 @@ const ChatProvider = ({ children }: PropsType) => {
       // setLastActionType(null);
       !isInitialized && setInitialized(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextMessages, setServerMessages, serverMessages, messages.length]);
 
   useEffect(() => {
@@ -159,17 +161,19 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
-            // const data = getSearchJobsData(category, locations);
-            // const jobs = await apiInstance.searchJobs(data);
-            const jobs = getJobMatches({ category, locations });
-            response.messages = jobs.length
+            const data = getSearchJobsData(category, locations);
+            const apiResponse = await apiInstance.searchJobs(data);
+            response.messages = apiResponse.data?.requisitions.length
               ? response.messages
-              : noMathReponse.messages;
+              : noMatchReponse.messages;
+            if (apiResponse.data?.requisitions.length) {
+              setOfferJobs(apiResponse.data?.requisitions);
+            }
 
-            setOfferJobs(jobs);
+            // const jobs = getJobMatches({ category, locations });
+
             setLastActionType(type);
             setCategory(null);
-            clearFilters();
           }
           break;
         }
@@ -210,7 +214,7 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.APPLY_EMAIL: {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
-            setApplyUser({ email: payload?.item! });
+            setApplyUser({ ...applyUser, email: payload?.item! });
             setLastActionType(type);
           } else {
             setError(error);
@@ -219,13 +223,13 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.APPLY_AGE: {
-          setApplyUser({ age: payload?.item! });
+          setApplyUser({ ...applyUser, age: payload?.item! });
           setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
           const isPermitWork = payload?.item === 'Yes';
-          setUser({ isPermitWork });
+          setApplyUser({ ...applyUser, isPermitWork });
           response.messages = isPermitWork
             ? response.messages
             : noPermitWorkReponse.messages;
@@ -236,7 +240,8 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SET_SALARY: {
           if (payload?.item) {
             const salaryInfo = payload?.item.split(' ');
-            setUser({
+            setApplyUser({
+              ...applyUser,
               wishSalary: Number(salaryInfo[0]),
               salaryCurrency: salaryInfo[1],
             });
@@ -244,7 +249,29 @@ const ChatProvider = ({ children }: PropsType) => {
           }
           break;
         }
-
+        case CHAT_ACTIONS.APPLY_ETHNIC: {
+          if (applyUser?.name) {
+            const createCandidateData = {
+              firstName: applyUser.name.split('')[0],
+              lastName: applyUser.name.split('')[1],
+              profile: {
+                currentJobTitle: prefferedJob?.title!,
+                currentEmployer: '',
+              },
+              typeId: '',
+              contactMethods: [
+                {
+                  address: applyUser.email!,
+                  isPrimary: true,
+                  location: 'Home',
+                  type: ContactType.EMAIL,
+                },
+              ],
+            };
+            apiInstance.createCandidate(createCandidateData);
+          }
+          break;
+        }
         case CHAT_ACTIONS.REFINE_SEARCH: {
           clearFilters();
           break;
@@ -265,7 +292,6 @@ const ChatProvider = ({ children }: PropsType) => {
         updatedMessages?.length && setMessages(updatedMessages);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [messages, locations.length, lastActionType, user]
   );
 
@@ -326,21 +352,24 @@ const ChatProvider = ({ children }: PropsType) => {
     setLanguage(lang);
     i18n.changeLanguage(lang.toLowerCase());
   };
-  // TODO: refator
-  const chooseButtonOption = (excludeItem: string) => {
+
+  const chooseButtonOption = (excludeItem: USER_INPUTS) => {
+    const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,
       messages,
       excludeItem,
     });
-    if (excludeItem === USER_INPUTS.ANSWER_QUESTIONS) {
-      setLastActionType(CHAT_ACTIONS.ANSWER_QUESTIONS);
+
+    if (type) {
+      const response = getChatActionResponse(type);
+      setMessages([...response.messages, ...updatedMessages]);
+    } else {
+      const chatType = getNextActionType(lastActionType);
+      chatType && triggerAction({ type: chatType });
+      setMessages(updatedMessages);
     }
-    const lastMessageText = updatedMessages[0].content.text;
-    if (lastMessageText) {
-      const newMessages = getChatResponseOnMessage(lastMessageText);
-      setMessages([...newMessages, ...updatedMessages]);
-    }
+    setLastActionType(type);
   };
 
   const updateMessages = (serverMessages: IMessage[]) => {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { api } from 'utils/api';
 import { useApiKey } from 'utils/hooks';
@@ -13,7 +13,6 @@ const ThemeContextProvider = ({ children }: PropsType) => {
   const [apiTheme, setApiTheme] = useState<any>({});
 
   useEffect(() => {
-    console.log('Bot api key: ', apiKey);
     if (apiKey) {
       api.test(apiKey).then((res) => {
         setApiTheme({

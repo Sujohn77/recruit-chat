@@ -16,12 +16,7 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import {
-  IChatMessangerContext,
-  IFileUploadContext,
-  IJobPosition,
-  ITriggerActionProps,
-} from 'contexts/types';
+import { IChatMessangerContext, IFileUploadContext } from 'contexts/types';
 import {
   IApiMessage,
   IMessage,
@@ -78,13 +73,25 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   };
 };
 
-export const getChatResponseOnMessage = (
-  userInput = '',
-  isCategory = false
-): ILocalMessage[] => {
-  console.log(
-    (userInput.toLowerCase(), USER_INPUTS.HIRING_PROCESS.toLowerCase())
-  );
+export const getActionTypeByOption = (option: USER_INPUTS) => {
+  switch (option.toLowerCase()) {
+    case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
+      return CHAT_ACTIONS.UPLOAD_CV;
+    }
+    case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
+      return CHAT_ACTIONS.HIRING_PROCESS;
+    }
+    case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
+      return CHAT_ACTIONS.ANSWER_QUESTIONS;
+    }
+
+    default: {
+      return null;
+    }
+  }
+};
+
+export const getChatResponseOnMessage = (userInput = ''): ILocalMessage[] => {
   switch (userInput.toLowerCase()) {
     case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
       return getParsedMessages([
@@ -283,17 +290,6 @@ export const fileUploadDefaultState: IFileUploadContext = {
   setNotification: emptyFunc,
 };
 
-enum FILE_TYPES {
-  PDF = 'pdf',
-  DOCX = 'docx',
-  DOC = 'doc',
-}
-
-export const isRightFormat = (type: string) => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  return (<any>Object).values(FILE_TYPES).includes(type);
-};
-
 export const validateEmail = (value: string) => {
   if (!value) {
     return i18n.t('labels:required');
@@ -311,6 +307,7 @@ export const validateEmailOrPhone = (value: string) => {
   const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
   const phoneRegExp =
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+
   if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
     return i18n.t('labels:email_or_phone_invalid');
   }
@@ -575,7 +572,13 @@ export const replaceLocalMessages = ({
   });
 };
 
-export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
+export const getNextActionType = (
+  lastActionType: CHAT_ACTIONS | null,
+  isNoJobMacthes?: boolean
+) => {
+  if (isNoJobMacthes) {
+    return CHAT_ACTIONS.REFINE_SEARCH;
+  }
   switch (lastActionType) {
     case CHAT_ACTIONS.SET_ALERT_CATEGORY:
       return CHAT_ACTIONS.SET_ALERT_PERIOD;
@@ -595,6 +598,8 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
       return CHAT_ACTIONS.APPLY_AGE;
     case CHAT_ACTIONS.APPLY_AGE:
       return CHAT_ACTIONS.SET_WORK_PERMIT;
+    case CHAT_ACTIONS.SET_SALARY:
+      return CHAT_ACTIONS.APPLY_ETHNIC;
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return CHAT_ACTIONS.SET_ALERT_CATEGORY;
     default:
@@ -607,14 +612,14 @@ export const getSearchJobsData = (
   locations: string[]
 ): ISearchJobsPayload => {
   return {
-    pageSize: 25,
+    pageSize: 5,
     page: 0,
     keyword: '*',
-    companyId: '1234',
+    companyId: '6591',
     minDatePosted: '2016-11-13T00:00:00',
-    categories: [category],
+    categories: ['Accounting'], // TODO: replace on category when backend is ready
     location: {
-      city: locations[0],
+      city: 'New York', // TODO: replace on locations[0] when backend is ready
       state: null,
       postalCode: null,
       country: null,

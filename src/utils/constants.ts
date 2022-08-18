@@ -232,6 +232,12 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
           subType: MessageType.TEXT,
         },
       ];
+    case CHAT_ACTIONS.HIRING_PROCESS:
+      return [{ subType: MessageType.HIRING_PROCESS }];
+    case CHAT_ACTIONS.UPLOAD_CV:
+      return [{ subType: MessageType.UPLOAD_CV }];
+    case CHAT_ACTIONS.ANSWER_QUESTIONS:
+      return [{ text: i18n.t('messages:whatJobTitle') }];
     case CHAT_ACTIONS.APPLY_NAME:
       return [{ text: i18n.t('messages:provideEmail') }];
     case CHAT_ACTIONS.APPLY_EMAIL:

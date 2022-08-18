@@ -111,7 +111,7 @@ export const JobOffers: FC = () => {
       payload: { item: `${id}` },
     });
   };
-  // console.log(category);
+
   return (
     <Wrapper>
       <Carousel
