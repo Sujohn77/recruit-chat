@@ -1,29 +1,24 @@
 import { searchAlertCategories } from 'components/Chat/mockData';
+import { ISearchRequisition } from 'contexts/types';
 import { useCallback } from 'react';
 import i18n from 'services/localization';
-import { URLSearchParams } from 'url';
 import { CHAT_ACTIONS } from './types';
 
 interface IUseTextField {
   lastActionType: string | null;
-  searchLocations: string[];
+  locations: string[];
   category: string | null;
-  categories: string[];
+  requisitions: ISearchRequisition[];
 }
 
 export const useTextField = ({
   lastActionType,
-  categories,
-  searchLocations,
+  requisitions,
+  locations,
   category,
 }: IUseTextField) => {
   const getTextFieldProps = useCallback(
-    ({
-      lastActionType,
-      categories,
-      searchLocations,
-      category,
-    }: IUseTextField) => {
+    ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
       if (lastActionType === CHAT_ACTIONS.SET_JOB_ALERT) {
         return {
           searchItems: searchAlertCategories,
@@ -33,13 +28,13 @@ export const useTextField = ({
       }
       if (category) {
         return {
-          searchItems: searchLocations,
+          searchItems: locations,
           placeHolder: i18n.t('placeHolders:chooseLocation'),
           headerName: i18n.t('chat_item_description:locations_title'),
         };
       }
       return {
-        searchItems: categories,
+        searchItems: requisitions.map((r) => r.title),
         headerName: i18n.t('chat_item_description:categories_title'),
         placeHolder:
           lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
@@ -52,8 +47,8 @@ export const useTextField = ({
 
   return getTextFieldProps({
     lastActionType,
-    categories,
-    searchLocations,
+    requisitions,
+    locations,
     category,
   });
 };

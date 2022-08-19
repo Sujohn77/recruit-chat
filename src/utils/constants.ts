@@ -34,12 +34,12 @@ export const ICONS = {
 export const currencies = ['$', '€'];
 
 // TODO: fix mock
-export const locations = [
-  'Oslo, Oslo, Norway',
-  'Oslavany, Jihomoravsky kraj, Czechia',
-  'Oslomej, Oslomej, Macedonia',
-  'Oslo, Minnesota, United States',
-];
+// export const locations = [
+//   'Oslo, Oslo, Norway',
+//   'Oslavany, Jihomoravsky kraj, Czechia',
+//   'Oslomej, Oslomej, Macedonia',
+//   'Oslo, Minnesota, United States',
+// ];
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { IFileUploadContext } from './types';
 import { fileUploadDefaultState } from 'utils/helpers';
 import { useChatMessanger } from './MessangerContext';
-import { CHAT_ACTIONS } from 'utils/types';
+import { CHAT_ACTIONS, MessageType } from 'utils/types';
 import { apiInstance } from 'services';
 
 type PropsType = {
@@ -16,11 +16,12 @@ const FileUploadContext = createContext<IFileUploadContext>(
 );
 
 const FileUploadProvider = ({ children }: PropsType) => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction, submitMessage } = useChatMessanger();
   const [file, setFile] = useState<File | null>(null);
   const [fileResult, setFileResult] = useState<string | ArrayBuffer | null>(
     null
   );
+  const [messageId, setMessageId] = useState<number | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,6 +37,15 @@ const FileUploadProvider = ({ children }: PropsType) => {
     file && reader.readAsDataURL(file);
   }, [file?.size]);
 
+  useEffect(() => {
+    if (messageId) {
+      submitMessage({
+        type: MessageType.FILE,
+        messageId,
+      });
+    }
+  }, [messageId]);
+
   const sendFile = async (file: File) => {
     triggerAction({
       type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
@@ -48,8 +58,10 @@ const FileUploadProvider = ({ children }: PropsType) => {
       lastModified: `${new Date(file.lastModified).toISOString()}`,
       blob: fileResult!,
     };
+    setFile(null);
 
-    apiInstance.uploadCV(data);
+    const response = await apiInstance.uploadCV(data);
+    response.data?.resumeId && setMessageId(response.data?.resumeId); // REPLACE when backend messages scheme is ready
   };
 
   const saveFile = (file: File) => {

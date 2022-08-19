@@ -1,19 +1,20 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
 import { ITriggerActionProps } from 'contexts/types';
 import { CHAT_OPTIONS } from 'screens/intro';
-import { IChatRoomID, IMessage, IMuteStatus, IUserSelf } from 'services/types';
+import {
+  IChatRoomID,
+  IMessage,
+  IMuteStatus,
+  IUserSelf,
+  LocationType,
+} from 'services/types';
 
 export interface IWithID {
   id: string | number;
 }
 
 export interface ILocation {
-  location: {
-    city: string;
-    state?: string | null;
-    country: string;
-    zip: null | string;
-  };
+  location: LocationType;
 }
 
 export interface ISnapshot<T = Object> {

@@ -21,7 +21,6 @@ import {
   replaceItemsWithType,
   generateLocalId,
   getItemById,
-  getJobMatches,
   getMessageBySubtype,
   getParsedMessage,
   getServerParsedMessages,
@@ -36,11 +35,10 @@ import {
 import {
   IAddMessageProps,
   IChatMessangerContext,
-  IJobPosition,
   IPortionMessages,
   ITriggerActionProps,
 } from './types';
-import { useCategories } from 'services/hooks';
+import { useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 import { apiInstance } from 'services';
@@ -66,7 +64,7 @@ const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
-  const [locations, setLocations] = useState<string[]>([]);
+  const [searchLocations, setSearchLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
@@ -87,7 +85,8 @@ const ChatProvider = ({ children }: PropsType) => {
 
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setInitialized] = useState(false);
-  const categories = useCategories();
+
+  const { requisitions, locations } = useRequisitions();
 
   // console.log('DEFAULT_LANG: ', language);
   // console.log('ALERT PERIOD: ', alertPeriod);
@@ -131,11 +130,16 @@ const ChatProvider = ({ children }: PropsType) => {
 
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
-          setCategory(payload?.item!);
+          const category = requisitions.find(
+            (r) => r.title === payload?.item
+          )?.category;
+          category && setCategory(category);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
-          setLocations(payload?.items!);
+          setSearchLocations(payload?.items!);
+          setLastActionType(type);
           break;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
@@ -161,8 +165,12 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
-            const data = getSearchJobsData(category, locations);
+            const data = getSearchJobsData(
+              category,
+              searchLocations[0]?.split(',')[0]
+            );
             const apiResponse = await apiInstance.searchJobs(data);
+
             response.messages = apiResponse.data?.requisitions.length
               ? response.messages
               : noMatchReponse.messages;
@@ -292,14 +300,30 @@ const ChatProvider = ({ children }: PropsType) => {
         updatedMessages?.length && setMessages(updatedMessages);
       }
     },
-    [messages, locations.length, lastActionType, user]
+    [messages, searchLocations.length, lastActionType, user]
   );
 
   const clearFilters = () => {
     setCategory(null);
     setLastActionType(null);
     setAlertCategory(null);
-    setLocations([]);
+    setSearchLocations([]);
+  };
+
+  const submitMessage = ({
+    type,
+    messageId,
+  }: {
+    type: MessageType;
+    messageId: number;
+  }) => {
+    setMessages(
+      messages.map((msg, index) =>
+        msg.content.subType === type && !msg._id
+          ? { ...msg, _id: messageId }
+          : msg
+      )
+    );
   };
 
   const pushMessages = useCallback(
@@ -395,8 +419,9 @@ const ChatProvider = ({ children }: PropsType) => {
         chooseButtonOption,
         triggerAction,
         category,
+        searchLocations,
         locations,
-        categories,
+        requisitions,
         setLastActionType,
         lastActionType,
         changeLang,
@@ -407,6 +432,7 @@ const ChatProvider = ({ children }: PropsType) => {
         viewJob,
         setViewJob,
         prefferedJob,
+        submitMessage,
       }}
     >
       {children}

@@ -34,7 +34,7 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
     setIsSelectedOption(true);
-    triggerAction({ type, payload: { item, isOwn: false } });
+    triggerAction({ type, payload: { item, isChatMessage: true } });
   };
 
   const messages = {

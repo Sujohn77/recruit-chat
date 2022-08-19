@@ -81,6 +81,8 @@ export const TextField: FC<PropsType> = ({
       </div>
     );
   }
+
+  // TODO: refactor focus handling
   return (
     <div>
       <TextInput

@@ -3,7 +3,7 @@ import { colors } from 'utils/colors';
 
 import { Slide } from '../MessagesList/Message/JobOffers';
 import { MenuItemWrapper } from '../../Layout/BurgerMenu/styles';
-import { DarkButton, DefaultButton } from 'components/Layout/styles';
+import { DarkButton } from 'components/Layout/styles';
 
 export const ViewBody = styled.div`
   position: absolute;
@@ -33,11 +33,11 @@ export const ViewBody = styled.div`
 
 export const BackButton = styled(Slide)`
   transform: rotate(225deg);
-  width: 0.75em;
-  height: 0.75em;
+  width: 0.6em;
+  height: 0.6em;
   position: absolute;
   left: 24px;
-  top: 27px;
+  top: 28px;
   cursor: pointer;
 
   &:before,
@@ -80,6 +80,30 @@ export const ViewText = styled.div`
   margin: 0 0px 32px;
   white-space: pre-line;
   line-height: 17px;
+  font-size: 14px;
+  p {
+    margin: 0 0 12p;x
+  }
+`;
+
+export const ViewDescription = styled.div`
+  margin: 0 0 32px;
+  p {
+    margin: 0 0px 32px;
+  }
+  b {
+    line-height: 32px;
+    font-size: 15px;
+  }
+  ul {
+    padding: 0 0 0 12px;
+    li {
+      line-height: 20px;
+      margin: 0 0 8px;
+    }
+  }
+  white-space: pre-line;
+  line-height: 22px;
   font-size: 14px;
 `;
 

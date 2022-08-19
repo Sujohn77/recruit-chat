@@ -12,7 +12,7 @@ import i18n from 'services/localization';
 import { ViewJob } from './ViewJob';
 
 import { useChatMessanger } from 'contexts/MessangerContext';
-import { CHAT_ACTIONS } from 'utils/types';
+import { CHAT_ACTIONS, IRequisition } from 'utils/types';
 import { useTheme } from 'styled-components';
 import { ThemeType } from 'utils/theme/default';
 
@@ -31,7 +31,7 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
     ? i18n.t('chat_item_description:view_job_title')
     : i18n.t('chat_item_description:title');
 
-  const handleApplyJobClick = (viewJob: IJobPosition) => {
+  const handleApplyJobClick = (viewJob: IRequisition | null) => {
     setViewJob(null);
     triggerAction({
       type: CHAT_ACTIONS.APPLY_POSITION,

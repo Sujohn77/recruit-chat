@@ -2,7 +2,7 @@ import { ACCESS_TOKEN } from 'firebase/config';
 import { useEffect, useState } from 'react';
 import Api, { apiInstance, APP_VERSION } from 'services';
 
-import { IApiMessage } from './types';
+import { IApiMessage, LocationType } from './types';
 import { handleRefreshToken } from './utils';
 
 const apiInstanse = new Api();
@@ -12,8 +12,11 @@ export const sendMessage = (message: IApiMessage) => {
   handleRefreshToken(() => apiInstanse.sendMessage(message));
 };
 
-export const useCategories = () => {
-  const [categories, setCategories] = useState<string[]>([]);
+export const useRequisitions = () => {
+  const [requisitions, setRequisitions] = useState<
+    { title: string; category: string }[]
+  >([]);
+  const [locations, setLocations] = useState<LocationType[]>([]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -26,14 +29,23 @@ export const useCategories = () => {
       };
       apiInstance.setAuthHeader(ACCESS_TOKEN);
       const response = await apiInstance.searchRequisitions(data);
-
-      response.data &&
-        setCategories(
-          response.data.requisitions?.map((c: any) => c.title) as any
+      if (response.data) {
+        const requisitions = response.data.requisitions;
+        setLocations(
+          requisitions.map((r) => {
+            return r.location;
+          })
         );
+        setRequisitions(
+          response.data.requisitions?.map((c: any) => ({
+            title: c.title,
+            category: c.categories[0],
+          })) as any
+        );
+      }
     };
     getCategories();
   }, []);
 
-  return categories;
+  return { requisitions, locations };
 };

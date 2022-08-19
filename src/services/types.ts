@@ -350,3 +350,10 @@ export interface IFacentsValue {
   value: string;
   count: number;
 }
+
+export type LocationType = {
+  city: string;
+  state?: string;
+  country: string;
+  zip?: string | null;
+};

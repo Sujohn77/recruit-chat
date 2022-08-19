@@ -60,6 +60,7 @@ export const SearchResults: FC<PropsType> = ({
     matchedItems.length < 6
       ? searchItemheight * matchedItems.length + 1
       : maxSearchHeight;
+
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
       <S.SearchHeader>

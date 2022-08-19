@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
+import { getFormattedDate } from 'utils/helpers';
 import { IRequisition } from 'utils/types';
-
+import parse from 'html-react-parser';
 import * as S from './styles';
 
 type PropsType = {
@@ -18,15 +19,27 @@ export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
         <S.TextHeaderTitle>{item.title}</S.TextHeaderTitle>
         <S.ShortItems>
           <S.InfoItem>{item.location.city}</S.InfoItem>
-          <S.InfoItem>{item.datePosted}</S.InfoItem>
+          <S.InfoItem>{getFormattedDate(item.datePosted!)}</S.InfoItem>
           <S.InfoItem>{item.hiringType}</S.InfoItem>
         </S.ShortItems>
         <S.SubmitButton onClick={onClick}>Apply</S.SubmitButton>
       </S.ViewShortInfo>
-      <S.ViewText>Company: {item.company}</S.ViewText>
-      <S.ViewText>Status: {item.status}</S.ViewText>
+      <S.ViewText>
+        {item.company && (
+          <p>
+            <b>Company: </b>
+            {item.company}
+          </p>
+        )}
+        {item.status && (
+          <p>
+            <b>Status: </b>
+            {item.status}
+          </p>
+        )}
+      </S.ViewText>
       <S.TextTitle>Job description: </S.TextTitle>
-      <S.ViewText>{item.description}</S.ViewText>
+      <S.ViewDescription>{parse(item.description)}</S.ViewDescription>
       <S.SubmitButton onClick={onClick}>Apply</S.SubmitButton>
     </S.ViewBody>
   );

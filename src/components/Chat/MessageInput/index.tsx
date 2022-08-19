@@ -8,12 +8,13 @@ import React, {
   useMemo,
 } from 'react';
 
-import { ICONS, locations as searchLocations } from 'utils/constants';
+import { ICONS } from 'utils/constants';
 import * as S from './styles';
 
 import {
   capitalizeFirstLetter,
   getAccessWriteType,
+  getFormattedLocations,
   getMatchedItems,
   getNextActionType,
   validateEmail,
@@ -27,7 +28,6 @@ import { Autocomplete } from 'components/Layout/Input/Autocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
 
 type PropsType = {};
 interface IRenderInputProps {
@@ -48,7 +48,8 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.SET_ALERT_EMAIL ||
     type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
     type === CHAT_ACTIONS.REFINE_SEARCH ||
-    type === CHAT_ACTIONS.ANSWER_QUESTIONS
+    type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
+    type === CHAT_ACTIONS.SEND_LOCATIONS
   );
 };
 export const MessageInput: FC<PropsType> = () => {
@@ -56,10 +57,10 @@ export const MessageInput: FC<PropsType> = () => {
   const {
     category,
     triggerAction,
+    searchLocations,
     locations,
-    categories,
+    requisitions,
     lastActionType,
-    alertCategory,
     setError,
     error,
   } = useChatMessanger();
@@ -67,8 +68,8 @@ export const MessageInput: FC<PropsType> = () => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
   const { searchItems, placeHolder, headerName } = useTextField({
-    searchLocations,
-    categories,
+    locations: getFormattedLocations(locations),
+    requisitions,
     category,
     lastActionType,
   });
@@ -176,9 +177,9 @@ export const MessageInput: FC<PropsType> = () => {
         <MultiSelectInput
           {...inputProps}
           type={CHAT_ACTIONS.SET_LOCATIONS}
-          options={searchItems}
+          options={getFormattedLocations(locations)}
           onChange={onChangeLocations}
-          values={locations}
+          values={searchLocations}
         />
       );
     }
@@ -191,8 +192,8 @@ export const MessageInput: FC<PropsType> = () => {
       sendFile(file);
     } else if (draftMessage) {
       sendMessage(draftMessage);
-    } else if (locations.length) {
-      const items = locations;
+    } else if (searchLocations.length) {
+      const items = searchLocations;
       triggerAction({ type: CHAT_ACTIONS.SEND_LOCATIONS, payload: { items } });
     }
   };
@@ -202,18 +203,20 @@ export const MessageInput: FC<PropsType> = () => {
   const inputType =
     lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
       ? CHAT_ACTIONS.SET_ALERT_CATEGORY
-      : category
+      : category && lastActionType !== CHAT_ACTIONS.SEND_LOCATIONS
       ? CHAT_ACTIONS.SET_LOCATIONS
       : CHAT_ACTIONS.SET_CATEGORY;
 
   // TODO: refactor
   const isWriteAccess =
     getAccessWriteType(lastActionType) &&
-    (file || draftMessage || !!locations.length);
+    (file || draftMessage || !!searchLocations.length);
 
   return (
     <S.MessagesInput
-      isOffset={inputType === CHAT_ACTIONS.SET_LOCATIONS && !!locations.length}
+      isOffset={
+        inputType === CHAT_ACTIONS.SET_LOCATIONS && !!searchLocations.length
+      }
     >
       <BurgerMenu />
 

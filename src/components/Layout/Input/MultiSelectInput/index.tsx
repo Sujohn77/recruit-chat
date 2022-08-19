@@ -10,6 +10,8 @@ import { CHAT_ACTIONS } from 'utils/types';
 
 import { Close } from 'screens/intro/styles';
 import { colors } from 'utils/colors';
+import { isResultsType } from 'components/Chat/MessageInput';
+import { useChatMessanger } from 'contexts/MessangerContext';
 
 type PropsType = {
   value: string;
@@ -71,6 +73,7 @@ export const MultiSelectInput: FC<PropsType> = ({
     value: values,
     onChange: onChange,
   });
+  const { lastActionType } = useChatMessanger();
 
   const onDelete = (selectedIndex: number) => {
     onChange(
@@ -79,9 +82,11 @@ export const MultiSelectInput: FC<PropsType> = ({
     );
   };
 
+  const isShowResults = isFocus && isResultsType(lastActionType);
+
   return (
     <div>
-      {((!!matchedItems?.length && matchedPart) || !matchedPart) && isFocus && (
+      {isShowResults && (
         <SearchResults
           type={type}
           headerName={headerName}

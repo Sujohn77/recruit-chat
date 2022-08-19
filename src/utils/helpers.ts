@@ -22,13 +22,13 @@ import {
   IMessage,
   ISearchJobsPayload,
   IUserSelf,
+  LocationType,
   ServerMessageType,
 } from 'services/types';
 
 import { findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from 'firebase/config';
 import { profile } from 'contexts/mockData';
-import { jobOffers } from 'components/Chat/mockData';
 
 import i18n from 'services/localization';
 
@@ -262,8 +262,9 @@ const emptyFunc = () => console.log();
 export const chatMessangerDefaultState: IChatMessangerContext = {
   messages: [],
   category: null,
+  searchLocations: [],
+  requisitions: [],
   locations: [],
-  categories: [],
   offerJobs: [],
   lastActionType: null,
   alertCategory: null,
@@ -279,6 +280,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   changeLang: emptyFunc,
   setError: emptyFunc,
   setViewJob: emptyFunc,
+  submitMessage: emptyFunc,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -365,8 +367,7 @@ export const getParsedMessage = ({
     content,
     isOwn: !!isOwn,
     localId,
-    _id:
-      content.subType !== MessageType.FILE && !isChatMessage ? null : localId,
+    _id: !isChatMessage ? null : localId,
   };
 };
 
@@ -450,27 +451,6 @@ export const getResponseMessageType = (type: CHAT_ACTIONS) => {
   return;
 };
 
-export const getJobMatches = ({
-  category,
-  locations,
-}: {
-  category: string;
-  locations: string[];
-}): IJobPosition[] => {
-  const jobs = jobOffers
-    .filter((offer) => {
-      return (
-        offer.category === category &&
-        locations.findIndex((l) => l === offer.location) !== -1
-      );
-    })
-    .map((offer) => offer.jobs);
-  if (!jobs.length) {
-    return [];
-  }
-  return jobs[0] as IJobPosition[];
-};
-
 export const getItemById = (items: any[], id: string) => {
   return items.find((job) => job._id === Number(id));
 };
@@ -513,7 +493,7 @@ export const getUpdatedMessages = ({
     const localMessage = getParsedMessage({
       text,
       subType: isFileUpload ? MessageType.FILE : MessageType.TEXT,
-      isChatMessage: action.payload?.isOwn || true,
+      isChatMessage: !!action.payload?.isChatMessage,
     });
     if (responseAction.isFirstResponse) {
       return [localMessage, ...responseAction.messages, ...updatedMessages];
@@ -609,17 +589,17 @@ export const getNextActionType = (
 
 export const getSearchJobsData = (
   category: string,
-  locations: string[]
+  city: string
 ): ISearchJobsPayload => {
   return {
-    pageSize: 5,
+    pageSize: 10,
     page: 0,
     keyword: '*',
     companyId: '6591',
     minDatePosted: '2016-11-13T00:00:00',
-    categories: ['Accounting'], // TODO: replace on category when backend is ready
+    categories: [category],
     location: {
-      city: 'New York', // TODO: replace on locations[0] when backend is ready
+      city, // TODO: replace on locations[0] when backend is ready
       state: null,
       postalCode: null,
       country: null,
@@ -642,4 +622,28 @@ export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
     default:
       return true;
   }
+};
+
+export const getFormattedDate = (date: string) => {
+  return moment(date).format('MM/DD/YYYY');
+};
+
+export const getFormattedLocations = (locations: LocationType[]) => {
+  const items = locations.map((item) => {
+    if (item.state) {
+      return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
+    }
+    return `${item.city}, ${item.country.slice(0, 13)}`;
+  });
+  return getUniqueItems(items);
+};
+
+export const getUniqueItems = (items: string[]) => {
+  const uniqueItems: string[] = [];
+  items.forEach((item) => {
+    if (uniqueItems.indexOf(item) === -1) {
+      uniqueItems.push(item);
+    }
+  });
+  return uniqueItems;
 };

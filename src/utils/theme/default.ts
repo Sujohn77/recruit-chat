@@ -1,9 +1,9 @@
-import { DefaultTheme } from 'styled-components';
 import { colors } from 'utils/colors';
-const PRIMARY_COLOR = '#379970';
+
 const defaultTheme = {
   primaryColor: colors.boulder,
   secondaryColor: colors.alto,
+  imageUrl: null,
 
   header: {
     color: colors.alto,

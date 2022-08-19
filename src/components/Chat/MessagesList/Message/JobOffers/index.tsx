@@ -1,4 +1,4 @@
-import { DarkButton, DefaultButton } from 'components/Layout/styles';
+import { DarkButton } from 'components/Layout/styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import React, { FC } from 'react';
 import Carousel from 'react-material-ui-carousel';
@@ -101,7 +101,6 @@ export const JobOffer = ({
 export const JobOffers: FC = () => {
   const { offerJobs, category, setViewJob, triggerAction } = useChatMessanger();
   const [index, setIndex] = React.useState(0);
-
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
