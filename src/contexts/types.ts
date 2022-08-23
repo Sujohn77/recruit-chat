@@ -1,12 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { IMessage, ISnapshot, LocationType } from 'services/types';
-import {
-  CHAT_ACTIONS,
-  MessageType,
-  ILocalMessage,
-  USER_INPUTS,
-  IRequisition,
-} from 'utils/types';
+import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
 
 export interface ISearchRequisition {
   title: string;
@@ -17,15 +11,12 @@ export interface IChatMessangerContext {
   messages: ILocalMessage[];
   requisitions: ISearchRequisition[];
   category: string | null;
-  addMessage: (props: IAddMessageProps) => void;
-  pushMessages: (message: ILocalMessage[]) => void;
   chooseButtonOption: (text: string) => void;
   triggerAction: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
   setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[]) => void;
   setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
-  changeLang: (lang: string) => void;
   lastActionType: CHAT_ACTIONS | null;
   offerJobs: IRequisition[];
   alertCategory: string | null;
@@ -34,13 +25,7 @@ export interface IChatMessangerContext {
   viewJob: IRequisition | null;
   setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
   prefferedJob: IRequisition | null;
-  submitMessage: ({
-    type,
-    messageId,
-  }: {
-    type: MessageType;
-    messageId: number;
-  }) => void;
+  submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
 }
 
 export interface IFileUploadContext {
@@ -113,3 +98,8 @@ export interface IPortionMessages extends ISnapshot<IMessage> {}
 //   introDescription: string;
 //   description: string;
 // }
+
+export interface ISubmitMessageProps {
+  type: MessageType;
+  messageId: number;
+}

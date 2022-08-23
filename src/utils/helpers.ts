@@ -12,12 +12,14 @@ import {
   IGetUpdatedMessages,
   IFilterItemsWithType,
   IReplaceLocalMessages,
+  IRequisition,
 } from './types';
 import { colors } from './colors';
 import moment from 'moment';
 
 import { IChatMessangerContext, IFileUploadContext } from 'contexts/types';
 import {
+  ContactType,
   IApiMessage,
   IMessage,
   ISearchJobsPayload,
@@ -27,13 +29,14 @@ import {
 } from 'services/types';
 
 import { findIndex, sortBy } from 'lodash';
-import { getProcessedSnapshots } from 'firebase/config';
+import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
+import { getChatActionResponse } from './constants';
+import { IUser } from 'contexts/MessangerContext';
 
-export const capitalize = (str: string) =>
-  (str = str.charAt(0).toUpperCase() + str.slice(1));
+export const capitalize = (str: string) => (str = str.charAt(0).toUpperCase() + str.slice(1));
 
 export interface IMessageProps {
   color?: string;
@@ -46,10 +49,8 @@ export interface IMessageProps {
 export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
-  const padding =
-    msg.content.subType === MessageType.FILE ? '8px' : '12px 16px';
-  const cursor =
-    msg.content.subType === MessageType.BUTTON ? 'pointer' : 'initial';
+  const padding = msg.content.subType === MessageType.FILE ? '8px' : '12px 16px';
+  const cursor = msg.content.subType === MessageType.BUTTON ? 'pointer' : 'initial';
 
   if (!msg.isOwn) {
     return {
@@ -61,12 +62,8 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
     };
   }
   return {
-    color:
-      msg.content.subType === MessageType.BUTTON
-        ? colors.tundora
-        : colors.white,
-    backColor:
-      msg.content.subType === MessageType.BUTTON ? colors.alto : colors.boulder,
+    color: msg.content.subType === MessageType.BUTTON ? colors.tundora : colors.white,
+    backColor: msg.content.subType === MessageType.BUTTON ? colors.alto : colors.boulder,
     padding,
     isOwn: !!msg.isOwn,
     cursor,
@@ -222,10 +219,7 @@ export const MessageSubtypeId: Record<ServerMessageType, number | null> = {
   [MessageType.CHAT_CREATED]: 3,
 };
 
-export const getLocalMessage = (
-  requestMessage: IApiMessage,
-  sender: IUserSelf
-): IMessage => {
+export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf): IMessage => {
   const currentUnixTime = moment().unix();
 
   return {
@@ -271,13 +265,10 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   error: null,
   viewJob: null,
   prefferedJob: null,
-  addMessage: emptyFunc,
-  pushMessages: emptyFunc,
   chooseButtonOption: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
   setLastActionType: emptyFunc,
-  changeLang: emptyFunc,
   setError: emptyFunc,
   setViewJob: emptyFunc,
   submitMessage: emptyFunc,
@@ -307,8 +298,7 @@ export const validateEmailOrPhone = (value: string) => {
     return i18n.t('labels:required');
   }
   const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
-  const phoneRegExp =
-    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  const phoneRegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
   if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
     return i18n.t('labels:email_or_phone_invalid');
@@ -325,8 +315,7 @@ const isMatches = ({ item, compareItem }: IIsMatches) => {
   const searchItem = item.toLowerCase();
 
   return (
-    searchItem.slice(0, compareWord.length) === compareWord &&
-    searchItem.includes(compareItem)
+    searchItem.slice(0, compareWord.length) === compareWord && searchItem.includes(compareItem)
   );
 };
 
@@ -389,9 +378,10 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
 };
 
 type Handler<A> = (state: QueuesState, action: A) => QueuesState;
-export const updateChatRoomMessages: Handler<
-  UpdateQueueChatRoomMessagesAction
-> = (state, { messagesSnapshots, chatId, queueId }) => {
+export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> = (
+  state,
+  { messagesSnapshots, chatId, queueId }
+) => {
   const chatRooms: IQueueChatRoom[] = [...state.rooms[queueId]];
 
   // Find room
@@ -468,15 +458,21 @@ export const getUpdatedMessages = ({
   action,
   messages,
   responseAction,
+  additionalCondition,
+  sendMessage,
 }: IGetUpdatedMessages) => {
   const { type, payload } = action;
-
   const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
 
   let updatedMessages = popMessage({
     type: responseAction.replaceType,
     messages,
   });
+
+  if (additionalCondition !== null && !additionalCondition) {
+    responseAction.newMessages = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
+  }
+
   if (!messages.length) {
     updatedMessages = [
       ...updatedMessages,
@@ -496,11 +492,14 @@ export const getUpdatedMessages = ({
       isChatMessage: !!action.payload?.isChatMessage,
     });
     if (responseAction.isFirstResponse) {
-      return [localMessage, ...responseAction.messages, ...updatedMessages];
+      return [localMessage, ...responseAction.newMessages, ...updatedMessages];
     }
-    return [...responseAction.messages, localMessage, ...updatedMessages];
+    if (type === CHAT_ACTIONS.NO_MATCH) {
+      sendMessage(localMessage);
+    }
+    return [...responseAction.newMessages, localMessage, ...updatedMessages];
   } else {
-    return [...responseAction.messages, ...updatedMessages];
+    return [...responseAction.newMessages, ...updatedMessages];
   }
 };
 
@@ -515,20 +514,14 @@ const popMessage = ({
     return messages;
   }
 
-  const updatedMessages = !type
-    ? messages
-    : messages.filter((msg) => msg.content.subType !== type);
+  const updatedMessages = !type ? messages : messages.filter((msg) => msg.content.subType !== type);
 
   !type && updatedMessages.shift();
 
   return updatedMessages;
 };
 
-export const replaceItemsWithType = ({
-  type,
-  messages,
-  excludeItem,
-}: IFilterItemsWithType) => {
+export const replaceItemsWithType = ({ type, messages, excludeItem }: IFilterItemsWithType) => {
   const updatedMessages = messages.filter((msg) => {
     const { text, subType } = msg.content;
     return subType !== type || (text === excludeItem && subType === type);
@@ -537,15 +530,10 @@ export const replaceItemsWithType = ({
   return updatedMessages;
 };
 
-export const replaceLocalMessages = ({
-  messages,
-  parsedMessages,
-}: IReplaceLocalMessages) => {
+export const replaceLocalMessages = ({ messages, parsedMessages }: IReplaceLocalMessages) => {
   return messages.map((msg) => {
     if (!msg._id) {
-      const updatedMessage = parsedMessages.find(
-        (updateMsg) => updateMsg.localId === msg.localId
-      );
+      const updatedMessage = parsedMessages.find((updateMsg) => updateMsg.localId === msg.localId);
       return updatedMessage || msg;
     }
     return msg;
@@ -557,7 +545,7 @@ export const getNextActionType = (
   isNoJobMacthes?: boolean
 ) => {
   if (isNoJobMacthes) {
-    return CHAT_ACTIONS.REFINE_SEARCH;
+    return CHAT_ACTIONS.NO_MATCH;
   }
   switch (lastActionType) {
     case CHAT_ACTIONS.SET_ALERT_CATEGORY:
@@ -587,10 +575,7 @@ export const getNextActionType = (
   }
 };
 
-export const getSearchJobsData = (
-  category: string,
-  city: string
-): ISearchJobsPayload => {
+export const getSearchJobsData = (category: string, city: string): ISearchJobsPayload => {
   return {
     pageSize: 10,
     page: 0,
@@ -609,6 +594,32 @@ export const getSearchJobsData = (
       radiusUnit: 'km',
     },
     externalSystemId: 789,
+  };
+};
+
+export const getCreateCandidateData = ({
+  applyUser,
+  prefferedJob,
+}: {
+  applyUser: IUser;
+  prefferedJob: IRequisition | null;
+}) => {
+  return {
+    firstName: applyUser.name!.split('')[0]!,
+    lastName: applyUser.name!.split('')[1],
+    profile: {
+      currentJobTitle: prefferedJob?.title!,
+      currentEmployer: '',
+    },
+    typeId: '',
+    contactMethods: [
+      {
+        address: applyUser.email!,
+        isPrimary: true,
+        location: 'Home',
+        type: ContactType.EMAIL,
+      },
+    ],
   };
 };
 

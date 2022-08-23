@@ -24,7 +24,6 @@
     "jsx": "react-jsx",
     "strictNullChecks": true,
     "typeRoots" : ["node_modules/@types", "src/types"],
-    "includes": ["styled-components.d.ts"]
   },
   "include": [
     "src"

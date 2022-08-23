@@ -6,6 +6,8 @@ import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
+import { NoMatchJob } from '../NoMatchJob';
+import { NotFoundOffer } from './NoFound';
 import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
 
 export const Wrapper = styled.div`
@@ -86,6 +88,7 @@ export const JobOffer = ({
   handleReadMore,
   handleButtonClick,
 }: any) => {
+  console.log(title);
   const readMoreTxt = i18n.t('chat_item_description:read_more');
   const interestedTxt = i18n.t('chat_item_description:interested_in');
   return (
@@ -122,22 +125,26 @@ export const JobOffers: FC = () => {
         swipe
         className="my-carousel"
       >
-        {offerJobs.map((item, index) => (
-          <JobOffer
-            key={`job-offer-${index}`}
-            title={item.title}
-            category={category}
-            handleReadMore={() => setViewJob(item)}
-            handleButtonClick={() => handleSubmitClick(item._id)}
-          />
-        ))}
+        {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
+          return index < offerJobs.length ? (
+            <JobOffer
+              key={`job-offer-${index}`}
+              title={offerJobs[index].title}
+              category={category}
+              handleReadMore={() => setViewJob(offerJobs[index])}
+              handleButtonClick={() => handleSubmitClick(offerJobs[index].id)}
+            />
+          ) : (
+            <NotFoundOffer key={`not-found-offer-${index}`} />
+          );
+        })}
       </Carousel>
       {index !== 0 && (
         <PrevSlide onClick={() => setIndex(index - 1)}>
           <Slide />
         </PrevSlide>
       )}
-      {index !== offerJobs.length - 1 && (
+      {index !== offerJobs.length && (
         <NextSide onClick={() => setIndex(index + 1)}>
           <Slide />
         </NextSide>

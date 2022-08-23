@@ -1,56 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-  useEffect,
-} from 'react';
+import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
 
-import {
-  MessageType,
-  ILocalMessage,
-  CHAT_ACTIONS,
-  USER_INPUTS,
-  IRequisition,
-} from 'utils/types';
+import { MessageType, ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IRequisition } from 'utils/types';
 import { ContactType, IMessage, ISnapshot } from 'services/types';
-import { ChannelName, getChatActionResponse, languages } from 'utils/constants';
+import { ChannelName, getChatActionResponse } from 'utils/constants';
 import {
   chatMessangerDefaultState,
   replaceItemsWithType,
-  generateLocalId,
   getItemById,
-  getMessageBySubtype,
-  getParsedMessage,
   getServerParsedMessages,
   getUpdatedMessages,
   validateEmail,
   validateEmailOrPhone,
   getActionTypeByOption,
   getNextActionType,
-  getChatResponseOnMessage,
   getSearchJobsData,
+  getCreateCandidateData,
 } from 'utils/helpers';
 import {
-  IAddMessageProps,
   IChatMessangerContext,
   IPortionMessages,
+  ISubmitMessageProps,
   ITriggerActionProps,
 } from './types';
-import { useRequisitions } from 'services/hooks';
+import { sendMessage, useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 import { apiInstance } from 'services';
+import { FIREBASE_TOKEN, handleSignInWithCustomToken } from './../firebase/config';
 
 type PropsType = {
   children: React.ReactNode;
 };
 
-const ChatContext = createContext<IChatMessangerContext>(
-  chatMessangerDefaultState
-);
-interface IUser {
+const ChatContext = createContext<IChatMessangerContext>(chatMessangerDefaultState);
+export interface IUser {
   name?: string;
   email?: string;
   age?: string;
@@ -58,8 +42,6 @@ interface IUser {
   wishSalary?: number;
   salaryCurrency?: string;
 }
-const noMatchReponse = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
-const noPermitWorkReponse = getChatActionResponse(CHAT_ACTIONS.NO_PERMIT_WORK);
 
 const ChatProvider = ({ children }: PropsType) => {
   // State
@@ -71,28 +53,30 @@ const ChatProvider = ({ children }: PropsType) => {
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
-  const [alertEmail, setAlertEmail] = useState<string | null>(null);
-  const [language, setLanguage] = useState(languages[0]);
   const [applyUser, setApplyUser] = useState<IUser | null>(null);
 
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
-  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(
-    null
-  );
+  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(null);
   const [initialAction, setInitialAction] = useState<ITriggerActionProps>();
 
   const [error, setError] = useState<string | null>(null);
-  const [isInitialized, setInitialized] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const { requisitions, locations } = useRequisitions();
 
-  // console.log('DEFAULT_LANG: ', language);
-  // console.log('ALERT PERIOD: ', alertPeriod);
-  // console.log('ALERT EMAIL: ', alertEmail);
+  // const [alertEmail, setAlertEmail] = useState<string | null>(null);
 
   // Effects
+  useEffect(() => {
+    handleSignInWithCustomToken(FIREBASE_TOKEN).then((error) => {
+      if (error.message) {
+        setIsInitialized(true);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (nextMessages.length) {
       const processedSnapshots: IMessage[] = getParsedSnapshots({
@@ -102,14 +86,19 @@ const ChatProvider = ({ children }: PropsType) => {
 
       updateMessages(processedSnapshots);
       setServerMessages(processedSnapshots);
-      // setLastActionType(null);
-      !isInitialized && setInitialized(true);
+      !isInitialized && setIsInitialized(true);
     }
-  }, [nextMessages, setServerMessages, serverMessages, messages.length]);
+  }, [nextMessages.length && nextMessages[0].data.localId]);
 
   useEffect(() => {
     initialAction && triggerAction(initialAction);
   }, [isInitialized]);
+
+  const getMessageParam = (action: ITriggerActionProps) => {
+    const isAlertLastType = action.type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
+    const param = isAlertLastType ? alertPeriod : action.payload?.item;
+    return param;
+  };
 
   // Callbacks
   const triggerAction = useCallback(
@@ -121,18 +110,15 @@ const ChatProvider = ({ children }: PropsType) => {
         return null;
       }
 
-      const isAlertLastType =
-        type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
-      const param = isAlertLastType ? alertPeriod : payload?.item;
+      const param = getMessageParam(action);
 
       let response = getChatActionResponse(type, param!);
       let isValidPush = true;
+      let additionalCondition = null;
 
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
-          const category = requisitions.find(
-            (r) => r.title === payload?.item
-          )?.category;
+          const category = requisitions.find((r) => r.title === payload?.item)?.category;
           category && setCategory(category);
           setLastActionType(type);
           break;
@@ -155,7 +141,7 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
           const error = validateEmail(payload?.item!);
           if (payload?.item && !error?.length) {
-            setAlertEmail(payload.item);
+            // setAlertEmail(payload.item);
             clearFilters();
           } else {
             setError(error);
@@ -165,20 +151,13 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
-            const data = getSearchJobsData(
-              category,
-              searchLocations[0]?.split(',')[0]
-            );
+            const data = getSearchJobsData(category, searchLocations[0]?.split(',')[0]);
             const apiResponse = await apiInstance.searchJobs(data);
+            additionalCondition = !apiResponse.data?.requisitions.length;
 
-            response.messages = apiResponse.data?.requisitions.length
-              ? response.messages
-              : noMatchReponse.messages;
             if (apiResponse.data?.requisitions.length) {
               setOfferJobs(apiResponse.data?.requisitions);
             }
-
-            // const jobs = getJobMatches({ category, locations });
 
             setLastActionType(type);
             setCategory(null);
@@ -238,9 +217,7 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
           const isPermitWork = payload?.item === 'Yes';
           setApplyUser({ ...applyUser, isPermitWork });
-          response.messages = isPermitWork
-            ? response.messages
-            : noPermitWorkReponse.messages;
+          additionalCondition = isPermitWork;
           setLastActionType(type);
           break;
         }
@@ -259,24 +236,14 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.APPLY_ETHNIC: {
           if (applyUser?.name) {
-            const createCandidateData = {
-              firstName: applyUser.name.split('')[0],
-              lastName: applyUser.name.split('')[1],
-              profile: {
-                currentJobTitle: prefferedJob?.title!,
-                currentEmployer: '',
-              },
-              typeId: '',
-              contactMethods: [
-                {
-                  address: applyUser.email!,
-                  isPrimary: true,
-                  location: 'Home',
-                  type: ContactType.EMAIL,
-                },
-              ],
-            };
+            const createCandidateData = getCreateCandidateData({ applyUser, prefferedJob });
             apiInstance.createCandidate(createCandidateData);
+          }
+          break;
+        }
+        case CHAT_ACTIONS.CHANGE_LANG: {
+          if (payload?.item) {
+            i18n.changeLanguage(payload.item.toLowerCase());
           }
           break;
         }
@@ -289,18 +256,19 @@ const ChatProvider = ({ children }: PropsType) => {
         }
       }
 
-      // isValidEmailOrText(type, payload?.item!) && setLastActionType(type);
-
-      if (response.messages.length && isValidPush) {
+      if (response.newMessages.length && isValidPush) {
         const updatedMessages = getUpdatedMessages({
           action,
           messages,
           responseAction: response,
+          sendMessage: addMessage,
+          additionalCondition,
         });
+
         updatedMessages?.length && setMessages(updatedMessages);
       }
     },
-    [messages, searchLocations.length, lastActionType, user]
+    [messages.length, searchLocations.length, lastActionType, user, isInitialized]
   );
 
   const clearFilters = () => {
@@ -310,71 +278,32 @@ const ChatProvider = ({ children }: PropsType) => {
     setSearchLocations([]);
   };
 
-  const submitMessage = ({
-    type,
-    messageId,
-  }: {
-    type: MessageType;
-    messageId: number;
-  }) => {
-    setMessages(
-      messages.map((msg, index) =>
-        msg.content.subType === type && !msg._id
-          ? { ...msg, _id: messageId }
-          : msg
-      )
+  const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
+    const updatedMessages = messages.map((msg, index) =>
+      msg.content.subType === type && !msg._id ? { ...msg, _id: messageId } : msg
     );
+    setMessages(updatedMessages);
   };
-
-  const pushMessages = useCallback(
-    (chatMessages: ILocalMessage[]) => {
-      setMessages([...chatMessages, ...messages]);
-    },
-    [messages, setMessages]
-  );
 
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
-    !nextMessages.length && setNextMessages(messagesSnapshots);
-  };
-  // TODO: refator
-  const addMessage = ({
-    text,
-    subType = MessageType.TEXT,
-    isChatMessage = false,
-  }: IAddMessageProps) => {
-    const localId = generateLocalId();
-    const message = getParsedMessage({ text, subType, localId, isChatMessage });
-    // TODO: fix after backend is ready
-    if (!isChatMessage) {
-      const updatedMessages = getChatResponseOnMessage(text);
-      const actionType = updatedMessages[0].content.subType;
-      actionType && triggerAction({ type: actionType as any });
-      setMessages([...updatedMessages, message, ...messages]);
-    } else {
-      setMessages([message, ...messages]);
+    if (!nextMessages.length) {
+      setNextMessages(messagesSnapshots);
     }
-
-    const serverMessage = {
-      channelName: ChannelName.SMS,
-      candidateId: 49530690,
-      contextId: null,
-      msg: text,
-      images: [],
-      localId,
-    };
-    // ---------------------------------
-
-    // sendMessage(serverMessage);=
   };
 
-  const changeLang = (lang: string) => {
-    const text = getMessageBySubtype({
-      subType: CHAT_ACTIONS.CHANGE_LANG,
-      value: lang,
-    });
-    text && addMessage({ text, isChatMessage: true });
-    setLanguage(lang);
-    i18n.changeLanguage(lang.toLowerCase());
+  const addMessage = (message: ILocalMessage) => {
+    if (message.content.text) {
+      const serverMessage = {
+        channelName: ChannelName.SMS,
+        candidateId: 49530690,
+        contextId: null,
+        msg: message.content.text,
+        images: [],
+        localId: `${message.localId}`,
+      };
+
+      sendMessage(serverMessage);
+    }
   };
 
   const chooseButtonOption = (excludeItem: USER_INPUTS) => {
@@ -387,7 +316,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
     if (type) {
       const response = getChatActionResponse(type);
-      setMessages([...response.messages, ...updatedMessages]);
+      setMessages([...response.newMessages, ...updatedMessages]);
     } else {
       const chatType = getNextActionType(lastActionType);
       chatType && triggerAction({ type: chatType });
@@ -396,43 +325,49 @@ const ChatProvider = ({ children }: PropsType) => {
     setLastActionType(type);
   };
 
-  const updateMessages = (serverMessages: IMessage[]) => {
+  const updateMessages = async (serverMessages: IMessage[]) => {
     const parsedMessages = getServerParsedMessages(serverMessages);
-    const filteredMessages = parsedMessages.filter((msg) => {
-      return (
-        messages.findIndex((localMsg) => localMsg.localId === msg.localId) ===
-        -1
-      );
-    });
 
-    setMessages([...messages, ...filteredMessages]);
-    setNextMessages([]);
+    if (!messages.length) {
+      setMessages(parsedMessages);
+    } else {
+      const newMessages = parsedMessages.filter((msg) => {
+        return messages.findIndex((localmsg) => msg.localId === localmsg.localId) === -1;
+      });
+      if (newMessages.length) {
+        setMessages([...messages, ...parsedMessages]);
+      } else {
+        const updatedMessages = messages.map((localmsg) => {
+          const updatedIndex = parsedMessages.findIndex((msg) => msg.localId === localmsg.localId);
+          return updatedIndex !== -1 ? parsedMessages[updatedIndex] : localmsg;
+        });
+
+        setMessages(updatedMessages);
+      }
+    }
   };
 
   return (
     <ChatContext.Provider
       value={{
         messages,
-        addMessage,
-        pushMessages,
-        setSnapshotMessages,
-        chooseButtonOption,
-        triggerAction,
         category,
         searchLocations,
         locations,
         requisitions,
-        setLastActionType,
+        error,
         lastActionType,
-        changeLang,
         offerJobs,
         alertCategory,
-        error,
-        setError,
         viewJob,
-        setViewJob,
         prefferedJob,
+        chooseButtonOption,
+        triggerAction,
         submitMessage,
+        setSnapshotMessages,
+        setLastActionType,
+        setError,
+        setViewJob,
       }}
     >
       {children}

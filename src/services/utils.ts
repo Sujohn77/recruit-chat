@@ -1,4 +1,4 @@
-import { getProcessedSnapshots } from 'firebase/config';
+import { getProcessedSnapshots } from '../firebase/config';
 import { sortBy } from 'lodash';
 import { IMessage, I_id } from './types';
 
@@ -14,12 +14,7 @@ export const handleRefreshToken = async (action: () => any, isFirst = true) => {
 
 export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
   const processedSnapshots: IMessage[] = sortBy(
-    getProcessedSnapshots<I_id, IMessage>(
-      serverMessages || [],
-      nextMessages,
-      'chatItemId',
-      []
-    ),
+    getProcessedSnapshots<I_id, IMessage>(serverMessages || [], nextMessages, 'chatItemId', []),
     (message: any) => -message.dateCreated.seconds
   );
   return processedSnapshots;

@@ -59,7 +59,7 @@ export const MenuItems = styled.div`
 `;
 
 const BurgerMenu = () => {
-  const { triggerAction, changeLang } = useChatMessanger();
+  const { triggerAction } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
@@ -83,8 +83,11 @@ const BurgerMenu = () => {
     },
   ];
 
-  const handleItemClick = ({ type, text }: IMenuItem) => {
-    triggerAction({ type, payload: { item: text } });
+  const handleItemClick = (text: string) => {
+    triggerAction({
+      type: CHAT_ACTIONS.CHANGE_LANG,
+      payload: { item: text, isChatMessage: true },
+    });
     setIsOpen(false);
   };
 
@@ -98,7 +101,6 @@ const BurgerMenu = () => {
         key={`menu-item-${index}`}
         item={item}
         onClick={handleItemClick}
-        onDropDownClick={(lang: string) => changeLang(lang)}
       />
     ) : (
       <MenuItem

@@ -1,4 +1,14 @@
 import { Query, QueryDocumentSnapshot } from '@firebase/firestore-types';
+import {
+  endBefore,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAt,
+} from 'firebase/firestore';
 import { ISnapshot } from '../utils/types';
 import {
   ISocketPresetOptions,
@@ -25,52 +35,59 @@ export class FirebaseSocketReactivePagination<TData> {
    */
   constructor(preset: SocketCollectionPreset, ...queryParams: any[]) {
     this.options = SOCKET_PRESET_OPTIONS[preset];
-     const { onGetCollectionRef } = this.options;
+    const { onGetCollectionRef } = this.options;
     this.collectionRef = onGetCollectionRef(...queryParams);
   }
-  subscribe(callback: (data: ISnapshot<TData>[]) => void) {
+  async subscribe(callback: (data: ISnapshot<TData>[]) => void) {
     const { sortField, pageSize } = this.options;
 
     // Single query to get startAt snapshot
-    this.collectionRef
-      .orderBy(sortField, SORT_ORDERS[0])
-      .limit(pageSize)
-      .get()
-      .then((snapshots) => {
-        // Save startAt snapshot
-        this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1];
 
-        let fbQuery = this.collectionRef.orderBy(sortField, SORT_ORDERS[1]);
-        if (this.listenerStartPos) {
-          fbQuery = fbQuery.startAt(this.listenerStartPos);
-        }
+    const q = query(this.collectionRef as any, orderBy(sortField, SORT_ORDERS[0]), limit(pageSize));
 
-        // Create first listener using startAt snapshot (starting boundary)
-        const firstListener = fbQuery.onSnapshot((querySnapshot) => {
-          const result: ISnapshot<TData>[] = [];
-          querySnapshot.docChanges().forEach(({ doc, type }) => {
-            const data = doc.data() as TData;
-            result.push({
-              type,
-              data,
-            });
+    try {
+      const snapshots: any = await getDocs(q);
+
+      // Save startAt snapshot
+      this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1] as any;
+      let fbQuery = query(this.collectionRef as any, orderBy(sortField, SORT_ORDERS[1]));
+      if (this.listenerStartPos) {
+        fbQuery = query(
+          this.collectionRef as any,
+          orderBy(sortField, SORT_ORDERS[1]),
+          startAt(this.listenerStartPos)
+        );
+      }
+
+      // Create first listener using startAt snapshot (starting boundary)
+      const firstListener = onSnapshot(fbQuery, (querySnapshot) => {
+        const result: ISnapshot<TData>[] = [];
+        querySnapshot.docChanges().forEach(({ doc, type }) => {
+          const data = doc.data() as TData;
+          result.push({
+            type,
+            data,
           });
-
-          this.isPaginationEnded = !result.length;
-
-          if (!this.isPaginationEnded) {
-            callback(result);
-          }
         });
 
-        // Add first listener to list
+        this.isPaginationEnded = !result.length;
+
         if (!this.isPaginationEnded) {
-          this.listeners.push(firstListener);
+          console.log(result);
+          callback(result);
         }
       });
+
+      // Add first listener to list
+      if (!this.isPaginationEnded) {
+        this.listeners.push(firstListener);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  loadNextPage(callback: (data: ISnapshot<TData>[]) => void) {
+  async loadNextPage(callback: (data: ISnapshot<TData>[]) => void) {
     // Pages are over
     if (this.isPaginationEnded) {
       return;
@@ -79,48 +96,55 @@ export class FirebaseSocketReactivePagination<TData> {
     const { pageSize, sortField } = this.options;
 
     // Single query to get new startAt snapshot
+    if (this.listenerStartPos) {
+      const q = query(
+        this.collectionRef as any,
+        orderBy(sortField, SORT_ORDERS[0]),
+        startAt(this.listenerStartPos),
+        limit(pageSize)
+      );
 
-    this.listenerStartPos &&
-      this.collectionRef
-        .orderBy(sortField, SORT_ORDERS[0])
-        .startAt(this.listenerStartPos)
-        .limit(pageSize)
-        .get()
-        .then((snapshots) => {
-          // Previous starting boundary becomes new ending boundary
-          this.listenerEndPos = this.listenerStartPos;
-          this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1];
+      try {
+        const snapshots: any = await getDocs(q);
+        console.log(snapshots.docs.length);
+        // Previous starting boundary becomes new ending boundary
+        this.listenerEndPos = this.listenerStartPos;
+        this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1];
 
-          if (this.listenerStartPos && this.listenerEndPos) {
-            const fbQuery = this.collectionRef
-              .orderBy(sortField, SORT_ORDERS[1])
-              .startAt(this.listenerStartPos)
-              .endBefore(this.listenerEndPos);
+        if (this.listenerStartPos && this.listenerEndPos) {
+          const fbQuery = query(
+            this.collectionRef as any,
+            orderBy(sortField, SORT_ORDERS[0]),
+            startAt(this.listenerEndPos),
+            endBefore(this.listenerStartPos)
+          );
 
-            const newListener = fbQuery.onSnapshot((querySnapshot) => {
-              const result: ISnapshot<TData>[] = [];
-
-              querySnapshot.docChanges().forEach(({ doc, type }) => {
-                const data = doc.data() as TData;
-                result.push({
-                  type,
-                  data,
-                });
+          const newListener = onSnapshot(fbQuery, (querySnapshot) => {
+            const result: ISnapshot<TData>[] = [];
+            querySnapshot.docChanges().forEach(({ doc, type }: any) => {
+              const data = doc.data() as TData;
+              result.push({
+                type,
+                data,
               });
-
-              this.isPaginationEnded = !result.length;
-
-              if (!this.isPaginationEnded) {
-                callback(result);
-              }
             });
 
-            // Add new listener to listeners
+            this.isPaginationEnded = !result.length;
+
             if (!this.isPaginationEnded) {
-              this.listeners.push(newListener);
+              callback(result);
             }
+          });
+
+          // Add new listener to listeners
+          if (!this.isPaginationEnded) {
+            this.listeners.push(newListener);
           }
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 
   /**

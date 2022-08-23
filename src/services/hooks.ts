@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN } from 'firebase/config';
+import { ACCESS_TOKEN } from '../firebase/config';
 import { useEffect, useState } from 'react';
 import Api, { apiInstance, APP_VERSION } from 'services';
 
@@ -13,9 +13,7 @@ export const sendMessage = (message: IApiMessage) => {
 };
 
 export const useRequisitions = () => {
-  const [requisitions, setRequisitions] = useState<
-    { title: string; category: string }[]
-  >([]);
+  const [requisitions, setRequisitions] = useState<{ title: string; category: string }[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
 
   useEffect(() => {

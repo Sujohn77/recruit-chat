@@ -74,7 +74,7 @@ export const en = {
     ethnicHispanic: 'Hispanic',
     noPermitWork:
       'Sorry, you can not apply for this position, since your don’t have work permit',
-    changeLang: 'You changed the language to {{lang}}',
+    changeLang: 'You changed the \n  language to {{lang}}',
     howMuchExperience: 'How much work experience do I need for your company?',
     howSubmitCV: 'Can I submit my CV',
     whatHiring: 'What is the hiring process?',

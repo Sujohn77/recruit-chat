@@ -9,7 +9,6 @@ export const JobOfferWrapper = styled.div`
   font-size: 14px;
   line-height: 17px;
   margin: 0 18px;
-  height: 239px;
   box-sizing: border-box;
 `;
 

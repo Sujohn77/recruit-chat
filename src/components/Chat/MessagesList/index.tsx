@@ -4,7 +4,7 @@ import { Loader } from 'components/Layout/Loader';
 
 import * as S from './styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
-import { MessageType, IContent } from 'utils/types';
+import { MessageType, IContent, CHAT_ACTIONS } from 'utils/types';
 import { useSocketContext } from 'contexts/SocketContext';
 import { InfiniteScrollView } from 'components/InfiniteScrollView';
 import { infiniteScrollStyle } from './styles';
@@ -21,7 +21,7 @@ export const MessagesList: FC<PropsType> = () => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (lastActionType) {
+    if (lastActionType === CHAT_ACTIONS.NO_MATCH) {
       scrollToBottom();
     }
   }, [lastActionType, messages.length]);

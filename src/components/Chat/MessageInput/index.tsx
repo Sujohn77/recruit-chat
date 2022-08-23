@@ -1,12 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  FC,
-  useState,
-  useEffect,
-  ChangeEvent,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { FC, useState, useEffect, ChangeEvent, useCallback, useMemo } from 'react';
 
 import { ICONS } from 'utils/constants';
 import * as S from './styles';
@@ -31,10 +24,7 @@ import { useTextField } from 'utils/hooks';
 
 type PropsType = {};
 interface IRenderInputProps {
-  type:
-    | CHAT_ACTIONS.SET_CATEGORY
-    | CHAT_ACTIONS.SET_LOCATIONS
-    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
+  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS | CHAT_ACTIONS.SET_ALERT_CATEGORY;
 }
 // TODO: utils
 export const isResultsType = (type: CHAT_ACTIONS | null) => {
@@ -97,9 +87,9 @@ export const MessageInput: FC<PropsType> = () => {
         }
       }
       // TODO: matchedPositions[0] = "" = (!matchedPositions[0])
-      const isNoJobMacthes =
-        isResultsType(lastActionType) && matchedPositions[0] !== '';
+      const isNoJobMacthes = isResultsType(lastActionType) && matchedPositions[0] !== '';
       const actionType = getNextActionType(lastActionType, isNoJobMacthes);
+
       if (actionType) {
         triggerAction({
           type: actionType,
@@ -139,8 +129,7 @@ export const MessageInput: FC<PropsType> = () => {
     }
     // TODO: refactor
     if (error) {
-      const isEmailAndPhoneError =
-        lastActionType === CHAT_ACTIONS.GET_USER_NAME;
+      const isEmailAndPhoneError = lastActionType === CHAT_ACTIONS.GET_USER_NAME;
 
       const updatedError = isEmailAndPhoneError
         ? validateEmailOrPhone(event.currentTarget.value)
@@ -209,22 +198,17 @@ export const MessageInput: FC<PropsType> = () => {
 
   // TODO: refactor
   const isWriteAccess =
-    getAccessWriteType(lastActionType) &&
-    (file || draftMessage || !!searchLocations.length);
+    getAccessWriteType(lastActionType) && (file || draftMessage || !!searchLocations.length);
 
   return (
     <S.MessagesInput
-      isOffset={
-        inputType === CHAT_ACTIONS.SET_LOCATIONS && !!searchLocations.length
-      }
+      isoffset={(inputType === CHAT_ACTIONS.SET_LOCATIONS && !!searchLocations.length).toString()}
     >
       <BurgerMenu />
 
       {renderInput({ type: inputType })}
 
-      {isWriteAccess && (
-        <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
-      )}
+      {isWriteAccess && <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />}
     </S.MessagesInput>
   );
 };

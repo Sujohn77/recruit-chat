@@ -214,7 +214,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
           subType: MessageType.TEXT,
         },
         {
-          text: i18n.t('messages:niceToMeet', { name: param }),
+          text: i18n.t('messages:niceToMeet', { param }),
           subType: MessageType.TEXT,
         },
       ];
@@ -250,16 +250,10 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         },
       ];
     case CHAT_ACTIONS.SET_WORK_PERMIT: {
-      return [
-        { subType: MessageType.SALARY_FORM },
-        { text: i18n.t('messages:desireSalary') },
-      ];
+      return [{ subType: MessageType.SALARY_FORM }, { text: i18n.t('messages:desireSalary') }];
     }
     case CHAT_ACTIONS.NO_PERMIT_WORK: {
-      return [
-        { subType: MessageType.REFINE_SERCH },
-        { text: i18n.t('messages:noPermitWork') },
-      ];
+      return [{ subType: MessageType.REFINE_SERCH }, { text: i18n.t('messages:noPermitWork') }];
     }
     case CHAT_ACTIONS.SET_SALARY: {
       return [
@@ -284,7 +278,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.HELP: {
       return [{ subType: MessageType.QUESTION_FORM }];
     }
-    case CHAT_ACTIONS.REFINE_SEARCH: {
+    case CHAT_ACTIONS.NO_MATCH: {
       return [
         { subType: MessageType.NO_MATCH },
         {
@@ -295,6 +289,14 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     }
     case CHAT_ACTIONS.QUESTION_RESPONSE: {
       return [{ text: i18n.t('messages:emailAnswer') }];
+    }
+    case CHAT_ACTIONS.CHANGE_LANG: {
+      return [
+        {
+          text: i18n.t('messages:changeLang', { lang: param }),
+          isOwn: true,
+        },
+      ];
     }
     case CHAT_ACTIONS.SET_LOCATIONS: {
       return [];
@@ -318,7 +320,9 @@ export const getReplaceMessageType = (type: CHAT_ACTIONS) => {
 };
 
 export const isPushMessageType = (type: CHAT_ACTIONS) => {
-  return type !== CHAT_ACTIONS.INTERESTED_IN;
+  return (
+    type !== CHAT_ACTIONS.INTERESTED_IN && type !== CHAT_ACTIONS.CHANGE_LANG
+  );
 };
 
 export const getChatActionResponse = (type: CHAT_ACTIONS, param?: string) => {
@@ -326,7 +330,7 @@ export const getChatActionResponse = (type: CHAT_ACTIONS, param?: string) => {
   const replaceType = getReplaceMessageType(type);
   const isPushMessage = isPushMessageType(type);
   return {
-    messages: getParsedMessages(messages),
+    newMessages: getParsedMessages(messages),
     replaceType,
     isPushMessage,
     isFirstResponse: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV,

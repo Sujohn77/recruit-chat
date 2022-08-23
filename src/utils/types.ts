@@ -1,13 +1,7 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
 import { ITriggerActionProps } from 'contexts/types';
 import { CHAT_OPTIONS } from 'screens/intro';
-import {
-  IChatRoomID,
-  IMessage,
-  IMuteStatus,
-  IUserSelf,
-  LocationType,
-} from 'services/types';
+import { IChatRoomID, IMessage, IMuteStatus, IUserSelf, LocationType } from 'services/types';
 
 export interface IWithID {
   id: string | number;
@@ -226,6 +220,8 @@ export interface IGetUpdatedMessages {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   responseAction: any;
+  sendMessage: (message: ILocalMessage) => void;
+  additionalCondition: boolean | null;
 }
 
 export interface IFilterItemsWithType {

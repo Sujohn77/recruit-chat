@@ -41,8 +41,7 @@ export const SetJobAlert = styled(Button)`
 export const RefineJobSearch = styled(Button)`
   background-color: ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
-  color: ${({ theme: { button } }) =>
-    button.secondaryColor}!important;!important;
+  color: ${({ theme: { button } }) => button.secondaryColor}!important;!important;
   text-transform: initial !important;
 `;
 
@@ -56,9 +55,7 @@ export const NoMatchJob = ({ isRefineOnly = false }) => {
     return (
       <Wrapper isRefineOnly>
         <Avatar />
-        <RefineJobSearch
-          onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
-        >
+        <RefineJobSearch onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}>
           {refineSearchTxt}
         </RefineJobSearch>
       </Wrapper>
@@ -69,14 +66,10 @@ export const NoMatchJob = ({ isRefineOnly = false }) => {
     <Wrapper>
       <Title>{noMatchTxt}</Title>
       <Avatar />
-      <SetJobAlert
-        onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
-      >
+      <SetJobAlert onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}>
         {jobAlertTxt}
       </SetJobAlert>
-      <RefineJobSearch
-        onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
-      >
+      <RefineJobSearch onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}>
         {refineSearchTxt}
       </RefineJobSearch>
     </Wrapper>

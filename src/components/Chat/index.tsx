@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, FC, SetStateAction, useEffect } from 'react';
 
 import { ChatHeader } from './ChatHeader';
 import * as S from './styles';
@@ -48,9 +48,7 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
         <S.Notification>
           {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}
           <S.NotificationText>{file?.name || notification}</S.NotificationText>
-          {file?.name && (
-            <Close onClick={() => resetFile()} color={theme.primaryColor} />
-          )}
+          {file?.name && <Close onClick={() => resetFile()} color={theme.primaryColor} />}
         </S.Notification>
       )}
       <MessageInput />

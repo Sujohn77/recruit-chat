@@ -19,7 +19,8 @@ export const MessageBox = styled.div<IMessageProps>`
   padding: ${({ padding }) => padding};
   background: ${({ isOwn, theme }) =>
     isOwn ? theme.primaryColor : theme.message.chat.backgroundColor};
-  ${({ backColor = '#D9D9D9', isOwn = false, theme }) => `margin-bottom: 24px;
+  ${({ backColor = '#D9D9D9', isOwn = false, theme }) => `
+        margin-bottom: 24px;
         &:after {
             content: '';
             width: 0; 

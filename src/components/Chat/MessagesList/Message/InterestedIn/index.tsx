@@ -10,11 +10,7 @@ import * as S from './styles';
 interface IProps {
   message: ILocalMessage;
 }
-export const InterestedIn: FC<IProps> = ({
-  message,
-}: {
-  message: ILocalMessage;
-}) => {
+export const InterestedIn: FC<IProps> = ({ message }: { message: ILocalMessage }) => {
   const { prefferedJob } = useChatMessanger();
   const messageProps = { ...getMessageProps(message) };
 
@@ -26,9 +22,9 @@ export const InterestedIn: FC<IProps> = ({
     <MessageBox {...messageProps}>
       <S.InterestedInText>I’m interested</S.InterestedInText>
       <S.InterestedInTitle>{prefferedJob.title}</S.InterestedInTitle>
-      <S.MessageJobItem>{prefferedJob.location}</S.MessageJobItem>
-      <S.MessageJobItem>{prefferedJob.postedDate}</S.MessageJobItem>
-      <S.MessageJobItem>{prefferedJob.fullTime}</S.MessageJobItem>
+      <S.MessageJobItem>{prefferedJob.location.city}</S.MessageJobItem>
+      <S.MessageJobItem>{prefferedJob.datePosted}</S.MessageJobItem>
+      <S.MessageJobItem>{prefferedJob.hiringType}</S.MessageJobItem>
     </MessageBox>
   );
 };

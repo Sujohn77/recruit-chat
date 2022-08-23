@@ -1,5 +1,5 @@
 import apisauce, { ApiResponse, ApisauceInstance } from 'apisauce';
-import { handleSignInWithCustomToken } from 'firebase/config';
+import { handleSignInWithCustomToken } from '../firebase/config';
 
 import {
   AppKeyType,
@@ -37,21 +37,16 @@ class Api {
     });
   }
 
-  setAuthHeader = (token: string) =>
-    this.client.setHeader('Authorization', `Bearer ${token}`);
+  setAuthHeader = (token: string) => this.client.setHeader('Authorization', `Bearer ${token}`);
 
   setAuthHeaderToNull = () => this.client.setHeader('Authorization', '');
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
 
   markChatRead = (chatId?: number) =>
-    this.client.post<IUpdateMessagesResponse>(
-      '/api/messenger/chat/acknowledge',
-      { chatId }
-    );
+    this.client.post<IUpdateMessagesResponse>('/api/messenger/chat/acknowledge', { chatId });
 
-  getUserSelf = (data: AppKeyType) =>
-    this.client.get<IUserSelf>('api/user/self', data);
+  getUserSelf = (data: AppKeyType) => this.client.get<IUserSelf>('api/user/self', data);
   loginUserCodeCheck = (data: { grantType: string }) =>
     this.client.post<any>('api/auth/token', data.grantType, {
       headers: FORM_URLENCODED,

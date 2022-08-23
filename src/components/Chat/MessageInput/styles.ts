@@ -5,7 +5,7 @@ import { colors } from 'utils/colors';
 export const searchItemheight = 31;
 export const searchHeaderHeight = 40;
 // export const searchInputHeight = 60;
-export const MessagesInput = styled(Box)<{ isOffset: boolean }>`
+export const MessagesInput = styled(Box)<{ isoffset: string }>`
   min-height: 50px;
   position: relative !important;
   display: flex;
@@ -15,7 +15,7 @@ export const MessagesInput = styled(Box)<{ isOffset: boolean }>`
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  margin-top: ${({ isOffset }) => isOffset && '-30px'};
+  margin-top: ${({ isoffset }) => !!isoffset && '-30px'};
   > button {
     padding: 0px;
     margin: 0;
@@ -27,8 +27,7 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   position: absolute;
   width: 100%;
   left: 0;
-  top: ${({ searchOptionsHeight }) =>
-    -searchOptionsHeight - searchHeaderHeight + 'px'};
+  top: ${({ searchOptionsHeight }) => -searchOptionsHeight - searchHeaderHeight + 'px'};
   color: ${({ theme: { searchResults } }) => searchResults.color};
   font-weight: 500;
   z-index: 1;
@@ -45,8 +44,7 @@ export const SearchHeader = styled.div`
   align-items: center;
 `;
 export const SearchBody = styled.ul`
-  background-color: ${({ theme: { searchResults } }) =>
-    searchResults.items.backgroundColor};
+  background-color: ${({ theme: { searchResults } }) => searchResults.items.backgroundColor};
   display: flex;
   flex-direction: column;
   margin: 0;

@@ -49,10 +49,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <TextMessage message={message} />;
     case MessageType.BUTTON: {
       return (
-        <S.MessageButton
-          onClick={() => onClick(message.content)}
-          {...messageProps}
-        >
+        <S.MessageButton onClick={() => onClick(message.content)} {...messageProps}>
           <S.MessageText>{message.content.text}</S.MessageText>
         </S.MessageButton>
       );

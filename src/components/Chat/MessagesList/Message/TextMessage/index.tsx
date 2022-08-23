@@ -17,16 +17,13 @@ export const TextMessage: FC<IProps> = ({ message }) => {
   const messageProps = { ...getMessageProps(message) };
 
   const isFile = subType === MessageType.FILE;
-  const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
-    'HH:mm A'
-  );
+  const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format('HH:mm A');
 
   const renderSendingTime = (message: ILocalMessage) => {
     if (message.localId !== message._id && message.isOwn) {
       if (message._id) {
         return <S.TimeText>{createdAt}</S.TimeText>;
       }
-
       return <S.MessageUnsendIcon src={IMAGES.CLOCK} />;
     }
 
@@ -38,9 +35,7 @@ export const TextMessage: FC<IProps> = ({ message }) => {
       <S.MessageContent isFile={isFile}>
         {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
-        <S.MessageText>
-          {message.content.text || message.content.subType}
-        </S.MessageText>
+        <S.MessageText>{message.content.text || message.content.subType}</S.MessageText>
 
         {renderSendingTime(message)}
       </S.MessageContent>
