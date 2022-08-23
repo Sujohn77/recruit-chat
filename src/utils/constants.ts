@@ -11,7 +11,7 @@ import FINGER_UP from '../assets/icons/fingerUp.svg';
 import LOGO from '../assets/icons/logo.svg';
 import SEARCH_ICON from '../assets/icons/search.svg';
 import QUESTION from '../assets/icons/question.svg';
-import { CHAT_ACTIONS, HTTPStatusCodes, MessageType } from './types';
+import { CHAT_ACTIONS, HTTPStatusCodes, IGetChatResponseProps, ILocalMessage, MessageType } from './types';
 import { generateLocalId, getParsedMessages } from './helpers';
 import moment from 'moment';
 import i18n from 'services/localization';
@@ -214,7 +214,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
           subType: MessageType.TEXT,
         },
         {
-          text: i18n.t('messages:niceToMeet', { param }),
+          text: i18n.t('messages:niceToMeet', { name: param }),
           subType: MessageType.TEXT,
         },
       ];
@@ -315,25 +315,43 @@ export const getReplaceMessageType = (type: CHAT_ACTIONS) => {
     case CHAT_ACTIONS.INTERESTED_IN:
       return MessageType.JOB_POSITIONS;
     default:
-      return undefined;
+      return null;
   }
 };
 
 export const isPushMessageType = (type: CHAT_ACTIONS) => {
   return (
-    type !== CHAT_ACTIONS.INTERESTED_IN && type !== CHAT_ACTIONS.CHANGE_LANG
+    type !== CHAT_ACTIONS.INTERESTED_IN &&
+    type !== CHAT_ACTIONS.CHANGE_LANG &&
+    type !== CHAT_ACTIONS.SUCCESS_UPLOAD_CV &&
+    type !== CHAT_ACTIONS.SET_LOCATIONS &&
+    type !== CHAT_ACTIONS.REFINE_SEARCH &&
+    type !== CHAT_ACTIONS.APPLY_POSITION &&
+    type !== CHAT_ACTIONS.QUESTION_RESPONSE
   );
 };
 
-export const getChatActionResponse = (type: CHAT_ACTIONS, param?: string) => {
+export const isReversePush = (type: CHAT_ACTIONS) => {
+  return type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
+};
+
+export const getChatActionResponse = ({
+  type,
+  additionalCondition,
+  param,
+}: IGetChatResponseProps): { newMessages: ILocalMessage[] } => {
   const messages = getChatActionMessages(type, param);
-  const replaceType = getReplaceMessageType(type);
-  const isPushMessage = isPushMessageType(type);
+
+  if (additionalCondition !== null && additionalCondition !== undefined && !additionalCondition) {
+    const newType = type === CHAT_ACTIONS.SET_WORK_PERMIT ? CHAT_ACTIONS.NO_PERMIT_WORK : CHAT_ACTIONS.NO_MATCH;
+    return getChatActionResponse({ type: newType });
+  }
+
+  // const isPushMessage = isPushMessageType(type);
   return {
     newMessages: getParsedMessages(messages),
-    replaceType,
-    isPushMessage,
-    isFirstResponse: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
+    // isPushMessage,
+    // isFirstResponse: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
   };
 };
 
@@ -344,3 +362,9 @@ export enum EnvironmentMode {
 }
 
 export const languages = ['EN', 'FR', 'UA'];
+
+export enum Status {
+  PENDING = 'PENDING',
+  ERROR = 'ERROR',
+  DONE = 'Done',
+}

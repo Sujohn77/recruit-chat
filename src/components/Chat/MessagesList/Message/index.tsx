@@ -1,7 +1,7 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { getMessageProps } from 'utils/helpers';
 
-import { MessageType, IContent, ILocalMessage, CHAT_ACTIONS } from 'utils/types';
+import { MessageType, IContent, ILocalMessage } from 'utils/types';
 import { BrowseFile } from './BrowseFile';
 import { EmailForm } from './EmailForm';
 import { JobOffers } from './JobOffers';
@@ -17,26 +17,18 @@ import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
 import { ThanksMessage } from './ThanksMessage';
-import { useChatMessanger } from 'contexts/MessangerContext';
 // import { useThemeContext } from 'contexts/ThemeContext';
 
 type PropsType = {
   message: ILocalMessage;
   onClick: (content: IContent) => void;
+  handleOfferSubmit: (id: string | number) => void;
 };
 
 export const MS_1000 = 1000;
-export const Message: FC<PropsType> = ({ message, onClick }) => {
-  const {triggerAction} = useChatMessanger()
+export const Message: FC<PropsType> = ({ message, onClick, handleOfferSubmit }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
-
-  const handleOfferSubmit = useCallback((id: string | number) => {
-    triggerAction({
-      type: CHAT_ACTIONS.INTERESTED_IN,
-      payload: { item: `${id}` },
-    });
-  },[]);
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
@@ -47,8 +39,7 @@ export const Message: FC<PropsType> = ({ message, onClick }) => {
       return <EmailForm />;
     }
     case MessageType.JOB_POSITIONS: {
-      
-      return <JobOffers onSubmit={handleOfferSubmit}/>;
+      return <JobOffers onSubmit={handleOfferSubmit} />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;

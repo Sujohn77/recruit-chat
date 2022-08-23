@@ -4,8 +4,9 @@ import { colors } from 'utils/colors';
 
 export const searchItemheight = 31;
 export const searchHeaderHeight = 40;
+export const inputOffset = '-30px';
 // export const searchInputHeight = 60;
-export const MessagesInput = styled(Box)<{ isoffset: string }>`
+export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   min-height: 50px;
   position: relative !important;
   display: flex;
@@ -15,7 +16,7 @@ export const MessagesInput = styled(Box)<{ isoffset: string }>`
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  margin-top: ${({ isoffset }) => !!isoffset && '-30px'};
+  margin-top: ${({ offset }) => !!offset && offset.toString()};
   > button {
     padding: 0px;
     margin: 0;

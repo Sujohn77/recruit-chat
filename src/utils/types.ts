@@ -1,5 +1,6 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
 import { ITriggerActionProps } from 'contexts/types';
+import { Dispatch, SetStateAction } from 'react';
 import { CHAT_OPTIONS } from 'screens/intro';
 import { IChatRoomID, IMessage, IMuteStatus, IUserSelf, LocationType } from 'services/types';
 
@@ -18,7 +19,6 @@ export interface ISnapshot<T = Object> {
 
 export enum MessageType {
   TEXT = 'text',
-  NO_MATCH_JOB = 'no_match_job',
   JOB_POSITIONS = 'job_positions',
   NO_MATCH = 'no_match',
   REFINE_SERCH = 'refine_search',
@@ -66,13 +66,6 @@ export interface IContent {
   subType: MessageType;
   text?: string;
 }
-// interface IMessageNoMatchJob {
-//     type: MessageType.NO_MATCH_JOB,
-// }
-// interface IMessageJobPositions {
-//     type: MessageType.STRING,
-//     positions: string[]
-// }
 
 export enum USER_INPUTS {
   FIND_JOB = 'Find a job',
@@ -220,8 +213,19 @@ export interface IGetUpdatedMessages {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   responseAction: any;
-  sendMessage: (message: ILocalMessage) => void;
   additionalCondition: boolean | null;
+}
+
+export interface IPushMessage {
+  action: ITriggerActionProps;
+  messages: ILocalMessage[];
+  setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
+}
+
+export interface IGetChatResponseProps {
+  type: CHAT_ACTIONS;
+  additionalCondition?: boolean | null;
+  param?: string | undefined;
 }
 
 export interface IFilterItemsWithType {

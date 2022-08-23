@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 
-export const Dot = styled.span<{ isShow?: boolean }>`
+export const Dot = styled.span`
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -30,10 +30,8 @@ export const Wrapper = styled.div`
   left: 16px;
 `;
 
-export const Loader = ({ isShow }: { isShow?: boolean }) => {
-  const dots = Array.from({ length: 3 }).map((v, index) => (
-    <Dot key={'dot-' + index} isShow={isShow} />
-  ));
+export const Loader = () => {
+  const dots = Array.from({ length: 3 }).map((v, index) => <Dot key={'dot-' + index} />);
 
   return <Wrapper>{dots}</Wrapper>;
 };

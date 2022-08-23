@@ -27,8 +27,7 @@ export const fr = {
     initialMessage: 'Un salut! Vous cherchent un travail?',
     uploadCV: 'Upload un prix conventionnel',
     answerQeustions: 'Répondent un questionss',
-    whatJobTitle:
-      'Que pareil - votre preferred fonction? Nous sommes essayer retrouve un travaux pareils.',
+    whatJobTitle: 'Que pareil - votre preferred fonction? Nous sommes essayer retrouve un travaux pareils.',
     botMessageYou:
       'une communication bot, où vous veulent exercer? Ce peut-être votre agencement ou un inventaire un preferred agencements courant.',
     whatCategoryJob: 'Que vous preferred un titre une job catégorie?',
@@ -42,21 +41,15 @@ export const fr = {
     daily: 'Journellement',
     alertEmail:
       'Que est une adresse un courriel meilleure, pour atteindre vous? \n \n nous sommes seul contact avec vous pour un modifications et un un potentiels job débouchés',
-    successSubscribed:
-      'Vous fructueusement abonnèrent se to un job alarmes hebdomadaires.',
+    successSubscribed: 'Vous fructueusement abonnèrent se to un job alarmes hebdomadaires.',
     thanks: 'Merci!',
-    contactLater:
-      'Nous sommes seul contact avec vous pour un un potentiels job débouchés..',
+    contactLater: 'Nous sommes seul contact avec vous pour un un potentiels job débouchés..',
     niceToMeet: 'Nice au-devant de avec vous, {{un nom}}',
-    reachEmail:
-      'Que est une postale une adresse ou téléphonique chambre meilleure, pour atteindre vous?',
+    reachEmail: 'Que est une postale une adresse ou téléphonique chambre meilleure, pour atteindre vous?',
     whatFullName: 'Comme vous appellent complet?',
-    fewQuestions:
-      'We have a few questions about your background and experience to get your application started.',
-    jobRecommendations:
-      'Thanks ici sont vos job recommandations, basé sur une information, dont vous assurèrent.',
-    notFoundJob:
-      'Non fit fing un travail correct? \n \n ici - celui, que vous peuvent faire',
+    fewQuestions: 'We have a few questions about your background and experience to get your application started.',
+    jobRecommendations: 'Thanks ici sont vos job recommandations, basé sur une information, dont vous assurèrent.',
+    notFoundJob: 'Non fit fing un travail correct? \n \n ici - celui, que vous peuvent faire',
     applyThanks: "Merci d'avoir postulé pour ce poste",
     provideName: 'Veuillez fournir votre nom',
     provideEmail: 'Veuillez fournir votre e-mail',
@@ -69,15 +62,12 @@ export const fr = {
     wishNotSay: 'Ne souhaite pas dire',
     ethnicWhite: 'Blanc',
     ethnicHispanic: 'Hispanique',
-    permitApply:
-      "Désolé, vous ne pouvez pas postuler pour ce poste, car vous n'avez pas de permis de travail",
-    changeLang: 'Vous avez changé la langue en {{lang}}',
-    howMuchExperience:
-      "De combien d'expérience de travail ai-je besoin pour votre entreprise ?",
+    permitApply: "Désolé, vous ne pouvez pas postuler pour ce poste, car vous n'avez pas de permis de travail",
+    changeLang: 'Vous avez changé \n  la langue en {{lang}}',
+    howMuchExperience: "De combien d'expérience de travail ai-je besoin pour votre entreprise ?",
     howSubmitCV: 'Puis-je soumettre mon CV?',
     whatHiring: "Quel est le processus d'embauche?",
-    popularQuestions:
-      "D'ACCORD! Voici quelques questions courantes pour vous aider à démarrer.",
+    popularQuestions: "D'ACCORD! Voici quelques questions courantes pour vous aider à démarrer.",
     emailAnswer: 'Merci! Nous vous enverrons une réponse par e-mail',
     noMatchMessage:
       "Désolé, nous n'avons trouvé aucune correspondance pour les recommandations d'emploi personnelles. Vous trouverez ci-dessous les actions que vous pouvez entreprendre.",
@@ -86,10 +76,8 @@ export const fr = {
     title: 'Bot de carrière',
     view_job_title: "Voir l'emploi",
     no_match: 'Désolé, encore rien trouvé',
-    enter_email_title:
-      'Veuillez entrer votre e-mail et nous vous enverrons un e-mail',
-    transcript_sent:
-      'Votre relevé de notes a été envoyé à votre adresse e-mail',
+    enter_email_title: 'Veuillez entrer votre e-mail et nous vous enverrons un e-mail',
+    transcript_sent: 'Votre relevé de notes a été envoyé à votre adresse e-mail',
     categories_title: 'Titre de la catégorie recherchée',
     locations_title: 'Localisation recherchée',
     all_categories: 'Toutes les catégories',

@@ -1,13 +1,7 @@
-import { isResultsType } from 'components/Chat/MessageInput';
 import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
 import { useChatMessanger } from 'contexts/MessangerContext';
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  MouseEvent,
-  SetStateAction,
-} from 'react';
+import React, { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
+import { isResultsType } from 'utils/helpers';
 import { CHAT_ACTIONS } from 'utils/types';
 import { TextField } from '..';
 import { INPUT_TYPES } from '../types';
@@ -20,17 +14,14 @@ type PropsType = {
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeHolder: string;
-  type:
-    | CHAT_ACTIONS.SET_CATEGORY
-    | CHAT_ACTIONS.SET_LOCATIONS
-    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
+  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS | CHAT_ACTIONS.SET_ALERT_CATEGORY;
   setIsFocus: Dispatch<SetStateAction<boolean>>;
   isFocus: boolean;
 };
 
 export const Autocomplete: FC<PropsType> = (props) => {
   // const [isFocus, setIsFocus] = useState(false);
-  const { triggerAction, lastActionType } = useChatMessanger();
+  const { triggerAction, lastActionType, user } = useChatMessanger();
   const {
     matchedItems,
     value,
@@ -49,12 +40,9 @@ export const Autocomplete: FC<PropsType> = (props) => {
     triggerAction({ type, payload: { item: e.currentTarget.textContent } });
   };
 
-  // TODO: test
   const isShowResults = isFocus && isResultsType(lastActionType);
-  const inputType =
-    lastActionType !== CHAT_ACTIONS.APPLY_EMAIL
-      ? INPUT_TYPES.TEXT
-      : INPUT_TYPES.NUMBER;
+  const isNumberType = lastActionType === CHAT_ACTIONS.APPLY_EMAIL && user?.email;
+  const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
 
   return (
     <div>

@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { IMessage, ISnapshot, LocationType } from 'services/types';
+import { Status } from 'utils/constants';
 import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
+import { IUser } from './MessangerContext';
 
 export interface ISearchRequisition {
   title: string;
@@ -11,6 +13,8 @@ export interface IChatMessangerContext {
   messages: ILocalMessage[];
   requisitions: ISearchRequisition[];
   category: string | null;
+  user: IUser | null;
+  status: Status | null;
   chooseButtonOption: (text: string) => void;
   triggerAction: (action: ITriggerActionProps) => void;
   searchLocations: string[];

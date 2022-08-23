@@ -6,34 +6,8 @@ import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { CHAT_ACTIONS } from 'utils/types';
-import { ICONS, languages } from '../../../utils/constants';
-import sizes from '../../../utils/sizes';
-import { DropDown } from './DropDown';
-import { IMenuItem, MenuItem } from './MenuItem';
-
-const BurgerButton = styled.div`
-  height: 20px;
-  width: 10px;
-  display: flex;
-  justify-content: space-around;
-  flex-flow: column nowrap;
-  align-items: center;
-  align-self: center;
-  margin-right: 10px;
-  cursor: pointer;
-  top: 40%;
-  right: 5%;
-  @media (max-width: ${sizes.M}) {
-    display: flex;
-    margin-right: 0;
-  }
-`;
-
-const MobileMenu = styled.img`
-  width: 16px;
-  height: 16px;
-  opacity: 1;
-`;
+import { languages } from '../../../utils/constants';
+import { MenuItem } from './MenuItem';
 
 export const MenuItems = styled.div`
   padding: 0 10px;
@@ -57,7 +31,12 @@ export const MenuItems = styled.div`
     }
   }
 `;
-
+interface IMenuItem {
+  type: CHAT_ACTIONS;
+  text: string;
+  isDropdown?: boolean;
+  options?: string[];
+}
 const BurgerMenu = () => {
   const { triggerAction } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
@@ -83,10 +62,10 @@ const BurgerMenu = () => {
     },
   ];
 
-  const handleItemClick = (text: string) => {
+  const handleItemClick = (item: IMenuItem) => {
     triggerAction({
-      type: CHAT_ACTIONS.CHANGE_LANG,
-      payload: { item: text, isChatMessage: true },
+      type: item.type,
+      payload: { item: item.text, isChatMessage: true },
     });
     setIsOpen(false);
   };
@@ -95,31 +74,13 @@ const BurgerMenu = () => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const items = map(menuItems, (item, index) =>
-    item.isDropdown ? (
-      <MenuItem
-        key={`menu-item-${index}`}
-        item={item}
-        onClick={handleItemClick}
-      />
-    ) : (
-      <MenuItem
-        key={`menu-item-${index}`}
-        item={item}
-        onClick={handleItemClick}
-      />
-    )
-  );
+  const items = map(menuItems, (item, index) => (
+    <MenuItem key={`menu-item-${index}`} item={item} onClick={handleItemClick} />
+  ));
 
   return (
     <div onClick={handleBurgerClick}>
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 1 }}
-      >
+      <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 1 }}>
         <svg viewBox="0 0 100 80" width="16" height="16">
           <rect y="0" width="100" height="14" rx="10"></rect>
           <rect y="35" width="100" height="14" rx="10"></rect>

@@ -16,7 +16,7 @@ type PropsType = {
     isDropdown?: boolean;
     options?: string[];
   };
-  onClick: (item: string) => void;
+  onClick: (item: IMenuItem) => void;
 };
 
 export const MenuItem: FC<PropsType> = ({ onClick, item }) => {
@@ -26,13 +26,11 @@ export const MenuItem: FC<PropsType> = ({ onClick, item }) => {
     <S.MenuItemWrapper
       onMouseEnter={() => item.isDropdown && setIsOpenDropDown(true)}
       onMouseLeave={() => item.isDropdown && setIsOpenDropDown(false)}
+      onClick={() => !isOpenDropDown && onClick(item)}
     >
       {item.text}
       {isOpenDropDown && (
-        <DropDown
-          onClick={(value: string) => onClick && onClick(value)}
-          options={item.options!}
-        />
+        <DropDown onClick={(value: string) => onClick({ ...item, text: value })} options={item.options!} />
       )}
     </S.MenuItemWrapper>
   );

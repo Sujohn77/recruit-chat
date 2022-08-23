@@ -10,8 +10,8 @@ import { CHAT_ACTIONS } from 'utils/types';
 
 import { Close } from 'screens/intro/styles';
 import { colors } from 'utils/colors';
-import { isResultsType } from 'components/Chat/MessageInput';
 import { useChatMessanger } from 'contexts/MessangerContext';
+import { isResultsType } from 'utils/helpers';
 
 type PropsType = {
   value: string;
@@ -100,11 +100,7 @@ export const MultiSelectInput: FC<PropsType> = ({
 
       <S.InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
         {selectedValues.map((option: string, index: number) => (
-          <Tag
-            label={option}
-            {...getTagProps({ index })}
-            onDelete={() => onDelete(index)}
-          />
+          <Tag label={option} {...getTagProps({ index })} onDelete={() => onDelete(index)} />
         ))}
         <TextInput
           {...getInputProps()}

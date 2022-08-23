@@ -13,11 +13,12 @@ import {
   IFilterItemsWithType,
   IReplaceLocalMessages,
   IRequisition,
+  IPushMessage,
 } from './types';
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext } from 'contexts/types';
+import { IChatMessangerContext, IFileUploadContext, ITriggerActionProps } from 'contexts/types';
 import {
   ContactType,
   IApiMessage,
@@ -33,8 +34,15 @@ import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
-import { getChatActionResponse } from './constants';
+import {
+  ChannelName,
+  getChatActionResponse,
+  getReplaceMessageType,
+  isPushMessageType,
+  isReversePush,
+} from './constants';
 import { IUser } from 'contexts/MessangerContext';
+import { sendMessage } from 'services/hooks';
 
 export const capitalize = (str: string) => (str = str.charAt(0).toUpperCase() + str.slice(1));
 
@@ -255,7 +263,9 @@ export const capitalizeFirstLetter = (str: string) => {
 const emptyFunc = () => console.log();
 export const chatMessangerDefaultState: IChatMessangerContext = {
   messages: [],
+  status: null,
   category: null,
+  user: null,
   searchLocations: [],
   requisitions: [],
   locations: [],
@@ -314,9 +324,7 @@ const isMatches = ({ item, compareItem }: IIsMatches) => {
   const compareWord = compareItem.toLowerCase();
   const searchItem = item.toLowerCase();
 
-  return (
-    searchItem.slice(0, compareWord.length) === compareWord && searchItem.includes(compareItem)
-  );
+  return searchItem.slice(0, compareWord.length) === compareWord && searchItem.includes(compareItem);
 };
 
 interface IGetMatchedItems {
@@ -341,7 +349,7 @@ export const getParsedMessage = ({
   localId = generateLocalId(),
 }: {
   text: string;
-  subType?: MessageType;
+  subType: MessageType;
   isOwn?: boolean;
   localId?: string;
   isChatMessage?: boolean;
@@ -385,10 +393,7 @@ export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> 
   const chatRooms: IQueueChatRoom[] = [...state.rooms[queueId]];
 
   // Find room
-  const foundRoomIndex = findIndex(
-    state.rooms[queueId],
-    (room) => room.chatId?.toString() === chatId
-  );
+  const foundRoomIndex = findIndex(state.rooms[queueId], (room) => room.chatId?.toString() === chatId);
 
   if (foundRoomIndex !== -1) {
     // Update whole room (link) with new messages
@@ -417,13 +422,7 @@ const responseMessages = {
   changeLang: 'You changed the \n language to ',
 };
 
-export const getMessageBySubtype = ({
-  subType,
-  value,
-}: {
-  subType: string | undefined;
-  value?: string;
-}) => {
+export const getMessageBySubtype = ({ subType, value }: { subType: string | undefined; value?: string }) => {
   if (!subType) {
     return undefined;
   }
@@ -435,10 +434,6 @@ export const getMessageBySubtype = ({
     default:
       return null;
   }
-};
-
-export const getResponseMessageType = (type: CHAT_ACTIONS) => {
-  return;
 };
 
 export const getItemById = (items: any[], id: string) => {
@@ -454,24 +449,9 @@ export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
   }
   return true;
 };
-export const getUpdatedMessages = ({
-  action,
-  messages,
-  responseAction,
-  additionalCondition,
-  sendMessage,
-}: IGetUpdatedMessages) => {
+export const getMessagesOnAction = ({ action, messages, responseAction, additionalCondition }: IGetUpdatedMessages) => {
   const { type, payload } = action;
-  const text = payload?.item ? payload.item : payload?.items?.join('\r\n');
-
-  let updatedMessages = popMessage({
-    type: responseAction.replaceType,
-    messages,
-  });
-
-  if (additionalCondition !== null && !additionalCondition) {
-    responseAction.newMessages = getChatActionResponse(CHAT_ACTIONS.REFINE_SEARCH);
-  }
+  let updatedMessages = [...messages];
 
   if (!messages.length) {
     updatedMessages = [
@@ -484,32 +464,62 @@ export const getUpdatedMessages = ({
       ]),
     ];
   }
-  if (text && responseAction.isPushMessage) {
-    const isFileUpload = type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
-    const localMessage = getParsedMessage({
+
+  if (isReversePush(type)) {
+    const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
+    const message = getParsedMessage({
       text,
-      subType: isFileUpload ? MessageType.FILE : MessageType.TEXT,
+      subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
       isChatMessage: !!action.payload?.isChatMessage,
     });
-    if (responseAction.isFirstResponse) {
-      return [localMessage, ...responseAction.newMessages, ...updatedMessages];
-    }
-    if (type === CHAT_ACTIONS.NO_MATCH) {
-      sendMessage(localMessage);
-    }
-    return [...responseAction.newMessages, localMessage, ...updatedMessages];
-  } else {
-    return [...responseAction.newMessages, ...updatedMessages];
+    return [message, ...responseAction.newMessages, ...updatedMessages];
   }
+
+  return [...responseAction.newMessages, ...updatedMessages];
 };
 
-const popMessage = ({
-  type,
-  messages,
-}: {
-  type: MessageType | undefined;
-  messages: ILocalMessage[];
-}) => {
+const initialMessages = getParsedMessages([
+  {
+    text: i18n.t('messages:initialMessage'),
+    isChatMessage: true,
+  },
+]);
+
+export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => {
+  const { type, payload } = action;
+  const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
+
+  const message = getParsedMessage({
+    text,
+    subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
+    isChatMessage: !!action.payload?.isChatMessage,
+  });
+
+  const updatedMessages = [
+    message,
+    ...popMessage({
+      type: getReplaceMessageType(type),
+      messages: !messages.length ? [...messages, ...initialMessages] : messages,
+    }),
+  ];
+
+  if (message.content.text) {
+    const serverMessage = {
+      channelName: ChannelName.SMS,
+      candidateId: 49530690,
+      contextId: null,
+      msg: message.content.text,
+      images: [],
+      localId: `${message.localId}`,
+    };
+
+    // sendMessage(serverMessage);
+  }
+
+  return updatedMessages;
+};
+
+export const popMessage = ({ type, messages }: { type: MessageType | null; messages: ILocalMessage[] }) => {
   if (!type) {
     return messages;
   }
@@ -540,10 +550,7 @@ export const replaceLocalMessages = ({ messages, parsedMessages }: IReplaceLocal
   });
 };
 
-export const getNextActionType = (
-  lastActionType: CHAT_ACTIONS | null,
-  isNoJobMacthes?: boolean
-) => {
+export const getNextActionType = (lastActionType: CHAT_ACTIONS | null, isNoJobMacthes?: boolean) => {
   if (isNoJobMacthes) {
     return CHAT_ACTIONS.NO_MATCH;
   }
@@ -570,6 +577,8 @@ export const getNextActionType = (
       return CHAT_ACTIONS.APPLY_ETHNIC;
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return CHAT_ACTIONS.SET_ALERT_CATEGORY;
+    case CHAT_ACTIONS.SET_LOCATIONS:
+      return CHAT_ACTIONS.SEND_LOCATIONS;
     default:
       return CHAT_ACTIONS.SET_CATEGORY;
   }
@@ -657,4 +666,20 @@ export const getUniqueItems = (items: string[]) => {
     }
   });
   return uniqueItems;
+};
+
+export const isResultsType = (type: CHAT_ACTIONS | null) => {
+  return (
+    !type ||
+    type === CHAT_ACTIONS.FIND_JOB ||
+    type === CHAT_ACTIONS.ASK_QUESTION ||
+    type === CHAT_ACTIONS.SET_JOB_ALERT ||
+    type === CHAT_ACTIONS.SET_CATEGORY ||
+    type === CHAT_ACTIONS.GET_USER_EMAIL ||
+    type === CHAT_ACTIONS.SET_ALERT_EMAIL ||
+    type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
+    type === CHAT_ACTIONS.REFINE_SEARCH ||
+    type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
+    type === CHAT_ACTIONS.SEND_LOCATIONS
+  );
 };

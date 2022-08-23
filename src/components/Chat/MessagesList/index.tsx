@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 
 import { Loader } from 'components/Layout/Loader';
 
@@ -10,18 +10,19 @@ import { InfiniteScrollView } from 'components/InfiniteScrollView';
 import { infiniteScrollStyle } from './styles';
 import { Message } from './Message';
 import { map } from 'lodash';
+import { Status } from 'utils/constants';
 
 type PropsType = {};
 
 const MESSAGE_SCROLL_LIST_DIV_ID = 'message-scroll-list';
 
 export const MessagesList: FC<PropsType> = () => {
-  const { messages, chooseButtonOption, lastActionType } = useChatMessanger();
+  const { messages, chooseButtonOption, lastActionType, status, triggerAction } = useChatMessanger();
   const { onLoadNextMessagesPage } = useSocketContext();
   const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (lastActionType === CHAT_ACTIONS.NO_MATCH) {
+    if (lastActionType !== null) {
       scrollToBottom();
     }
   }, [lastActionType, messages.length]);
@@ -46,14 +47,13 @@ export const MessagesList: FC<PropsType> = () => {
     onLoadNextMessagesPage?.();
   };
 
-  const isLastOwnMessage = messages[messages.length - 1]?.isOwn;
-  const chatMessages = [
-    ...messages,
-    // getParsedMessage({
-    //   text: mockData.introMessage,
-    //   subType: MessageType.INITIAL_MESSAGE,
-    // }),
-  ];
+  const handleOfferSubmit = useCallback((id: string | number) => {
+    triggerAction({
+      type: CHAT_ACTIONS.INTERESTED_IN,
+      payload: { item: `${id}` },
+    });
+  }, []);
+
   return (
     <S.MessagesArea>
       <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>
@@ -61,18 +61,20 @@ export const MessagesList: FC<PropsType> = () => {
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
           onLoadMore={onLoadMore}
           style={infiniteScrollStyle}
-          loader={<Loader isShow={isLastOwnMessage} />}
+          loader={<Loader />}
           inverse
         >
-          {map(chatMessages, (message, index) => (
+          {map(messages, (message, index) => (
             <Message
-              key={`message-${message._id || message.localId}-${index}`}
+              key={`${message._id}-${index}`}
+              handleOfferSubmit={handleOfferSubmit}
               message={message}
               onClick={onClick}
             />
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>
+      {status === Status.PENDING && <Loader />}
     </S.MessagesArea>
   );
 };

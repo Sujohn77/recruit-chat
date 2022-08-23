@@ -82,12 +82,7 @@ export const NextSide = styled(PrevSlide)`
   left: initial;
 `;
 
-export const JobOffer = ({
-  category = 'Engineering',
-  title,
-  handleReadMore,
-  handleButtonClick,
-}: any) => {
+export const JobOffer = ({ category = 'Engineering', title, handleReadMore, handleButtonClick }: any) => {
   const readMoreTxt = i18n.t('chat_item_description:read_more');
   const interestedTxt = i18n.t('chat_item_description:interested_in');
   return (
@@ -100,15 +95,16 @@ export const JobOffer = ({
   );
 };
 type PropsType = {
-  onSubmit: (id: string | number) => void
-}
+  onSubmit: (id: string | number) => void;
+};
 
-export const JobOffers: FC<PropsType> = ({onSubmit}) => {
+export const JobOffers: FC<PropsType> = ({ onSubmit }) => {
   const { offerJobs, category, setViewJob } = useChatMessanger();
   const [index, setIndex] = React.useState(0);
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
+  console.log(offerJobs, category);
   // const handleSubmitClick = useCallback((id: string | number) => {
   //   triggerAction({
   //     type: CHAT_ACTIONS.INTERESTED_IN,
