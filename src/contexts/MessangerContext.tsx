@@ -105,10 +105,14 @@ const ChatProvider = ({ children }: PropsType) => {
     async (action: ITriggerActionProps) => {
       const { type, payload } = action;
 
+      //  Check access to action
       if (action.type === lastActionType || !isInitialized) {
         !isInitialized && setInitialAction(action);
         return null;
       }
+
+      
+      //  Make action
 
       const param = getMessageParam(action);
 
@@ -153,7 +157,7 @@ const ChatProvider = ({ children }: PropsType) => {
           if (category) {
             const data = getSearchJobsData(category, searchLocations[0]?.split(',')[0]);
             const apiResponse = await apiInstance.searchJobs(data);
-            additionalCondition = !apiResponse.data?.requisitions.length;
+            additionalCondition = !!apiResponse.data?.requisitions.length;
 
             if (apiResponse.data?.requisitions.length) {
               setOfferJobs(apiResponse.data?.requisitions);
@@ -256,6 +260,10 @@ const ChatProvider = ({ children }: PropsType) => {
         }
       }
 
+      //  Push message (optional)
+
+      //  Show response
+      
       if (response.newMessages.length && isValidPush) {
         const updatedMessages = getUpdatedMessages({
           action,

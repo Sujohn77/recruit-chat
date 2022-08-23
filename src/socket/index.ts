@@ -73,7 +73,6 @@ export class FirebaseSocketReactivePagination<TData> {
         this.isPaginationEnded = !result.length;
 
         if (!this.isPaginationEnded) {
-          console.log(result);
           callback(result);
         }
       });
@@ -83,7 +82,7 @@ export class FirebaseSocketReactivePagination<TData> {
         this.listeners.push(firstListener);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -106,7 +105,6 @@ export class FirebaseSocketReactivePagination<TData> {
 
       try {
         const snapshots: any = await getDocs(q);
-        console.log(snapshots.docs.length);
         // Previous starting boundary becomes new ending boundary
         this.listenerEndPos = this.listenerStartPos;
         this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1];
@@ -142,7 +140,7 @@ export class FirebaseSocketReactivePagination<TData> {
           }
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
   }

@@ -1,6 +1,6 @@
 import { DarkButton } from 'components/Layout/styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import i18n from 'services/localization';
 import styled from 'styled-components';
@@ -88,7 +88,6 @@ export const JobOffer = ({
   handleReadMore,
   handleButtonClick,
 }: any) => {
-  console.log(title);
   const readMoreTxt = i18n.t('chat_item_description:read_more');
   const interestedTxt = i18n.t('chat_item_description:interested_in');
   return (
@@ -100,19 +99,22 @@ export const JobOffer = ({
     </JobOfferWrapper>
   );
 };
+type PropsType = {
+  onSubmit: (id: string | number) => void
+}
 
-export const JobOffers: FC = () => {
-  const { offerJobs, category, setViewJob, triggerAction } = useChatMessanger();
+export const JobOffers: FC<PropsType> = ({onSubmit}) => {
+  const { offerJobs, category, setViewJob } = useChatMessanger();
   const [index, setIndex] = React.useState(0);
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
-  const handleSubmitClick = (id: string | number) => {
-    triggerAction({
-      type: CHAT_ACTIONS.INTERESTED_IN,
-      payload: { item: `${id}` },
-    });
-  };
+  // const handleSubmitClick = useCallback((id: string | number) => {
+  //   triggerAction({
+  //     type: CHAT_ACTIONS.INTERESTED_IN,
+  //     payload: { item: `${id}` },
+  //   });
+  // },[]);
 
   return (
     <Wrapper>
@@ -132,7 +134,7 @@ export const JobOffers: FC = () => {
               title={offerJobs[index].title}
               category={category}
               handleReadMore={() => setViewJob(offerJobs[index])}
-              handleButtonClick={() => handleSubmitClick(offerJobs[index].id)}
+              handleButtonClick={() => onSubmit(offerJobs[index].id)}
             />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />

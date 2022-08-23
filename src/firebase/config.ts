@@ -28,7 +28,6 @@ const auth = getAuth();
 export const handleSignInWithCustomToken = async (accessToken: string) => {
   try {
     const userCredential = await signInWithCustomToken(auth, accessToken);
-    console.log(userCredential);
     return userCredential.user;
   } catch (error) {
     const errorCode = error.code;
