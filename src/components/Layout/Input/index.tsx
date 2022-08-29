@@ -1,11 +1,5 @@
 import { useChatMessanger } from 'contexts/MessangerContext';
-import React, {
-  ChangeEvent,
-  FC,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import React, { ChangeEvent, FC, useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
 import { INPUT_TYPES } from './types';
@@ -14,10 +8,8 @@ type PropsType = {
   type?: INPUT_TYPES;
   placeHolder?: string;
   value: string;
-  onChange: (
-    value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  setIsInputFocus?: Dispatch<SetStateAction<boolean>>;
+  onChange: (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  setIsShowResults?: Dispatch<SetStateAction<boolean>>;
   rows?: number;
 };
 
@@ -54,11 +46,12 @@ export const TextField: FC<PropsType> = ({
   placeHolder,
   value,
   onChange,
-  setIsInputFocus,
+  setIsShowResults,
   rows = 3,
 }) => {
   const { error } = useChatMessanger();
   const [isFocus, setIsFocus] = useState(false);
+
   if (type === INPUT_TYPES.TEXTAREA) {
     return (
       <div>
@@ -67,7 +60,7 @@ export const TextField: FC<PropsType> = ({
           placeholder={!isFocus ? placeHolder : ''}
           onChange={onChange}
           onClick={() => {
-            setIsInputFocus && setIsInputFocus(true);
+            setIsShowResults && setIsShowResults(true);
           }}
           onFocus={() => {
             setIsFocus(true);
@@ -82,7 +75,6 @@ export const TextField: FC<PropsType> = ({
     );
   }
 
-  // TODO: refactor focus handling
   return (
     <div>
       <TextInput
@@ -91,7 +83,7 @@ export const TextField: FC<PropsType> = ({
         placeholder={!isFocus ? placeHolder : ''}
         onChange={onChange}
         onClick={() => {
-          setIsInputFocus && setIsInputFocus(true);
+          setIsShowResults && setIsShowResults(true);
         }}
         onFocus={() => {
           setIsFocus(true);

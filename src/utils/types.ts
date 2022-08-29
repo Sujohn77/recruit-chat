@@ -49,7 +49,6 @@ export interface IState {
   chatId?: string;
   status: Status;
 }
-// type IMessage = IMessageString | IMessageNoMatchJob | IMessageJobPositions
 
 export interface ILocalMessage {
   _id: number | string | null;
@@ -220,6 +219,7 @@ export interface IPushMessage {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
+  accessToken?: string;
 }
 
 export interface IGetChatResponseProps {

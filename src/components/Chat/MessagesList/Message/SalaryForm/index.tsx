@@ -22,21 +22,13 @@ export const SalaryForm: FC<PropsType> = ({ message }) => {
   const buttonTxt = i18n.t('buttons:sent');
 
   const optionItems = map(currencies, (opt, index) => (
-    <S.Option
-      isActive={currency === opt}
-      key={`currency-${index}`}
-      onClick={() => setCurrency(opt)}
-    >
+    <S.Option selected={currency === opt} key={`currency-${index}`} onClick={() => setCurrency(opt)}>
       {opt}
     </S.Option>
   ));
   return (
     <S.Wrapper {...messagesProps}>
-      <TextField
-        value={salary}
-        onChange={(e: any) => setSalary(e.target.value)}
-        placeHolder={'0'}
-      />
+      <TextField value={salary} onChange={(e: any) => setSalary(e.target.value)} placeHolder={'0'} />
       <S.Options>{optionItems}</S.Options>
       <DarkButton
         onClick={() =>

@@ -1,4 +1,5 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
+import { IUserLoginDataKeys } from 'services';
 import { IRequisition, MessageType } from 'utils/types';
 
 export interface IUpdateMessagesResponse {
@@ -357,3 +358,37 @@ export type LocationType = {
   country: string;
   zip?: string | null;
 };
+
+export enum IUserDataKeys {
+  GrantType = 'grant_type',
+  Username = 'username',
+  Password = 'password',
+  TwoFactorAuthCode = 'twofactorauthcode',
+  AppKey = 'appKey',
+  CodeVersion = 'codeVersion',
+  RefreshToken = 'refreshToken',
+}
+
+export enum IUserDataTokenKeys {
+  AccessToken = 'access_token',
+  TokenType = 'token_type',
+  ExpiresIn = 'expires_in',
+  RefreshToken = 'refresh_token',
+  SasSubscriberAttachment = 'sas_subscriber_attachment',
+  SasSubscriberResume = 'sas_subscriber_resume',
+  SasSubscriberAvatar = 'sas_subscriber_avatar',
+  FirebaseAccessToken = 'firebase_access_token',
+  IssuedTokenDate = '.issued',
+  ExpiresTokenDate = '.expires',
+  ErrorDescription = 'error_description',
+  Error = 'error',
+  Errors = 'errors',
+}
+
+export interface IUserLoginRequestData extends Record<IUserLoginDataKeys, string> {}
+export interface GenerateGrantTypeData {
+  [IUserDataKeys.GrantType]: string;
+  [IUserDataTokenKeys.RefreshToken]: string;
+}
+
+export type GenerateGrantType = (userData: IUserLoginRequestData | GenerateGrantTypeData) => string;

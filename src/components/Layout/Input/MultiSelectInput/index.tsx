@@ -24,8 +24,8 @@ type PropsType = {
   placeHolder: string;
   options: string[];
   type: CHAT_ACTIONS.SET_LOCATIONS;
-  setIsFocus: Dispatch<SetStateAction<boolean>>;
-  isFocus: boolean;
+  setIsShowResults: Dispatch<SetStateAction<boolean>>;
+  isShowResults: boolean;
 };
 
 export interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -53,9 +53,9 @@ export const MultiSelectInput: FC<PropsType> = ({
   placeHolder,
   type,
   options,
-  isFocus,
+  isShowResults,
   setInputValue,
-  setIsFocus,
+  setIsShowResults,
 }) => {
   const {
     getInputProps,
@@ -82,19 +82,18 @@ export const MultiSelectInput: FC<PropsType> = ({
     );
   };
 
-  const isShowResults = isFocus && isResultsType(lastActionType);
+  const isResults = isShowResults && isResultsType(lastActionType);
 
   return (
     <div>
-      {isShowResults && (
+      {isResults && (
         <SearchResults
-          type={type}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}
           getOptionProps={getOptionProps}
           getListboxProps={getListboxProps}
-          setIsFocus={setIsFocus}
+          setIsShowResults={setIsShowResults}
         />
       )}
 
@@ -107,7 +106,7 @@ export const MultiSelectInput: FC<PropsType> = ({
           placeholder={placeHolder}
           value={value}
           onClick={(e) => {
-            setIsFocus(true);
+            setIsShowResults(true);
           }}
           onChange={(event) => {
             const inputProps = getInputProps();

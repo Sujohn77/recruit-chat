@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { getMessageProps } from 'utils/helpers';
+import React, { FC, memo } from 'react';
+import { getMessageProps, getParsedMessage } from 'utils/helpers';
 
 import { MessageType, IContent, ILocalMessage } from 'utils/types';
 import { BrowseFile } from './BrowseFile';
@@ -17,16 +17,17 @@ import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
 import { ThanksMessage } from './ThanksMessage';
+
 // import { useThemeContext } from 'contexts/ThemeContext';
 
 type PropsType = {
   message: ILocalMessage;
   onClick: (content: IContent) => void;
-  handleOfferSubmit: (id: string | number) => void;
+  // handleOfferSubmit: ((id: string | number) => void) | undefined;
 };
 
 export const MS_1000 = 1000;
-export const Message: FC<PropsType> = ({ message, onClick, handleOfferSubmit }) => {
+export const Message: FC<PropsType> = memo(({ message, onClick }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -39,7 +40,7 @@ export const Message: FC<PropsType> = ({ message, onClick, handleOfferSubmit }) 
       return <EmailForm />;
     }
     case MessageType.JOB_POSITIONS: {
-      return <JobOffers onSubmit={handleOfferSubmit} />;
+      return <JobOffers />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;
@@ -80,4 +81,4 @@ export const Message: FC<PropsType> = ({ message, onClick, handleOfferSubmit }) 
       return null;
     }
   }
-};
+});

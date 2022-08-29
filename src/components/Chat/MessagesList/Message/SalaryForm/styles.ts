@@ -30,9 +30,8 @@ export const Title = styled.p`
   color: ${({ theme: { message } }) => message.secondaryColor};
 `;
 
-export const Option = styled(Button)<{ isActive?: boolean }>`
-  background: ${({ isActive }) =>
-    isActive ? colors.dimgray : colors.gray}!important;
+export const Option = styled(Button)<{ selected?: boolean }>`
+  background: ${({ selected }) => (selected ? colors.dimgray : colors.gray)}!important;
 
   border-radius: 100px !important;
   width: 100px !important;

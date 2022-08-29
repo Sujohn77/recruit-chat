@@ -31,11 +31,14 @@ export const MessagesList: FC<PropsType> = () => {
     scrollToBottom();
   }, []);
 
-  const onClick = (content: IContent) => {
-    if (content.subType === MessageType.BUTTON) {
-      content.text && chooseButtonOption(content.text);
-    }
-  };
+  const onClick = useCallback(
+    (content: IContent) => {
+      if (content.subType === MessageType.BUTTON) {
+        content.text && chooseButtonOption(content.text);
+      }
+    },
+    [messages.length]
+  );
 
   const scrollToBottom = () => {
     if (messagesRef.current) {
@@ -47,13 +50,6 @@ export const MessagesList: FC<PropsType> = () => {
     onLoadNextMessagesPage?.();
   };
 
-  const handleOfferSubmit = useCallback((id: string | number) => {
-    triggerAction({
-      type: CHAT_ACTIONS.INTERESTED_IN,
-      payload: { item: `${id}` },
-    });
-  }, []);
-
   return (
     <S.MessagesArea>
       <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>
@@ -64,13 +60,8 @@ export const MessagesList: FC<PropsType> = () => {
           loader={<Loader />}
           inverse
         >
-          {map(messages, (message, index) => (
-            <Message
-              key={`${message._id}-${index}`}
-              handleOfferSubmit={handleOfferSubmit}
-              message={message}
-              onClick={onClick}
-            />
+          {messages.map((message, index) => (
+            <Message key={`${message.localId}`} message={message} onClick={onClick} />
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>

@@ -16,39 +16,31 @@ type PropsType = {
   matchedItems: string[];
   matchedPart: string;
   headerName: string;
-  type:
-    | CHAT_ACTIONS.SET_CATEGORY
-    | CHAT_ACTIONS.SET_LOCATIONS
-    | CHAT_ACTIONS.SET_ALERT_CATEGORY;
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
-  getOptionProps?: ({
-    option,
-    index,
-  }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
+  getOptionProps?: ({ option, index }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
   getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
-  setIsFocus: Dispatch<SetStateAction<boolean>>;
+  setIsShowResults: Dispatch<SetStateAction<boolean>>;
 };
 export const SearchResults: FC<PropsType> = ({
   matchedItems,
   matchedPart,
   headerName,
-  type,
   getOptionProps,
   onClick,
   getListboxProps = () => ({}),
-  setIsFocus,
+  setIsShowResults,
 }) => {
   const items = matchedItems.map((option, index) => {
     const optionProps = getOptionProps && getOptionProps({ option, index });
 
     return (
       <S.SearchPosition
-        key={`search-item-${type}-${index}`}
+        key={`search-item-${index}`}
         {...optionProps}
         onClick={(e) => {
           onClick && onClick(e);
           optionProps?.onClick && optionProps.onClick(e);
-          setIsFocus(false);
+          setIsShowResults(false);
         }}
       >
         <span>{matchedPart}</span>
@@ -56,16 +48,13 @@ export const SearchResults: FC<PropsType> = ({
       </S.SearchPosition>
     );
   });
-  const searchOptionsHeight =
-    matchedItems.length < 6
-      ? searchItemheight * matchedItems.length + 1
-      : maxSearchHeight;
+  const searchOptionsHeight = matchedItems.length < 6 ? searchItemheight * matchedItems.length + 1 : maxSearchHeight;
 
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
       <S.SearchHeader>
         {headerName}
-        <Close color={colors.gray} onClick={() => setIsFocus(false)} />
+        <Close color={colors.gray} onClick={() => setIsShowResults(false)} />
       </S.SearchHeader>
       <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>
     </S.SearchWrapper>

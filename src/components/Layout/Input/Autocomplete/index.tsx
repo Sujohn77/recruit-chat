@@ -1,7 +1,8 @@
 import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import React, { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
-import { isResultsType } from 'utils/helpers';
+import { TextFieldTypes } from 'utils/constants';
+import { getNextActionType, isResultsType } from 'utils/helpers';
 import { CHAT_ACTIONS } from 'utils/types';
 import { TextField } from '..';
 import { INPUT_TYPES } from '../types';
@@ -14,13 +15,12 @@ type PropsType = {
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeHolder: string;
-  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS | CHAT_ACTIONS.SET_ALERT_CATEGORY;
-  setIsFocus: Dispatch<SetStateAction<boolean>>;
-  isFocus: boolean;
+  type: TextFieldTypes;
+  setIsShowResults: Dispatch<SetStateAction<boolean>>;
+  isShowResults: boolean;
 };
 
 export const Autocomplete: FC<PropsType> = (props) => {
-  // const [isFocus, setIsFocus] = useState(false);
   const { triggerAction, lastActionType, user } = useChatMessanger();
   const {
     matchedItems,
@@ -31,29 +31,28 @@ export const Autocomplete: FC<PropsType> = (props) => {
     placeHolder,
     type,
     setInputValue,
-    isFocus,
-    setIsFocus,
+    isShowResults,
+    setIsShowResults,
   } = props;
 
   const onClick = (e: MouseEvent<HTMLLIElement>) => {
     setInputValue(null);
-    triggerAction({ type, payload: { item: e.currentTarget.textContent } });
+    triggerAction({ type: getNextActionType(lastActionType), payload: { item: e.currentTarget.textContent } });
   };
 
-  const isShowResults = isFocus && isResultsType(lastActionType);
+  const isResults = isShowResults && isResultsType(lastActionType);
   const isNumberType = lastActionType === CHAT_ACTIONS.APPLY_EMAIL && user?.email;
   const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
 
   return (
     <div>
-      {isShowResults && !!matchedItems.length && (
+      {isResults && !!matchedItems.length && (
         <SearchResults
-          type={type}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}
           onClick={onClick}
-          setIsFocus={setIsFocus}
+          setIsShowResults={setIsShowResults}
         />
       )}
 
@@ -62,7 +61,7 @@ export const Autocomplete: FC<PropsType> = (props) => {
         value={value}
         onChange={onChange}
         placeHolder={placeHolder}
-        setIsInputFocus={setIsFocus}
+        setIsShowResults={setIsShowResults}
       />
     </div>
   );

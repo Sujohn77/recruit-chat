@@ -2,15 +2,8 @@
 import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
 
 import { MessageType, ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IRequisition } from 'utils/types';
-import { ContactType, IMessage, ISnapshot } from 'services/types';
-import {
-  ChannelName,
-  getChatActionResponse,
-  getReplaceMessageType,
-  isPushMessageType,
-  isReversePush,
-  Status,
-} from 'utils/constants';
+import { IMessage, ISnapshot } from 'services/types';
+import { getChatActionResponse, isPushMessageType, Status } from 'utils/constants';
 import {
   chatMessangerDefaultState,
   replaceItemsWithType,
@@ -25,28 +18,22 @@ import {
   getCreateCandidateData,
   pushMessage,
 } from 'utils/helpers';
-import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps } from './types';
+import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
 import { useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
-import { apiInstance } from 'services';
-import { FIREBASE_TOKEN, handleSignInWithCustomToken } from './../firebase/config';
-import { STATUS_CODES } from 'http';
+import { apiInstance, loginUser } from 'services';
 
 type PropsType = {
   children: React.ReactNode;
 };
 
 const ChatContext = createContext<IChatMessangerContext>(chatMessangerDefaultState);
-export interface IUser {
-  name?: string;
-  email?: string;
-  age?: string;
-  isPermitWork?: boolean;
-  wishSalary?: number;
-  salaryCurrency?: string;
-}
 
+const info = {
+  username: 'RomanAndreevUpworkPlaypen',
+  password: 'SomeStrongPassword1234',
+};
 const ChatProvider = ({ children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
@@ -55,10 +42,10 @@ const ChatProvider = ({ children }: PropsType) => {
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
   const [alertCategory, setAlertCategory] = useState<string | null>(null);
-  const [user, setUser] = useState<IUser | null>(null);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
-  const [applyUser, setApplyUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
+  const [accessToken, setAccessToken] = useState();
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
@@ -68,18 +55,20 @@ const ChatProvider = ({ children }: PropsType) => {
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const { requisitions, locations } = useRequisitions();
-
-  const [initialAction, setInitialAction] = useState<ITriggerActionProps>();
-  // const [alertEmail, setAlertEmail] = useState<string | null>(null);
+  const { requisitions, locations } = useRequisitions(accessToken);
 
   // Effects
   useEffect(() => {
-    handleSignInWithCustomToken(FIREBASE_TOKEN).then((error) => {
-      if (error.message) {
-        setIsInitialized(true);
-      }
-    });
+    loginUser({ data: info })
+      .then((result) => {
+        setAccessToken(result?.access_token);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.message) {
+          setIsInitialized(true);
+        }
+      });
   }, []);
 
   useEffect(() => {
@@ -96,7 +85,7 @@ const ChatProvider = ({ children }: PropsType) => {
   }, [nextMessages.length && nextMessages[0].data.localId]);
 
   useEffect(() => {
-    isInitialized && initialAction && triggerAction(initialAction);
+    isInitialized && chatAction && triggerAction(chatAction);
   }, [isInitialized]);
 
   const getMessageParam = (action: ITriggerActionProps) => {
@@ -105,106 +94,109 @@ const ChatProvider = ({ children }: PropsType) => {
     return param || undefined;
   };
 
-  const triggerAction = (action: ITriggerActionProps) => {
-    const { type, payload } = action;
+  const triggerAction = useCallback(
+    (action: ITriggerActionProps) => {
+      const { type, payload } = action;
 
-    if (status === Status.PENDING || !isInitialized) {
-      !isInitialized && setInitialAction(action);
-      return null;
-    }
+      if (status === Status.PENDING || !isInitialized) {
+        !isInitialized && setChatAction(action);
+        return null;
+      }
 
-    let isErrors = false;
+      let isErrors = false;
 
-    switch (type) {
-      case CHAT_ACTIONS.SET_CATEGORY: {
-        const searchCategory = payload?.item!.toLowerCase();
-        const requisition = requisitions.find((r) => r.title.toLowerCase() === searchCategory);
-        requisition && setCategory(requisition.category);
-        payload!.item = requisition?.title;
-        break;
-      }
-      case CHAT_ACTIONS.SET_LOCATIONS: {
-        setSearchLocations(payload?.items!);
-        break;
-      }
-      case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
-        setAlertCategory(payload?.item!);
-        break;
-      }
-      case CHAT_ACTIONS.SET_ALERT_PERIOD: {
-        setAlertPeriod(payload?.item!);
-        break;
-      }
-      case CHAT_ACTIONS.INTERESTED_IN: {
-        const job = getItemById(offerJobs, payload?.item!);
-        setPrefferedJob(job!);
-        break;
-      }
-      case CHAT_ACTIONS.GET_USER_NAME: {
-        setUser({ name: payload?.item! });
-        break;
-      }
-      case CHAT_ACTIONS.GET_USER_AGE: {
-        setUser({ age: payload?.item! });
-        break;
-      }
-      case CHAT_ACTIONS.APPLY_NAME: {
-        setApplyUser({ name: payload?.item! });
-        break;
-      }
-      case CHAT_ACTIONS.APPLY_AGE: {
-        setApplyUser({ ...applyUser, age: payload?.item! });
-        break;
-      }
-      case CHAT_ACTIONS.SET_SALARY: {
-        if (payload?.item) {
-          const salaryInfo = payload?.item.split(' ');
-          setApplyUser({
-            ...applyUser,
-            wishSalary: Number(salaryInfo[0]),
-            salaryCurrency: salaryInfo[1],
-          });
+      switch (type) {
+        case CHAT_ACTIONS.SET_CATEGORY: {
+          const searchCategory = payload?.item!.toLowerCase();
+          const requisition = requisitions.find((r) => r.title.toLowerCase() === searchCategory);
+          requisition && setCategory(requisition.category);
+
+          payload!.item = requisition?.title;
+          break;
         }
-        break;
-      }
-      case CHAT_ACTIONS.CHANGE_LANG: {
-        if (payload?.item) {
-          i18n.changeLanguage(payload.item.toLowerCase());
+        case CHAT_ACTIONS.SET_LOCATIONS: {
+          setSearchLocations(payload?.items!);
+          break;
         }
-        break;
-      }
+        case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
+          setAlertCategory(payload?.item!);
+          break;
+        }
+        case CHAT_ACTIONS.SET_ALERT_PERIOD: {
+          setAlertPeriod(payload?.item!);
+          break;
+        }
+        case CHAT_ACTIONS.INTERESTED_IN: {
+          const job = getItemById(offerJobs, payload?.item!);
+          setPrefferedJob(job!);
+          break;
+        }
+        case CHAT_ACTIONS.GET_USER_AGE: {
+          setUser({ ...user, age: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.GET_USER_NAME:
+        case CHAT_ACTIONS.APPLY_NAME: {
+          setUser({ ...user, name: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.APPLY_AGE: {
+          setUser({ ...user, age: payload?.item! });
+          break;
+        }
+        case CHAT_ACTIONS.SET_SALARY: {
+          if (payload?.item) {
+            const salaryInfo = payload?.item.split(' ');
+            setUser({
+              ...user,
+              wishSalary: Number(salaryInfo[0]),
+              salaryCurrency: salaryInfo[1],
+            });
+          }
+          break;
+        }
+        case CHAT_ACTIONS.CHANGE_LANG: {
+          if (payload?.item) {
+            i18n.changeLanguage(payload.item.toLowerCase());
+          }
+          break;
+        }
 
-      case CHAT_ACTIONS.APPLY_EMAIL:
-      case CHAT_ACTIONS.GET_USER_EMAIL:
-      case CHAT_ACTIONS.SET_ALERT_EMAIL: {
-        const isApplyEmail = type === CHAT_ACTIONS.APPLY_EMAIL;
-        const isPhoneType = type === CHAT_ACTIONS.GET_USER_EMAIL;
-        const error = isPhoneType ? validateEmailOrPhone(payload?.item!) : validateEmail(payload?.item!);
-        if (payload?.item && !error?.length) {
-          isApplyEmail && setApplyUser({ ...applyUser, email: payload?.item! });
+        case CHAT_ACTIONS.APPLY_EMAIL:
+        case CHAT_ACTIONS.GET_USER_EMAIL:
+        case CHAT_ACTIONS.SET_ALERT_EMAIL: {
+          const isPhoneType = type === CHAT_ACTIONS.GET_USER_EMAIL;
+          const error = isPhoneType ? validateEmailOrPhone(payload?.item!) : validateEmail(payload?.item!);
+          if (payload?.item && !error?.length) {
+            if (isPhoneType) {
+              setUser({ ...user, phone: payload?.item! });
+            } else {
+              setUser({ ...user, email: payload?.item! });
+            }
+            clearFilters();
+          } else {
+            setError(error);
+            isErrors = true;
+          }
+          break;
+        }
+        case CHAT_ACTIONS.REFINE_SEARCH: {
           clearFilters();
-        } else {
-          setError(error);
-          isErrors = true;
+          break;
         }
-        break;
       }
-      case CHAT_ACTIONS.REFINE_SEARCH: {
-        clearFilters();
-        break;
-      }
-    }
 
-    if (!isErrors) {
-      if (isPushMessageType(action.type)) {
-        setStatus(Status.PENDING);
-        const updatedMessages = pushMessage({ action, messages, setMessages });
-        setMessages(updatedMessages);
+      if (!isErrors) {
+        if (isPushMessageType(action.type)) {
+          setStatus(Status.PENDING);
+          pushMessage({ action, messages, setMessages });
+        }
+        setLastActionType(type);
+        setChatAction(action);
       }
-      setLastActionType(type);
-      setChatAction(action);
-    }
-  };
+    },
+    [user, isInitialized, messages, requisitions.length]
+  );
 
   useEffect(() => {
     if (chatAction !== null) {
@@ -238,14 +230,13 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
           const isPermitWork = payload?.item === 'Yes';
-          setApplyUser({ ...applyUser, isPermitWork });
+          setUser({ ...user, isPermitWork });
           additionalCondition = isPermitWork;
-          console.log('lastActionType', type);
           break;
         }
         case CHAT_ACTIONS.APPLY_ETHNIC: {
-          if (applyUser?.name) {
-            const createCandidateData = getCreateCandidateData({ applyUser, prefferedJob });
+          if (user?.name) {
+            const createCandidateData = getCreateCandidateData({ user, prefferedJob });
             apiInstance.createCandidate(createCandidateData);
           }
           break;
@@ -270,7 +261,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setStatus(Status.ERROR);
       }
     },
-    [messages.length, searchLocations.length, lastActionType, user, isInitialized]
+    [messages.length, searchLocations.length, lastActionType, user, isInitialized, requisitions.length]
   );
 
   const clearFilters = () => {
@@ -310,7 +301,7 @@ const ChatProvider = ({ children }: PropsType) => {
       chatType && updateStateOnRequest({ type: chatType });
       setMessages(updatedMessages);
     }
-    console.log(type, 'type');
+
     setLastActionType(type);
   };
 

@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from 'react';
 import { IMessage, ISnapshot, LocationType } from 'services/types';
 import { Status } from 'utils/constants';
 import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
-import { IUser } from './MessangerContext';
 
 export interface ISearchRequisition {
   title: string;
@@ -106,4 +105,14 @@ export interface IPortionMessages extends ISnapshot<IMessage> {}
 export interface ISubmitMessageProps {
   type: MessageType;
   messageId: number;
+}
+
+export interface IUser {
+  name?: string;
+  email?: string;
+  phone?: string;
+  age?: string;
+  isPermitWork?: boolean;
+  wishSalary?: number;
+  salaryCurrency?: string;
 }

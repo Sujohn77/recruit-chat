@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import { ICONS, IMAGES } from 'utils/constants';
 import { getMessageProps } from 'utils/helpers';
@@ -12,7 +12,7 @@ import * as S from '../styles';
 interface IProps {
   message: ILocalMessage;
 }
-export const TextMessage: FC<IProps> = ({ message }) => {
+export const TextMessage: FC<IProps> = memo(({ message }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -41,4 +41,4 @@ export const TextMessage: FC<IProps> = ({ message }) => {
       </S.MessageContent>
     </S.MessageBox>
   );
-};
+});

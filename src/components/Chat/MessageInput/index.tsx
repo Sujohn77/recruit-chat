@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useEffect, ChangeEvent, useCallback, useMemo } from 'react';
 
-import { ICONS, Status } from 'utils/constants';
+import { ICONS, Status, TextFieldTypes } from 'utils/constants';
 import * as S from './styles';
 
 import {
   capitalizeFirstLetter,
   getAccessWriteType,
   getFormattedLocations,
+  getInputType,
   getMatchedItems,
   getNextActionType,
   isResultsType,
@@ -22,6 +23,7 @@ import { Autocomplete } from 'components/Layout/Input/Autocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';
+import { INPUT_TYPES } from 'components/Layout/Input/types';
 
 type PropsType = {};
 interface IRenderInputProps {
@@ -35,7 +37,7 @@ export const MessageInput: FC<PropsType> = () => {
 
   // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
-  const [isFocus, setIsFocus] = useState(false);
+  const [isShowResults, setIsShowResults] = useState(false);
   const { searchItems, placeHolder, headerName } = useTextField({
     locations: getFormattedLocations(locations),
     requisitions,
@@ -45,7 +47,7 @@ export const MessageInput: FC<PropsType> = () => {
 
   useEffect(() => {
     if (lastActionType === CHAT_ACTIONS.REFINE_SEARCH) {
-      setIsFocus(true);
+      setIsShowResults(true);
     }
   }, [lastActionType]);
 
@@ -61,7 +63,7 @@ export const MessageInput: FC<PropsType> = () => {
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string | null) => {
-      setIsFocus(false);
+      setIsShowResults(false);
       setDraftMessage(null);
 
       if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL) {
@@ -69,10 +71,12 @@ export const MessageInput: FC<PropsType> = () => {
         if (age < 15 || age > 80) {
           setError('Incorrect age');
           return null;
+        } else {
+          setError('');
         }
       }
-      // TODO: matchedPositions[0] = "" = (!matchedPositions[0])
-      const isNoJobMacthes = isResultsType(lastActionType) && !!draftMessage && searchItems.includes(draftMessage);
+
+      const isNoJobMacthes = isResultsType(lastActionType) && !!draftMessage && !searchItems.includes(draftMessage);
       const type = getNextActionType(lastActionType, isNoJobMacthes);
 
       if (type === CHAT_ACTIONS.SEND_LOCATIONS) {
@@ -138,10 +142,10 @@ export const MessageInput: FC<PropsType> = () => {
       type: CHAT_ACTIONS.SET_LOCATIONS,
       payload: { items: locations },
     });
-    setIsFocus(false);
+    setIsShowResults(false);
   };
 
-  const renderInput = ({ type }: IRenderInputProps) => {
+  const renderInput = (type: TextFieldTypes) => {
     const inputProps = {
       type,
       headerName: headerName,
@@ -149,11 +153,11 @@ export const MessageInput: FC<PropsType> = () => {
       matchedPart: capitalizeFirstLetter(draftMessage || ''),
       value: draftMessage || '',
       placeHolder: placeHolder || botTypingTxt,
-      setIsFocus,
-      isFocus,
+      setIsShowResults,
+      isShowResults,
       setInputValue: (value: string) => setDraftMessage(value),
     };
-    if (type === CHAT_ACTIONS.SET_LOCATIONS && status !== Status.PENDING) {
+    if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
       return (
         <MultiSelectInput
           {...inputProps}
@@ -167,7 +171,6 @@ export const MessageInput: FC<PropsType> = () => {
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
 
-  // TODO: refactor
   const onClick = () => {
     if (file) {
       sendFile(file);
@@ -177,13 +180,8 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
-  // TODO: refactor
-  const inputType =
-    lastActionType === CHAT_ACTIONS.SET_JOB_ALERT
-      ? CHAT_ACTIONS.SET_ALERT_CATEGORY
-      : category && lastActionType !== CHAT_ACTIONS.SEND_LOCATIONS
-      ? CHAT_ACTIONS.SET_LOCATIONS
-      : CHAT_ACTIONS.SET_CATEGORY;
+
+  const inputType = getInputType({ lastActionType, category });
 
   const isWriteAccess = getAccessWriteType(lastActionType) && (file || draftMessage || !!searchLocations.length);
   const offset = status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';
@@ -192,7 +190,7 @@ export const MessageInput: FC<PropsType> = () => {
     <S.MessagesInput offset={offset}>
       <BurgerMenu />
 
-      {renderInput({ type: inputType })}
+      {renderInput(inputType)}
 
       {isWriteAccess && <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />}
     </S.MessagesInput>

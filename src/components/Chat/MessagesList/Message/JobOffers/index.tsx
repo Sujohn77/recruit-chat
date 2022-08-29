@@ -95,29 +95,29 @@ export const JobOffer = ({ category = 'Engineering', title, handleReadMore, hand
   );
 };
 type PropsType = {
-  onSubmit: (id: string | number) => void;
+  // onSubmit: (id: string | number) => void;
 };
 
-export const JobOffers: FC<PropsType> = ({ onSubmit }) => {
-  const { offerJobs, category, setViewJob } = useChatMessanger();
+export const JobOffers: FC<PropsType> = () => {
+  const { offerJobs, category, setViewJob, triggerAction } = useChatMessanger();
   const [index, setIndex] = React.useState(0);
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };
-  console.log(offerJobs, category);
-  // const handleSubmitClick = useCallback((id: string | number) => {
-  //   triggerAction({
-  //     type: CHAT_ACTIONS.INTERESTED_IN,
-  //     payload: { item: `${id}` },
-  //   });
-  // },[]);
+
+  const handleSubmitClick = (id: string | number) => {
+    triggerAction({
+      type: CHAT_ACTIONS.INTERESTED_IN,
+      payload: { item: `${id}` },
+    });
+  };
 
   return (
     <Wrapper>
       <Carousel
         index={index}
         onChange={handleChange}
-        animation="slide"
+        animation={undefined}
         indicators={false}
         autoPlay={false}
         swipe
@@ -126,11 +126,11 @@ export const JobOffers: FC<PropsType> = ({ onSubmit }) => {
         {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
           return index < offerJobs.length ? (
             <JobOffer
-              key={`job-offer-${index}`}
+              key={offerJobs[index].id}
               title={offerJobs[index].title}
               category={category}
               handleReadMore={() => setViewJob(offerJobs[index])}
-              handleButtonClick={() => onSubmit(offerJobs[index].id)}
+              handleButtonClick={() => handleSubmitClick(offerJobs[index].id)}
             />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />

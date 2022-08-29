@@ -33,14 +33,6 @@ export const ICONS = {
 
 export const currencies = ['$', '€'];
 
-// TODO: fix mock
-// export const locations = [
-//   'Oslo, Oslo, Norway',
-//   'Oslavany, Jihomoravsky kraj, Czechia',
-//   'Oslomej, Oslomej, Macedonia',
-//   'Oslo, Minnesota, United States',
-// ];
-
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
   FORBIDDEN_403: 403,
@@ -367,4 +359,9 @@ export enum Status {
   PENDING = 'PENDING',
   ERROR = 'ERROR',
   DONE = 'Done',
+}
+
+export enum TextFieldTypes {
+  MultiSelect = 'MultiSelect',
+  Select = 'Select',
 }

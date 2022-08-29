@@ -18,7 +18,7 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext, ITriggerActionProps } from 'contexts/types';
+import { IChatMessangerContext, IFileUploadContext, ITriggerActionProps, IUser } from 'contexts/types';
 import {
   ContactType,
   IApiMessage,
@@ -34,15 +34,7 @@ import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
-import {
-  ChannelName,
-  getChatActionResponse,
-  getReplaceMessageType,
-  isPushMessageType,
-  isReversePush,
-} from './constants';
-import { IUser } from 'contexts/MessangerContext';
-import { sendMessage } from 'services/hooks';
+import { ChannelName, getReplaceMessageType, isReversePush, TextFieldTypes } from './constants';
 
 export const capitalize = (str: string) => (str = str.charAt(0).toUpperCase() + str.slice(1));
 
@@ -485,7 +477,7 @@ const initialMessages = getParsedMessages([
   },
 ]);
 
-export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => {
+export const pushMessage = ({ action, messages, setMessages, accessToken }: IPushMessage) => {
   const { type, payload } = action;
   const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
 
@@ -503,6 +495,8 @@ export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => 
     }),
   ];
 
+  setMessages([message, ...messages]);
+
   if (message.content.text) {
     const serverMessage = {
       channelName: ChannelName.SMS,
@@ -513,7 +507,7 @@ export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => 
       localId: `${message.localId}`,
     };
 
-    // sendMessage(serverMessage);
+    // sendMessage(serverMessage, accessToken);
   }
 
   return updatedMessages;
@@ -536,7 +530,12 @@ export const replaceItemsWithType = ({ type, messages, excludeItem }: IFilterIte
     const { text, subType } = msg.content;
     return subType !== type || (text === excludeItem && subType === type);
   });
-  updatedMessages[0].content.subType = MessageType.TEXT;
+  if (updatedMessages[0]) {
+    updatedMessages[0].content.subType = MessageType.TEXT;
+  } else {
+    console.log(type, messages, excludeItem);
+  }
+
   return updatedMessages;
 };
 
@@ -593,7 +592,7 @@ export const getSearchJobsData = (category: string, city: string): ISearchJobsPa
     minDatePosted: '2016-11-13T00:00:00',
     categories: [category],
     location: {
-      city, // TODO: replace on locations[0] when backend is ready
+      city,
       state: null,
       postalCode: null,
       country: null,
@@ -606,16 +605,10 @@ export const getSearchJobsData = (category: string, city: string): ISearchJobsPa
   };
 };
 
-export const getCreateCandidateData = ({
-  applyUser,
-  prefferedJob,
-}: {
-  applyUser: IUser;
-  prefferedJob: IRequisition | null;
-}) => {
+export const getCreateCandidateData = ({ user, prefferedJob }: { user: IUser; prefferedJob: IRequisition | null }) => {
   return {
-    firstName: applyUser.name!.split('')[0]!,
-    lastName: applyUser.name!.split('')[1],
+    firstName: user.name!.split('')[0]!,
+    lastName: user.name!.split('')[1],
     profile: {
       currentJobTitle: prefferedJob?.title!,
       currentEmployer: '',
@@ -623,7 +616,7 @@ export const getCreateCandidateData = ({
     typeId: '',
     contactMethods: [
       {
-        address: applyUser.email!,
+        address: user.email!,
         isPrimary: true,
         location: 'Home',
         type: ContactType.EMAIL,
@@ -682,4 +675,16 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
     type === CHAT_ACTIONS.SEND_LOCATIONS
   );
+};
+
+export const getInputType = ({
+  lastActionType,
+  category,
+}: {
+  lastActionType: CHAT_ACTIONS | null;
+  category: string | null;
+}) => {
+  return category && lastActionType !== CHAT_ACTIONS.SEND_LOCATIONS
+    ? TextFieldTypes.MultiSelect
+    : TextFieldTypes.Select;
 };

@@ -7,12 +7,12 @@ import { handleRefreshToken } from './utils';
 
 const apiInstanse = new Api();
 
-export const sendMessage = (message: IApiMessage) => {
-  apiInstanse.setAuthHeader(ACCESS_TOKEN);
+export const sendMessage = (message: IApiMessage, accessToken?: string) => {
+  apiInstanse.setAuthHeader(accessToken || ACCESS_TOKEN);
   handleRefreshToken(() => apiInstanse.sendMessage(message));
 };
 
-export const useRequisitions = () => {
+export const useRequisitions = (accessToken?: string) => {
   const [requisitions, setRequisitions] = useState<{ title: string; category: string }[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
 
@@ -25,9 +25,9 @@ export const useRequisitions = () => {
         appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
         codeVersion: APP_VERSION,
       };
-      apiInstance.setAuthHeader(ACCESS_TOKEN);
+      apiInstance.setAuthHeader(accessToken || ACCESS_TOKEN);
       const response = await apiInstance.searchRequisitions(data);
-      if (response.data) {
+      if (response.data?.requisitions?.length) {
         const requisitions = response.data.requisitions;
         setLocations(
           requisitions.map((r) => {
@@ -43,7 +43,7 @@ export const useRequisitions = () => {
       }
     };
     getCategories();
-  }, []);
+  }, [accessToken]);
 
   return { requisitions, locations };
 };

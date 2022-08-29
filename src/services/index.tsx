@@ -15,6 +15,7 @@ import {
   IUserSelf,
   IUploadResponse,
   ICreateCandidateResponse,
+  GenerateGrantType,
 } from './types';
 
 export const FORM_URLENCODED = {
@@ -40,8 +41,7 @@ class Api {
   setAuthHeader = (token: string) => this.client.setHeader('Authorization', `Bearer ${token}`);
 
   setAuthHeaderToNull = () => this.client.setHeader('Authorization', '');
-  sendMessage = (payload: IApiMessage) =>
-    this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
+  sendMessage = (payload: IApiMessage) => this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
 
   markChatRead = (chatId?: number) =>
     this.client.post<IUpdateMessagesResponse>('/api/messenger/chat/acknowledge', { chatId });
@@ -57,10 +57,8 @@ class Api {
   searchRequisitions = (data: IGetAllRequisitions & IApiSignedRequest) =>
     this.client.post<IRequisitionsResponse>('api/requisition/search', data);
 
-  searchJobs = (data: ISearchJobsPayload) =>
-    this.client.post<IRequisitionsResponse>('api/requisition/search', data);
-  uploadCV = (data: IUploadCVPayload) =>
-    this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
+  searchJobs = (data: ISearchJobsPayload) => this.client.post<IRequisitionsResponse>('api/requisition/search', data);
+  uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
   createCandidate = (data: ICreationCandidatePayload) =>
     this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
 }
@@ -69,7 +67,7 @@ export const APP_VERSION = '1.0.3';
 export const getSignedRequest = <T,>(data: T): T & any => ({
   ...data,
   // @ts-ignore
-  appKey: process.env.REACT_APP_API_ACCESS_KEY || CONFIG.API_ACCESS_KEY,
+  appKey: process.env.REACT_APP_API_ACCESS_KEY || '117BD5BC-857D-428B-97BE-A5EC7256E281',
   codeVersion: APP_VERSION,
 });
 
@@ -95,7 +93,8 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
       appKey: payload!.appKey,
       codeVersion: payload!.codeVersion,
     };
-    await confirmLoginUserWithoutTwoFA(info);
+    const loginResponse = await confirmLoginUserWithoutTwoFA(info);
+    return loginResponse;
   }
 };
 
@@ -118,27 +117,15 @@ export const confirmLoginUserWithoutTwoFA = async (info: any) => {
   const tokenResponse: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
     grantType,
   });
-  if (tokenResponse.data?.error_description || tokenResponse.data?.error) {
-  } else {
-    await setUserDataAfterVerify({
-      ...tokenResponse.data!,
-    });
-  }
+  await setUserDataAfterVerify({
+    ...tokenResponse.data!,
+  });
+  return tokenResponse.data;
 };
 
 export const apiInstance = new Api();
 
 export default Api;
-
-export const generateGrantType: any = (userData: any) => {
-  const form = [];
-  for (const property in userData) {
-    const encodedKey = encodeURIComponent(property);
-    const encodedValue = encodeURIComponent(userData[property]);
-    form.push(encodedKey + '=' + encodedValue);
-  }
-  return form.join('&');
-};
 
 export const setUserDataAfterVerify = async (data: any) => {
   const account = parseResponseWithToken(data);
@@ -160,3 +147,22 @@ export const parseResponseWithToken: any = (data: any) => ({
   expiresTokenDate: data['.expires'],
   firebase_access_token: data.firebase_access_token,
 });
+
+export enum IUserLoginDataKeys {
+  GrantType = 'grant_type',
+  Username = 'username',
+  Password = 'password',
+  TwoFactorAuthCode = 'twofactorauthcode',
+  AppKey = 'appKey',
+  CodeVersion = 'codeVersion',
+}
+
+export const generateGrantType: GenerateGrantType = (userData: any) => {
+  const form = [];
+  for (const property in userData) {
+    const encodedKey = encodeURIComponent(property);
+    const encodedValue = encodeURIComponent(userData[property]);
+    form.push(encodedKey + '=' + encodedValue);
+  }
+  return form.join('&');
+};
