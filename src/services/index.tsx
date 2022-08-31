@@ -98,19 +98,6 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
   }
 };
 
-export const loginUserVerify = async ({ info }: any) => {
-  const grantType: string = generateGrantType(info);
-
-  const response: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
-    grantType,
-  });
-
-  if (response.data?.error_description || response.data?.error) {
-  } else {
-    setUserDataAfterVerify(response.data);
-  }
-};
-
 export const confirmLoginUserWithoutTwoFA = async (info: any) => {
   const grantType: string = await generateGrantType({ ...info });
 

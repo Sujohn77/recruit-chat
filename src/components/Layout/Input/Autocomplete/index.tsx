@@ -29,7 +29,6 @@ export const Autocomplete: FC<PropsType> = (props) => {
     matchedPart,
     onChange,
     placeHolder,
-    type,
     setInputValue,
     isShowResults,
     setIsShowResults,

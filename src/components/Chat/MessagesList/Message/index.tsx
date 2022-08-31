@@ -17,17 +17,18 @@ import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
 import { ThanksMessage } from './ThanksMessage';
+import { ButtonMessage } from './ButtonMessage';
 
 // import { useThemeContext } from 'contexts/ThemeContext';
 
 type PropsType = {
   message: ILocalMessage;
-  onClick: (content: IContent) => void;
+  // onClick: (content: IContent) => void;
   // handleOfferSubmit: ((id: string | number) => void) | undefined;
 };
 
 export const MS_1000 = 1000;
-export const Message: FC<PropsType> = memo(({ message, onClick }) => {
+export const Message: FC<PropsType> = memo(({ message }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -50,11 +51,7 @@ export const Message: FC<PropsType> = memo(({ message, onClick }) => {
     case MessageType.CHAT_CREATED:
       return <TextMessage message={message} />;
     case MessageType.BUTTON: {
-      return (
-        <S.MessageButton onClick={() => onClick(message.content)} {...messageProps}>
-          <S.MessageText>{message.content.text}</S.MessageText>
-        </S.MessageButton>
-      );
+      return <ButtonMessage message={message} />;
     }
     case MessageType.INTERESTED_IN:
       return <InterestedIn message={message} />;

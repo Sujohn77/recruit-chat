@@ -23,12 +23,8 @@ import { Autocomplete } from 'components/Layout/Input/Autocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
 
 type PropsType = {};
-interface IRenderInputProps {
-  type: CHAT_ACTIONS.SET_CATEGORY | CHAT_ACTIONS.SET_LOCATIONS | CHAT_ACTIONS.SET_ALERT_CATEGORY;
-}
 
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();

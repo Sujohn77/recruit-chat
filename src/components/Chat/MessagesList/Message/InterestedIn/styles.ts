@@ -16,4 +16,7 @@ export const MessageJobItem = styled(MessageItem)`
       message: { interestedJob },
     },
   }) => interestedJob.color};
+  &:before {
+    background: ${({ theme: { message } }) => message.backgroundColor};
+  }
 `;

@@ -189,13 +189,13 @@ const ChatProvider = ({ children }: PropsType) => {
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
-          pushMessage({ action, messages, setMessages });
+          pushMessage({ action, messages, setMessages, accessToken });
         }
         setLastActionType(type);
         setChatAction(action);
       }
     },
-    [user, isInitialized, messages, requisitions.length]
+    [user, isInitialized, messages, requisitions.length, accessToken]
   );
 
   useEffect(() => {
@@ -280,6 +280,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
     if (!nextMessages.length) {
+      // console.log(nextMessages);
       setLastActionType(null);
       setNextMessages(messagesSnapshots);
     }
@@ -350,6 +351,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setLastActionType,
         setError,
         setViewJob,
+        nextMessages,
       }}
     >
       {children}

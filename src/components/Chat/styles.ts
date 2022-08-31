@@ -4,6 +4,7 @@ import { colors } from 'utils/colors';
 export const Wrapper = styled.div`
   background: ${colors.white};
   position: relative;
+  border-radius: 10px;
   overflow: hidden;
   animation: open 0.5s ease-in;
   overflow: hidden;

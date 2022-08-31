@@ -25,6 +25,7 @@ export const useRequisitions = (accessToken?: string) => {
         appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
         codeVersion: APP_VERSION,
       };
+
       apiInstance.setAuthHeader(accessToken || ACCESS_TOKEN);
       const response = await apiInstance.searchRequisitions(data);
       if (response.data?.requisitions?.length) {

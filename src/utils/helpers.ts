@@ -34,7 +34,8 @@ import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
-import { ChannelName, getReplaceMessageType, isReversePush, TextFieldTypes } from './constants';
+import { ChannelName, getReplaceMessageType, isPushMessageType, isReversePush, TextFieldTypes } from './constants';
+import { sendMessage } from 'services/hooks';
 
 export const capitalize = (str: string) => (str = str.charAt(0).toUpperCase() + str.slice(1));
 
@@ -267,6 +268,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   error: null,
   viewJob: null,
   prefferedJob: null,
+  nextMessages: [],
   chooseButtonOption: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
@@ -429,7 +431,7 @@ export const getMessageBySubtype = ({ subType, value }: { subType: string | unde
 };
 
 export const getItemById = (items: any[], id: string) => {
-  return items.find((job) => job._id === Number(id));
+  return items.find((job) => job.id === Number(id));
 };
 export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
   switch (type) {
@@ -445,16 +447,11 @@ export const getMessagesOnAction = ({ action, messages, responseAction, addition
   const { type, payload } = action;
   let updatedMessages = [...messages];
 
-  if (!messages.length) {
-    updatedMessages = [
-      ...updatedMessages,
-      ...getParsedMessages([
-        {
-          text: i18n.t('messages:initialMessage'),
-          isChatMessage: true,
-        },
-      ]),
-    ];
+  if (!isPushMessageType(type)) {
+    updatedMessages = popMessage({
+      type: getReplaceMessageType(type),
+      messages: !messages.length ? [...messages, ...initialMessages] : messages,
+    });
   }
 
   if (isReversePush(type)) {
@@ -487,13 +484,23 @@ export const pushMessage = ({ action, messages, setMessages, accessToken }: IPus
     isChatMessage: !!action.payload?.isChatMessage,
   });
 
-  const updatedMessages = [
-    message,
-    ...popMessage({
-      type: getReplaceMessageType(type),
-      messages: !messages.length ? [...messages, ...initialMessages] : messages,
-    }),
-  ];
+  let updatedMessages;
+  if (!messages.length) {
+    updatedMessages = [
+      ...messages,
+      ...getParsedMessages([
+        {
+          text: i18n.t('messages:initialMessage'),
+          isChatMessage: true,
+        },
+      ]),
+    ];
+  }
+
+  updatedMessages = popMessage({
+    type: getReplaceMessageType(type),
+    messages: !messages.length ? [...messages, ...initialMessages] : messages,
+  });
 
   setMessages([message, ...messages]);
 
@@ -576,6 +583,8 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | null, isNoJobMa
       return CHAT_ACTIONS.APPLY_ETHNIC;
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return CHAT_ACTIONS.SET_ALERT_CATEGORY;
+    case CHAT_ACTIONS.SET_CATEGORY:
+      return CHAT_ACTIONS.SET_LOCATIONS;
     case CHAT_ACTIONS.SET_LOCATIONS:
       return CHAT_ACTIONS.SEND_LOCATIONS;
     default:
@@ -673,7 +682,8 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
     type === CHAT_ACTIONS.REFINE_SEARCH ||
     type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
-    type === CHAT_ACTIONS.SEND_LOCATIONS
+    type === CHAT_ACTIONS.SEND_LOCATIONS ||
+    type === CHAT_ACTIONS.UPLOAD_CV
   );
 };
 
@@ -684,7 +694,10 @@ export const getInputType = ({
   lastActionType: CHAT_ACTIONS | null;
   category: string | null;
 }) => {
-  return category && lastActionType !== CHAT_ACTIONS.SEND_LOCATIONS
-    ? TextFieldTypes.MultiSelect
-    : TextFieldTypes.Select;
+  const isMultiSelect =
+    category &&
+    (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
+      lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
+      lastActionType === null);
+  return isMultiSelect ? TextFieldTypes.MultiSelect : TextFieldTypes.Select;
 };

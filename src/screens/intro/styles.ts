@@ -15,7 +15,7 @@ export const Flex = styled.div`
 export const Wrapper = styled.div`
   position: relative;
   width: 365px;
-  margin-top: 520px;
+  margin-top: 535px;
 `;
 
 export const Close = styled.div<{ height?: string; color?: string }>`
@@ -46,8 +46,7 @@ export const Message = styled.div`
   border-radius: 20px;
   padding: 10px 10px;
 
-  background: ${({ theme: { message } }) =>
-    message.chat.backgroundColor}!important;
+  background: ${({ theme: { message } }) => message.chat.backgroundColor}!important;
 
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;

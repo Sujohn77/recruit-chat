@@ -17,12 +17,12 @@ type PropsType = {};
 const MESSAGE_SCROLL_LIST_DIV_ID = 'message-scroll-list';
 
 export const MessagesList: FC<PropsType> = () => {
-  const { messages, chooseButtonOption, lastActionType, status, triggerAction } = useChatMessanger();
+  const { messages, lastActionType, status, nextMessages } = useChatMessanger();
   const { onLoadNextMessagesPage } = useSocketContext();
   const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (lastActionType !== null) {
+    if (lastActionType !== null && !nextMessages.length) {
       scrollToBottom();
     }
   }, [lastActionType, messages.length]);
@@ -30,15 +30,6 @@ export const MessagesList: FC<PropsType> = () => {
   useEffect(() => {
     scrollToBottom();
   }, []);
-
-  const onClick = useCallback(
-    (content: IContent) => {
-      if (content.subType === MessageType.BUTTON) {
-        content.text && chooseButtonOption(content.text);
-      }
-    },
-    [messages.length]
-  );
 
   const scrollToBottom = () => {
     if (messagesRef.current) {
@@ -61,7 +52,7 @@ export const MessagesList: FC<PropsType> = () => {
           inverse
         >
           {messages.map((message, index) => (
-            <Message key={`${message.localId}`} message={message} onClick={onClick} />
+            <Message key={`${message.localId}`} message={message} />
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>

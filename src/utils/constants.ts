@@ -319,7 +319,8 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
     type !== CHAT_ACTIONS.SET_LOCATIONS &&
     type !== CHAT_ACTIONS.REFINE_SEARCH &&
     type !== CHAT_ACTIONS.APPLY_POSITION &&
-    type !== CHAT_ACTIONS.QUESTION_RESPONSE
+    type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
+    type !== CHAT_ACTIONS.SEND_EMAIL
   );
 };
 

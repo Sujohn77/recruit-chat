@@ -13,7 +13,7 @@ import { ThemeContextProvider } from 'contexts/ThemeContext';
 
 export const Container = styled.div`
   width: 370px;
-  margin: 30px auto;
+  margin: 45px auto 15px;
   max-width: 100%;
 `;
 

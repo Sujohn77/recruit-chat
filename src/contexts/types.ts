@@ -29,6 +29,7 @@ export interface IChatMessangerContext {
   setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
   prefferedJob: IRequisition | null;
   submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
+  nextMessages: IPortionMessages[];
 }
 
 export interface IFileUploadContext {
