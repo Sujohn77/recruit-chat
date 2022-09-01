@@ -328,9 +328,7 @@ interface IGetMatchedItems {
 export const getMatchedItems = ({ message, searchItems }: IGetMatchedItems) => {
   const compareItem = message?.toLowerCase();
   if (compareItem?.length) {
-    return searchItems
-      .filter((item) => isMatches({ item, compareItem }))
-      .map((p) => p.slice(compareItem.length, p.length));
+    return searchItems.filter((item) => isMatches({ item, compareItem }));
   }
   return [];
 };
@@ -556,8 +554,8 @@ export const replaceLocalMessages = ({ messages, parsedMessages }: IReplaceLocal
   });
 };
 
-export const getNextActionType = (lastActionType: CHAT_ACTIONS | null, isNoJobMacthes?: boolean) => {
-  if (isNoJobMacthes) {
+export const getNextActionType = (lastActionType: CHAT_ACTIONS | null, isNoMatches?: boolean) => {
+  if (isNoMatches) {
     return CHAT_ACTIONS.NO_MATCH;
   }
   switch (lastActionType) {
@@ -683,7 +681,8 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.REFINE_SEARCH ||
     type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
     type === CHAT_ACTIONS.SEND_LOCATIONS ||
-    type === CHAT_ACTIONS.UPLOAD_CV
+    type === CHAT_ACTIONS.UPLOAD_CV ||
+    type === CHAT_ACTIONS.SET_LOCATIONS
   );
 };
 

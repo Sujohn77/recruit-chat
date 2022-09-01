@@ -25,7 +25,7 @@ export const MessagesList: FC<PropsType> = () => {
     if (lastActionType !== null && !nextMessages.length) {
       scrollToBottom();
     }
-  }, [lastActionType, messages.length]);
+  }, [messages.length]);
 
   useEffect(() => {
     scrollToBottom();

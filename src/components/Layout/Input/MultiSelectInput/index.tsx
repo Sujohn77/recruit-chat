@@ -98,9 +98,11 @@ export const MultiSelectInput: FC<PropsType> = ({
       )}
 
       <S.InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
-        {selectedValues.map((option: string, index: number) => (
-          <Tag label={option} {...getTagProps({ index })} onDelete={() => onDelete(index)} />
-        ))}
+        {selectedValues
+          .filter((option) => !!option)
+          .map((option: string, index: number) => (
+            <Tag label={option} {...getTagProps({ index })} onDelete={() => onDelete(index)} />
+          ))}
         <TextInput
           {...getInputProps()}
           placeholder={placeHolder}

@@ -280,7 +280,6 @@ const ChatProvider = ({ children }: PropsType) => {
 
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
     if (!nextMessages.length) {
-      // console.log(nextMessages);
       setLastActionType(null);
       setNextMessages(messagesSnapshots);
     }

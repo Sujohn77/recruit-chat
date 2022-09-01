@@ -34,8 +34,9 @@ export const MessageInput: FC<PropsType> = () => {
   // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [isShowResults, setIsShowResults] = useState(false);
+  const formattedLocations = getFormattedLocations(locations);
   const { searchItems, placeHolder, headerName } = useTextField({
-    locations: getFormattedLocations(locations),
+    locations: formattedLocations,
     requisitions,
     category,
     lastActionType,
@@ -72,20 +73,27 @@ export const MessageInput: FC<PropsType> = () => {
         }
       }
 
-      const isNoJobMacthes = isResultsType(lastActionType) && !!draftMessage && !searchItems.includes(draftMessage);
-      const type = getNextActionType(lastActionType, isNoJobMacthes);
+      const isNoMatches =
+        isResultsType(lastActionType) &&
+        !!draftMessage &&
+        !searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
+      const type = getNextActionType(lastActionType, isNoMatches);
 
       if (type === CHAT_ACTIONS.SEND_LOCATIONS) {
         triggerAction({
           type,
           payload: { items: searchLocations },
         });
-      } else if (type && draftMessage) {
+      } else if (type === CHAT_ACTIONS.SET_LOCATIONS && !isNoMatches) {
+        const location = formattedLocations.find((l) => l.toLowerCase() === draftMessage?.toLowerCase());
         triggerAction({
           type,
-          payload: {
-            item: draftMessage,
-          },
+          payload: { items: [location] },
+        });
+      } else {
+        triggerAction({
+          type,
+          payload: { item: draftMessage },
         });
       }
     },
@@ -145,8 +153,9 @@ export const MessageInput: FC<PropsType> = () => {
     const inputProps = {
       type,
       headerName: headerName,
-      matchedItems: matchedPositions,
-      matchedPart: capitalizeFirstLetter(draftMessage || ''),
+      matchedItems: matchedPositions.map((m) => m.slice(draftMessage?.length, m.length)),
+      matchedPart:
+        matchedPositions.length && draftMessage?.length ? matchedPositions[0].slice(0, draftMessage.length) : '',
       value: draftMessage || '',
       placeHolder: placeHolder || botTypingTxt,
       setIsShowResults,

@@ -16,13 +16,15 @@ export const MessagesArea = styled.div`
 export const MessageListContainer = styled.div`
   height: 480px;
   box-sizing: border-box;
-  overflow: auto;
+  overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
   padding: 16px;
-
-  .infinite-scroll-component > div {
-    margin-bottom: 32px;
+  .infinite-scroll-component {
+    overflow: hidden !important;
+    > div {
+      margin-bottom: 32px;
+    }
   }
 `;
 
