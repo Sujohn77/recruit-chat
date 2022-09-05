@@ -254,7 +254,11 @@ const ChatProvider = ({ children }: PropsType) => {
           responseAction: response,
           additionalCondition,
         });
-        updatedMessages?.length && setMessages(updatedMessages);
+
+        setTimeout(() => {
+          updatedMessages?.length && setMessages(updatedMessages);
+        }, 500);
+
         setChatAction(null);
       } else {
         setStatus(Status.ERROR);

@@ -19,11 +19,12 @@ import { ThemeType } from 'utils/theme/default';
 type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   children?: React.ReactNode | React.ReactNode[];
+  isSelectedOption: boolean;
 };
 
 export const chatId = 2433044;
 
-export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
+export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedOption }) => {
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, triggerAction } = useChatMessanger();
   const { file, notification, resetFile } = useFileUploadContext();
@@ -37,7 +38,7 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
   };
 
   return (
-    <S.Wrapper>
+    <S.Wrapper isOpened={!!isSelectedOption}>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
       <MessagesList />
       <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />

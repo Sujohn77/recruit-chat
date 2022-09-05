@@ -20,14 +20,14 @@ export const Container = styled.div`
 `;
 
 const App = () => {
-  const [isSelectedOption, setIsSelectedOption] = useState(false);
+  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(null);
 
-  const renderContent = () => {
-    if (isSelectedOption) {
-      return <Chat setIsSelectedOption={setIsSelectedOption} />;
-    }
-    return <Intro setIsSelectedOption={setIsSelectedOption} />;
-  };
+  // const renderContent = () => {
+  //   if (isSelectedOption) {
+  //     return <Chat setIsSelectedOption={setIsSelectedOption} />;
+  //   }
+  //   return <Intro setIsSelectedOption={setIsSelectedOption} />;
+  // };
 
   return (
     <Container id="chat-bot">
@@ -35,8 +35,10 @@ const App = () => {
         <ThemeContextProvider>
           <FileUploadProvider>
             <SocketProvider>
-              {isSelectedOption && <Chat setIsSelectedOption={setIsSelectedOption} />}
-              <Intro setIsSelectedOption={setIsSelectedOption} />
+              {isSelectedOption !== null && (
+                <Chat setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
+              )}
+              <Intro setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
             </SocketProvider>
           </FileUploadProvider>
         </ThemeContextProvider>

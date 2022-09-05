@@ -18,6 +18,7 @@ export enum CHAT_OPTIONS {
 
 type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  isSelectedOption: boolean | boolean | null;
 };
 
 interface IOption {
@@ -27,7 +28,7 @@ interface IOption {
   size: string;
 }
 
-export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
+export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) => {
   const { triggerAction } = useChatMessanger();
   const theme = useTheme() as ThemeType;
 
@@ -66,7 +67,7 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption }) => {
   ));
   const lookingForJobTxt = i18n.t('messages:initialMessage');
   return (
-    <S.Wrapper>
+    <S.Wrapper isClosed={!!isSelectedOption}>
       <S.Flex>
         <S.ImageButton>
           <S.IntroImage src={theme?.imageUrl || ICONS.LOGO} size="20px" alt="rob-face" />

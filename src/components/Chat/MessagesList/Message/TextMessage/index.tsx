@@ -11,8 +11,9 @@ import * as S from '../styles';
 
 interface IProps {
   message: ILocalMessage;
+  isLastMessage?: boolean;
 }
-export const TextMessage: FC<IProps> = memo(({ message }) => {
+export const TextMessage: FC<IProps> = memo(({ message, isLastMessage }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -31,7 +32,7 @@ export const TextMessage: FC<IProps> = memo(({ message }) => {
   };
 
   return (
-    <S.MessageBox {...messageProps}>
+    <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
       <S.MessageContent isFile={isFile}>
         {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 

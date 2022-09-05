@@ -45,6 +45,7 @@ export interface IMessageProps {
   isOwn?: boolean;
   padding?: string;
   cursor?: string;
+  isLastMessage?: boolean;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });

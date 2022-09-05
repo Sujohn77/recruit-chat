@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { Loader } from 'components/Layout/Loader';
 
@@ -52,7 +52,7 @@ export const MessagesList: FC<PropsType> = () => {
           inverse
         >
           {messages.map((message, index) => (
-            <Message key={`${message.localId}-${index}`} message={message} />
+            <Message key={`${message.localId}-${message.dateCreated}`} message={message} isLastMessage={index === 0} />
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>

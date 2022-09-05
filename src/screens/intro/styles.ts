@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
 const borderWidth = '1.5px';
-
+const animationDuration = '0.7s';
 export const Flex = styled.div`
   display: flex;
   justify-content: center;
@@ -13,10 +13,40 @@ export const Flex = styled.div`
   width: 100%;
 `;
 export const Wrapper = styled.div`
-  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+
   width: 365px;
   position: absolute;
   bottom: 0;
+  left: 0;
+
+  animation: ${({ isClosed }: { isClosed: boolean }) => isClosed && `fadeOut ${animationDuration} ease-in-out`};
+  overflow: hidden;
+
+  > div {
+    padding: 20px;
+    min-width: 365px;
+    justify-content: flex-start;
+    animation: ${({ isClosed }: { isClosed: boolean }) => isClosed && `fadeOut ${animationDuration} ease-in-out`};
+  }
+
+  @keyframes fadeOut {
+    0% {
+      height: 110px;
+      width: 365px;
+    }
+    30% {
+      height: 20px;
+      width: 20px;
+    }
+    100% {
+      height: 0;
+      width: 0;
+    }
+  }
+
   // margin-top: 535px;
 `;
 
@@ -125,12 +155,26 @@ export const Options = styled(Flex)`
   animation: fade 0.4s ease-in;
 `;
 
-export const InfoContent = styled.div``;
+export const InfoContent = styled.div`
+  @keyframes fadeInfoOut {
+    0% {
+      height: 100%;
+      width: 259px;
+    }
+    100% {
+      height: 0;
+      width: 0;
+    }
+  }
+  height: 100%;
+  overflow: hidden;
+`;
 
 export const ImageButton = styled(Button)`
   min-width: 34px !important;
   height: 34px;
   width: 34px;
+  flex-shrink: 1;
   border-radius: 50% !important;
   background: ${colors.alto}!important;
   text-aling: center !important;

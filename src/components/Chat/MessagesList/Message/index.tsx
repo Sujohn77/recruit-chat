@@ -23,12 +23,13 @@ import { ButtonMessage } from './ButtonMessage';
 
 type PropsType = {
   message: ILocalMessage;
+  isLastMessage: boolean;
   // onClick: (content: IContent) => void;
   // handleOfferSubmit: ((id: string | number) => void) | undefined;
 };
 
 export const MS_1000 = 1000;
-export const Message: FC<PropsType> = memo(({ message }) => {
+export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -49,7 +50,7 @@ export const Message: FC<PropsType> = memo(({ message }) => {
     case MessageType.TEXT:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
-      return <TextMessage message={message} />;
+      return <TextMessage message={message} isLastMessage={isLastMessage} />;
     case MessageType.BUTTON: {
       return <ButtonMessage message={message} />;
     }
