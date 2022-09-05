@@ -12,6 +12,7 @@ interface IUseTextField {
   requisitions: ISearchRequisition[];
 }
 
+// TODO: refactor
 export const useTextField = ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
   const getTextFieldProps = useCallback(({ lastActionType, requisitions, locations, category }: IUseTextField) => {
     if (lastActionType === CHAT_ACTIONS.SET_JOB_ALERT) {
@@ -26,6 +27,7 @@ export const useTextField = ({ lastActionType, requisitions, locations, category
       (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
         lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
         lastActionType === null);
+
     if (isMultiSelect) {
       return {
         searchItems: locations,
@@ -38,7 +40,7 @@ export const useTextField = ({ lastActionType, requisitions, locations, category
       searchItems: requisitions.map((r) => r.title),
       headerName: i18n.t('chat_item_description:categories_title'),
       placeHolder:
-        lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
+        lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS || lastActionType === CHAT_ACTIONS.SEND_LOCATIONS
           ? i18n.t('placeHolders:startTyping')
           : i18n.t('placeHolders:message'),
     };

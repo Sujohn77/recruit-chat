@@ -1,40 +1,40 @@
-import { ACCESS_TOKEN } from '../firebase/config';
-import { useEffect, useState } from 'react';
-import Api, { apiInstance, APP_VERSION } from 'services';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import Api, { apiInstance, APP_VERSION, loginUser } from 'services';
 
 import { IApiMessage, LocationType } from './types';
 import { handleRefreshToken } from './utils';
+import { info } from 'contexts/MessangerContext';
 
 const apiInstanse = new Api();
 
-export const sendMessage = (message: IApiMessage, accessToken?: string) => {
-  apiInstanse.setAuthHeader(accessToken || ACCESS_TOKEN);
+export const sendMessage = (message: IApiMessage, accessToken: string) => {
+  apiInstanse.setAuthHeader(accessToken);
   handleRefreshToken(() => apiInstanse.sendMessage(message));
 };
 
-export const useRequisitions = (accessToken?: string) => {
+const data = {
+  pageSize: 20,
+  page: 1,
+  keyword: '',
+  appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
+  codeVersion: APP_VERSION,
+};
+
+// TODO: refactor
+export const useRequisitions = (accessToken: string | null) => {
   const [requisitions, setRequisitions] = useState<{ title: string; category: string }[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
 
   useEffect(() => {
-    const getCategories = async () => {
-      const data = {
-        pageSize: 20,
-        page: 1,
-        keyword: '',
-        appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
-        codeVersion: APP_VERSION,
-      };
+    const getCategories = async (accessToken: string) => {
+      let response = null;
 
-      apiInstance.setAuthHeader(accessToken || ACCESS_TOKEN);
-      const response = await apiInstance.searchRequisitions(data);
-      if (response.data?.requisitions?.length) {
+      apiInstance.setAuthHeader(accessToken);
+      response = await apiInstance.searchRequisitions(data);
+
+      if (response?.data?.requisitions?.length) {
         const requisitions = response.data.requisitions;
-        setLocations(
-          requisitions.map((r) => {
-            return r.location;
-          })
-        );
+        setLocations(requisitions.map((r) => r.location));
         setRequisitions(
           response.data.requisitions?.map((c: any) => ({
             title: c.title,
@@ -43,7 +43,7 @@ export const useRequisitions = (accessToken?: string) => {
         );
       }
     };
-    getCategories();
+    accessToken && getCategories(accessToken);
   }, [accessToken]);
 
   return { requisitions, locations };

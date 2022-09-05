@@ -15,14 +15,18 @@ export const Flex = styled.div`
 export const Wrapper = styled.div`
   position: relative;
   width: 365px;
-  margin-top: 535px;
+  position: absolute;
+  bottom: 0;
+  // margin-top: 535px;
 `;
 
 export const Close = styled.div<{ height?: string; color?: string }>`
   position: absolute;
-  right: 25px;
+  right: 16px;
   top: 10px;
   cursor: pointer;
+  width: 18px;
+  height: 18px;
   &:before,
   &:after {
     content: '';

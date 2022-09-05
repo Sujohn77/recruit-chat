@@ -269,6 +269,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   viewJob: null,
   prefferedJob: null,
   nextMessages: [],
+  accessToken: null,
   chooseButtonOption: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
@@ -537,8 +538,6 @@ export const replaceItemsWithType = ({ type, messages, excludeItem }: IFilterIte
   });
   if (updatedMessages[0]) {
     updatedMessages[0].content.subType = MessageType.TEXT;
-  } else {
-    console.log(type, messages, excludeItem);
   }
 
   return updatedMessages;

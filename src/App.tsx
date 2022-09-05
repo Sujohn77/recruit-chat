@@ -13,7 +13,9 @@ import { ThemeContextProvider } from 'contexts/ThemeContext';
 
 export const Container = styled.div`
   width: 370px;
-  margin: 45px auto 15px;
+  // margin: 45px auto 15px;
+  position: absolute;
+  bottom: 0px;
   max-width: 100%;
 `;
 
@@ -28,11 +30,14 @@ const App = () => {
   };
 
   return (
-    <Container>
+    <Container id="chat-bot">
       <ChatProvider>
         <ThemeContextProvider>
           <FileUploadProvider>
-            <SocketProvider>{renderContent()}</SocketProvider>{' '}
+            <SocketProvider>
+              {isSelectedOption && <Chat setIsSelectedOption={setIsSelectedOption} />}
+              <Intro setIsSelectedOption={setIsSelectedOption} />
+            </SocketProvider>
           </FileUploadProvider>
         </ThemeContextProvider>
       </ChatProvider>

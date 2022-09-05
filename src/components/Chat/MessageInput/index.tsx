@@ -5,7 +5,6 @@ import { ICONS, Status, TextFieldTypes } from 'utils/constants';
 import * as S from './styles';
 
 import {
-  capitalizeFirstLetter,
   getAccessWriteType,
   getFormattedLocations,
   getInputType,

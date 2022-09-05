@@ -30,6 +30,7 @@ export interface IChatMessangerContext {
   prefferedJob: IRequisition | null;
   submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
   nextMessages: IPortionMessages[];
+  accessToken: string | null;
 }
 
 export interface IFileUploadContext {

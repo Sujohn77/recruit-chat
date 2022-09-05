@@ -1,11 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { chatId } from 'components/Chat';
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect } from 'react';
 
 import { FirebaseSocketReactivePagination } from 'socket';
 import { SocketCollectionPreset } from 'socket/socket.options';
@@ -20,7 +16,7 @@ const socketDefaultState = {};
 const SocketContext = createContext<any>({ socketDefaultState });
 
 const SocketProvider = ({ children }: PropsType) => {
-  const { messages, setSnapshotMessages } = useChatMessanger();
+  const { setSnapshotMessages, accessToken } = useChatMessanger();
 
   const onUpdateMessages = useCallback(
     (messagesSnapshots: ISnapshot<IMessage>[]) => {
@@ -31,27 +27,22 @@ const SocketProvider = ({ children }: PropsType) => {
 
   /* ------ Socket Connection ------ */
   const messagesSocketConnection = React.useRef(
-    new FirebaseSocketReactivePagination<IMessage>(
-      SocketCollectionPreset.Messages,
-      chatId
-    )
+    new FirebaseSocketReactivePagination<IMessage>(SocketCollectionPreset.Messages, chatId)
   );
 
   useEffect(() => {
-    const savedSocketConnection = messagesSocketConnection.current;
-    savedSocketConnection.subscribe(onUpdateMessages);
-    return () => savedSocketConnection?.unsubscribe();
-  }, []);
+    if (accessToken) {
+      const savedSocketConnection = messagesSocketConnection.current;
+      savedSocketConnection.subscribe(onUpdateMessages);
+      return () => savedSocketConnection?.unsubscribe();
+    }
+  }, [accessToken]);
 
   const onLoadNextMessagesPage = useCallback(() => {
     messagesSocketConnection.current?.loadNextPage(onUpdateMessages);
   }, []);
 
-  return (
-    <SocketContext.Provider value={{ onLoadNextMessagesPage }}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={{ onLoadNextMessagesPage }}>{children}</SocketContext.Provider>;
 };
 
 const useSocketContext = () => useContext(SocketContext);

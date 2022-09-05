@@ -100,13 +100,24 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
 
 export const confirmLoginUserWithoutTwoFA = async (info: any) => {
   const grantType: string = await generateGrantType({ ...info });
-
-  const tokenResponse: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
+  let tokenResponse: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
     grantType,
   });
-  await setUserDataAfterVerify({
-    ...tokenResponse.data!,
-  });
+
+  try {
+    await setUserDataAfterVerify({
+      ...tokenResponse.data!,
+    });
+  } catch (err) {
+    const newToken: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
+      grantType,
+    });
+    await setUserDataAfterVerify({
+      ...newToken.data!,
+    });
+    return newToken.data;
+  }
+
   return tokenResponse.data;
 };
 

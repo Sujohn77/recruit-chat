@@ -27,9 +27,7 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children }) => {
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, triggerAction } = useChatMessanger();
   const { file, notification, resetFile } = useFileUploadContext();
-  const title = viewJob
-    ? i18n.t('chat_item_description:view_job_title')
-    : i18n.t('chat_item_description:title');
+  const title = viewJob ? i18n.t('chat_item_description:view_job_title') : i18n.t('chat_item_description:title');
 
   const handleApplyJobClick = (viewJob: IRequisition | null) => {
     setViewJob(null);

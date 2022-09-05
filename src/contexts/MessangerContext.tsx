@@ -30,7 +30,7 @@ type PropsType = {
 
 const ChatContext = createContext<IChatMessangerContext>(chatMessangerDefaultState);
 
-const info = {
+export const info = {
   username: 'RomanAndreevUpworkPlaypen',
   password: 'SomeStrongPassword1234',
 };
@@ -45,12 +45,13 @@ const ChatProvider = ({ children }: PropsType) => {
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
 
-  const [accessToken, setAccessToken] = useState();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
   const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(null);
   const [chatAction, setChatAction] = useState<ITriggerActionProps | null>(null);
+  const [initialAction, setInitialAction] = useState<ITriggerActionProps | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -64,7 +65,6 @@ const ChatProvider = ({ children }: PropsType) => {
         setAccessToken(result?.access_token);
       })
       .catch((error) => {
-        console.log(error);
         if (error.message) {
           setIsInitialized(true);
         }
@@ -85,7 +85,7 @@ const ChatProvider = ({ children }: PropsType) => {
   }, [nextMessages.length && nextMessages[0].data.localId]);
 
   useEffect(() => {
-    isInitialized && chatAction && triggerAction(chatAction);
+    isInitialized && initialAction && triggerAction(initialAction);
   }, [isInitialized]);
 
   const getMessageParam = (action: ITriggerActionProps) => {
@@ -99,7 +99,7 @@ const ChatProvider = ({ children }: PropsType) => {
       const { type, payload } = action;
 
       if (status === Status.PENDING || !isInitialized) {
-        !isInitialized && setChatAction(action);
+        !isInitialized && setInitialAction(action);
         return null;
       }
 
@@ -185,12 +185,12 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
       }
-
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
           pushMessage({ action, messages, setMessages, accessToken });
         }
+
         setLastActionType(type);
         setChatAction(action);
       }
@@ -199,7 +199,7 @@ const ChatProvider = ({ children }: PropsType) => {
   );
 
   useEffect(() => {
-    if (chatAction !== null) {
+    if (chatAction !== null && messages.length) {
       updateStateOnRequest(chatAction);
     }
   }, [chatAction]);
@@ -254,14 +254,13 @@ const ChatProvider = ({ children }: PropsType) => {
           responseAction: response,
           additionalCondition,
         });
-
         updatedMessages?.length && setMessages(updatedMessages);
         setChatAction(null);
       } else {
         setStatus(Status.ERROR);
       }
     },
-    [messages.length, searchLocations.length, lastActionType, user, isInitialized, requisitions.length]
+    [messages, searchLocations.length, lastActionType, user, isInitialized, requisitions.length]
   );
 
   const clearFilters = () => {
@@ -275,6 +274,7 @@ const ChatProvider = ({ children }: PropsType) => {
     const updatedMessages = messages.map((msg, index) =>
       msg.content.subType === type && !msg._id ? { ...msg, _id: messageId } : msg
     );
+
     setMessages(updatedMessages);
   };
 
@@ -351,6 +351,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setError,
         setViewJob,
         nextMessages,
+        accessToken,
       }}
     >
       {children}

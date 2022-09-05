@@ -219,7 +219,7 @@ export interface IPushMessage {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
-  accessToken?: string;
+  accessToken?: string | null;
 }
 
 export interface IGetChatResponseProps {

@@ -45,8 +45,8 @@ export const ViewTitle = styled.h3`
 export const CloseChat = styled(Close)`
   position: relative;
   margin-left: auto;
-  height: 12px;
-  width: 12px;
+  height: 18px;
+  width: 18px;
   top: initial;
   right: 10px;
   cursor: pointer;
@@ -61,14 +61,14 @@ type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
-export const ChatHeader: FC<PropsType> = ({
-  title = defaultTitle,
-  setIsSelectedOption,
-}) => {
+export const ChatHeader: FC<PropsType> = ({ title = defaultTitle, setIsSelectedOption }) => {
   const { viewJob, setViewJob } = useChatMessanger();
 
   const handleBackButton = () => {
     setViewJob(null);
+    if (window.parent) {
+      window.parent.postMessage({ height: '110px' }, '*');
+    }
   };
 
   return (

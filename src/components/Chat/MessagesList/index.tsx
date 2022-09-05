@@ -52,7 +52,7 @@ export const MessagesList: FC<PropsType> = () => {
           inverse
         >
           {messages.map((message, index) => (
-            <Message key={`${message.localId}`} message={message} />
+            <Message key={`${message.localId}-${index}`} message={message} />
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>

@@ -8,18 +8,16 @@ export const Wrapper = styled.div`
   overflow: hidden;
   animation: open 0.5s ease-in;
   overflow: hidden;
-
+  z-index: 1;
   @keyframes open {
     0% {
       height: 180px;
       margin-top: 450px;
-      opacity: 0;
     }
 
     100% {
       height: 600px;
       margin-top: 30px;
-      opacity: 1;
     }
   }
 `;
