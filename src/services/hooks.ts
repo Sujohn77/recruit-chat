@@ -12,12 +12,13 @@ export const sendMessage = (message: IApiMessage, accessToken: string) => {
   handleRefreshToken(() => apiInstanse.sendMessage(message));
 };
 
+export const apiPayload = { appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281', codeVersion: APP_VERSION };
+
 const data = {
   pageSize: 20,
   page: 1,
   keyword: '',
-  appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
-  codeVersion: APP_VERSION,
+  ...apiPayload,
 };
 
 // TODO: refactor

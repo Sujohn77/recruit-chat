@@ -19,10 +19,11 @@ import {
   pushMessage,
 } from 'utils/helpers';
 import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
-import { useRequisitions } from 'services/hooks';
+import { apiPayload, useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 import { apiInstance, loginUser } from 'services';
+import { chatId } from 'components/Chat';
 
 type PropsType = {
   children: React.ReactNode;
@@ -141,6 +142,15 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.APPLY_AGE: {
+          if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL) {
+            const age = Number(payload?.item);
+            if (age < 15 || age > 80) {
+              setError('Incorrect age');
+              isErrors = true;
+            } else {
+              setError('');
+            }
+          }
           setUser({ ...user, age: payload?.item! });
           break;
         }
@@ -167,6 +177,7 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
           const isPhoneType = type === CHAT_ACTIONS.GET_USER_EMAIL;
           const error = isPhoneType ? validateEmailOrPhone(payload?.item!) : validateEmail(payload?.item!);
+
           if (payload?.item && !error?.length) {
             if (isPhoneType) {
               setUser({ ...user, phone: payload?.item! });
@@ -226,6 +237,10 @@ const ChatProvider = ({ children }: PropsType) => {
             setCategory(null);
             setSearchLocations([]);
           }
+          break;
+        }
+        case CHAT_ACTIONS.SAVE_TRANSCRIPT: {
+          apiInstance.sendTranscript({ chatId, ...apiPayload });
           break;
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {

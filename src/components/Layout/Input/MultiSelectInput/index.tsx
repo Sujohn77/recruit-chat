@@ -22,8 +22,6 @@ type PropsType = {
   setInputValue: (value: string | null) => void;
   onChange: (event: any, values: string[]) => void;
   placeHolder: string;
-  options: string[];
-  type: CHAT_ACTIONS.SET_LOCATIONS;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   isShowResults: boolean;
 };
@@ -51,8 +49,6 @@ export const MultiSelectInput: FC<PropsType> = ({
   matchedPart,
   onChange,
   placeHolder,
-  type,
-  options,
   isShowResults,
   setInputValue,
   setIsShowResults,
@@ -68,7 +64,7 @@ export const MultiSelectInput: FC<PropsType> = ({
   } = useAutocomplete({
     id: 'customized-hook-demo',
     multiple: true,
-    options,
+    options: matchedItems,
     getOptionLabel: (option: any) => option,
     value: values,
     onChange: onChange,

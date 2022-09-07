@@ -8,6 +8,7 @@ export const inputOffset = '-30px';
 // export const searchInputHeight = 60;
 export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   min-height: 50px;
+  z-index: 1;
   position: relative !important;
   display: flex;
   align-items: center;

@@ -35,6 +35,17 @@ export interface IUpdateMessagesResponse {
   success: boolean;
   unreadMsgCount: number;
 }
+
+export interface ISendTranscriptResponse {
+  success: boolean;
+  statusCode: string | null;
+  status: string | null;
+}
+
+export interface ISendTranscript {
+  chatId: number;
+}
+
 export interface IApiMessage {
   channelName: 'SMS';
   candidateId: number;

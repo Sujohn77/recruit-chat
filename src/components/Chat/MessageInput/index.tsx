@@ -8,8 +8,10 @@ import {
   getAccessWriteType,
   getFormattedLocations,
   getInputType,
+  getMatchedItem,
   getMatchedItems,
   getNextActionType,
+  isResults,
   isResultsType,
   validateEmail,
   validateEmailOrPhone,
@@ -47,56 +49,41 @@ export const MessageInput: FC<PropsType> = () => {
     }
   }, [lastActionType]);
 
-  const matchedPositions = useMemo(() => {
-    return draftMessage
-      ? getMatchedItems({
-          message: draftMessage,
-          searchItems,
-        })
-      : searchItems;
-  }, [searchItems, draftMessage]);
+  const { matchedPart, matchedItems } = useMemo(
+    () =>
+      getMatchedItems({
+        message: draftMessage,
+        searchItems,
+        searchLocations,
+      }),
+    [searchItems, draftMessage, searchLocations]
+  );
 
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string | null) => {
-      setIsShowResults(false);
-      setDraftMessage(null);
+      const type = getNextActionType(lastActionType);
+      const isCategoryOrLocation = isResultsType(lastActionType);
+      const isNoMatches = isCategoryOrLocation && !isResults({ draftMessage, searchItems });
 
-      if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL) {
-        const age = Number(draftMessage);
-        if (age < 15 || age > 80) {
-          setError('Incorrect age');
-          return null;
-        } else {
-          setError('');
-        }
-      }
-
-      const isNoMatches =
-        isResultsType(lastActionType) &&
-        !!draftMessage &&
-        !searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
-      const type = getNextActionType(lastActionType, isNoMatches);
-
-      if (type === CHAT_ACTIONS.SEND_LOCATIONS) {
+      if (type === CHAT_ACTIONS.SEND_LOCATIONS || type === CHAT_ACTIONS.SET_LOCATIONS) {
+        const draftLocation = getMatchedItem({ searchItems, draftMessage });
+        const isSelectedLocations = draftLocation || searchLocations.length;
         triggerAction({
-          type,
-          payload: { items: searchLocations },
-        });
-      } else if (type === CHAT_ACTIONS.SET_LOCATIONS && !isNoMatches) {
-        const location = formattedLocations.find((l) => l.toLowerCase() === draftMessage?.toLowerCase());
-        triggerAction({
-          type,
-          payload: { items: [location] },
+          type: isSelectedLocations ? CHAT_ACTIONS.SEND_LOCATIONS : CHAT_ACTIONS.NO_MATCH,
+          payload: { items: !!draftLocation ? [...searchLocations, draftLocation] : searchLocations },
         });
       } else {
         triggerAction({
-          type,
+          type: isNoMatches ? CHAT_ACTIONS.NO_MATCH : type,
           payload: { item: draftMessage },
         });
       }
+
+      setIsShowResults(false);
+      setDraftMessage(null);
     },
-    [lastActionType, matchedPositions.length, searchLocations.length]
+    [lastActionType, matchedItems.length, searchLocations.length]
   );
 
   // Effects
@@ -118,25 +105,21 @@ export const MessageInput: FC<PropsType> = () => {
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
-    setDraftMessage(event.currentTarget.value);
 
-    if (lastActionType === CHAT_ACTIONS.APPLY_AGE && error) {
-      const age = Number(value);
-      if (age < 15 || age > 80) {
-        setError('');
+    if (error) {
+      if (lastActionType === CHAT_ACTIONS.APPLY_AGE && error) {
+        const age = Number(value);
+        if (age < 15 || age > 80) {
+          setError(null);
+        }
+      } else if (lastActionType === CHAT_ACTIONS.GET_USER_NAME) {
+        const isPhone = lastActionType === CHAT_ACTIONS.GET_USER_NAME;
+        const isError = isPhone ? validateEmailOrPhone(value) : validateEmail(value);
+        !isError && setError(null);
       }
     }
 
-    if (error) {
-      const isEmailAndPhoneError = lastActionType === CHAT_ACTIONS.GET_USER_NAME;
-
-      const updatedError = isEmailAndPhoneError
-        ? validateEmailOrPhone(event.currentTarget.value)
-        : validateEmail(event.currentTarget.value);
-
-      !updatedError && setError(updatedError);
-    }
-
+    setDraftMessage(value);
     setNotification(null);
   };
 
@@ -152,9 +135,8 @@ export const MessageInput: FC<PropsType> = () => {
     const inputProps = {
       type,
       headerName: headerName,
-      matchedItems: matchedPositions.map((m) => m.slice(draftMessage?.length, m.length)),
-      matchedPart:
-        matchedPositions.length && draftMessage?.length ? matchedPositions[0].slice(0, draftMessage.length) : '',
+      matchedItems,
+      matchedPart,
       value: draftMessage || '',
       placeHolder: placeHolder || botTypingTxt,
       setIsShowResults,
@@ -162,15 +144,7 @@ export const MessageInput: FC<PropsType> = () => {
       setInputValue: (value: string) => setDraftMessage(value),
     };
     if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
-      return (
-        <MultiSelectInput
-          {...inputProps}
-          type={CHAT_ACTIONS.SET_LOCATIONS}
-          options={getFormattedLocations(locations)}
-          onChange={onChangeLocations}
-          values={searchLocations}
-        />
-      );
+      return <MultiSelectInput {...inputProps} onChange={onChangeLocations} values={searchLocations} />;
     }
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
@@ -184,9 +158,7 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
-
   const inputType = getInputType({ lastActionType, category });
-
   const isWriteAccess = getAccessWriteType(lastActionType) && (file || draftMessage || !!searchLocations.length);
   const offset = status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';
 

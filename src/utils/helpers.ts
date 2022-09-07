@@ -29,15 +29,12 @@ import {
   ServerMessageType,
 } from 'services/types';
 
-import { findIndex, sortBy } from 'lodash';
+import { capitalize, findIndex, sortBy } from 'lodash';
 import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
 import { ChannelName, getReplaceMessageType, isPushMessageType, isReversePush, TextFieldTypes } from './constants';
-import { sendMessage } from 'services/hooks';
-
-export const capitalize = (str: string) => (str = str.charAt(0).toUpperCase() + str.slice(1));
 
 export interface IMessageProps {
   color?: string;
@@ -326,13 +323,24 @@ const isMatches = ({ item, compareItem }: IIsMatches) => {
 interface IGetMatchedItems {
   message: string | null;
   searchItems: string[];
+  searchLocations: string[];
 }
-export const getMatchedItems = ({ message, searchItems }: IGetMatchedItems) => {
-  const compareItem = message?.toLowerCase();
-  if (compareItem?.length) {
-    return searchItems.filter((item) => isMatches({ item, compareItem }));
-  }
-  return [];
+export const getMatchedItems = ({ message, searchItems, searchLocations }: IGetMatchedItems) => {
+  const compareItem = message?.toLowerCase() || '';
+  const matchedPositions = searchItems.filter((item) => isMatches({ item, compareItem }));
+
+  const matchedPart = matchedPositions.length && message?.length ? matchedPositions[0].slice(0, message.length) : '';
+  const matchedItems = matchedPositions
+    .filter((p) => {
+      searchLocations.includes(p) && console.log('is', searchLocations, p);
+      return !searchLocations.includes(p);
+    })
+    .map((item) => item.slice(message?.length, item.length));
+
+  return {
+    matchedItems,
+    matchedPart,
+  };
 };
 
 export const getParsedMessage = ({
@@ -554,10 +562,7 @@ export const replaceLocalMessages = ({ messages, parsedMessages }: IReplaceLocal
   });
 };
 
-export const getNextActionType = (lastActionType: CHAT_ACTIONS | null, isNoMatches?: boolean) => {
-  if (isNoMatches) {
-    return CHAT_ACTIONS.NO_MATCH;
-  }
+export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
   switch (lastActionType) {
     case CHAT_ACTIONS.SET_ALERT_CATEGORY:
       return CHAT_ACTIONS.SET_ALERT_PERIOD;
@@ -699,4 +704,18 @@ export const getInputType = ({
       lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
       lastActionType === null);
   return isMultiSelect ? TextFieldTypes.MultiSelect : TextFieldTypes.Select;
+};
+
+export const isResults = ({ draftMessage, searchItems }: { draftMessage: string | null; searchItems: string[] }) => {
+  return !draftMessage || !!searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
+};
+
+export const getMatchedItem = ({
+  searchItems,
+  draftMessage,
+}: {
+  draftMessage: string | null;
+  searchItems: string[];
+}) => {
+  return searchItems.find((l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || ''));
 };

@@ -16,6 +16,8 @@ import {
   IUploadResponse,
   ICreateCandidateResponse,
   GenerateGrantType,
+  ISendTranscriptResponse,
+  ISendTranscript,
 } from './types';
 
 export const FORM_URLENCODED = {
@@ -61,6 +63,8 @@ class Api {
   uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
   createCandidate = (data: ICreationCandidatePayload) =>
     this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
+  sendTranscript = (data: ISendTranscript & IApiSignedRequest) =>
+    this.client.post<ISendTranscriptResponse>('api/messenger/chat/transcript/send', data);
 }
 
 export const APP_VERSION = '1.0.3';
@@ -76,14 +80,7 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
 
   const response: ApiResponse<any> = await apiInstance.loginUser(payload);
 
-  if (response.data?.requires2fa && response.data.success) {
-    // 2FA flow
-    // const phoneNumber = response.data.msisdnAnonymised;
-    // const navigationPayload = {
-    //   userData: { phoneNumber, ...payload },
-    // };
-    // yield call(goTo, LoginPage, { navigationPayload });
-  } else if (!response.data?.errors?.length && response.data?.authcode) {
+  if (!response.data?.errors?.length && response.data?.authcode) {
     // Without 2FA flow
     const info: any = {
       grant_type: 'password',

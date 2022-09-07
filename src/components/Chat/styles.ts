@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
   animation: ${({ isOpened }: { isOpened: boolean }) =>
     isOpened ? `open ${animationDuration} ease-in` : `close ${animationDuration} ease-in`};
   animation-fill-mode: forwards;
-
+  margin-left: auto;
   @keyframes open {
     0% {
       height: 0;

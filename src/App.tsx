@@ -16,18 +16,12 @@ export const Container = styled.div`
   // margin: 45px auto 15px;
   position: absolute;
   bottom: 0px;
+
   max-width: 100%;
 `;
 
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(null);
-
-  // const renderContent = () => {
-  //   if (isSelectedOption) {
-  //     return <Chat setIsSelectedOption={setIsSelectedOption} />;
-  //   }
-  //   return <Intro setIsSelectedOption={setIsSelectedOption} />;
-  // };
 
   return (
     <Container id="chat-bot">

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
 const borderWidth = '1.5px';
-const animationDuration = '0.7s';
+const animationDuration = '0.4s';
 export const Flex = styled.div`
   display: flex;
   justify-content: center;
@@ -14,36 +14,31 @@ export const Flex = styled.div`
 `;
 export const Wrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: flex-end;
 
   width: 365px;
   position: absolute;
   bottom: 0;
-  left: 0;
+  right: 0;
 
   animation: ${({ isClosed }: { isClosed: boolean }) => isClosed && `fadeOut ${animationDuration} ease-in-out`};
   overflow: hidden;
+  animation-fill-mode: forwards;
 
   > div {
     padding: 20px;
-    min-width: 365px;
-    justify-content: flex-start;
-    animation: ${({ isClosed }: { isClosed: boolean }) => isClosed && `fadeOut ${animationDuration} ease-in-out`};
+    justify-content: flex-end;
   }
 
   @keyframes fadeOut {
     0% {
-      height: 110px;
-      width: 365px;
+      transform: scale(1);
     }
-    30% {
-      height: 20px;
-      width: 20px;
-    }
+
     100% {
-      height: 0;
-      width: 0;
+      transform: scale(0);
+      transform-origin: 100% 100%;
     }
   }
 
@@ -79,7 +74,8 @@ export const Close = styled.div<{ height?: string; color?: string }>`
 export const Message = styled.div`
   border-radius: 20px;
   padding: 10px 10px;
-
+  white-space: nowrap;
+  overflow: hidden;
   background: ${({ theme: { message } }) => message.chat.backgroundColor}!important;
 
   font-size: calc(8px + 1vmin);
@@ -112,6 +108,7 @@ export const Question = styled(MessageBox)`
   padding: 0 16px;
   line-height: 41px;
   border: none;
+  overflow: hidden;
   color: ${({ theme: { message } }) => message.chat.color};
   font-weight: 600;
   height: 41px;
