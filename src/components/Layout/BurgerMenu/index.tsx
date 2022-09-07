@@ -1,7 +1,7 @@
 import { IconButton } from '@mui/material';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { map } from 'lodash';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from 'services/localization';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';
@@ -40,6 +40,19 @@ interface IMenuItem {
 const BurgerMenu = () => {
   const { triggerAction } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const closeMenu = (e: any) => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', closeMenu);
+
+    return () => {
+      document.addEventListener('mousedown', closeMenu);
+    };
+  }, [isOpen]);
 
   const menuItems = [
     {

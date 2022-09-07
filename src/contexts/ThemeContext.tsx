@@ -9,18 +9,19 @@ type PropsType = {
 };
 
 const ThemeContextProvider = ({ children }: PropsType) => {
-  const apiKey: any = useApiKey();
+  const apiKey = useApiKey();
   const [apiTheme, setApiTheme] = useState<any>({});
 
   useEffect(() => {
     if (apiKey) {
       api.test(apiKey).then((res) => {
         setApiTheme({
-          header: {
-            color: res.data.fontColor,
-          },
-          primaryColor: res.data.backgroundColor,
-          imageUrl: res.data.imageUrl,
+          primaryColor: res.data.client_primary_colour,
+          secondaryColor: res.data.client_secondary_color,
+          imageUrl: res.data.chatbot_logo_URL,
+          borderStyle: res.data.chatbot_border_style,
+          borderWidth: res.data.chatbot_border_thickness,
+          borderColor: res.data.chatbot_border_color,
         });
       });
     }

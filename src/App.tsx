@@ -22,7 +22,12 @@ export const Container = styled.div`
 
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(null);
-
+  // useEffect(() => {
+  //   if (window.top?.location.host !== 'localhost') {
+  //     const root = document.getElementById('chat-bot');
+  //     root!.innerHTML = 'Access Denied';
+  //   }
+  // }, []);
   return (
     <Container id="chat-bot">
       <ChatProvider>

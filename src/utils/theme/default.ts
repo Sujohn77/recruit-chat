@@ -5,6 +5,10 @@ const defaultTheme = {
   secondaryColor: colors.alto,
   imageUrl: null,
 
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderColor: '#ccc',
+
   header: {
     color: colors.alto,
   },
