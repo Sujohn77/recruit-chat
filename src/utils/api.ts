@@ -11,6 +11,10 @@ export interface IApiThemeResponse {
   chatbot_border_thickness: string;
   chatbot_border_style: string;
   chatbot_logo_URL: string;
+  chatbot_header_color: string;
+  chatbot_bubble_color: string;
+  chat_button_secondary_color: string;
+  chat_search_results_color: string;
 }
 
 export const api = {

@@ -1,15 +1,14 @@
-import React, { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 
 import { Loader } from 'components/Layout/Loader';
 
 import * as S from './styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
-import { MessageType, IContent, CHAT_ACTIONS } from 'utils/types';
+
 import { useSocketContext } from 'contexts/SocketContext';
 import { InfiniteScrollView } from 'components/InfiniteScrollView';
 import { infiniteScrollStyle } from './styles';
 import { Message } from './Message';
-import { map } from 'lodash';
 import { Status } from 'utils/constants';
 
 type PropsType = {};

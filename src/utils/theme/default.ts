@@ -4,9 +4,13 @@ const defaultTheme = {
   primaryColor: colors.boulder,
   secondaryColor: colors.alto,
   imageUrl: null,
+  headerColor: '#D9D9D9',
+  messageButtonColor: '#D9D9D9',
+  buttonSecondaryColor: '#8E8E8E',
+  searchResultsColor: colors.silver,
 
   borderStyle: 'solid',
-  borderWidth: '1px',
+  borderWidth: '0px',
   borderColor: '#ccc',
 
   header: {

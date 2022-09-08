@@ -69,7 +69,8 @@ export const MessageButton = styled.div<IMessageProps>`
   }) => button.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ theme: { message } }) => message.backgroundColor};
+  background: ${({ theme }) => theme.messageButtonColor};
+
   border-radius: 100px;
   margin-bottom: 16px !important;
 `;

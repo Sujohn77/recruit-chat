@@ -9,7 +9,8 @@ export const MessagesArea = styled.div`
   max-height: calc(100% - 120px);
   overflow: hidden;
   font-family: Inter-Medium;
-  border-bottom: ${({ theme: { borderStyle, borderWidth } }) => `${borderWidth} ${borderStyle}  ${colors.alto}`};
+  border: ${({ theme: { borderStyle, borderWidth } }) => `${borderWidth} ${borderStyle}  ${colors.alto}`};
+  border-bottom: 1px solid ${colors.alto};
   position: relative;
 `;
 

@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import styled from 'styled-components';
-import { colors } from 'utils/colors';
 
 export const searchItemheight = 31;
 export const searchHeaderHeight = 40;
@@ -36,7 +35,7 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
 `;
 
 export const SearchHeader = styled.div`
-  background: ${(props) => props.theme.header.color};
+  background: ${(props) => props.theme.headerColor};
   padding: 7px 16px;
   height: ${searchHeaderHeight}px;
   box-sizing: border-box;
@@ -45,8 +44,9 @@ export const SearchHeader = styled.div`
   display: flex;
   align-items: center;
 `;
+
 export const SearchBody = styled.ul`
-  background-color: ${({ theme: { searchResults } }) => searchResults.items.backgroundColor};
+  background-color: ${({ theme }) => theme.searchResultsColor};
   display: flex;
   flex-direction: column;
   margin: 0;

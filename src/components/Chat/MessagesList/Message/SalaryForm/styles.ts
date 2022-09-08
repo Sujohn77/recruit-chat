@@ -31,7 +31,7 @@ export const Title = styled.p`
 `;
 
 export const Option = styled(Button)<{ selected?: boolean }>`
-  background: ${({ selected }) => (selected ? colors.dimgray : colors.gray)}!important;
+  background: ${({ theme, selected }) => (selected ? colors.dimgray : theme.buttonSecondaryColor)}!important;
 
   border-radius: 100px !important;
   width: 100px !important;

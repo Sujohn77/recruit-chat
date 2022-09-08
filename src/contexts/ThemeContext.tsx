@@ -22,6 +22,10 @@ const ThemeContextProvider = ({ children }: PropsType) => {
           borderStyle: res.data.chatbot_border_style,
           borderWidth: res.data.chatbot_border_thickness,
           borderColor: res.data.chatbot_border_color,
+          headerColor: res.data.chatbot_header_color,
+          messageButtonColor: res.data.chatbot_bubble_color,
+          buttonSecondaryColor: res.data.chat_button_secondary_color,
+          searchResultsColor: res.data.chat_search_results_color,
         });
       });
     }

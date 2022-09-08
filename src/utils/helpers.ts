@@ -18,7 +18,7 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext, ITriggerActionProps, IUser } from 'contexts/types';
+import { IChatMessangerContext, IFileUploadContext, IUser } from 'contexts/types';
 import {
   ContactType,
   IApiMessage,

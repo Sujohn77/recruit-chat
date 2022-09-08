@@ -56,14 +56,6 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const MessagesArea = styled.div`
-  height: 400px;
-  padding: 16px;
-  border-bottom: ${({ theme: { borderStyle, borderWidth } }) => `${borderWidth} ${borderStyle} ${colors.alto}`};
-  overflow-y: auto;
-  position: relative;
-`;
-
 export const InputMessage = styled.span`
   color: ${({ theme: { input } }) => input.color};
 `;
