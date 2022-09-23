@@ -1,6 +1,7 @@
 import { DocumentChangeType } from '@firebase/firestore-types';
-import { IUserLoginDataKeys } from 'services';
+import { IApiThemeResponse } from 'utils/api';
 import { IRequisition, MessageType } from 'utils/types';
+import { IUserLoginDataKeys } from './auth';
 
 export interface IUpdateMessagesResponse {
   errorOccurrenceId: null;
@@ -23,6 +24,11 @@ export interface ISendMessageResponse {
   status: null;
   statusCode: null;
   success: boolean;
+}
+
+export interface IVerifyChatBotResponse {
+  isDomainVerified: boolean;
+  chatBotStyle: IApiThemeResponse | null
 }
 
 export interface IUpdateMessagesResponse {

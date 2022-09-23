@@ -1,14 +1,13 @@
 import { colors } from 'utils/colors';
 
 const defaultTheme = {
-  primaryColor: colors.boulder,
-  secondaryColor: colors.alto,
+  primaryColor: "#787878",
+  secondaryColor: '#d9d9d9',
   imageUrl: null,
   headerColor: '#D9D9D9',
   messageButtonColor: '#D9D9D9',
   buttonSecondaryColor: '#8E8E8E',
   searchResultsColor: colors.silver,
-
   borderStyle: 'solid',
   borderWidth: '0px',
   borderColor: '#ccc',

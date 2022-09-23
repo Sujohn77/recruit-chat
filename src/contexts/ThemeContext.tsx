@@ -1,36 +1,32 @@
 import { useEffect, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { api } from 'utils/api';
+import { api, IApiThemeResponse } from 'utils/api';
+import { parseThemeResponse } from 'utils/helpers';
 import { useApiKey } from 'utils/hooks';
 import defaultTheme from 'utils/theme/default';
 
 type PropsType = {
   children: React.ReactNode;
+  value: IApiThemeResponse | null;
 };
 
-const ThemeContextProvider = ({ children }: PropsType) => {
+const ThemeContextProvider = ({ value, children }: PropsType) => {
   const apiKey = useApiKey();
   const [apiTheme, setApiTheme] = useState<any>({});
 
   useEffect(() => {
+    !!value && setApiTheme(parseThemeResponse(value));
+  }, [value])
+
+  useEffect(() => {
     if (apiKey) {
       api.test(apiKey).then((res) => {
-        setApiTheme({
-          primaryColor: res.data.client_primary_colour,
-          secondaryColor: res.data.client_secondary_color,
-          imageUrl: res.data.chatbot_logo_URL,
-          borderStyle: res.data.chatbot_border_style,
-          borderWidth: res.data.chatbot_border_thickness,
-          borderColor: res.data.chatbot_border_color,
-          headerColor: res.data.chatbot_header_color,
-          messageButtonColor: res.data.chatbot_bubble_color,
-          buttonSecondaryColor: res.data.chat_button_secondary_color,
-          searchResultsColor: res.data.chat_search_results_color,
-        });
+        setApiTheme(parseThemeResponse(res.data));
       });
     }
   }, [apiKey]);
   const theme: typeof defaultTheme = { ...defaultTheme, ...apiTheme };
+  // console.log(theme);
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 

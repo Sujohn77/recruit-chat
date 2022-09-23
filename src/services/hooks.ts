@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import Api, { apiInstance, APP_VERSION, loginUser } from 'services';
+import {  useEffect, useState } from 'react';
+import Api, { apiInstance } from 'services';
+import { APP_VERSION } from './auth';
 
 import { IApiMessage, LocationType } from './types';
 import { handleRefreshToken } from './utils';
-import { info } from 'contexts/MessangerContext';
 
 const apiInstanse = new Api();
 

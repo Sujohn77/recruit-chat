@@ -35,6 +35,7 @@ import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
 import { ChannelName, getReplaceMessageType, isPushMessageType, isReversePush, TextFieldTypes } from './constants';
+import { IApiThemeResponse } from './api';
 
 export interface IMessageProps {
   color?: string;
@@ -719,3 +720,18 @@ export const getMatchedItem = ({
 }) => {
   return searchItems.find((l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || ''));
 };
+
+export const parseThemeResponse = (res:IApiThemeResponse) => {
+  return {
+    primaryColor: res.client_primary_colour,
+    secondaryColor: res.client_secondary_color,
+    imageUrl: res.chatbot_logo_URL,
+    borderStyle: res.chatbot_border_style,
+    borderWidth: res.chatbot_border_thickness,
+    borderColor: res.chatbot_border_color,
+    headerColor: res.chatbot_header_color,
+    messageButtonColor: res.chatbot_bubble_color,
+    buttonSecondaryColor: res.chat_button_secondary_color,
+    searchResultsColor: res.chat_search_results_color,
+  }
+}

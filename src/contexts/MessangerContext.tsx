@@ -22,8 +22,9 @@ import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerA
 import { apiPayload, useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
-import { apiInstance, loginUser } from 'services';
+import { apiInstance } from 'services';
 import { chatId } from 'components/Chat';
+import { loginUser } from 'services/auth';
 
 type PropsType = {
   children: React.ReactNode;
