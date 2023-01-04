@@ -39,15 +39,21 @@ class Api {
     });
   }
 
-  setAuthHeader = (token: string) => this.client.setHeader('Authorization', `Bearer ${token}`);
+  setAuthHeader = (token: string) =>
+    this.client.setHeader('Authorization', `Bearer ${token}`);
 
   setAuthHeaderToNull = () => this.client.setHeader('Authorization', '');
-  sendMessage = (payload: IApiMessage) => this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
+  sendMessage = (payload: IApiMessage) =>
+    this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
 
   markChatRead = (chatId?: number) =>
-    this.client.post<IUpdateMessagesResponse>('/api/messenger/chat/acknowledge', { chatId });
+    this.client.post<IUpdateMessagesResponse>(
+      '/api/messenger/chat/acknowledge',
+      { chatId }
+    );
 
-  getUserSelf = (data: AppKeyType) => this.client.get<IUserSelf>('api/user/self', data);
+  getUserSelf = (data: AppKeyType) =>
+    this.client.get<IUserSelf>('api/user/self', data);
   loginUserCodeCheck = (data: { grantType: string }) =>
     this.client.post<any>('api/auth/token', data.grantType, {
       headers: FORM_URLENCODED,
@@ -58,14 +64,21 @@ class Api {
   searchRequisitions = (data: IGetAllRequisitions & IApiSignedRequest) =>
     this.client.post<IRequisitionsResponse>('api/requisition/search', data);
 
-  searchJobs = (data: ISearchJobsPayload) => this.client.post<IRequisitionsResponse>('api/requisition/search', data);
-  uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
+  searchJobs = (data: ISearchJobsPayload) =>
+    this.client.post<IRequisitionsResponse>('api/requisition/search', data);
+  uploadCV = (data: IUploadCVPayload) =>
+    this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
   createCandidate = (data: ICreationCandidatePayload) =>
     this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
   sendTranscript = (data: ISendTranscript & IApiSignedRequest) =>
-    this.client.post<ISendTranscriptResponse>('api/messenger/chat/transcript/send', data);
-  verify = (data: { chatBotId: number }) =>
-    this.client.post<IVerifyChatBotResponse>('api/chatbot/verification?chatbotID=' + data.chatBotId);
+    this.client.post<ISendTranscriptResponse>(
+      'api/messenger/chat/transcript/send',
+      data
+    );
+  verify = (chatBotData: string) =>
+    this.client.get<IVerifyChatBotResponse>(
+      'api/chatbot/verification?chatBotData=' + chatBotData
+    );
 }
 
 export const apiInstance = new Api();

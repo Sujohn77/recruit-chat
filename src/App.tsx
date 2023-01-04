@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import { Buffer } from 'buffer';
 import { Chat } from './components/Chat';
 
 import './App.css';
@@ -12,6 +12,7 @@ import { FileUploadProvider } from 'contexts/FileUploadContext';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
 import { apiInstance } from 'services';
 import { IApiThemeResponse } from 'utils/api';
+import { HOST_GUID } from 'utils/constants';
 
 export const Container = styled.div`
   width: 370px;
@@ -23,19 +24,25 @@ export const Container = styled.div`
 `;
 
 const App = () => {
-  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(null);
+  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
+    null
+  );
   const [isAccess, setIsAccess] = useState(false);
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
 
   useEffect(() => {
+    const parentURL = window.parent.document.URL;
+    const url = new URL(parentURL);
+    const encodedKey = Buffer.from(
+      `${process.env.REACT_APP_GUID}:${url.hostname}`
+    ).toString('base64');
     const vefiryChat = async () => {
-      const response = await apiInstance.verify({ chatBotId: 2 });
+      const response = await apiInstance.verify(encodedKey);
       if (response.data?.isDomainVerified) {
         setIsAccess(true);
         setTheme(response.data.chatBotStyle);
       }
-
-    }
+    };
     vefiryChat();
   }, []);
 
@@ -50,9 +57,15 @@ const App = () => {
           <FileUploadProvider>
             <SocketProvider>
               {isSelectedOption !== null && (
-                <Chat setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
+                <Chat
+                  setIsSelectedOption={setIsSelectedOption}
+                  isSelectedOption={isSelectedOption}
+                />
               )}
-              <Intro setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
+              <Intro
+                setIsSelectedOption={setIsSelectedOption}
+                isSelectedOption={isSelectedOption}
+              />
             </SocketProvider>
           </FileUploadProvider>
         </ThemeContextProvider>

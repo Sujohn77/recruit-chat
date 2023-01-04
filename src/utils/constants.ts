@@ -12,7 +12,13 @@ import FINGER_UP from '../assets/icons/fingerUp.svg';
 import LOGO from '../assets/icons/logo.svg';
 import SEARCH_ICON from '../assets/icons/search.svg';
 import QUESTION from '../assets/icons/question.svg';
-import { CHAT_ACTIONS, HTTPStatusCodes, IGetChatResponseProps, ILocalMessage, MessageType } from './types';
+import {
+  CHAT_ACTIONS,
+  HTTPStatusCodes,
+  IGetChatResponseProps,
+  ILocalMessage,
+  MessageType,
+} from './types';
 import { generateLocalId, getParsedMessages } from './helpers';
 import moment from 'moment';
 import i18n from 'services/localization';
@@ -243,10 +249,16 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         },
       ];
     case CHAT_ACTIONS.SET_WORK_PERMIT: {
-      return [{ subType: MessageType.SALARY_FORM }, { text: i18n.t('messages:desireSalary') }];
+      return [
+        { subType: MessageType.SALARY_FORM },
+        { text: i18n.t('messages:desireSalary') },
+      ];
     }
     case CHAT_ACTIONS.NO_PERMIT_WORK: {
-      return [{ subType: MessageType.REFINE_SERCH }, { text: i18n.t('messages:noPermitWork') }];
+      return [
+        { subType: MessageType.REFINE_SERCH },
+        { text: i18n.t('messages:noPermitWork') },
+      ];
     }
     case CHAT_ACTIONS.SET_SALARY: {
       return [
@@ -336,8 +348,15 @@ export const getChatActionResponse = ({
 }: IGetChatResponseProps): { newMessages: ILocalMessage[] } => {
   const messages = getChatActionMessages(type, param);
 
-  if (additionalCondition !== null && additionalCondition !== undefined && !additionalCondition) {
-    const newType = type === CHAT_ACTIONS.SET_WORK_PERMIT ? CHAT_ACTIONS.NO_PERMIT_WORK : CHAT_ACTIONS.NO_MATCH;
+  if (
+    additionalCondition !== null &&
+    additionalCondition !== undefined &&
+    !additionalCondition
+  ) {
+    const newType =
+      type === CHAT_ACTIONS.SET_WORK_PERMIT
+        ? CHAT_ACTIONS.NO_PERMIT_WORK
+        : CHAT_ACTIONS.NO_MATCH;
     return getChatActionResponse({ type: newType });
   }
 
@@ -367,3 +386,5 @@ export enum TextFieldTypes {
   MultiSelect = 'MultiSelect',
   Select = 'Select',
 }
+
+export const HOST_GUID = process.env.REACT_APP_GUID;
