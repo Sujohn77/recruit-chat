@@ -12,7 +12,6 @@ import { FileUploadProvider } from 'contexts/FileUploadContext';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
 import { apiInstance } from 'services';
 import { IApiThemeResponse } from 'utils/api';
-import { HOST_GUID } from 'utils/constants';
 
 export const Container = styled.div`
   width: 370px;
@@ -22,7 +21,7 @@ export const Container = styled.div`
 
   max-width: 100%;
 `;
-
+const parentChatBotKey = 'chatBotId';
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null
@@ -32,10 +31,13 @@ const App = () => {
 
   useEffect(() => {
     const parentURL = window.parent.document.URL;
-    const url = new URL(parentURL);
-    const encodedKey = Buffer.from(
-      `${process.env.REACT_APP_GUID}:${url.hostname}`
-    ).toString('base64');
+    const url = new window.URL(parentURL);
+    const guid = (window.parent as any).ifrm.attributes[parentChatBotKey]
+      .nodeValue;
+    const encodedKey = Buffer.from(`${guid}:${url.hostname}`).toString(
+      'base64'
+    );
+
     const vefiryChat = async () => {
       const response = await apiInstance.verify(encodedKey);
       if (response.data?.isDomainVerified) {

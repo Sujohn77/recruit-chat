@@ -386,5 +386,3 @@ export enum TextFieldTypes {
   MultiSelect = 'MultiSelect',
   Select = 'Select',
 }
-
-export const HOST_GUID = process.env.REACT_APP_GUID;
