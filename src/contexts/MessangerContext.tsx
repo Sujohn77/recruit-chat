@@ -1,9 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 
-import { MessageType, ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IRequisition } from 'utils/types';
+import {
+  MessageType,
+  ILocalMessage,
+  CHAT_ACTIONS,
+  USER_INPUTS,
+  IRequisition,
+} from 'utils/types';
 import { IMessage, ISnapshot } from 'services/types';
-import { getChatActionResponse, isPushMessageType, Status } from 'utils/constants';
+import {
+  getChatActionResponse,
+  isPushMessageType,
+  Status,
+} from 'utils/constants';
 import {
   chatMessangerDefaultState,
   replaceItemsWithType,
@@ -18,7 +34,13 @@ import {
   getCreateCandidateData,
   pushMessage,
 } from 'utils/helpers';
-import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
+import {
+  IChatMessangerContext,
+  IPortionMessages,
+  ISubmitMessageProps,
+  ITriggerActionProps,
+  IUser,
+} from './types';
 import { apiPayload, useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
@@ -30,7 +52,9 @@ type PropsType = {
   children: React.ReactNode;
 };
 
-const ChatContext = createContext<IChatMessangerContext>(chatMessangerDefaultState);
+const ChatContext = createContext<IChatMessangerContext>(
+  chatMessangerDefaultState
+);
 
 export const info = {
   username: 'RomanAndreevUpworkPlaypen',
@@ -43,7 +67,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
-  const [alertCategory, setAlertCategory] = useState<string | null>(null);
+  const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
   const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
 
@@ -51,12 +75,18 @@ const ChatProvider = ({ children }: PropsType) => {
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
-  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(null);
-  const [chatAction, setChatAction] = useState<ITriggerActionProps | null>(null);
-  const [initialAction, setInitialAction] = useState<ITriggerActionProps | null>(null);
+  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(
+    null
+  );
+  const [chatAction, setChatAction] = useState<ITriggerActionProps | null>(
+    null
+  );
+  const [initialAction, setInitialAction] =
+    useState<ITriggerActionProps | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoadedMessages, setIsLoadedMessages] = useState(false);
 
   const { requisitions, locations } = useRequisitions(accessToken);
 
@@ -74,7 +104,7 @@ const ChatProvider = ({ children }: PropsType) => {
   }, []);
 
   useEffect(() => {
-    if (nextMessages.length) {
+    if (isInitialized) {
       const processedSnapshots: IMessage[] = getParsedSnapshots({
         serverMessages,
         nextMessages,
@@ -82,16 +112,20 @@ const ChatProvider = ({ children }: PropsType) => {
 
       updateMessages(processedSnapshots);
       setServerMessages(processedSnapshots);
-      !isInitialized && setIsInitialized(true);
+      setIsLoadedMessages(true);
     }
   }, [nextMessages.length && nextMessages[0].data.localId]);
 
   useEffect(() => {
-    isInitialized && initialAction && triggerAction(initialAction);
-  }, [isInitialized]);
+    if (isLoadedMessages && initialAction) {
+      triggerAction(initialAction);
+      setInitialAction(null);
+    }
+  }, [serverMessages.length, isInitialized]);
 
   const getMessageParam = (action: ITriggerActionProps) => {
-    const isAlertLastType = action.type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
+    const isAlertLastType =
+      action.type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
     const param = isAlertLastType ? alertPeriod : action.payload?.item;
     return param || undefined;
   };
@@ -110,7 +144,9 @@ const ChatProvider = ({ children }: PropsType) => {
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           const searchCategory = payload?.item!.toLowerCase();
-          const requisition = requisitions.find((r) => r.title.toLowerCase() === searchCategory);
+          const requisition = requisitions.find(
+            (r) => r.title.toLowerCase() === searchCategory
+          );
           requisition && setCategory(requisition.category);
 
           payload!.item = requisition?.title;
@@ -118,11 +154,11 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
           setSearchLocations(payload?.items!);
-          break;
+          return;
         }
-        case CHAT_ACTIONS.SET_ALERT_CATEGORY: {
-          setAlertCategory(payload?.item!);
-          break;
+        case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
+          setAlertCategories(payload?.items!);
+          return;
         }
         case CHAT_ACTIONS.SET_ALERT_PERIOD: {
           setAlertPeriod(payload?.item!);
@@ -177,7 +213,9 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.GET_USER_EMAIL:
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
           const isPhoneType = type === CHAT_ACTIONS.GET_USER_EMAIL;
-          const error = isPhoneType ? validateEmailOrPhone(payload?.item!) : validateEmail(payload?.item!);
+          const error = isPhoneType
+            ? validateEmailOrPhone(payload?.item!)
+            : validateEmail(payload?.item!);
 
           if (payload?.item && !error?.length) {
             if (isPhoneType) {
@@ -228,7 +266,10 @@ const ChatProvider = ({ children }: PropsType) => {
       switch (type) {
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
-            const data = getSearchJobsData(category, searchLocations[0]?.split(',')[0]);
+            const data = getSearchJobsData(
+              category,
+              searchLocations[0]?.split(',')[0]
+            );
             const apiResponse = await apiInstance.searchJobs(data);
             additionalCondition = !!apiResponse.data?.requisitions.length;
 
@@ -252,7 +293,10 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.APPLY_ETHNIC: {
           if (user?.name) {
-            const createCandidateData = getCreateCandidateData({ user, prefferedJob });
+            const createCandidateData = getCreateCandidateData({
+              user,
+              prefferedJob,
+            });
             apiInstance.createCandidate(createCandidateData);
           }
           break;
@@ -261,7 +305,11 @@ const ChatProvider = ({ children }: PropsType) => {
 
       //  Update state with response
       const param = getMessageParam(action);
-      const response = getChatActionResponse({ type, additionalCondition, param });
+      const response = getChatActionResponse({
+        type,
+        additionalCondition,
+        param,
+      });
       if (response.newMessages.length) {
         setStatus(Status.DONE);
         updatedMessages = getMessagesOnAction({
@@ -280,19 +328,28 @@ const ChatProvider = ({ children }: PropsType) => {
         setStatus(Status.ERROR);
       }
     },
-    [messages, searchLocations.length, lastActionType, user, isInitialized, requisitions.length]
+    [
+      messages,
+      searchLocations.length,
+      lastActionType,
+      user,
+      isInitialized,
+      requisitions.length,
+    ]
   );
 
   const clearFilters = () => {
     setCategory(null);
     setLastActionType(null);
-    setAlertCategory(null);
+    setAlertCategories(null);
     setSearchLocations([]);
   };
 
   const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
     const updatedMessages = messages.map((msg, index) =>
-      msg.content.subType === type && !msg._id ? { ...msg, _id: messageId } : msg
+      msg.content.subType === type && !msg._id
+        ? { ...msg, _id: messageId }
+        : msg
     );
 
     setMessages(updatedMessages);
@@ -329,16 +386,21 @@ const ChatProvider = ({ children }: PropsType) => {
     const parsedMessages = getServerParsedMessages(serverMessages);
 
     if (!messages.length) {
-      setMessages(parsedMessages);
+      setMessages(parsedMessages.reverse());
     } else {
       const newMessages = parsedMessages.filter((msg) => {
-        return messages.findIndex((localmsg) => msg.localId === localmsg.localId) === -1;
+        return (
+          messages.findIndex((localmsg) => msg.localId === localmsg.localId) ===
+          -1
+        );
       });
       if (newMessages.length) {
         setMessages([...messages, ...parsedMessages]);
       } else {
         const updatedMessages = messages.map((localmsg) => {
-          const updatedIndex = parsedMessages.findIndex((msg) => msg.localId === localmsg.localId);
+          const updatedIndex = parsedMessages.findIndex(
+            (msg) => msg.localId === localmsg.localId
+          );
           return updatedIndex !== -1 ? parsedMessages[updatedIndex] : localmsg;
         });
 
@@ -359,7 +421,7 @@ const ChatProvider = ({ children }: PropsType) => {
         error,
         lastActionType,
         offerJobs,
-        alertCategory,
+        alertCategories,
         viewJob,
         prefferedJob,
         user,
@@ -372,6 +434,7 @@ const ChatProvider = ({ children }: PropsType) => {
         setViewJob,
         nextMessages,
         accessToken,
+        setIsInitialized,
       }}
     >
       {children}

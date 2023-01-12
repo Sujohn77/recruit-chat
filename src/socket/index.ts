@@ -43,14 +43,21 @@ export class FirebaseSocketReactivePagination<TData> {
 
     // Single query to get startAt snapshot
 
-    const q = query(this.collectionRef as any, orderBy(sortField, SORT_ORDERS[0]), limit(pageSize));
+    const q = query(
+      this.collectionRef as any,
+      orderBy(sortField, SORT_ORDERS[0]),
+      limit(pageSize)
+    );
 
     try {
       const snapshots: any = await getDocs(q);
 
       // Save startAt snapshot
       this.listenerStartPos = snapshots.docs[snapshots.docs.length - 1] as any;
-      let fbQuery = query(this.collectionRef as any, orderBy(sortField, SORT_ORDERS[1]));
+      let fbQuery = query(
+        this.collectionRef as any,
+        orderBy(sortField, SORT_ORDERS[1])
+      );
       if (this.listenerStartPos) {
         fbQuery = query(
           this.collectionRef as any,
@@ -72,7 +79,7 @@ export class FirebaseSocketReactivePagination<TData> {
 
         this.isPaginationEnded = !result.length;
 
-        if (!this.isPaginationEnded) {
+        if (!this.isPaginationEnded || !result.length) {
           callback(result);
         }
       });

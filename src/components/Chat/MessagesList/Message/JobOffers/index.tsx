@@ -48,8 +48,8 @@ export const PrevSlide = styled.div`
 `;
 export const Switchers = styled.div``;
 export const Slide = styled.div`
-  width: 1.75vmin;
-  height: 1.75vmin;
+  width: 9px;
+  height: 9px;
   margin-right: 0.2em;
 
   box-sizing: border-box;
@@ -58,7 +58,7 @@ export const Slide = styled.div`
     content: '';
     width: 100%;
     height: 100%;
-    border-width: 0.25vmin 0.25vmin 0 0;
+    border-width: 1.5px 1.5px 0 0;
     border-style: solid;
     border-color: ${colors.alabaster};
     display: block;
@@ -71,7 +71,7 @@ export const Slide = styled.div`
     top: -100%;
     width: 100%;
     height: 100%;
-    border-width: 0 0.25vmin 0 0;
+    border-width: 0 1.5px 0 0;
     border-style: solid;
     border-color: ${colors.alabaster};
   }
@@ -82,7 +82,12 @@ export const NextSide = styled(PrevSlide)`
   left: initial;
 `;
 
-export const JobOffer = ({ category = 'Engineering', title, handleReadMore, handleButtonClick }: any) => {
+export const JobOffer = ({
+  category = 'Engineering',
+  title,
+  handleReadMore,
+  handleButtonClick,
+}: any) => {
   const readMoreTxt = i18n.t('chat_item_description:read_more');
   const interestedTxt = i18n.t('chat_item_description:interested_in');
   return (

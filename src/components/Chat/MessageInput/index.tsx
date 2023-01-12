@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useEffect, ChangeEvent, useCallback, useMemo } from 'react';
+import React, {
+  FC,
+  useState,
+  useEffect,
+  ChangeEvent,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { ICONS, Status, TextFieldTypes } from 'utils/constants';
 import * as S from './styles';
@@ -29,11 +36,21 @@ type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
   const { file, sendFile, setNotification } = useFileUploadContext();
-  const { category, triggerAction, searchLocations, status, locations, requisitions, lastActionType, setError, error } =
-    useChatMessanger();
+  const {
+    category,
+    triggerAction,
+    searchLocations,
+    status,
+    locations,
+    requisitions,
+    lastActionType,
+    setError,
+    error,
+  } = useChatMessanger();
 
   // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
+  const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
   const formattedLocations = getFormattedLocations(locations);
   const { searchItems, placeHolder, headerName } = useTextField({
@@ -64,14 +81,24 @@ export const MessageInput: FC<PropsType> = () => {
     (draftMessage: string | null) => {
       const type = getNextActionType(lastActionType);
       const isCategoryOrLocation = isResultsType(lastActionType);
-      const isNoMatches = isCategoryOrLocation && !isResults({ draftMessage, searchItems });
+      const isNoMatches =
+        isCategoryOrLocation && !isResults({ draftMessage, searchItems });
 
-      if (type === CHAT_ACTIONS.SEND_LOCATIONS || type === CHAT_ACTIONS.SET_LOCATIONS) {
+      if (
+        type === CHAT_ACTIONS.SEND_LOCATIONS ||
+        type === CHAT_ACTIONS.SET_LOCATIONS
+      ) {
         const draftLocation = getMatchedItem({ searchItems, draftMessage });
         const isSelectedLocations = draftLocation || searchLocations.length;
         triggerAction({
-          type: isSelectedLocations ? CHAT_ACTIONS.SEND_LOCATIONS : CHAT_ACTIONS.NO_MATCH,
-          payload: { items: !!draftLocation ? [...searchLocations, draftLocation] : searchLocations },
+          type: isSelectedLocations
+            ? CHAT_ACTIONS.SEND_LOCATIONS
+            : CHAT_ACTIONS.NO_MATCH,
+          payload: {
+            items: !!draftLocation
+              ? [...searchLocations, draftLocation]
+              : searchLocations,
+          },
         });
       } else {
         triggerAction({
@@ -102,6 +129,12 @@ export const MessageInput: FC<PropsType> = () => {
     };
   }, [draftMessage, sendMessage]);
 
+  useEffect(() => {
+    if (lastActionType === CHAT_ACTIONS.SEND_LOCATIONS) {
+      setInputValues([]);
+    }
+  }, [lastActionType]);
+
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
@@ -114,7 +147,9 @@ export const MessageInput: FC<PropsType> = () => {
         }
       } else if (lastActionType === CHAT_ACTIONS.GET_USER_NAME) {
         const isPhone = lastActionType === CHAT_ACTIONS.GET_USER_NAME;
-        const isError = isPhone ? validateEmailOrPhone(value) : validateEmail(value);
+        const isError = isPhone
+          ? validateEmailOrPhone(value)
+          : validateEmail(value);
         !isError && setError(null);
       }
     }
@@ -123,11 +158,16 @@ export const MessageInput: FC<PropsType> = () => {
     setNotification(null);
   };
 
-  const onChangeLocations = (event: any, locations: string[]) => {
-    triggerAction({
-      type: CHAT_ACTIONS.SET_LOCATIONS,
-      payload: { items: locations },
-    });
+  const onChangeAutocomplete = (event: any, values: string[]) => {
+    const type = getNextActionType(lastActionType);
+    if (type) {
+      setInputValues(values);
+      triggerAction({
+        type,
+        payload: { items: values },
+      });
+    }
+
     setIsShowResults(false);
   };
 
@@ -144,7 +184,13 @@ export const MessageInput: FC<PropsType> = () => {
       setInputValue: (value: string) => setDraftMessage(value),
     };
     if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
-      return <MultiSelectInput {...inputProps} onChange={onChangeLocations} values={searchLocations} />;
+      return (
+        <MultiSelectInput
+          {...inputProps}
+          onChange={onChangeAutocomplete}
+          values={inputValues}
+        />
+      );
     }
     return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
   };
@@ -159,8 +205,11 @@ export const MessageInput: FC<PropsType> = () => {
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
   const inputType = getInputType({ lastActionType, category });
-  const isWriteAccess = getAccessWriteType(lastActionType) && (file || draftMessage || !!searchLocations.length);
-  const offset = status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';
+  const isWriteAccess =
+    getAccessWriteType(lastActionType) &&
+    (file || draftMessage || !!inputValues.length);
+  const offset =
+    status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';
 
   return (
     <S.MessagesInput offset={offset}>
@@ -168,7 +217,9 @@ export const MessageInput: FC<PropsType> = () => {
 
       {renderInput(inputType)}
 
-      {isWriteAccess && <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />}
+      {isWriteAccess && (
+        <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
+      )}
     </S.MessagesInput>
   );
 };

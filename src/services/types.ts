@@ -28,7 +28,7 @@ export interface ISendMessageResponse {
 
 export interface IVerifyChatBotResponse {
   isDomainVerified: boolean;
-  chatBotStyle: IApiThemeResponse | null
+  chatBotStyle: string | null;
 }
 
 export interface IUpdateMessagesResponse {
@@ -402,10 +402,13 @@ export enum IUserDataTokenKeys {
   Errors = 'errors',
 }
 
-export interface IUserLoginRequestData extends Record<IUserLoginDataKeys, string> {}
+export interface IUserLoginRequestData
+  extends Record<IUserLoginDataKeys, string> {}
 export interface GenerateGrantTypeData {
   [IUserDataKeys.GrantType]: string;
   [IUserDataTokenKeys.RefreshToken]: string;
 }
 
-export type GenerateGrantType = (userData: IUserLoginRequestData | GenerateGrantTypeData) => string;
+export type GenerateGrantType = (
+  userData: IUserLoginRequestData | GenerateGrantTypeData
+) => string;

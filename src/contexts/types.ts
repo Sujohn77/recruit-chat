@@ -1,7 +1,13 @@
 import { Dispatch, SetStateAction } from 'react';
 import { IMessage, ISnapshot, LocationType } from 'services/types';
 import { Status } from 'utils/constants';
-import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
+import {
+  CHAT_ACTIONS,
+  MessageType,
+  ILocalMessage,
+  USER_INPUTS,
+  IRequisition,
+} from 'utils/types';
 
 export interface ISearchRequisition {
   title: string;
@@ -22,15 +28,22 @@ export interface IChatMessangerContext {
   setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
   lastActionType: CHAT_ACTIONS | null;
   offerJobs: IRequisition[];
-  alertCategory: string | null;
+  alertCategories: string[] | null;
   error: string | null;
   setError: Dispatch<React.SetStateAction<string | null>>;
   viewJob: IRequisition | null;
   setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
   prefferedJob: IRequisition | null;
-  submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
+  submitMessage: ({
+    type,
+    messageId,
+  }: {
+    type: MessageType;
+    messageId: number;
+  }) => void;
   nextMessages: IPortionMessages[];
   accessToken: string | null;
+  setIsInitialized: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface IFileUploadContext {

@@ -40,10 +40,10 @@ interface IMenuItem {
 const BurgerMenu = () => {
   const { triggerAction } = useChatMessanger();
   const [isOpen, setIsOpen] = useState(false);
-
+  const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const closeMenu = (e: any) => {
-      if (isOpen) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
@@ -80,7 +80,7 @@ const BurgerMenu = () => {
       type: item.type,
       payload: { item: item.text, isChatMessage: true },
     });
-    setIsOpen(false);
+    setIsOpen(true);
   };
 
   const handleBurgerClick = useCallback(() => {
@@ -88,19 +88,29 @@ const BurgerMenu = () => {
   }, [isOpen]);
 
   const items = map(menuItems, (item, index) => (
-    <MenuItem key={`menu-item-${index}`} item={item} onClick={handleItemClick} />
+    <MenuItem
+      key={`menu-item-${index}`}
+      item={item}
+      onClick={handleItemClick}
+    />
   ));
 
   return (
     <div onClick={handleBurgerClick}>
-      <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 1 }}>
+      <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 1 }}
+      >
         <svg viewBox="0 0 100 80" width="16" height="16">
           <rect y="0" width="100" height="14" rx="10"></rect>
           <rect y="35" width="100" height="14" rx="10"></rect>
           <rect y="70" width="100" height="14" rx="10"></rect>
         </svg>
       </IconButton>
-      {isOpen && <MenuItems>{items}</MenuItems>}
+      {isOpen && <MenuItems ref={menuRef}>{items}</MenuItems>}
     </div>
   );
 };

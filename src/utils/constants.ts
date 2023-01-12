@@ -56,6 +56,13 @@ export enum ChannelName {
   SMS = 'SMS',
 }
 
+export const defaultServerMessage = {
+  channelName: ChannelName.SMS,
+  candidateId: 49530690,
+  contextId: null,
+  images: [],
+};
+
 export const initialChatMessage = {
   _id: null,
   localId: generateLocalId(),
@@ -108,7 +115,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return [
         {
-          text: i18n.t('messages:interstedCategories'),
+          text: i18n.t('messages:interestedCategories'),
           subType: MessageType.TEXT,
         },
         {
@@ -118,7 +125,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
           isChatMessage: true,
         },
       ];
-    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
+    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
       return [
         {
           subType: MessageType.TEXT_WITH_CHOICE,

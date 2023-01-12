@@ -37,7 +37,7 @@ export const en = {
     botMessageYou: 'Where do you want to work? This can be your current location or a list of preferred locations.',
     whatCategoryJob: "What's your preferred job category title?",
     setJobAlert: 'Set Job Alert',
-    interstedCategories:
+    interestedCategories:
       'Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.',
     alertPeriod: 'How often would you like to receive your job alerts?',
     monthy: 'Monthly',

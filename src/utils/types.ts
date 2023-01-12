@@ -2,7 +2,13 @@ import { DocumentChangeType } from '@firebase/firestore-types';
 import { ITriggerActionProps } from 'contexts/types';
 import { Dispatch, SetStateAction } from 'react';
 import { CHAT_OPTIONS } from 'screens/intro';
-import { IChatRoomID, IMessage, IMuteStatus, IUserSelf, LocationType } from 'services/types';
+import {
+  IChatRoomID,
+  IMessage,
+  IMuteStatus,
+  IUserSelf,
+  LocationType,
+} from 'services/types';
 
 export interface IWithID {
   id: string | number;
@@ -39,7 +45,8 @@ export enum MessageType {
   HIRING_PROCESS = 'hiring_process',
   SALARY_FORM = 'salary_form',
   QUESTION_FORM = 'question_form',
-  THANKS = 'thankss',
+  MULTIPLE_OPTIONS = 'MULTIPLE_OPTIONS',
+  THANKS = 'thanks',
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -91,7 +98,7 @@ export enum CHAT_ACTIONS {
   SEND_EMAIL = 'send_email',
   FETCH_JOBS = 'fetch_jobs',
   SET_JOB_ALERT = 'set_job_alert',
-  SET_ALERT_CATEGORY = 'set_alert_category',
+  SET_ALERT_CATEGORIES = 'set_alert_category',
   SET_ALERT_PERIOD = 'set_alert_period',
   SET_ALERT_EMAIL = 'set_alert_email',
   INTERESTED_IN = 'insterested_in',
@@ -113,6 +120,7 @@ export enum CHAT_ACTIONS {
   ANSWER_QUESTIONS = 'answer_questions',
   HIRING_PROCESS = 'hiring_process',
   UPLOAD_CV = 'upload_cv',
+  SEND_ALERT_CATEGORIES = 'send_alert_categories',
 }
 
 export enum Status {

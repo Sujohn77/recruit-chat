@@ -22,6 +22,7 @@ export const Container = styled.div`
   max-width: 100%;
 `;
 const parentChatBotKey = 'chatBotId';
+const parentDomainName = 'domainName';
 const App = () => {
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null
@@ -32,17 +33,20 @@ const App = () => {
   useEffect(() => {
     const parentURL = window.parent.document.URL;
     const url = new window.URL(parentURL);
-    const guid = (window.parent as any).ifrm.attributes[parentChatBotKey]
-      .nodeValue;
+    const parent = window.parent as any;
+    const guid = parent.ifrm?.attributes[parentChatBotKey]?.nodeValue;
+    // const domainName = parent.ifrm?.attributes[parentDomainName]?.nodeValue;
+    // console.log(url.hostname);
     const encodedKey = Buffer.from(`${guid}:${url.hostname}`).toString(
       'base64'
     );
 
     const vefiryChat = async () => {
       const response = await apiInstance.verify(encodedKey);
-      if (response.data?.isDomainVerified) {
+      if (!response.data?.isDomainVerified) {
         setIsAccess(true);
-        setTheme(response.data.chatBotStyle);
+        // response.data.chatBotStyle &&
+        //   setTheme(JSON.parse(response.data.chatBotStyle));
       }
     };
     vefiryChat();

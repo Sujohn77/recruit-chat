@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { chatId } from 'components/Chat';
 
-import React, { createContext, useCallback, useContext, useEffect } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+} from 'react';
 
 import { FirebaseSocketReactivePagination } from 'socket';
 import { SocketCollectionPreset } from 'socket/socket.options';
@@ -16,18 +21,23 @@ const socketDefaultState = {};
 const SocketContext = createContext<any>({ socketDefaultState });
 
 const SocketProvider = ({ children }: PropsType) => {
-  const { setSnapshotMessages, accessToken } = useChatMessanger();
+  const { setSnapshotMessages, accessToken, setIsInitialized } =
+    useChatMessanger();
 
   const onUpdateMessages = useCallback(
     (messagesSnapshots: ISnapshot<IMessage>[]) => {
       setSnapshotMessages(messagesSnapshots);
+      setIsInitialized(true);
     },
     [chatId]
   );
 
   /* ------ Socket Connection ------ */
   const messagesSocketConnection = React.useRef(
-    new FirebaseSocketReactivePagination<IMessage>(SocketCollectionPreset.Messages, chatId)
+    new FirebaseSocketReactivePagination<IMessage>(
+      SocketCollectionPreset.Messages,
+      chatId
+    )
   );
 
   useEffect(() => {
@@ -42,7 +52,11 @@ const SocketProvider = ({ children }: PropsType) => {
     messagesSocketConnection.current?.loadNextPage(onUpdateMessages);
   }, []);
 
-  return <SocketContext.Provider value={{ onLoadNextMessagesPage }}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={{ onLoadNextMessagesPage }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 const useSocketContext = () => useContext(SocketContext);

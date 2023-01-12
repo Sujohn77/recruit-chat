@@ -61,14 +61,17 @@ type PropsType = {
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
-export const ChatHeader: FC<PropsType> = ({ title = defaultTitle, setIsSelectedOption }) => {
+export const ChatHeader: FC<PropsType> = ({
+  title = defaultTitle,
+  setIsSelectedOption,
+}) => {
   const { viewJob, setViewJob } = useChatMessanger();
 
   const handleBackButton = () => {
     setViewJob(null);
-    if (window.parent) {
-      window.parent.postMessage({ height: '110px' }, '*');
-    }
+    // if (window.parent) {
+    //   window.parent.postMessage({ height: '110px' }, '*');
+    // }
   };
 
   return (

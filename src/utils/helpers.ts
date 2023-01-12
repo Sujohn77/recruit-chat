@@ -39,7 +39,7 @@ import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
 import {
-  ChannelName,
+  defaultServerMessage,
   getReplaceMessageType,
   isPushMessageType,
   isReversePush,
@@ -283,7 +283,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   locations: [],
   offerJobs: [],
   lastActionType: null,
-  alertCategory: null,
+  alertCategories: null,
   error: null,
   viewJob: null,
   prefferedJob: null,
@@ -296,6 +296,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   setError: emptyFunc,
   setViewJob: emptyFunc,
   submitMessage: emptyFunc,
+  setIsInitialized: emptyFunc,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -553,37 +554,34 @@ export const pushMessage = ({
     isChatMessage: !!action.payload?.isChatMessage,
   });
 
-  let updatedMessages;
-  if (!messages.length) {
-    updatedMessages = [
-      ...messages,
-      ...getParsedMessages([
-        {
-          text: i18n.t('messages:initialMessage'),
-          isChatMessage: true,
-        },
-      ]),
-    ];
-  }
-
-  updatedMessages = popMessage({
+  const updatedMessages = popMessage({
     type: getReplaceMessageType(type),
     messages: !messages.length ? [...messages, ...initialMessages] : messages,
   });
 
-  setMessages([message, ...messages]);
+  if (message.content.subType !== MessageType.TEXT || !!text)
+    setMessages([message, ...updatedMessages]);
 
   if (message.content.text) {
-    const serverMessage = {
-      channelName: ChannelName.SMS,
-      candidateId: 49530690,
-      contextId: null,
-      msg: message.content.text,
-      images: [],
-      localId: `${message.localId}`,
-    };
+    if (accessToken) {
+      // Push initial message
+      const initialMessage = {
+        ...defaultServerMessage,
+        msg: initialMessages[0].content.text || '',
+        localId: `${initialMessages[0].localId}`,
+      };
 
-    accessToken && sendMessage(serverMessage, accessToken);
+      // !messages.length && sendMessage(initialMessage, accessToken);
+
+      // // Send chat message
+      // const msg = {
+      //   ...defaultServerMessage,
+      //   msg: message.content.text,
+      //   localId: `${message.localId}`,
+      // };
+
+      // sendMessage(msg, accessToken);
+    }
   }
 
   return updatedMessages;
@@ -645,7 +643,7 @@ export const replaceLocalMessages = ({
 
 export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
   switch (lastActionType) {
-    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
+    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
       return CHAT_ACTIONS.SET_ALERT_PERIOD;
     case CHAT_ACTIONS.SET_ALERT_PERIOD:
       return CHAT_ACTIONS.SET_ALERT_EMAIL;
@@ -666,7 +664,11 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
     case CHAT_ACTIONS.SET_SALARY:
       return CHAT_ACTIONS.APPLY_ETHNIC;
     case CHAT_ACTIONS.SET_JOB_ALERT:
-      return CHAT_ACTIONS.SET_ALERT_CATEGORY;
+      return CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
+      return CHAT_ACTIONS.SEND_ALERT_CATEGORIES;
+    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
+      return CHAT_ACTIONS.SET_ALERT_PERIOD;
     case CHAT_ACTIONS.SET_CATEGORY:
       return CHAT_ACTIONS.SET_LOCATIONS;
     case CHAT_ACTIONS.SET_LOCATIONS:
@@ -732,7 +734,6 @@ export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
     case CHAT_ACTIONS.APPLY_AGE:
     case CHAT_ACTIONS.SET_WORK_PERMIT:
     case CHAT_ACTIONS.SET_SALARY:
-    case CHAT_ACTIONS.SET_ALERT_CATEGORY:
       return false;
     default:
       return true;
@@ -789,10 +790,11 @@ export const getInputType = ({
   category: string | null;
 }) => {
   const isMultiSelect =
-    category &&
-    (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
-      lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
-      lastActionType === null);
+    (category &&
+      (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
+        lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
+        lastActionType === null)) ||
+    lastActionType === CHAT_ACTIONS.SET_JOB_ALERT;
   return isMultiSelect ? TextFieldTypes.MultiSelect : TextFieldTypes.Select;
 };
 
