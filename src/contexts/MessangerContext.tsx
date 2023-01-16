@@ -75,7 +75,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
-  const [lastActionType, setLastActionType] = useState<CHAT_ACTIONS | null>(
+  const [currentMsgType, setCurrentMsgType] = useState<CHAT_ACTIONS | null>(
     null
   );
   const [chatAction, setChatAction] = useState<ITriggerActionProps | null>(
@@ -154,11 +154,11 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
           setSearchLocations(payload?.items!);
-          break;
+          return;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
           setAlertCategories(payload?.items!);
-          break;
+          return;
         }
         case CHAT_ACTIONS.SET_ALERT_PERIOD: {
           setAlertPeriod(payload?.item!);
@@ -179,14 +179,12 @@ const ChatProvider = ({ children }: PropsType) => {
           break;
         }
         case CHAT_ACTIONS.APPLY_AGE: {
-          if (lastActionType === CHAT_ACTIONS.APPLY_EMAIL) {
-            const age = Number(payload?.item);
-            if (age < 15 || age > 80) {
-              setError('Incorrect age');
-              isErrors = true;
-            } else {
-              setError('');
-            }
+          const age = Number(payload?.item);
+          if (age < 15 || age > 80) {
+            setError('Incorrect age');
+            isErrors = true;
+          } else {
+            setError('');
           }
           setUser({ ...user, age: payload?.item! });
           break;
@@ -241,7 +239,7 @@ const ChatProvider = ({ children }: PropsType) => {
           pushMessage({ action, messages, setMessages, accessToken });
         }
 
-        setLastActionType(type);
+        setCurrentMsgType(getNextActionType(type));
         setChatAction(action);
       }
     },
@@ -333,7 +331,7 @@ const ChatProvider = ({ children }: PropsType) => {
     [
       messages,
       searchLocations.length,
-      lastActionType,
+      currentMsgType,
       user,
       isInitialized,
       requisitions.length,
@@ -342,7 +340,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
   const clearFilters = () => {
     setCategory(null);
-    setLastActionType(null);
+    setCurrentMsgType(null);
     setAlertCategories(null);
     setSearchLocations([]);
   };
@@ -359,7 +357,7 @@ const ChatProvider = ({ children }: PropsType) => {
 
   const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
     if (!nextMessages.length) {
-      setLastActionType(null);
+      setCurrentMsgType(null);
       setNextMessages(messagesSnapshots);
     }
   };
@@ -376,12 +374,12 @@ const ChatProvider = ({ children }: PropsType) => {
       const response = getChatActionResponse({ type });
       setMessages([...response.newMessages, ...updatedMessages]);
     } else {
-      const chatType = getNextActionType(lastActionType);
+      const chatType = getNextActionType(currentMsgType);
       chatType && updateStateOnRequest({ type: chatType });
       setMessages(updatedMessages);
     }
 
-    setLastActionType(type);
+    // setCurrentMsgType(type);
   };
 
   const updateMessages = async (serverMessages: IMessage[]) => {
@@ -421,7 +419,7 @@ const ChatProvider = ({ children }: PropsType) => {
         locations,
         requisitions,
         error,
-        lastActionType,
+        currentMsgType,
         offerJobs,
         alertCategories,
         viewJob,
@@ -431,7 +429,7 @@ const ChatProvider = ({ children }: PropsType) => {
         triggerAction,
         submitMessage,
         setSnapshotMessages,
-        setLastActionType,
+        setCurrentMsgType,
         setError,
         setViewJob,
         nextMessages,

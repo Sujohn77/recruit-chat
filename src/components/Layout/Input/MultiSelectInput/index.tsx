@@ -69,7 +69,7 @@ export const MultiSelectInput: FC<PropsType> = ({
     value: values,
     onChange: onChange,
   });
-  const { lastActionType } = useChatMessanger();
+  const { currentMsgType } = useChatMessanger();
 
   const onDelete = (selectedIndex: number) => {
     onChange(
@@ -78,8 +78,8 @@ export const MultiSelectInput: FC<PropsType> = ({
     );
   };
 
-  const isResults = isShowResults && isResultsType(lastActionType);
-  console.log('isResultType & state value ', isResults, isShowResults);
+  const isResults = isShowResults && isResultsType(currentMsgType);
+
   return (
     <div>
       {isResults && (
@@ -106,7 +106,6 @@ export const MultiSelectInput: FC<PropsType> = ({
         <TextInput
           {...getInputProps()}
           onFocus={(e) => {
-            console.log('focus');
             const inputProps = getInputProps();
             inputProps.onFocus && inputProps.onFocus(e);
           }}

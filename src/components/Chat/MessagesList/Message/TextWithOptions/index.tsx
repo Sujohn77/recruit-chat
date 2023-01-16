@@ -12,22 +12,22 @@ interface IProps extends IMessageProps {
 
 export const TextWithOptions: FC<IProps> = (props) => {
   const { text, ...messageProps } = props;
-  const { triggerAction, lastActionType } = useChatMessanger();
+  const { triggerAction, currentMsgType } = useChatMessanger();
 
   const onClick = (opt: string) => {
-    if (lastActionType) {
+    if (currentMsgType) {
       triggerAction({
-        type: getNextActionType(lastActionType),
+        type: currentMsgType,
         payload: { item: opt },
       });
     }
   };
 
-  const options = lastActionType && getMessageOptions(lastActionType);
+  const options = currentMsgType && getMessageOptions(currentMsgType);
   const optionItems = map(options, (opt, index) => (
     <S.Option
       {...messageProps}
-      key={`option-${lastActionType}=${index}`}
+      key={`option-${currentMsgType}=${index}`}
       onClick={() => onClick(opt)}
     >
       {opt}
@@ -38,16 +38,16 @@ export const TextWithOptions: FC<IProps> = (props) => {
       <MessageBox {...messageProps}>
         <MessageText>{text}</MessageText>
       </MessageBox>
-      {optionItems && lastActionType && <S.Options>{optionItems}</S.Options>}
+      {optionItems && currentMsgType && <S.Options>{optionItems}</S.Options>}
     </div>
   );
 };
 
 export const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
-    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
+    case CHAT_ACTIONS.SET_ALERT_PERIOD:
       return ['Daily', 'Weekly', 'Monthly'];
-    case CHAT_ACTIONS.APPLY_AGE:
+    case CHAT_ACTIONS.SET_WORK_PERMIT:
       return ['Yes', 'No'];
     default:
       return [];

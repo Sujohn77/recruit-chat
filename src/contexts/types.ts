@@ -25,8 +25,8 @@ export interface IChatMessangerContext {
   searchLocations: string[];
   locations: LocationType[];
   setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[]) => void;
-  setLastActionType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
-  lastActionType: CHAT_ACTIONS | null;
+  setCurrentMsgType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
+  currentMsgType: CHAT_ACTIONS | null;
   offerJobs: IRequisition[];
   alertCategories: string[] | null;
   error: string | null;

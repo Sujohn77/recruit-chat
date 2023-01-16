@@ -43,7 +43,7 @@ export const MessageInput: FC<PropsType> = () => {
     status,
     locations,
     requisitions,
-    lastActionType,
+    currentMsgType,
     setError,
     error,
   } = useChatMessanger();
@@ -57,19 +57,19 @@ export const MessageInput: FC<PropsType> = () => {
     locations: formattedLocations,
     requisitions,
     category,
-    lastActionType,
+    lastActionType: currentMsgType,
   });
-  console.log(searchItems);
+
   const inputType = useMemo(
-    () => getInputType({ lastActionType, category }),
-    [category, lastActionType]
+    () => getInputType({ actionType: currentMsgType, category }),
+    [category, currentMsgType]
   );
 
   useEffect(() => {
-    if (lastActionType === CHAT_ACTIONS.REFINE_SEARCH) {
+    if (currentMsgType === CHAT_ACTIONS.REFINE_SEARCH) {
       setIsShowResults(true);
     }
-  }, [lastActionType]);
+  }, [currentMsgType]);
 
   const { matchedPart, matchedItems } = useMemo(
     () =>
@@ -80,34 +80,38 @@ export const MessageInput: FC<PropsType> = () => {
       }),
     [searchItems, draftMessage, searchLocations]
   );
-  console.log(lastActionType);
+
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string | null) => {
-      const type = getNextActionType(lastActionType);
-      const isCategoryOrLocation = isResultsType(lastActionType);
+      const isCategoryOrLocation = isResultsType(currentMsgType);
       const isNoMatches =
         isCategoryOrLocation && !isResults({ draftMessage, searchItems });
       const matchedSearchItem = getMatchedItem({ searchItems, draftMessage });
 
       if (inputType === TextFieldTypes.MultiSelect) {
         const isSelectedValues = matchedSearchItem || inputValues.length;
-        const actionType = isSelectedValues
-          ? getNextActionType(lastActionType)
-          : CHAT_ACTIONS.NO_MATCH;
+        const actionType =
+          isSelectedValues && currentMsgType
+            ? getNextActionType(currentMsgType)
+            : CHAT_ACTIONS.NO_MATCH;
         const payload = {
           items: !!matchedSearchItem
             ? [...inputValues, matchedSearchItem]
             : inputValues,
         };
 
-        triggerAction({
-          type: actionType,
-          payload,
-        });
+        actionType &&
+          triggerAction({
+            type: actionType,
+            payload,
+          });
       } else {
         triggerAction({
-          type: isNoMatches ? CHAT_ACTIONS.NO_MATCH : type,
+          type:
+            isNoMatches || !currentMsgType
+              ? CHAT_ACTIONS.NO_MATCH
+              : currentMsgType,
           payload: { item: draftMessage },
         });
       }
@@ -115,13 +119,13 @@ export const MessageInput: FC<PropsType> = () => {
       setIsShowResults(false);
       setDraftMessage(null);
     },
-    [lastActionType, matchedItems.length, searchLocations.length, inputValues]
+    [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
   );
 
   // Effects
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      const isWriteAccess = getAccessWriteType(lastActionType) || file;
+      const isWriteAccess = getAccessWriteType(currentMsgType) || file;
       if (event.key === 'Enter' && isWriteAccess) {
         event.preventDefault();
         draftMessage && sendMessage(draftMessage);
@@ -135,23 +139,28 @@ export const MessageInput: FC<PropsType> = () => {
   }, [draftMessage, sendMessage]);
 
   useEffect(() => {
-    if (lastActionType === CHAT_ACTIONS.SEND_LOCATIONS) {
+    if (
+      currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS ||
+      currentMsgType === CHAT_ACTIONS.SET_ALERT_PERIOD
+    ) {
       setInputValues([]);
     }
-  }, [lastActionType]);
+  }, [currentMsgType]);
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
 
     if (error) {
-      if (lastActionType === CHAT_ACTIONS.APPLY_AGE && error) {
+      if (currentMsgType === CHAT_ACTIONS.APPLY_AGE && error) {
+        // TODO: test
+
         const age = Number(value);
         if (age < 15 || age > 80) {
           setError(null);
         }
-      } else if (lastActionType === CHAT_ACTIONS.GET_USER_NAME) {
-        const isPhone = lastActionType === CHAT_ACTIONS.GET_USER_NAME;
+      } else if (currentMsgType === CHAT_ACTIONS.GET_USER_NAME) {
+        const isPhone = currentMsgType === CHAT_ACTIONS.GET_USER_NAME;
         const isError = isPhone
           ? validateEmailOrPhone(value)
           : validateEmail(value);
@@ -164,16 +173,11 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const onChangeAutocomplete = (event: any, values: string[]) => {
-    const type =
-      lastActionType !== CHAT_ACTIONS.SET_LOCATIONS &&
-      lastActionType !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
-        ? getNextActionType(lastActionType)
-        : lastActionType;
     const newValues = values.filter(Boolean);
-    if (type && newValues.length) {
+    if (currentMsgType && newValues.length) {
       setInputValues(newValues);
       triggerAction({
-        type,
+        type: currentMsgType,
         payload: { items: values },
       });
     }
@@ -193,11 +197,7 @@ export const MessageInput: FC<PropsType> = () => {
       isShowResults,
       setInputValue: (value: string) => setDraftMessage(value),
     };
-    console.log(
-      'is multi select ',
-      status,
-      type === TextFieldTypes.MultiSelect && status !== Status.PENDING
-    );
+
     if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
       return (
         <MultiSelectInput
@@ -221,7 +221,7 @@ export const MessageInput: FC<PropsType> = () => {
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
 
   const isWriteAccess =
-    getAccessWriteType(lastActionType) &&
+    getAccessWriteType(currentMsgType) &&
     (file || draftMessage || !!inputValues.length);
   const offset =
     status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';

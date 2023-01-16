@@ -282,7 +282,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   requisitions: [],
   locations: [],
   offerJobs: [],
-  lastActionType: null,
+  currentMsgType: null,
   alertCategories: null,
   error: null,
   viewJob: null,
@@ -292,7 +292,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   chooseButtonOption: emptyFunc,
   triggerAction: emptyFunc,
   setSnapshotMessages: emptyFunc,
-  setLastActionType: emptyFunc,
+  setCurrentMsgType: emptyFunc,
   setError: emptyFunc,
   setViewJob: emptyFunc,
   submitMessage: emptyFunc,
@@ -641,8 +641,13 @@ export const replaceLocalMessages = ({
   });
 };
 
-export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
-  switch (lastActionType) {
+export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
+  switch (chatMsgType) {
+    case CHAT_ACTIONS.REFINE_SEARCH:
+    case CHAT_ACTIONS.FIND_JOB:
+    case CHAT_ACTIONS.APPLY_ETHNIC:
+    case CHAT_ACTIONS.GET_USER_EMAIL:
+      return CHAT_ACTIONS.SET_CATEGORY;
     case CHAT_ACTIONS.SET_ALERT_PERIOD:
       return CHAT_ACTIONS.SET_ALERT_EMAIL;
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
@@ -671,8 +676,9 @@ export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
       return CHAT_ACTIONS.SET_LOCATIONS;
     case CHAT_ACTIONS.SET_LOCATIONS:
       return CHAT_ACTIONS.SEND_LOCATIONS;
+
     default:
-      return CHAT_ACTIONS.SET_CATEGORY;
+      return chatMsgType;
   }
 };
 
@@ -729,10 +735,10 @@ export const getCreateCandidateData = ({
 
 export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
   switch (type) {
-    case CHAT_ACTIONS.APPLY_AGE:
+    // case CHAT_ACTIONS.APPLY_AGE:
     case CHAT_ACTIONS.SET_WORK_PERMIT:
     case CHAT_ACTIONS.SET_SALARY:
-      return false;
+      return false; // TODO: test
     default:
       return true;
   }
@@ -769,8 +775,7 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.ASK_QUESTION ||
     type === CHAT_ACTIONS.SET_JOB_ALERT ||
     type === CHAT_ACTIONS.SET_CATEGORY ||
-    type === CHAT_ACTIONS.GET_USER_EMAIL ||
-    type === CHAT_ACTIONS.SET_ALERT_EMAIL ||
+    // type === CHAT_ACTIONS.GET_USER_EMAIL ||
     type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
     type === CHAT_ACTIONS.REFINE_SEARCH ||
     type === CHAT_ACTIONS.ANSWER_QUESTIONS ||

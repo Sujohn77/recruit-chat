@@ -21,10 +21,7 @@ export const useTextField = ({
 }: IUseTextField) => {
   const getTextFieldProps = useCallback(
     ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
-      if (
-        lastActionType === CHAT_ACTIONS.SET_JOB_ALERT ||
-        lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES
-      ) {
+      if (lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
         return {
           searchItems: searchAlertCategories,
           placeHolder: i18n.t('placeHolders:alert_category'),
@@ -32,7 +29,7 @@ export const useTextField = ({
         };
       }
 
-      if (lastActionType === CHAT_ACTIONS.SET_CATEGORY) {
+      if (lastActionType === CHAT_ACTIONS.SET_LOCATIONS) {
         return {
           searchItems: locations,
           placeHolder: i18n.t('placeHolders:chooseLocation'),
@@ -44,7 +41,7 @@ export const useTextField = ({
         searchItems: requisitions.map((r) => r.title),
         headerName: i18n.t('chat_item_description:categories_title'),
         placeHolder:
-          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
+          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test
             ? i18n.t('placeHolders:startTyping')
             : i18n.t('placeHolders:message'),
       };

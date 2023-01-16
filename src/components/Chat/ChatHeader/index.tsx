@@ -69,9 +69,9 @@ export const ChatHeader: FC<PropsType> = ({
 
   const handleBackButton = () => {
     setViewJob(null);
-    // if (window.parent) {
-    //   window.parent.postMessage({ height: '110px' }, '*');
-    // }
+    if (window.parent) {
+      window.parent.postMessage({ height: '110px' }, '*');
+    }
   };
 
   return (
