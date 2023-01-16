@@ -79,7 +79,7 @@ export const MultiSelectInput: FC<PropsType> = ({
   };
 
   const isResults = isShowResults && isResultsType(lastActionType);
-
+  console.log('isResultType & state value ', isResults, isShowResults);
   return (
     <div>
       {isResults && (
@@ -97,10 +97,19 @@ export const MultiSelectInput: FC<PropsType> = ({
         {selectedValues
           .filter((option) => !!option)
           .map((option: string, index: number) => (
-            <Tag label={option} {...getTagProps({ index })} onDelete={() => onDelete(index)} />
+            <Tag
+              label={option}
+              {...getTagProps({ index })}
+              onDelete={() => onDelete(index)}
+            />
           ))}
         <TextInput
           {...getInputProps()}
+          onFocus={(e) => {
+            console.log('focus');
+            const inputProps = getInputProps();
+            inputProps.onFocus && inputProps.onFocus(e);
+          }}
           placeholder={placeHolder}
           value={value}
           onClick={(e) => {

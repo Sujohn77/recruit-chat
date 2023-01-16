@@ -125,7 +125,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
           isChatMessage: true,
         },
       ];
-    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
+    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
       return [
         {
           subType: MessageType.TEXT_WITH_CHOICE,
@@ -340,7 +340,8 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
     type !== CHAT_ACTIONS.REFINE_SEARCH &&
     type !== CHAT_ACTIONS.APPLY_POSITION &&
     type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
-    type !== CHAT_ACTIONS.SEND_EMAIL
+    type !== CHAT_ACTIONS.SEND_EMAIL &&
+    type !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
   );
 };
 

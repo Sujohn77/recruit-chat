@@ -38,14 +38,14 @@ export const TextWithOptions: FC<IProps> = (props) => {
       <MessageBox {...messageProps}>
         <MessageText>{text}</MessageText>
       </MessageBox>
-      <S.Options>{lastActionType && optionItems}</S.Options>
+      {optionItems && lastActionType && <S.Options>{optionItems}</S.Options>}
     </div>
   );
 };
 
 export const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
-    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
+    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
       return ['Daily', 'Weekly', 'Monthly'];
     case CHAT_ACTIONS.APPLY_AGE:
       return ['Yes', 'No'];

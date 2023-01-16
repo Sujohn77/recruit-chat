@@ -59,6 +59,11 @@ export const MessageInput: FC<PropsType> = () => {
     category,
     lastActionType,
   });
+  console.log(searchItems);
+  const inputType = useMemo(
+    () => getInputType({ lastActionType, category }),
+    [category, lastActionType]
+  );
 
   useEffect(() => {
     if (lastActionType === CHAT_ACTIONS.REFINE_SEARCH) {
@@ -75,7 +80,7 @@ export const MessageInput: FC<PropsType> = () => {
       }),
     [searchItems, draftMessage, searchLocations]
   );
-
+  console.log(lastActionType);
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string | null) => {
@@ -83,22 +88,22 @@ export const MessageInput: FC<PropsType> = () => {
       const isCategoryOrLocation = isResultsType(lastActionType);
       const isNoMatches =
         isCategoryOrLocation && !isResults({ draftMessage, searchItems });
+      const matchedSearchItem = getMatchedItem({ searchItems, draftMessage });
 
-      if (
-        type === CHAT_ACTIONS.SEND_LOCATIONS ||
-        type === CHAT_ACTIONS.SET_LOCATIONS
-      ) {
-        const draftLocation = getMatchedItem({ searchItems, draftMessage });
-        const isSelectedLocations = draftLocation || searchLocations.length;
+      if (inputType === TextFieldTypes.MultiSelect) {
+        const isSelectedValues = matchedSearchItem || inputValues.length;
+        const actionType = isSelectedValues
+          ? getNextActionType(lastActionType)
+          : CHAT_ACTIONS.NO_MATCH;
+        const payload = {
+          items: !!matchedSearchItem
+            ? [...inputValues, matchedSearchItem]
+            : inputValues,
+        };
+
         triggerAction({
-          type: isSelectedLocations
-            ? CHAT_ACTIONS.SEND_LOCATIONS
-            : CHAT_ACTIONS.NO_MATCH,
-          payload: {
-            items: !!draftLocation
-              ? [...searchLocations, draftLocation]
-              : searchLocations,
-          },
+          type: actionType,
+          payload,
         });
       } else {
         triggerAction({
@@ -110,7 +115,7 @@ export const MessageInput: FC<PropsType> = () => {
       setIsShowResults(false);
       setDraftMessage(null);
     },
-    [lastActionType, matchedItems.length, searchLocations.length]
+    [lastActionType, matchedItems.length, searchLocations.length, inputValues]
   );
 
   // Effects
@@ -159,9 +164,14 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const onChangeAutocomplete = (event: any, values: string[]) => {
-    const type = getNextActionType(lastActionType);
-    if (type) {
-      setInputValues(values);
+    const type =
+      lastActionType !== CHAT_ACTIONS.SET_LOCATIONS &&
+      lastActionType !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
+        ? getNextActionType(lastActionType)
+        : lastActionType;
+    const newValues = values.filter(Boolean);
+    if (type && newValues.length) {
+      setInputValues(newValues);
       triggerAction({
         type,
         payload: { items: values },
@@ -183,6 +193,11 @@ export const MessageInput: FC<PropsType> = () => {
       isShowResults,
       setInputValue: (value: string) => setDraftMessage(value),
     };
+    console.log(
+      'is multi select ',
+      status,
+      type === TextFieldTypes.MultiSelect && status !== Status.PENDING
+    );
     if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
       return (
         <MultiSelectInput
@@ -204,7 +219,7 @@ export const MessageInput: FC<PropsType> = () => {
   };
 
   const botTypingTxt = i18n.t('placeHolders:bot_typing');
-  const inputType = getInputType({ lastActionType, category });
+
   const isWriteAccess =
     getAccessWriteType(lastActionType) &&
     (file || draftMessage || !!inputValues.length);

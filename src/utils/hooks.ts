@@ -13,38 +13,44 @@ interface IUseTextField {
 }
 
 // TODO: refactor
-export const useTextField = ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
-  const getTextFieldProps = useCallback(({ lastActionType, requisitions, locations, category }: IUseTextField) => {
-    if (lastActionType === CHAT_ACTIONS.SET_JOB_ALERT) {
-      return {
-        searchItems: searchAlertCategories,
-        placeHolder: i18n.t('placeHolders:alert_category'),
-        headerName: i18n.t('chat_item_description:all_categories'),
-      };
-    }
-    const isMultiSelect =
-      category &&
-      (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
-        lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
-        lastActionType === null);
+export const useTextField = ({
+  lastActionType,
+  requisitions,
+  locations,
+  category,
+}: IUseTextField) => {
+  const getTextFieldProps = useCallback(
+    ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
+      if (
+        lastActionType === CHAT_ACTIONS.SET_JOB_ALERT ||
+        lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES
+      ) {
+        return {
+          searchItems: searchAlertCategories,
+          placeHolder: i18n.t('placeHolders:alert_category'),
+          headerName: i18n.t('chat_item_description:all_categories'),
+        };
+      }
 
-    if (isMultiSelect) {
-      return {
-        searchItems: locations,
-        placeHolder: i18n.t('placeHolders:chooseLocation'),
-        headerName: i18n.t('chat_item_description:locations_title'),
-      };
-    }
+      if (lastActionType === CHAT_ACTIONS.SET_CATEGORY) {
+        return {
+          searchItems: locations,
+          placeHolder: i18n.t('placeHolders:chooseLocation'),
+          headerName: i18n.t('chat_item_description:locations_title'),
+        };
+      }
 
-    return {
-      searchItems: requisitions.map((r) => r.title),
-      headerName: i18n.t('chat_item_description:categories_title'),
-      placeHolder:
-        lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS || lastActionType === CHAT_ACTIONS.SEND_LOCATIONS
-          ? i18n.t('placeHolders:startTyping')
-          : i18n.t('placeHolders:message'),
-    };
-  }, []);
+      return {
+        searchItems: requisitions.map((r) => r.title),
+        headerName: i18n.t('chat_item_description:categories_title'),
+        placeHolder:
+          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
+            ? i18n.t('placeHolders:startTyping')
+            : i18n.t('placeHolders:message'),
+      };
+    },
+    []
+  );
 
   return getTextFieldProps({
     lastActionType,

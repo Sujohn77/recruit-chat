@@ -643,8 +643,6 @@ export const replaceLocalMessages = ({
 
 export const getNextActionType = (lastActionType: CHAT_ACTIONS | null) => {
   switch (lastActionType) {
-    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
-      return CHAT_ACTIONS.SET_ALERT_PERIOD;
     case CHAT_ACTIONS.SET_ALERT_PERIOD:
       return CHAT_ACTIONS.SET_ALERT_EMAIL;
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
@@ -778,24 +776,28 @@ export const isResultsType = (type: CHAT_ACTIONS | null) => {
     type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
     type === CHAT_ACTIONS.SEND_LOCATIONS ||
     type === CHAT_ACTIONS.UPLOAD_CV ||
-    type === CHAT_ACTIONS.SET_LOCATIONS
+    type === CHAT_ACTIONS.SET_LOCATIONS ||
+    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES
+  );
+};
+
+export const isMultiSelectType = (type: CHAT_ACTIONS | null) => {
+  return (
+    type === CHAT_ACTIONS.SET_LOCATIONS ||
+    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES
   );
 };
 
 export const getInputType = ({
-  lastActionType,
+  actionType,
   category,
 }: {
-  lastActionType: CHAT_ACTIONS | null;
+  actionType: CHAT_ACTIONS | null;
   category: string | null;
 }) => {
-  const isMultiSelect =
-    (category &&
-      (getNextActionType(lastActionType) === CHAT_ACTIONS.SET_LOCATIONS ||
-        lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
-        lastActionType === null)) ||
-    lastActionType === CHAT_ACTIONS.SET_JOB_ALERT;
-  return isMultiSelect ? TextFieldTypes.MultiSelect : TextFieldTypes.Select;
+  return isMultiSelectType(actionType)
+    ? TextFieldTypes.MultiSelect
+    : TextFieldTypes.Select;
 };
 
 export const isResults = ({

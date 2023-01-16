@@ -16,7 +16,10 @@ type PropsType = {
   matchedPart: string;
   headerName: string;
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
-  getOptionProps?: ({ option, index }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
+  getOptionProps?: ({
+    option,
+    index,
+  }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
   getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
 };
@@ -47,8 +50,11 @@ export const SearchResults: FC<PropsType> = ({
       </S.SearchPosition>
     );
   });
-  const searchOptionsHeight = matchedItems.length < 6 ? searchItemheight * matchedItems.length + 1 : maxSearchHeight;
-
+  const searchOptionsHeight =
+    matchedItems.length < 6
+      ? searchItemheight * matchedItems.length + 1
+      : maxSearchHeight;
+  console.log('Display results: ', matchedItems);
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
       <S.SearchHeader>

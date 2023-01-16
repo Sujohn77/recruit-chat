@@ -154,11 +154,11 @@ const ChatProvider = ({ children }: PropsType) => {
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
           setSearchLocations(payload?.items!);
-          return;
+          break;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
           setAlertCategories(payload?.items!);
-          return;
+          break;
         }
         case CHAT_ACTIONS.SET_ALERT_PERIOD: {
           setAlertPeriod(payload?.item!);
@@ -273,11 +273,13 @@ const ChatProvider = ({ children }: PropsType) => {
             const apiResponse = await apiInstance.searchJobs(data);
             additionalCondition = !!apiResponse.data?.requisitions.length;
 
-            if (apiResponse.data?.requisitions.length) {
-              setOfferJobs(apiResponse.data?.requisitions);
-            }
             setCategory(null);
             setSearchLocations([]);
+            if (apiResponse.data?.requisitions.length) {
+              setOfferJobs(apiResponse.data?.requisitions);
+            } else {
+              triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
+            }
           }
           break;
         }
