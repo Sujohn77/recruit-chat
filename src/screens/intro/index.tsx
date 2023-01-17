@@ -38,9 +38,9 @@ export const Intro: FC<PropsType> = ({
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
     setIsSelectedOption(true);
-    if (window.parent) {
-      window.parent.postMessage({ height: '601px' }, '*');
-    }
+    // if (window.parent) {
+    //   window.parent.postMessage({ height: '601px' }, '*');
+    // }
 
     triggerAction({ type, payload: { item, isChatMessage: true } });
   };
