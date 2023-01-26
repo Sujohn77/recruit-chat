@@ -19,6 +19,7 @@ import { colors } from './colors';
 import moment from 'moment';
 
 import {
+  IAuthContext,
   IChatMessangerContext,
   IFileUploadContext,
   IUser,
@@ -297,6 +298,14 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
   setViewJob: emptyFunc,
   submitMessage: emptyFunc,
   setIsInitialized: emptyFunc,
+};
+
+export const authDefaultState: IAuthContext = {
+  loginByEmail: emptyFunc,
+  setError: emptyFunc,
+  error: '',
+  subscriberID: null,
+  mobileSubscribeId: null,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -843,4 +852,17 @@ export const parseThemeResponse = (res: IApiThemeResponse) => {
     buttonSecondaryColor: res.chat_button_secondary_color,
     searchResultsColor: res.chat_search_results_color,
   };
+};
+
+export const generateOtp = ({ length = 6 }: { length?: number }) => {
+  const digits = '0123456789';
+  let otp = '';
+
+  for (let i = 1; i <= length; i++) {
+    const index = Math.floor(Math.random() * digits.length);
+
+    otp = otp + digits[index];
+  }
+
+  return otp;
 };

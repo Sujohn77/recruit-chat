@@ -33,6 +33,7 @@ import {
   getSearchJobsData,
   getCreateCandidateData,
   pushMessage,
+  getFormattedLocations,
 } from 'utils/helpers';
 import {
   IChatMessangerContext,
@@ -47,8 +48,10 @@ import i18n from 'services/localization';
 import { apiInstance } from 'services';
 import { chatId } from 'components/Chat';
 import { loginUser } from 'services/auth';
+import { useAuthContext } from './AuthContext';
 
 type PropsType = {
+  chatBotID: string | null;
   children: React.ReactNode;
 };
 
@@ -60,7 +63,20 @@ export const info = {
   username: 'RomanAndreevUpworkPlaypen',
   password: 'SomeStrongPassword1234',
 };
-const ChatProvider = ({ children }: PropsType) => {
+
+export const validationUserContacts = ({
+  isPhoneType,
+  contact,
+}: {
+  isPhoneType: boolean;
+  contact: string | undefined | null;
+}) => {
+  if (!contact) return '';
+
+  return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
+};
+
+const ChatProvider = ({ chatBotID, children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -89,6 +105,7 @@ const ChatProvider = ({ children }: PropsType) => {
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
 
   const { requisitions, locations } = useRequisitions(accessToken);
+  const { subscriberID } = useAuthContext();
 
   // Effects
   useEffect(() => {
@@ -128,6 +145,25 @@ const ChatProvider = ({ children }: PropsType) => {
       action.type === CHAT_ACTIONS.SET_ALERT_EMAIL && alertPeriod;
     const param = isAlertLastType ? alertPeriod : action.payload?.item;
     return param || undefined;
+  };
+
+  const createJobAlert = ({
+    email,
+    type,
+  }: {
+    email: string;
+    type: CHAT_ACTIONS;
+  }) => {
+    if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
+      apiInstance.createJobAlert({
+        chatBotID,
+        subscriberID, // TODO: getter
+        email: email,
+        location: getFormattedLocations(locations)[0],
+        jobCategory: category,
+        externalSystemId: 789,
+      });
+    }
   };
 
   const triggerAction = useCallback(
@@ -211,17 +247,19 @@ const ChatProvider = ({ children }: PropsType) => {
         case CHAT_ACTIONS.GET_USER_EMAIL:
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
           const isPhoneType = type === CHAT_ACTIONS.GET_USER_EMAIL;
-          const error = isPhoneType
-            ? validateEmailOrPhone(payload?.item!)
-            : validateEmail(payload?.item!);
+          const emailOrPhone = payload?.item!;
+          const error = validationUserContacts({
+            isPhoneType,
+            contact: emailOrPhone,
+          });
 
-          if (payload?.item && !error?.length) {
-            if (isPhoneType) {
-              setUser({ ...user, phone: payload?.item! });
-            } else {
-              setUser({ ...user, email: payload?.item! });
-            }
+          if (emailOrPhone && !error?.length) {
             clearFilters();
+            createJobAlert({ type, email: emailOrPhone });
+            setUser({
+              ...user,
+              [isPhoneType ? 'phone' : 'email']: emailOrPhone,
+            });
           } else {
             setError(error);
             isErrors = true;
@@ -236,6 +274,7 @@ const ChatProvider = ({ children }: PropsType) => {
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
+          console.log('set');
           pushMessage({ action, messages, setMessages, accessToken });
         }
 
@@ -247,6 +286,7 @@ const ChatProvider = ({ children }: PropsType) => {
   );
 
   useEffect(() => {
+    console.log('us');
     if (chatAction !== null && messages.length) {
       updateStateOnRequest(chatAction);
     }
@@ -323,6 +363,7 @@ const ChatProvider = ({ children }: PropsType) => {
           updatedMessages?.length && setMessages(updatedMessages);
         }, 500);
 
+        setError(null);
         setChatAction(null);
       } else {
         setStatus(Status.ERROR);
@@ -335,6 +376,7 @@ const ChatProvider = ({ children }: PropsType) => {
       user,
       isInitialized,
       requisitions.length,
+      chatBotID,
     ]
   );
 
@@ -378,8 +420,6 @@ const ChatProvider = ({ children }: PropsType) => {
       chatType && updateStateOnRequest({ type: chatType });
       setMessages(updatedMessages);
     }
-
-    // setCurrentMsgType(type);
   };
 
   const updateMessages = async (serverMessages: IMessage[]) => {

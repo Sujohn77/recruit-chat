@@ -402,6 +402,46 @@ export enum IUserDataTokenKeys {
   Errors = 'errors',
 }
 
+// Requests
+export interface IVerifyEmailRequest {
+  email: string;
+  verificationCode: string;
+  externalSystemId: number;
+}
+
+export interface IJobAlertRequest {
+  chatBotID: string | null;
+  subscriberID: number | null;
+  email: string;
+  location: string;
+  jobCategory: string | null;
+  externalSystemId: number;
+}
+
+// Responses
+
+export interface IJobAlertResponse {
+  success: string;
+  message: string;
+}
+
+export interface IVerifyEmailResponse extends Partial<IVerifyErrorResponse> {
+  isEmailExists: boolean;
+  isOTPSent: boolean;
+  isEmailVerified: boolean;
+  subscriberID: number;
+  MSISDN: number;
+}
+export interface IVerifyErrorResponse {
+  errorOccurrenceId: null;
+  errors: string[];
+  message: string;
+  redirectUri: null;
+  status: null;
+  statusCode: null;
+  success: boolean;
+}
+
 export interface IUserLoginRequestData
   extends Record<IUserLoginDataKeys, string> {}
 export interface GenerateGrantTypeData {

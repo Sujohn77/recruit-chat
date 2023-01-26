@@ -55,6 +55,14 @@ export interface IFileUploadContext {
   setNotification: Dispatch<SetStateAction<string | null>>;
 }
 
+export interface IAuthContext {
+  setError: (error: string | null) => void;
+  loginByEmail: (email: string) => void;
+  error: string | null;
+  subscriberID: number | null;
+  mobileSubscribeId: number | null;
+}
+
 export interface IFileData {
   lastModified: number;
   name: string;

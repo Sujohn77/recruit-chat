@@ -7,29 +7,20 @@ const borderWidth = '1.5px';
 const animationDuration = '0.4s';
 export const Flex = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
   width: 100%;
 `;
 export const Wrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-
-  width: 365px;
+  width: 370px;
   position: absolute;
   bottom: 0;
   right: 0;
 
-  animation: ${({ isClosed }: { isClosed: boolean }) => isClosed && `fadeOut ${animationDuration} ease-in-out`};
+  animation: ${({ isClosed }: { isClosed: boolean }) =>
+    isClosed && `fadeOut ${animationDuration} ease-in-out`};
   overflow: hidden;
   animation-fill-mode: forwards;
-
-  > div {
-    padding: 20px;
-    justify-content: flex-end;
-  }
 
   @keyframes fadeOut {
     0% {
@@ -41,8 +32,11 @@ export const Wrapper = styled.div`
       transform-origin: 100% 100%;
     }
   }
+`;
 
-  // margin-top: 535px;
+export const ButtonsWrapper = styled(Flex)`
+  margin-left: 16px;
+  margin-bottom: 18px;
 `;
 
 export const Close = styled.div<{ height?: string; color?: string }>`
@@ -73,10 +67,11 @@ export const Close = styled.div<{ height?: string; color?: string }>`
 
 export const Message = styled.div`
   border-radius: 20px;
-  padding: 10px 10px;
+  padding: 11px 16px;
   white-space: nowrap;
   overflow: hidden;
-  background: ${({ theme: { message } }) => message.chat.backgroundColor}!important;
+  background: ${({ theme: { message } }) =>
+    message.chat.backgroundColor}!important;
 
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
@@ -105,12 +100,13 @@ export const Message = styled.div`
 `;
 
 export const Question = styled(MessageBox)`
-  padding: 0 16px;
+  width: 225px;
+  padding: 0px 16px;
   line-height: 41px;
   border: none;
-  overflow: hidden;
+  /* overflow: hidden; */
   color: ${({ theme: { message } }) => message.chat.color};
-  font-weight: 600;
+  font-weight: 500;
   height: 41px;
   box-sizing: border-box;
   margin-bottom: 22px;

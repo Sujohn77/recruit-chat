@@ -17,6 +17,7 @@ export const colors = {
   persian: '#00a881',
   dimgray: '#696969',
   torchRed: '#FF2121',
+  purple: '#908DFF',
 };
 
 export const chatColors = {

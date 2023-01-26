@@ -1,31 +1,33 @@
 import { ApiResponse } from 'apisauce';
-import { apiInstance } from 'services';
+import { authInstance } from 'services';
 import { handleSignInWithCustomToken } from '../../firebase/config';
 
 import { GenerateGrantType } from '../types';
 
 export const APP_VERSION = '1.0.3';
-  
-  export enum IUserLoginDataKeys {
-    GrantType = 'grant_type',
-    Username = 'username',
-    Password = 'password',
-    TwoFactorAuthCode = 'twofactorauthcode',
-    AppKey = 'appKey',
-    CodeVersion = 'codeVersion',
-  }
 
-export const getSignedRequest = <T,>(data: T): T & any => ({
+export enum IUserLoginDataKeys {
+  GrantType = 'grant_type',
+  Username = 'username',
+  Password = 'password',
+  TwoFactorAuthCode = 'twofactorauthcode',
+  AppKey = 'appKey',
+  CodeVersion = 'codeVersion',
+}
+
+export const getSignedRequest = <T>(data: T): T & any => ({
   ...data,
   // @ts-ignore
-  appKey: process.env.REACT_APP_API_ACCESS_KEY || '117BD5BC-857D-428B-97BE-A5EC7256E281',
+  appKey:
+    process.env.REACT_APP_API_ACCESS_KEY ||
+    '117BD5BC-857D-428B-97BE-A5EC7256E281',
   codeVersion: APP_VERSION,
 });
 
 export const loginUser = async ({ data, isFirst = true }: any) => {
   const payload = getSignedRequest<any>(data);
 
-  const response: ApiResponse<any> = await apiInstance.loginUser(payload);
+  const response: ApiResponse<any> = await authInstance.loginUser(payload);
 
   if (!response.data?.errors?.length && response.data?.authcode) {
     // Without 2FA flow
@@ -44,7 +46,7 @@ export const loginUser = async ({ data, isFirst = true }: any) => {
 
 export const confirmLoginUserWithoutTwoFA = async (info: any) => {
   const grantType: string = await generateGrantType({ ...info });
-  let tokenResponse: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
+  let tokenResponse: ApiResponse<any> = await authInstance.loginUserCodeCheck({
     grantType,
   });
 
@@ -53,7 +55,7 @@ export const confirmLoginUserWithoutTwoFA = async (info: any) => {
       ...tokenResponse.data!,
     });
   } catch (err) {
-    const newToken: ApiResponse<any> = await apiInstance.loginUserCodeCheck({
+    const newToken: ApiResponse<any> = await authInstance.loginUserCodeCheck({
       grantType,
     });
     await setUserDataAfterVerify({
@@ -65,16 +67,13 @@ export const confirmLoginUserWithoutTwoFA = async (info: any) => {
   return tokenResponse.data;
 };
 
-
 export const setUserDataAfterVerify = async (data: any) => {
   const account = parseResponseWithToken(data);
 
   await handleSignInWithCustomToken(data.firebase_access_token);
 
-  apiInstance.setAuthHeader(account.accessToken);
+  authInstance.setAuthHeader(account.accessToken);
 };
-
-
 
 export const generateGrantType: GenerateGrantType = (userData: any) => {
   const form = [];
@@ -87,14 +86,14 @@ export const generateGrantType: GenerateGrantType = (userData: any) => {
 };
 
 export const parseResponseWithToken: any = (data: any) => ({
-    accessToken: data.access_token,
-    tokenType: data.token_type,
-    expiresIn: data.expires_in,
-    refreshToken: data.refresh_token,
-    sasSubscriberAttachment: data.sas_subscriber_attachment,
-    sasSubscriberResume: data.sas_subscriber_resume,
-    sasSubscriberAvatar: data.sas_subscriber_avatar,
-    issuedTokenDate: data['.issued'],
-    expiresTokenDate: data['.expires'],
-    firebase_access_token: data.firebase_access_token,
-  });
+  accessToken: data.access_token,
+  tokenType: data.token_type,
+  expiresIn: data.expires_in,
+  refreshToken: data.refresh_token,
+  sasSubscriberAttachment: data.sas_subscriber_attachment,
+  sasSubscriberResume: data.sas_subscriber_resume,
+  sasSubscriberAvatar: data.sas_subscriber_avatar,
+  issuedTokenDate: data['.issued'],
+  expiresTokenDate: data['.expires'],
+  firebase_access_token: data.firebase_access_token,
+});

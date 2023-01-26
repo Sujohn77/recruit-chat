@@ -10,9 +10,10 @@ import { ChatProvider } from 'contexts/MessangerContext';
 import { SocketProvider } from 'contexts/SocketContext';
 import { FileUploadProvider } from 'contexts/FileUploadContext';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
-import { apiInstance } from 'services';
+import { apiInstance, authInstance } from 'services';
 import { IApiThemeResponse } from 'utils/api';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { AuthProvider } from 'contexts/AuthContext';
 
 export const Container = styled.div`
   width: 370px;
@@ -22,9 +23,6 @@ export const Container = styled.div`
 
   max-width: 100%;
 `;
-interface IUrlParams {
-  chatBotId: string;
-}
 
 const regExpUuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -37,66 +35,81 @@ export const Home = () => {
   const [isAccess, setIsAccess] = useState(false);
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
   const [originDomain, setOriginDomain] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
 
-  const [chatBotId, setChatBotId] = useState(null);
+  const [chatBotID, setChatBotID] = useState<string | null>(null);
+
   useEffect(() => {
+    const onPostMessage = (event: MessageEvent) => {
+      if (regExpUuid.test(event.data)) {
+        setChatBotID(event.data);
+      }
+
+      const origin = event.origin.match(/:\/\/(.[^/]+)/);
+      const isOrigin = originDomain == null && !!origin?.length;
+      if (isOrigin && window.location.href.indexOf(origin[1]) === -1) {
+        console.log(origin[1]);
+        setOriginDomain(origin[1]);
+      }
+    };
+
     window.addEventListener('message', onPostMessage);
 
     return () => {
       window.removeEventListener('message', onPostMessage);
     };
-  }, []);
+  }, [originDomain]);
 
   useEffect(() => {
-    if (originDomain && chatBotId) {
-      vefiryChat(chatBotId, originDomain);
+    const newChatBotId = searchParams.get('chatBotId');
+    if (newChatBotId) {
+      setChatBotID(newChatBotId);
     }
-  }, [originDomain, chatBotId]);
+  }, [searchParams]);
 
-  const vefiryChat = async (guid: string, originDomain: string) => {
-    const encodedKey = Buffer.from(`${guid}:${originDomain}`).toString(
-      'base64'
-    );
-    const response = await apiInstance.verify(encodedKey);
-    if (response.data?.isDomainVerified) {
-      setIsAccess(true);
-      response.data.chatBotStyle &&
-        setTheme(JSON.parse(response.data.chatBotStyle));
-    } else {
-      setChatBotId(null);
+  useEffect(() => {
+    const vefiryChat = async (guid: string, originDomain: string) => {
+      const bufferKey = Buffer.from(`${guid}:${originDomain}`);
+      const encodedKey = bufferKey.toString('base64');
+      const response = await authInstance.verify(encodedKey);
+
+      if (response.data?.isDomainVerified) {
+        setIsAccess(true);
+        response.data.chatBotStyle &&
+          setTheme(JSON.parse(response.data.chatBotStyle));
+      } else {
+        setChatBotID(null);
+        setOriginDomain(null);
+      }
+    };
+
+    if (originDomain && chatBotID) {
+      vefiryChat(chatBotID, originDomain);
     }
-  };
+  }, [originDomain, chatBotID]);
 
-  const onPostMessage = (event: MessageEvent) => {
-    console.log(event.data);
-    console.log(event.origin);
-    if (regExpUuid.test(event.data)) {
-      setChatBotId(event.data);
-    }
-    setOriginDomain(event.origin);
-    // Security: Validate message origin
-  };
-
-  if (!isAccess) {
-    return <div>Access Denied</div>;
+  if (isAccess) {
+    return null;
   }
 
   return (
     <Container id="chat-bot">
-      <ChatProvider>
+      <ChatProvider chatBotID={chatBotID}>
         <ThemeContextProvider value={theme}>
           <FileUploadProvider>
             <SocketProvider>
-              {isSelectedOption !== null && (
-                <Chat
+              <AuthProvider>
+                {isSelectedOption !== null && (
+                  <Chat
+                    setIsSelectedOption={setIsSelectedOption}
+                    isSelectedOption={isSelectedOption}
+                  />
+                )}
+                <Intro
                   setIsSelectedOption={setIsSelectedOption}
                   isSelectedOption={isSelectedOption}
                 />
-              )}
-              <Intro
-                setIsSelectedOption={setIsSelectedOption}
-                isSelectedOption={isSelectedOption}
-              />
+              </AuthProvider>
             </SocketProvider>
           </FileUploadProvider>
         </ThemeContextProvider>

@@ -8,7 +8,7 @@ export const en = {
     set_job_alert: 'Set Job Alert',
     refine_search: 'Refine job search',
     find_job: 'Find a job',
-    ask_questions: 'Ask a question',
+    ask_questions: 'Ask a questions',
   },
   placeHolders: {
     message: 'Type a message',
@@ -33,8 +33,10 @@ export const en = {
     initialMessage: 'Hi! Are you looking for a job?',
     uploadCV: 'Upload CV',
     answerQuestions: 'Answer questions',
-    whatJobTitle: "What's your preferred job title? We'll try finding similar jobs.",
-    botMessageYou: 'Where do you want to work? This can be your current location or a list of preferred locations.',
+    whatJobTitle:
+      "What's your preferred job title? We'll try finding similar jobs.",
+    botMessageYou:
+      'Where do you want to work? This can be your current location or a list of preferred locations.',
     whatCategoryJob: "What's your preferred job category title?",
     setJobAlert: 'Set Job Alert',
     interestedCategories:
@@ -45,15 +47,18 @@ export const en = {
     daily: 'Daily',
     alertEmail:
       "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
-    successSubscribed: "You've successfully subscribed to {{period}} job alerts.",
+    successSubscribed:
+      "You've successfully subscribed to {{period}} job alerts.",
     thanks: 'Thanks!',
     contactLater: 'We will only contact you for potential job opportunities.',
     niceToMeet: 'Nice to meet you, {{name}}',
     reachEmail:
       "What's the best email address or phone number to reach you? \n \n We will only contact you for potential job opportunities.",
     whatFullName: "What's your full name?",
-    fewQuestions: 'We have a few questions about your background and experience to get your application started.',
-    jobRecommendations: 'Thanks Here are your job recommendations based on the information you provided.',
+    fewQuestions:
+      'We have a few questions about your background and experience to get your application started.',
+    jobRecommendations:
+      'Thanks Here are your job recommendations based on the information you provided.',
     notFoundJob: 'Didn’t fing the right job? \n \n Here’s what you can do',
     applyThanks: 'Thanks for applying for this position',
     provideName: 'Please provide your name',
@@ -67,12 +72,14 @@ export const en = {
     wishNotSay: 'Do not wish to say',
     ethnicWhite: 'White',
     ethnicHispanic: 'Hispanic',
-    noPermitWork: 'Sorry, you can not apply for this position, since your don’t have work permit',
+    noPermitWork:
+      'Sorry, you can not apply for this position, since your don’t have work permit',
     changeLang: 'You changed the \n  language to {{lang}}',
     howMuchExperience: 'How much work experience do I need for your company?',
     howSubmitCV: 'Can I submit my CV',
     whatHiring: 'What is the hiring process?',
-    popularQuestions: 'OK! Here are a few popular questions to help you get started.',
+    popularQuestions:
+      'OK! Here are a few popular questions to help you get started.',
     emailAnswer: 'Thanks! We will send you an answer on email',
     noMatchMessage:
       "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
@@ -87,7 +94,8 @@ export const en = {
     categories_title: 'Searched category title',
     locations_title: 'Searched location',
     all_categories: 'All Categories',
-    hiring_help_title: 'Great question. Check out our help section to learn more on how we hire.',
+    hiring_help_title:
+      'Great question. Check out our help section to learn more on how we hire.',
     hiring_help_text: 'Help',
     hiring_helpful_text: 'Has this reply has been helpful?',
     interested_in: 'I’m interested',
@@ -96,7 +104,7 @@ export const en = {
   chat_menu: {
     save_transcript: 'Save transcript',
     change_lang: 'Change language',
-    ask_question: 'Ask a question',
+    ask_question: 'Ask a questions',
     find_job: 'Find a job',
   },
 };

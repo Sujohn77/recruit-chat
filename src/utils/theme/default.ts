@@ -1,7 +1,7 @@
 import { colors } from 'utils/colors';
 
 const defaultTheme = {
-  primaryColor: "#787878",
+  primaryColor: '#787878',
   secondaryColor: '#d9d9d9',
   imageUrl: null,
   headerColor: '#D9D9D9',

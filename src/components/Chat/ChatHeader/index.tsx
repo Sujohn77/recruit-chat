@@ -1,11 +1,13 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { colors } from '../../../utils/colors';
 
-import { Close, Flex } from '../../../screens/intro/styles';
+import { Close, Flex, IntroImage } from '../../../screens/intro/styles';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { BackButton } from '../ViewJob/styles';
+import { ICONS } from 'utils/constants';
+import { ThemeType } from 'utils/theme/default';
 
 export const ChatHeaderWrapper = styled.div`
   height: 60px;
@@ -32,6 +34,7 @@ export const Title = styled.h3`
   font-size: 16px;
   line-height: 19px;
   margin: 0;
+  margin-left: 15px;
 `;
 
 export const ViewTitle = styled.h3`
@@ -54,7 +57,7 @@ export const CloseChat = styled(Close)`
 
 export const ViewHeader = styled(Flex)``;
 
-const defaultTitle = 'Career bot';
+const defaultTitle = 'Recruit bot';
 
 type PropsType = {
   title?: string;
@@ -65,6 +68,7 @@ export const ChatHeader: FC<PropsType> = ({
   title = defaultTitle,
   setIsSelectedOption,
 }) => {
+  const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob } = useChatMessanger();
 
   const handleBackButton = () => {
@@ -84,7 +88,11 @@ export const ChatHeader: FC<PropsType> = ({
       )}
       {!viewJob && (
         <>
-          <Avatar />
+          <IntroImage
+            src={theme?.imageUrl || ICONS.LOGO}
+            size="20px"
+            alt="rob-face"
+          />
           <Title>{title}</Title>
           <CloseChat
             onClick={() => {

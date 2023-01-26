@@ -7,7 +7,6 @@ import OPENED_BURGER from '../assets/icons/openedBurger.svg';
 import BURGER from '../assets/icons/burger.svg';
 import INPUT_PLANE from '../assets/icons/plane.svg';
 import ATTACHED_FILE from '../assets/icons/attachedFile.svg';
-import ATTACHED_FILE_PNG from '../assets/imgs/attachFile.png';
 import FINGER_UP from '../assets/icons/fingerUp.svg';
 import LOGO from '../assets/icons/logo.svg';
 import SEARCH_ICON from '../assets/icons/search.svg';
@@ -393,4 +392,9 @@ export enum Status {
 export enum TextFieldTypes {
   MultiSelect = 'MultiSelect',
   Select = 'Select',
+}
+
+export enum InputTheme {
+  Default = 'default',
+  Secondary = 'secondary',
 }

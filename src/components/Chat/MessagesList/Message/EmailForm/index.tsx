@@ -1,5 +1,5 @@
 import { Button, FormControl, TextField } from '@mui/material';
-import { FormInput } from 'components/Layout/Input/styles';
+import { FormInput } from 'components/Layout/Autocomplete/styles';
 
 import { useChatMessanger } from 'contexts/MessangerContext';
 import * as React from 'react';

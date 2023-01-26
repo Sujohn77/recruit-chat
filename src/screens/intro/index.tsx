@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import * as S from './styles';
 
@@ -10,6 +10,9 @@ import { CHAT_ACTIONS } from 'utils/types';
 
 import { useTheme } from 'styled-components';
 import { ThemeType } from 'utils/theme/default';
+import { EmailForm } from 'components/Intro/EmailLogin/Email';
+import { OtpForm } from 'components/Intro/OneTimePassword/OtpForm';
+import { OneTimePassword } from 'components/Intro/OneTimePassword';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -32,6 +35,7 @@ export const Intro: FC<PropsType> = ({
   setIsSelectedOption,
   isSelectedOption,
 }) => {
+  const [isOtpSent, setIsOtpSent] = useState(false);
   const { triggerAction } = useChatMessanger();
   const theme = useTheme() as ThemeType;
 
@@ -71,7 +75,7 @@ export const Intro: FC<PropsType> = ({
   const lookingForJobTxt = i18n.t('messages:initialMessage');
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
-      <S.Flex>
+      <S.ButtonsWrapper>
         <S.ImageButton>
           <S.IntroImage
             src={theme?.imageUrl || ICONS.LOGO}
@@ -83,7 +87,9 @@ export const Intro: FC<PropsType> = ({
           <S.Question>{lookingForJobTxt}</S.Question>
           <S.Options>{chooseOptions}</S.Options>
         </S.InfoContent>
-      </S.Flex>
+      </S.ButtonsWrapper>
+      <EmailForm setIsOtpSent={setIsOtpSent} isOtpSent={isOtpSent} />
+      {!isOtpSent && <OneTimePassword />}
     </S.Wrapper>
   );
 };

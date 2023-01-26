@@ -3,10 +3,10 @@ import React, { FC, useState } from 'react';
 import * as S from './styles';
 import i18n from 'services/localization';
 
-import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { validateEmail } from 'utils/helpers';
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
+import { INPUT_TYPES } from 'components/Layout/Input/types';
 
 type PropsType = {};
 const rows = 3;

@@ -16,7 +16,7 @@ const ThemeContextProvider = ({ value, children }: PropsType) => {
 
   useEffect(() => {
     !!value && setApiTheme(parseThemeResponse(value));
-  }, [value])
+  }, [value]);
 
   useEffect(() => {
     if (apiKey) {

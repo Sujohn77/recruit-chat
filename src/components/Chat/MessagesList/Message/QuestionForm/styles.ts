@@ -1,4 +1,4 @@
-import { FormInput } from 'components/Layout/Input/styles';
+import { FormInput } from 'components/Layout/Autocomplete/styles';
 import { DarkButton, DefaultButton } from 'components/Layout/styles';
 import styled from 'styled-components';
 import { colors } from 'utils/colors';

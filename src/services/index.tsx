@@ -17,6 +17,11 @@ import {
   ISendTranscriptResponse,
   ISendTranscript,
   IVerifyChatBotResponse,
+  IVerifyEmailRequest,
+  IJobAlertRequest,
+  IJobAlertResponse,
+  IVerifyEmailResponse,
+  IVerifyErrorResponse,
 } from './types';
 
 export const FORM_URLENCODED = {
@@ -25,7 +30,7 @@ export const FORM_URLENCODED = {
 
 const BASE_API_URL = 'https://qa-integrations.loopworks.com/';
 class Api {
-  private client: ApisauceInstance;
+  protected client: ApisauceInstance;
 
   constructor(baseURL = BASE_API_URL) {
     this.client = apisauce.create({
@@ -39,31 +44,17 @@ class Api {
     });
   }
 
-  setAuthHeader = (token: string) =>
-    this.client.setHeader('Authorization', `Bearer ${token}`);
-
-  setAuthHeaderToNull = () => this.client.setHeader('Authorization', '');
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);
-
   markChatRead = (chatId?: number) =>
     this.client.post<IUpdateMessagesResponse>(
       '/api/messenger/chat/acknowledge',
       { chatId }
     );
-
   getUserSelf = (data: AppKeyType) =>
     this.client.get<IUserSelf>('api/user/self', data);
-  loginUserCodeCheck = (data: { grantType: string }) =>
-    this.client.post<any>('api/auth/token', data.grantType, {
-      headers: FORM_URLENCODED,
-    });
-
-  loginUser = (data: any) => this.client.post<any>('api/auth/login', data);
-
   searchRequisitions = (data: IGetAllRequisitions & IApiSignedRequest) =>
     this.client.post<IRequisitionsResponse>('api/requisition/search', data);
-
   searchJobs = (data: ISearchJobsPayload) =>
     this.client.post<IRequisitionsResponse>('api/requisition/search', data);
   uploadCV = (data: IUploadCVPayload) =>
@@ -75,12 +66,41 @@ class Api {
       'api/messenger/chat/transcript/send',
       data
     );
-  verify = (chatBotData: string) =>
-    this.client.get<IVerifyChatBotResponse>(
+  createJobAlert = (data: IJobAlertRequest) => {
+    return this.client.get<IJobAlertResponse>('api/jobalert/create=' + data);
+  };
+}
+
+class AuthAPI extends Api {
+  setAuthHeader = (token: string) => {
+    return this.client.setHeader('Authorization', `Bearer ${token}`);
+  };
+
+  verifyByEmail = (data: IVerifyEmailRequest) => {
+    return this.client.post<Partial<IVerifyEmailResponse>>(
+      'api/candidate/verifybyemail',
+      data
+    );
+  };
+
+  verify = (chatBotData: string) => {
+    return this.client.get<IVerifyChatBotResponse>(
       'api/chatbot/verification?chatBotData=' + chatBotData
     );
+  };
+
+  loginUserCodeCheck = (data: { grantType: string }) => {
+    return this.client.post<any>('api/auth/token', data.grantType, {
+      headers: FORM_URLENCODED,
+    });
+  };
+
+  loginUser = (data: any) => {
+    return this.client.post<any>('api/auth/login', data);
+  };
 }
 
 export const apiInstance = new Api();
+export const authInstance = new AuthAPI();
 
 export default Api;

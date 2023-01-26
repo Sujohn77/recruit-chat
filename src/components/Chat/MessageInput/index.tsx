@@ -26,8 +26,8 @@ import {
 import { useChatMessanger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
 import { useFileUploadContext } from 'contexts/FileUploadContext';
-import { MultiSelectInput } from 'components/Layout/Input/MultiSelectInput';
-import { Autocomplete } from 'components/Layout/Input/Autocomplete';
+import { MultiSelectInput } from 'components/Layout/Autocomplete/MultiSelectInput';
+import { Autocomplete } from 'components/Layout/Autocomplete/DefaultAutocomplete';
 import BurgerMenu from 'components/Layout/BurgerMenu';
 import i18n from 'services/localization';
 import { useTextField } from 'utils/hooks';

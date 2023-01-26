@@ -2,33 +2,42 @@ import React, { FC, useState } from 'react';
 
 import * as S from './styles';
 import i18n from 'services/localization';
-import { DarkButton, DefaultButton } from 'components/Layout/styles';
-import { currencies, ICONS } from 'utils/constants';
+import { DarkButton } from 'components/Layout/styles';
+import { currencies } from 'utils/constants';
 
 import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
 import { getMessageProps } from 'utils/helpers';
 
 import { map } from 'lodash';
-import { TextField } from 'components/Layout/Input';
 import { useChatMessanger } from 'contexts/MessangerContext';
+import { DefaultInput } from 'components/Layout/Input';
 
 type PropsType = { message: ILocalMessage };
 
 export const SalaryForm: FC<PropsType> = ({ message }) => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction, error } = useChatMessanger();
   const [salary, setSalary] = useState('');
   const [currency, setCurrency] = useState('$');
   const messagesProps = getMessageProps(message);
   const buttonTxt = i18n.t('buttons:sent');
 
   const optionItems = map(currencies, (opt, index) => (
-    <S.Option selected={currency === opt} key={`currency-${index}`} onClick={() => setCurrency(opt)}>
+    <S.Option
+      selected={currency === opt}
+      key={`currency-${index}`}
+      onClick={() => setCurrency(opt)}
+    >
       {opt}
     </S.Option>
   ));
   return (
     <S.Wrapper {...messagesProps}>
-      <TextField value={salary} onChange={(e: any) => setSalary(e.target.value)} placeHolder={'0'} />
+      <DefaultInput
+        value={salary}
+        onChange={(e: any) => setSalary(e.target.value)}
+        placeHolder={'0'}
+        error={error}
+      />
       <S.Options>{optionItems}</S.Options>
       <DarkButton
         onClick={() =>
