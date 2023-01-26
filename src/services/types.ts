@@ -406,7 +406,6 @@ export enum IUserDataTokenKeys {
 export interface IVerifyEmailRequest {
   email: string;
   verificationCode: string;
-  externalSystemId: number;
 }
 
 export interface IJobAlertRequest {

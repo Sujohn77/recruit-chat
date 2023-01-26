@@ -10,7 +10,21 @@ export const Wrapper = styled.div`
   font-size: 14px;
   box-sizing: border-box;
 
-  animation: fade 0.5s ease-in !important;
+  animation: fadeHeight 0.6s ease-in-out !important;
+
+  @keyframes fadeHeight {
+    0% {
+      transform: scale(0.65) translate(-120px, 80px);
+      opacity: 0;
+      height: 0;
+    }
+
+    100% {
+      transform: scale(1) translate(0);
+      opacity: 1;
+      height: 184px;
+    }
+  }
 `;
 
 export const InputDescription = styled.p`
@@ -21,7 +35,7 @@ export const InputDescription = styled.p`
 `;
 
 export const EmailSentText = styled.p`
-  margin: 0;
+  margin-top: 16px;
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;

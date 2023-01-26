@@ -13,6 +13,8 @@ import { ThemeType } from 'utils/theme/default';
 import { EmailForm } from 'components/Intro/EmailLogin/Email';
 import { OtpForm } from 'components/Intro/OneTimePassword/OtpForm';
 import { OneTimePassword } from 'components/Intro/OneTimePassword';
+import { DefaultButton } from 'components/Layout/Buttons';
+import { ButtonsTheme } from 'components/Layout/Buttons/types';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -36,6 +38,8 @@ export const Intro: FC<PropsType> = ({
   isSelectedOption,
 }) => {
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(false);
+  const [isNeedSupport, setIsNeedSupport] = useState(false);
   const { triggerAction } = useChatMessanger();
   const theme = useTheme() as ThemeType;
 
@@ -47,6 +51,16 @@ export const Intro: FC<PropsType> = ({
     // }
 
     triggerAction({ type, payload: { item, isChatMessage: true } });
+  };
+
+  const onLoad = () => {
+    setTimeout(() => {
+      setIsFirstLoad(true);
+    }, 500);
+  };
+
+  const handleSupportClick = () => {
+    setIsNeedSupport(true);
   };
 
   const messages = {
@@ -75,7 +89,7 @@ export const Intro: FC<PropsType> = ({
   const lookingForJobTxt = i18n.t('messages:initialMessage');
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
-      <S.ButtonsWrapper>
+      <S.ButtonsWrapper onLoad={onLoad}>
         <S.ImageButton>
           <S.IntroImage
             src={theme?.imageUrl || ICONS.LOGO}
@@ -88,8 +102,17 @@ export const Intro: FC<PropsType> = ({
           <S.Options>{chooseOptions}</S.Options>
         </S.InfoContent>
       </S.ButtonsWrapper>
-      <EmailForm setIsOtpSent={setIsOtpSent} isOtpSent={isOtpSent} />
+      {isFirstLoad && (
+        <EmailForm setIsOtpSent={setIsOtpSent} isOtpSent={isOtpSent} />
+      )}
       {!isOtpSent && <OneTimePassword />}
+      <DefaultButton
+        variant="outlined"
+        value="Support"
+        style={{ width: '250px', margin: '0 auto 16px', display: 'block' }}
+        theme={ButtonsTheme.Purple}
+        onClick={handleSupportClick}
+      />
     </S.Wrapper>
   );
 };

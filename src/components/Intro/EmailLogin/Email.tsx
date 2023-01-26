@@ -46,7 +46,7 @@ export const EmailForm: FC<PropsType> = ({ isOtpSent, setIsOtpSent }) => {
   };
 
   return (
-    <S.Wrapper theme={theme}>
+    <S.Wrapper theme={theme} id="bot_email_form">
       <DefaultInput
         type={INPUT_TYPES.EMAIL}
         placeHolder="Email"

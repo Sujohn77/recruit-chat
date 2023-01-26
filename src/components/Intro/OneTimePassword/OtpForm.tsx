@@ -3,39 +3,50 @@ import { ButtonsTheme } from 'components/Layout/Buttons/types';
 import { DefaultInput } from 'components/Layout/Input';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { useAuthContext } from 'contexts/AuthContext';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 
 import { useTheme } from 'styled-components';
 import { InputTheme } from 'utils/constants';
 
 import { ThemeType } from 'utils/theme/default';
-import * as S from '../styles';
+import * as S from './styles';
+import * as IntoStyles from '../styles';
 
 export const OtpForm = () => {
-  const { setError, error } = useAuthContext();
+  const [error, setError] = useState<string | null>(null);
   const [isSubmit, setIsSubmit] = useState(false);
   const theme = useTheme() as ThemeType;
   const [oneTimePassword, setOneTimePassword] = useState('');
+  const ref = useRef<HTMLInputElement>(null);
 
   const onClick = () => {
-    setIsSubmit(true);
+    if (oneTimePassword.length === 6) {
+      setIsSubmit(true);
+    } else {
+      setError('Incorrect length');
+      setOneTimePassword('');
+      ref.current?.focus();
+    }
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setError(null);
-    setOneTimePassword(e.target.value);
+    if (e.target.value.length < 7) {
+      setError(null);
+      setOneTimePassword(e.target.value);
+    }
   };
 
   return (
-    <S.Wrapper theme={theme}>
+    <IntoStyles.Wrapper theme={theme}>
       <DefaultInput
-        type={INPUT_TYPES.EMAIL}
+        type={INPUT_TYPES.NUMBER}
         placeHolder="0000"
         value={oneTimePassword}
         onChange={onChange}
         theme={InputTheme.Default}
         error={error}
         style={{ textAlign: 'center', marginBottom: '16px' }}
+        ref={ref}
       />
       {!isSubmit ? (
         <DefaultButton
@@ -45,8 +56,8 @@ export const OtpForm = () => {
           style={{ padding: '0 10px' }}
         />
       ) : (
-        <S.EmailSentText>Thanks!</S.EmailSentText>
+        <S.OtpSentText>Thanks!</S.OtpSentText>
       )}
-    </S.Wrapper>
+    </IntoStyles.Wrapper>
   );
 };

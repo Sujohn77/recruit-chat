@@ -6,7 +6,21 @@ export const Wrapper = styled.div`
   display: flex;
   gap: 12px;
   margin: 0 0 0 16px;
-  animation: fade 0.3s ease-in;
+  animation: fadeHeight 0.6s ease-in;
+
+  @keyframes fadeHeight {
+    0% {
+      transform: scale(0.65) translate(-120px, 80px);
+      opacity: 0;
+      height: 0;
+    }
+
+    100% {
+      transform: scale(1) translate(0);
+      opacity: 1;
+      height: 250px;
+    }
+  }
 `;
 
 export const InputDescription = styled.p`
@@ -24,6 +38,10 @@ export const EmailSentText = styled.p`
   text-align: center;
   color: ${colors.black};
   opacity: 0.5;
+`;
+
+export const OtpSentText = styled(EmailSentText)`
+  margin: 0;
 `;
 
 export const OtpContent = styled.div`

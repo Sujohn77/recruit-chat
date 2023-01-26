@@ -11,6 +11,7 @@ import * as S from './styles';
 
 export const OneTimePassword = () => {
   const theme = useTheme() as ThemeType;
+
   return (
     <S.Wrapper>
       <S.IntroImageButton>

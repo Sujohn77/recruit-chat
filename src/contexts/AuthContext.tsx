@@ -24,7 +24,6 @@ const AuthProvider = ({ children }: PropsType) => {
       const response = await authInstance.verifyByEmail({
         email,
         verificationCode: generateOtp({ length: 6 }),
-        externalSystemId: 789,
       });
 
       if (response.data?.isEmailExists) {
