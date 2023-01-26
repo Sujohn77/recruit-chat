@@ -14,13 +14,13 @@ export const Wrapper = styled.div`
 
   @keyframes fadeHeight {
     0% {
-      transform: scale(0.65) translate(-120px, 80px);
+      transform: translate(0, 80px);
       opacity: 0;
       height: 0;
     }
 
     100% {
-      transform: scale(1) translate(0);
+      transform: translate(0);
       opacity: 1;
       height: 184px;
     }

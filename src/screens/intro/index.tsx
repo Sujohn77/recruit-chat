@@ -11,10 +11,10 @@ import { CHAT_ACTIONS } from 'utils/types';
 import { useTheme } from 'styled-components';
 import { ThemeType } from 'utils/theme/default';
 import { EmailForm } from 'components/Intro/EmailLogin/Email';
-import { OtpForm } from 'components/Intro/OneTimePassword/OtpForm';
-import { OneTimePassword } from 'components/Intro/OneTimePassword';
+import { TrialPassword } from 'components/Intro/TrialPassword';
 import { DefaultButton } from 'components/Layout/Buttons';
 import { ButtonsTheme } from 'components/Layout/Buttons/types';
+import { SupportForm } from 'components/Intro/SupportForm';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -87,6 +87,9 @@ export const Intro: FC<PropsType> = ({
     </S.Message>
   ));
   const lookingForJobTxt = i18n.t('messages:initialMessage');
+  const isEmailForm = isFirstLoad && !isNeedSupport;
+  const isOtpMessages = isOtpSent && !isNeedSupport;
+
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
       <S.ButtonsWrapper onLoad={onLoad}>
@@ -102,17 +105,29 @@ export const Intro: FC<PropsType> = ({
           <S.Options>{chooseOptions}</S.Options>
         </S.InfoContent>
       </S.ButtonsWrapper>
-      {isFirstLoad && (
+
+      {isEmailForm && (
         <EmailForm setIsOtpSent={setIsOtpSent} isOtpSent={isOtpSent} />
       )}
-      {!isOtpSent && <OneTimePassword />}
-      <DefaultButton
-        variant="outlined"
-        value="Support"
-        style={{ width: '250px', margin: '0 auto 16px', display: 'block' }}
-        theme={ButtonsTheme.Purple}
-        onClick={handleSupportClick}
-      />
+
+      {isOtpMessages && <TrialPassword />}
+
+      {!isNeedSupport && isFirstLoad && (
+        <DefaultButton
+          variant="outlined"
+          value="Support"
+          style={{
+            width: '250px',
+            margin: '0 auto 16px',
+            display: 'block',
+            animation: 'fadeHeight 0.6s ease-in',
+          }}
+          theme={ButtonsTheme.Purple}
+          onClick={handleSupportClick}
+        />
+      )}
+
+      {isNeedSupport && <SupportForm />}
     </S.Wrapper>
   );
 };

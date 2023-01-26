@@ -9,7 +9,7 @@ import { MessageType } from 'utils/types';
 import { OtpForm } from './OtpForm';
 import * as S from './styles';
 
-export const OneTimePassword = () => {
+export const TrialPassword = () => {
   const theme = useTheme() as ThemeType;
 
   return (
