@@ -70,7 +70,7 @@ class Api {
       data
     );
   createJobAlert = (data: IJobAlertRequest) => {
-    return this.client.get<IJobAlertResponse>('api/jobalert/create=' + data);
+    return this.client.post<IJobAlertResponse>('api/jobalert/create', data);
   };
 }
 

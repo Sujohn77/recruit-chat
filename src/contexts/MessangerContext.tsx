@@ -161,7 +161,7 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
           subscriberID, // TODO: getter
           email: email,
           location: getFormattedLocations(locations)[0],
-          jobCategory: category,
+          jobCategory: alertCategories?.length ? alertCategories[0] : '',
           externalSystemId: 789,
         });
       } catch (err) {
@@ -312,7 +312,6 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
             );
             const apiResponse = await apiInstance.searchJobs(data);
             additionalCondition = !!apiResponse.data?.requisitions.length;
-
             setCategory(null);
             setSearchLocations([]);
             if (apiResponse.data?.requisitions.length) {

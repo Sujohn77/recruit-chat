@@ -1,26 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 import { authInstance } from 'services';
 import { IAuthContext } from './types';
-import { authDefaultState } from 'utils/helpers';
-import { LocalStorage } from 'utils/constants';
 
+import { LocalStorage } from 'utils/constants';
+import { authDefaultState } from 'utils/helpers';
 type PropsType = {
   children: React.ReactNode;
 };
-const defaultSubscriberID = Number(
-  localStorage.getItem(LocalStorage.SubscriberID)
-);
 
 const AuthContext = createContext<IAuthContext>(authDefaultState);
+
 const AuthProvider = ({ children }: PropsType) => {
   const [isOTPpSent, setIsOTPSent] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [subscriberID, setSubscriberID] = useState<number | null>(
-    defaultSubscriberID
+    Number(localStorage.getItem(LocalStorage.SubscriberID))
   );
   const [mobileSubscribeId, setMobileSubscribeId] = useState<number | null>(
     null
