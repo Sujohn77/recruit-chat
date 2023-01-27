@@ -405,7 +405,7 @@ export enum IUserDataTokenKeys {
 // Requests
 export interface IVerifyEmailRequest {
   email: string;
-  verificationCode: string;
+  verificationCode: string | undefined;
 }
 
 export interface IJobAlertRequest {

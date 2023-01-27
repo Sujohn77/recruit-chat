@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import { colors } from '../../../utils/colors';
 
 import { Close, Flex, IntroImage } from '../../../screens/intro/styles';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { BackButton } from '../ViewJob/styles';
 import { ICONS } from 'utils/constants';
 import { ThemeType } from 'utils/theme/default';
@@ -69,7 +69,7 @@ export const ChatHeader: FC<PropsType> = ({
   setIsSelectedOption,
 }) => {
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob } = useChatMessanger();
+  const { viewJob, setViewJob } = useChatMessenger();
 
   const handleBackButton = () => {
     setViewJob(null);

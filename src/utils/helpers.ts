@@ -106,75 +106,6 @@ export const getActionTypeByOption = (option: USER_INPUTS) => {
   }
 };
 
-export const getChatResponseOnMessage = (userInput = ''): ILocalMessage[] => {
-  switch (userInput.toLowerCase()) {
-    case USER_INPUTS.ASK_QUESTION.toLowerCase(): {
-      return getParsedMessages([
-        {
-          text: 'What is the hiring process?',
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
-        {
-          text: 'Can I submit my CV',
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
-        {
-          text: 'How much work experience do I need for your company?',
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
-        {
-          text: 'OK! Here are a few popular questions to help you get started.',
-          subType: MessageType.TEXT,
-        },
-      ]);
-    }
-    case USER_INPUTS.FIND_JOB.toLowerCase(): {
-      return getParsedMessages([
-        {
-          subType: MessageType.BUTTON,
-          text: 'Answer questions',
-          isOwn: true,
-          isChatMessage: true,
-        },
-        {
-          subType: MessageType.BUTTON,
-          text: 'Upload CV',
-          isOwn: true,
-          isChatMessage: true,
-        },
-        {
-          subType: MessageType.TEXT,
-          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-        },
-      ]);
-    }
-    case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
-      return getParsedMessages([{ subType: MessageType.UPLOAD_CV }]);
-    }
-    case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
-      return getParsedMessages([{ subType: MessageType.HIRING_PROCESS }]);
-    }
-    case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
-      return getParsedMessages([
-        {
-          subType: MessageType.TEXT,
-          text: "What's your preferred job title? We'll try finding similar jobs.",
-        },
-      ]);
-    }
-
-    default: {
-      return [];
-    }
-  }
-};
-
 export const getParsedMessages = (
   messages: {
     subType?: MessageType;
@@ -303,8 +234,12 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
 export const authDefaultState: IAuthContext = {
   loginByEmail: emptyFunc,
   setError: emptyFunc,
+  clearAuthConfig: emptyFunc,
   error: '',
   subscriberID: null,
+  isVerified: false,
+  isOTPpSent: false,
+  verifyEmail: '',
   mobileSubscribeId: null,
 };
 

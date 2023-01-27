@@ -4,7 +4,7 @@ export const profile = {
   clientId: 12311,
   companies: [],
   countryCode: null,
-  email: 'stoneb0sh56@gmail.com',
+  email: 'roman.andreev@loopworks.com',
   externalId: null,
   firstName: 'Roman',
   hasSingleSignOn: true,

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { IFileUploadContext } from './types';
 import { fileUploadDefaultState } from 'utils/helpers';
-import { useChatMessanger } from './MessangerContext';
+import { useChatMessenger } from './MessangerContext';
 import { CHAT_ACTIONS, MessageType } from 'utils/types';
 import { apiInstance } from 'services';
 
@@ -16,7 +16,7 @@ const FileUploadContext = createContext<IFileUploadContext>(
 );
 
 const FileUploadProvider = ({ children }: PropsType) => {
-  const { triggerAction, submitMessage } = useChatMessanger();
+  const { triggerAction, submitMessage } = useChatMessenger();
   const [file, setFile] = useState<File | null>(null);
   const [fileResult, setFileResult] = useState<string | ArrayBuffer | null>(
     null

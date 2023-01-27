@@ -18,6 +18,7 @@ export const colors = {
   dimgray: '#696969',
   torchRed: '#FF2121',
   purple: '#908DFF',
+  doveGray: '#616161',
 };
 
 export const chatColors = {

@@ -83,6 +83,7 @@ export const en = {
     emailAnswer: 'Thanks! We will send you an answer on email',
     noMatchMessage:
       "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
+    wantContinue: 'Do you want to continue?',
   },
   chat_item_description: {
     lookingFor: 'Hi! Are you looking for a job',

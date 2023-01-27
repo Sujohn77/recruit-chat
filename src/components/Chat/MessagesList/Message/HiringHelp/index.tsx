@@ -7,12 +7,12 @@ import { ICONS } from 'utils/constants';
 
 import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
 import { getMessageProps } from 'utils/helpers';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 
 type PropsType = { message: ILocalMessage };
 
 export const HiringHelp: FC<PropsType> = ({ message }) => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction } = useChatMessenger();
 
   const messagesProps = getMessageProps(message);
   const title = i18n.t('chat_item_description:hiring_help_title');

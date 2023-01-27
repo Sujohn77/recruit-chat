@@ -23,7 +23,7 @@ import {
   validateEmail,
   validateEmailOrPhone,
 } from 'utils/helpers';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
 import { useFileUploadContext } from 'contexts/FileUploadContext';
 import { MultiSelectInput } from 'components/Layout/Autocomplete/MultiSelectInput';
@@ -46,7 +46,7 @@ export const MessageInput: FC<PropsType> = () => {
     currentMsgType,
     setError,
     error,
-  } = useChatMessanger();
+  } = useChatMessenger();
 
   // State
   const [draftMessage, setDraftMessage] = useState<string | null>(null);

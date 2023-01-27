@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { MessageBox } from 'components/Chat/MessagesList/Message/styles';
+
 import styled from 'styled-components';
 import { colors } from '../../utils/colors';
 
@@ -32,11 +32,6 @@ export const Wrapper = styled.div`
       transform-origin: 100% 100%;
     }
   }
-`;
-
-export const ButtonsWrapper = styled(Flex)`
-  margin-left: 16px;
-  margin-bottom: 18px;
 `;
 
 export const Close = styled.div<{ height?: string; color?: string }>`
@@ -94,31 +89,6 @@ export const Message = styled.div`
       opacity: 0;
     }
     100% {
-      opacity: 1;
-    }
-  }
-`;
-
-export const Question = styled(MessageBox)`
-  width: 225px;
-  padding: 0px 16px;
-  line-height: 41px;
-  border: none;
-  /* overflow: hidden; */
-  color: ${({ theme: { message } }) => message.chat.color};
-  font-weight: 500;
-  height: 41px;
-  box-sizing: border-box;
-  margin-bottom: 22px;
-  animation: fade 0.3s ease-in;
-  @keyframes fade {
-    0% {
-      transform: scale(0.85) translate(-30px);
-      opacity: 0;
-    }
-
-    100% {
-      transform: scale(1) translate(0);
       opacity: 1;
     }
   }

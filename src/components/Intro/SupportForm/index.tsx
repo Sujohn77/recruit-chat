@@ -1,16 +1,16 @@
-import React, { FC, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import * as S from './styles';
 import i18n from 'services/localization';
 
 import { validateEmail } from 'utils/helpers';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { DefaultButton } from 'components/Layout/Buttons';
 import { ButtonsTheme } from 'components/Layout/Buttons/types';
+import { colors } from 'utils/colors';
 
-type PropsType = {};
 const rows = 3;
 
 const validateFields = (email: string, text: string) => {
@@ -25,18 +25,28 @@ const validateFields = (email: string, text: string) => {
   return errors;
 };
 
-export const SupportForm: FC<PropsType> = () => {
-  const { triggerAction } = useChatMessanger();
+type PropsType = {
+  setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
+  isQuestionSubmit: boolean;
+};
+
+export const SupportForm: FC<PropsType> = ({
+  setIsQuestionSubmit,
+  isQuestionSubmit,
+}) => {
+  const { triggerAction } = useChatMessenger();
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
   const [email, setEmail] = useState('');
-  const [isSubmit, setIsSubmit] = useState(false);
+
   const [description, setDescription] = useState('');
   const sendTxt = i18n.t('buttons:send');
 
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);
     if (!updatedErrors.length) {
-      setIsSubmit(true);
+      setIsQuestionSubmit(true);
+      setEmail('');
+      setDescription('');
       triggerAction({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
     } else {
       setErrors(updatedErrors);
@@ -63,39 +73,37 @@ export const SupportForm: FC<PropsType> = () => {
   };
 
   return (
-    <div>
-      <S.Wrapper>
-        <S.Title>Support</S.Title>
-        <S.Description>How we can help you?</S.Description>
-        <S.QuestionInput
-          type={INPUT_TYPES.TEXT}
-          value={email}
-          onChange={onChangeEmail}
-          placeholder={'Email'}
-          error={!!emailError}
-          helperText={emailError}
+    <S.Wrapper>
+      <S.Title>Support</S.Title>
+      <S.Description>How we can help you?</S.Description>
+      <S.QuestionInput
+        type={INPUT_TYPES.TEXT}
+        value={email}
+        onChange={onChangeEmail}
+        placeholder={'Email'}
+        error={!!emailError}
+        helperText={emailError}
+      />
+      <S.QuestionInput
+        multiline={true}
+        minRows={rows}
+        value={description}
+        onChange={onChangeDescription}
+        placeholder={'I have a question...'}
+        error={!!descriptionError}
+        helperText={descriptionError}
+      />
+      {!isQuestionSubmit ? (
+        <DefaultButton
+          onClick={onSubmit}
+          theme={ButtonsTheme.Purple}
+          value={sendTxt}
         />
-        <S.QuestionInput
-          multiline={true}
-          minRows={rows}
-          value={description}
-          onChange={onChangeDescription}
-          placeholder={'Text'}
-          error={!!descriptionError}
-          helperText={descriptionError}
-        />
-        {!isSubmit ? (
-          <DefaultButton
-            onClick={onSubmit}
-            theme={ButtonsTheme.Purple}
-            value={sendTxt}
-          />
-        ) : (
-          <S.SuccessText>
-            We will send you an email with a response!
-          </S.SuccessText>
-        )}
-      </S.Wrapper>
-    </div>
+      ) : (
+        <S.SuccessText>
+          We will send you an email with a response!
+        </S.SuccessText>
+      )}
+    </S.Wrapper>
   );
 };

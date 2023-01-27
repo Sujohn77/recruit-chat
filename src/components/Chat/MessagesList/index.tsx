@@ -3,7 +3,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { Loader } from 'components/Layout/Loader';
 
 import * as S from './styles';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 
 import { useSocketContext } from 'contexts/SocketContext';
 import { InfiniteScrollView } from 'components/InfiniteScrollView';
@@ -16,7 +16,7 @@ type PropsType = {};
 const MESSAGE_SCROLL_LIST_DIV_ID = 'message-scroll-list';
 
 export const MessagesList: FC<PropsType> = () => {
-  const { messages, currentMsgType, status, nextMessages } = useChatMessanger();
+  const { messages, currentMsgType, status, nextMessages } = useChatMessenger();
   const { onLoadNextMessagesPage } = useSocketContext();
   const messagesRef = useRef<HTMLDivElement>(null);
 

@@ -4,7 +4,7 @@ import * as S from './styles';
 import i18n from 'services/localization';
 
 import { validateEmail } from 'utils/helpers';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS } from 'utils/types';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
 
@@ -24,7 +24,7 @@ const validateFields = (email: string, text: string) => {
 };
 
 export const QuestionForm: FC<PropsType> = () => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction } = useChatMessenger();
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
   const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');

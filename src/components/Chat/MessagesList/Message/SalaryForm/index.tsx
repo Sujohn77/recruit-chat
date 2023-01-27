@@ -9,13 +9,13 @@ import { CHAT_ACTIONS, ILocalMessage } from 'utils/types';
 import { getMessageProps } from 'utils/helpers';
 
 import { map } from 'lodash';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { DefaultInput } from 'components/Layout/Input';
 
 type PropsType = { message: ILocalMessage };
 
 export const SalaryForm: FC<PropsType> = ({ message }) => {
-  const { triggerAction, error } = useChatMessanger();
+  const { triggerAction, error } = useChatMessenger();
   const [salary, setSalary] = useState('');
   const [currency, setCurrency] = useState('$');
   const messagesProps = getMessageProps(message);

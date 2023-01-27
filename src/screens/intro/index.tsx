@@ -4,7 +4,7 @@ import * as S from './styles';
 
 import { ICONS } from '../../utils/constants';
 
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import i18n from 'services/localization';
 import { CHAT_ACTIONS } from 'utils/types';
 
@@ -15,6 +15,8 @@ import { TrialPassword } from 'components/Intro/TrialPassword';
 import { DefaultButton } from 'components/Layout/Buttons';
 import { ButtonsTheme } from 'components/Layout/Buttons/types';
 import { SupportForm } from 'components/Intro/SupportForm';
+import { DefaultMessages } from 'components/Intro/DefautMessages';
+import { useAuthContext } from 'contexts/AuthContext';
 
 export enum CHAT_OPTIONS {
   FIND_JOB = 'FIND JOB',
@@ -26,93 +28,43 @@ type PropsType = {
   isSelectedOption: boolean | boolean | null;
 };
 
-interface IOption {
-  icon: string;
-  message: string;
-  type: CHAT_ACTIONS;
-  size: string;
-}
-
 export const Intro: FC<PropsType> = ({
   setIsSelectedOption,
   isSelectedOption,
 }) => {
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [isFirstLoad, setIsFirstLoad] = useState(false);
+  const { accessToken } = useChatMessenger();
+  const { isOTPpSent } = useAuthContext();
+  const [isEmailForm, setIsEmailForm] = useState(false);
   const [isNeedSupport, setIsNeedSupport] = useState(false);
-  const { triggerAction } = useChatMessanger();
-  const theme = useTheme() as ThemeType;
+  const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
 
-  const onClick = (option: IOption) => {
-    const { message: item, type } = option;
-    setIsSelectedOption(true);
-    // if (window.parent) {
-    //   window.parent.postMessage({ height: '601px' }, '*');
-    // }
-
-    triggerAction({ type, payload: { item, isChatMessage: true } });
-  };
-
-  const onLoad = () => {
-    setTimeout(() => {
-      setIsFirstLoad(true);
-    }, 500);
+  const handleOptionsClick = () => {
+    setIsEmailForm(true);
   };
 
   const handleSupportClick = () => {
     setIsNeedSupport(true);
   };
 
-  const messages = {
-    options: [
-      {
-        icon: ICONS.SEARCH_ICON,
-        message: i18n.t('buttons:find_job'),
-        type: CHAT_ACTIONS.FIND_JOB,
-        size: '16px',
-      },
-      {
-        icon: ICONS.QUESTION,
-        message: i18n.t('buttons:ask_questions'),
-        type: CHAT_ACTIONS.ASK_QUESTION,
-        size: '16px',
-      },
-    ],
-  };
-
-  const chooseOptions = messages.options.map((opt, index) => (
-    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
-      {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={''} />}
-      <S.Text>{opt.message}</S.Text>
-    </S.Message>
-  ));
   const lookingForJobTxt = i18n.t('messages:initialMessage');
-  const isEmailForm = isFirstLoad && !isNeedSupport;
-  const isOtpMessages = isOtpSent && !isNeedSupport;
+  const continueTxt = i18n.t('messages:wantContinue');
+
+  const isOtpMessages = isOTPpSent && !isNeedSupport;
 
   return (
-    <S.Wrapper isClosed={!!isSelectedOption}>
-      <S.ButtonsWrapper onLoad={onLoad}>
-        <S.ImageButton>
-          <S.IntroImage
-            src={theme?.imageUrl || ICONS.LOGO}
-            size="20px"
-            alt="rob-face"
-          />
-        </S.ImageButton>
-        <S.InfoContent>
-          <S.Question>{lookingForJobTxt}</S.Question>
-          <S.Options>{chooseOptions}</S.Options>
-        </S.InfoContent>
-      </S.ButtonsWrapper>
+    <S.Wrapper isClosed={!!isSelectedOption && !!accessToken}>
+      <DefaultMessages
+        handleOptionsClick={handleOptionsClick}
+        text={lookingForJobTxt}
+        isOptions={!isQuestionSubmit}
+        setIsSelectedOption={setIsSelectedOption}
+      />
 
-      {isEmailForm && (
-        <EmailForm setIsOtpSent={setIsOtpSent} isOtpSent={isOtpSent} />
-      )}
+      {isEmailForm && <EmailForm />}
 
       {isOtpMessages && <TrialPassword />}
 
-      {!isNeedSupport && isFirstLoad && (
+      {!isNeedSupport && isEmailForm && (
         <DefaultButton
           variant="outlined"
           value="Support"
@@ -127,7 +79,20 @@ export const Intro: FC<PropsType> = ({
         />
       )}
 
-      {isNeedSupport && <SupportForm />}
+      {isNeedSupport && (
+        <SupportForm
+          isQuestionSubmit={isQuestionSubmit}
+          setIsQuestionSubmit={setIsQuestionSubmit}
+        />
+      )}
+
+      {isQuestionSubmit && (
+        <DefaultMessages
+          handleOptionsClick={handleOptionsClick}
+          text={continueTxt}
+          setIsSelectedOption={setIsSelectedOption}
+        />
+      )}
     </S.Wrapper>
   );
 };

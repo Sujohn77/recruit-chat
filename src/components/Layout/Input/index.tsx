@@ -1,4 +1,4 @@
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import React, {
   ChangeEvent,
   FC,
@@ -8,8 +8,9 @@ import React, {
   forwardRef,
   RefObject,
 } from 'react';
+import { Image } from 'screens/intro/styles';
 import { CSSProperties } from 'styled-components';
-import { InputTheme } from 'utils/constants';
+import { IMAGES, InputTheme } from 'utils/constants';
 import * as S from './styles';
 import { INPUT_TYPES } from './types';
 
@@ -26,6 +27,7 @@ type PropsType = {
   error?: string | null;
   style?: CSSProperties;
   ref?: React.ForwardedRef<HTMLInputElement>;
+  isErrorIcon?: boolean;
 };
 
 export const DefaultInput: FC<PropsType> = forwardRef(
@@ -40,6 +42,7 @@ export const DefaultInput: FC<PropsType> = forwardRef(
       theme = InputTheme.Secondary,
       error,
       style,
+      isErrorIcon = false,
     },
     ref
   ) => {
@@ -89,7 +92,17 @@ export const DefaultInput: FC<PropsType> = forwardRef(
           theme={theme}
           style={style}
         />
-        {error && <S.ErrorText>{error}</S.ErrorText>}
+        {error !== null && (
+          <S.ErrorText>
+            {error}
+            {isErrorIcon && (
+              <Image
+                src={IMAGES.WARN}
+                style={{ marginLeft: '5px', width: '12px', height: '12px' }}
+              />
+            )}
+          </S.ErrorText>
+        )}
       </S.Wrapper>
     );
   }

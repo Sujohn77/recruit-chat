@@ -17,13 +17,11 @@ import { validateEmail } from 'utils/helpers';
 import { ThemeType } from 'utils/theme/default';
 import * as S from '../styles';
 
-type PropsType = {
-  isOtpSent: boolean;
-  setIsOtpSent: Dispatch<SetStateAction<boolean>>;
-};
+type PropsType = {};
 
-export const EmailForm: FC<PropsType> = ({ isOtpSent, setIsOtpSent }) => {
-  const { loginByEmail, setError, error } = useAuthContext();
+export const EmailForm: FC<PropsType> = () => {
+  const { loginByEmail, setError, error, verifyEmail, isOTPpSent } =
+    useAuthContext();
 
   const theme = useTheme() as ThemeType;
   const [email, setEmail] = useState('');
@@ -32,12 +30,11 @@ export const EmailForm: FC<PropsType> = ({ isOtpSent, setIsOtpSent }) => {
     const emailError = validateEmail(email);
 
     if (!emailError.length) {
-      loginByEmail(email);
-      setEmail('');
-      setIsOtpSent(true);
+      loginByEmail({ email });
     } else {
-      emailError !== error && setError(error);
+      emailError !== error && setError(emailError);
     }
+    setEmail('');
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,9 +50,11 @@ export const EmailForm: FC<PropsType> = ({ isOtpSent, setIsOtpSent }) => {
         value={email}
         onChange={onChange}
         theme={InputTheme.Default}
-        error={error}
+        error={!verifyEmail ? error : null}
+        style={{ fontSize: '14px' }}
+        isErrorIcon
       />
-      {!isOtpSent ? (
+      {!isOTPpSent ? (
         <>
           <S.InputDescription>
             Login with an email or verify a new one please

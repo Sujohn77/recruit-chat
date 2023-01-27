@@ -43,6 +43,9 @@ class Api {
       transformResponse: (response: any) => JSON.parse(response),
     });
   }
+  setAuthHeader = (token: string) => {
+    return this.client.setHeader('Authorization', `Bearer ${token}`);
+  };
 
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>('/api/messenger/chat/send', payload);

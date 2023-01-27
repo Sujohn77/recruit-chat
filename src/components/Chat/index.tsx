@@ -11,7 +11,7 @@ import { Close } from 'screens/intro/styles';
 import i18n from 'services/localization';
 import { ViewJob } from './ViewJob';
 
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { CHAT_ACTIONS, IRequisition } from 'utils/types';
 import { useTheme } from 'styled-components';
 import { ThemeType } from 'utils/theme/default';
@@ -24,11 +24,17 @@ type PropsType = {
 
 export const chatId = 2433044;
 
-export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedOption }) => {
+export const Chat: FC<PropsType> = ({
+  setIsSelectedOption,
+  children,
+  isSelectedOption,
+}) => {
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob, triggerAction } = useChatMessanger();
+  const { viewJob, setViewJob, triggerAction } = useChatMessenger();
   const { file, notification, resetFile } = useFileUploadContext();
-  const title = viewJob ? i18n.t('chat_item_description:view_job_title') : i18n.t('chat_item_description:title');
+  const title = viewJob
+    ? i18n.t('chat_item_description:view_job_title')
+    : i18n.t('chat_item_description:title');
 
   const handleApplyJobClick = (viewJob: IRequisition | null) => {
     setViewJob(null);
@@ -47,7 +53,9 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedO
         <S.Notification>
           {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}
           <S.NotificationText>{file?.name || notification}</S.NotificationText>
-          {file?.name && <Close onClick={() => resetFile()} color={theme.primaryColor} />}
+          {file?.name && (
+            <Close onClick={() => resetFile()} color={theme.primaryColor} />
+          )}
         </S.Notification>
       )}
       <MessageInput />

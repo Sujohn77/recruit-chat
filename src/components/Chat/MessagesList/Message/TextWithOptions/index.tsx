@@ -1,4 +1,4 @@
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { map } from 'lodash';
 import React, { FC } from 'react';
 import { getNextActionType, IMessageProps } from 'utils/helpers';
@@ -12,7 +12,7 @@ interface IProps extends IMessageProps {
 
 export const TextWithOptions: FC<IProps> = (props) => {
   const { text, ...messageProps } = props;
-  const { triggerAction, currentMsgType } = useChatMessanger();
+  const { triggerAction, currentMsgType } = useChatMessenger();
 
   const onClick = (opt: string) => {
     if (currentMsgType) {

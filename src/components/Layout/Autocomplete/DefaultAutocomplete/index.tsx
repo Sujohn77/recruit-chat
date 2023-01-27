@@ -1,7 +1,7 @@
 import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
 import { DefaultInput } from 'components/Layout/Input';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -27,7 +27,7 @@ type PropsType = {
 };
 
 export const Autocomplete: FC<PropsType> = (props) => {
-  const { triggerAction, currentMsgType, user, error } = useChatMessanger();
+  const { triggerAction, currentMsgType, user, error } = useChatMessenger();
   const {
     matchedItems,
     value,

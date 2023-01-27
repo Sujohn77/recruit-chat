@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import React, { FC, memo, useCallback } from 'react';
 
 import { getMessageProps } from 'utils/helpers';
@@ -11,7 +11,7 @@ interface IProps {
   message: ILocalMessage;
 }
 export const ButtonMessage: FC<IProps> = memo(({ message }) => {
-  const { chooseButtonOption, messages } = useChatMessanger();
+  const { chooseButtonOption, messages } = useChatMessenger();
   const messageProps = { ...getMessageProps(message) };
 
   const onClick = useCallback(

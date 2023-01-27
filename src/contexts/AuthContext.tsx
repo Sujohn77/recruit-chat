@@ -3,34 +3,62 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { authInstance } from 'services';
 import { IAuthContext } from './types';
-import { authDefaultState, generateOtp } from 'utils/helpers';
+import { authDefaultState } from 'utils/helpers';
+import { LocalStorage } from 'utils/constants';
 
 type PropsType = {
   children: React.ReactNode;
 };
+const defaultSubscriberID = Number(
+  localStorage.getItem(LocalStorage.SubscriberID)
+);
 
 const AuthContext = createContext<IAuthContext>(authDefaultState);
 const AuthProvider = ({ children }: PropsType) => {
+  const [isOTPpSent, setIsOTPSent] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [subscriberID, setSubscriberID] = useState<number | null>(null);
+  const [subscriberID, setSubscriberID] = useState<number | null>(
+    defaultSubscriberID
+  );
   const [mobileSubscribeId, setMobileSubscribeId] = useState<number | null>(
     null
   );
 
-  useEffect(() => {}, []);
-
-  const loginByEmail = async (email: string) => {
+  const loginByEmail = async ({
+    email,
+    oneTimePassword,
+  }: {
+    oneTimePassword?: string;
+    email?: string;
+  }) => {
     try {
-      const response = await authInstance.verifyByEmail({
-        email,
-        verificationCode: generateOtp({ length: 6 }),
-      });
+      email && setVerifyEmail(email);
 
+      const data = {
+        email: verifyEmail || email || '',
+        verificationCode: oneTimePassword || undefined,
+      };
+      const response = await authInstance.verifyByEmail(data);
       if (response.data?.isEmailExists) {
-        const { subscriberID, MSISDN } = response.data;
-        subscriberID && setSubscriberID(subscriberID);
+        const { isOTPSent, MSISDN, isEmailVerified, subscriberID } =
+          response.data;
+
+        if (subscriberID) {
+          setSubscriberID(subscriberID);
+          localStorage.setItem(LocalStorage.SubscriberID, `${subscriberID}`);
+        }
         MSISDN && setMobileSubscribeId(MSISDN);
+        setIsVerified(!!response.data.isEmailVerified);
+        !isEmailVerified && setIsOTPSent(!!isOTPSent);
+      } else {
+        setError('');
       }
+
+      oneTimePassword &&
+        !response.data?.isEmailVerified &&
+        setError('Verify code is wrong');
 
       return response.ok;
     } catch (err) {
@@ -38,9 +66,25 @@ const AuthProvider = ({ children }: PropsType) => {
     }
   };
 
+  const clearAuthConfig = () => {
+    localStorage.removeItem(LocalStorage.SubscriberID);
+    setSubscriberID(null);
+    setMobileSubscribeId(null);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ loginByEmail, setError, error, subscriberID, mobileSubscribeId }}
+      value={{
+        loginByEmail,
+        setError,
+        error,
+        subscriberID,
+        mobileSubscribeId,
+        isOTPpSent,
+        isVerified,
+        verifyEmail,
+        clearAuthConfig,
+      }}
     >
       {children}
     </AuthContext.Provider>

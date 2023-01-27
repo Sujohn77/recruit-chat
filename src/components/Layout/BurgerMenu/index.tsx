@@ -1,5 +1,5 @@
 import { IconButton } from '@mui/material';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { map } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from 'services/localization';
@@ -38,7 +38,7 @@ interface IMenuItem {
   options?: string[];
 }
 const BurgerMenu = () => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction } = useChatMessenger();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

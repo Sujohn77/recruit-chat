@@ -57,10 +57,20 @@ export interface IFileUploadContext {
 
 export interface IAuthContext {
   setError: (error: string | null) => void;
-  loginByEmail: (email: string) => void;
+  loginByEmail: ({
+    email,
+    oneTimePassword,
+  }: {
+    email?: string;
+    oneTimePassword?: string;
+  }) => void;
   error: string | null;
   subscriberID: number | null;
   mobileSubscribeId: number | null;
+  isVerified: boolean;
+  isOTPpSent: boolean;
+  verifyEmail: string | null;
+  clearAuthConfig: () => void;
 }
 
 export interface IFileData {

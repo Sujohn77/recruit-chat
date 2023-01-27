@@ -105,7 +105,7 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
 
   const { requisitions, locations } = useRequisitions(accessToken);
-  const { subscriberID } = useAuthContext();
+  const { subscriberID, clearAuthConfig } = useAuthContext();
 
   // Effects
   useEffect(() => {
@@ -155,14 +155,18 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
     type: CHAT_ACTIONS;
   }) => {
     if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
-      apiInstance.createJobAlert({
-        chatBotID,
-        subscriberID, // TODO: getter
-        email: email,
-        location: getFormattedLocations(locations)[0],
-        jobCategory: category,
-        externalSystemId: 789,
-      });
+      try {
+        apiInstance.createJobAlert({
+          chatBotID,
+          subscriberID, // TODO: getter
+          email: email,
+          location: getFormattedLocations(locations)[0],
+          jobCategory: category,
+          externalSystemId: 789,
+        });
+      } catch (err) {
+        clearAuthConfig();
+      }
     }
   };
 
@@ -220,7 +224,7 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
             setError('Incorrect age');
             isErrors = true;
           } else {
-            setError('');
+            setError(null);
           }
           setUser({ ...user, age: payload?.item! });
           break;
@@ -274,7 +278,6 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
-          console.log('set');
           pushMessage({ action, messages, setMessages, accessToken });
         }
 
@@ -286,7 +289,6 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
   );
 
   useEffect(() => {
-    console.log('us');
     if (chatAction !== null && messages.length) {
       updateStateOnRequest(chatAction);
     }
@@ -482,6 +484,6 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
   );
 };
 
-const useChatMessanger = () => useContext(ChatContext);
+const useChatMessenger = () => useContext(ChatContext);
 
-export { ChatProvider, useChatMessanger };
+export { ChatProvider, useChatMessenger };

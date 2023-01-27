@@ -96,6 +96,7 @@ export const ua = {
     hiring_helpful_text: 'Has this reply has been helpful?',
     interested_in: 'Я зацікавлений',
     read_more: 'Дізнатись більше',
+    wantContinue: 'Бажаєте продовжити?',
   },
 
   chat_menu: {

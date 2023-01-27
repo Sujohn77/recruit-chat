@@ -81,6 +81,7 @@ export const fr = {
     emailAnswer: 'Merci! Nous vous enverrons une réponse par e-mail',
     noMatchMessage:
       "Désolé, nous n'avons trouvé aucune correspondance pour les recommandations d'emploi personnelles. Vous trouverez ci-dessous les actions que vous pouvez entreprendre.",
+    wantContinue: 'Voulez-vous continuer?',
   },
   chat_item_description: {
     title: 'Bot de carrière',

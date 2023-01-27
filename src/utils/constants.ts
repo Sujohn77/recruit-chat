@@ -9,6 +9,7 @@ import INPUT_PLANE from '../assets/icons/plane.svg';
 import ATTACHED_FILE from '../assets/icons/attachedFile.svg';
 import FINGER_UP from '../assets/icons/fingerUp.svg';
 import LOGO from '../assets/icons/logo.svg';
+import WARN from '../assets/imgs/warning.png';
 import SEARCH_ICON from '../assets/icons/search.svg';
 import QUESTION from '../assets/icons/question.svg';
 import {
@@ -25,6 +26,7 @@ import i18n from 'services/localization';
 export const IMAGES = {
   UPLOAD_FILE,
   CLOCK,
+  WARN,
 };
 export const ICONS = {
   OPENED_BURGER,
@@ -67,7 +69,7 @@ export const initialChatMessage = {
   localId: generateLocalId(),
   content: {
     subType: MessageType.INITIAL_MESSAGE,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+    text: 'Please choose one of the following options to begin your job search',
   },
   dateCreated: { seconds: moment().unix() },
   isOwn: false,
@@ -184,7 +186,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         },
         {
           subType: MessageType.TEXT,
-          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+          text: 'Please choose one of the following options to begin your job search',
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
@@ -397,4 +399,8 @@ export enum TextFieldTypes {
 export enum InputTheme {
   Default = 'default',
   Secondary = 'secondary',
+}
+
+export enum LocalStorage {
+  SubscriberID = 'subscriberID',
 }

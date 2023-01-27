@@ -1,4 +1,4 @@
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import React, { FC } from 'react';
 
 import { getMessageProps } from 'utils/helpers';
@@ -10,8 +10,12 @@ import * as S from './styles';
 interface IProps {
   message: ILocalMessage;
 }
-export const InterestedIn: FC<IProps> = ({ message }: { message: ILocalMessage }) => {
-  const { prefferedJob } = useChatMessanger();
+export const InterestedIn: FC<IProps> = ({
+  message,
+}: {
+  message: ILocalMessage;
+}) => {
+  const { prefferedJob } = useChatMessenger();
   const messageProps = { ...getMessageProps(message) };
 
   if (!prefferedJob) {

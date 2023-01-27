@@ -1,7 +1,7 @@
 import { Button, FormControl, TextField } from '@mui/material';
 import { FormInput } from 'components/Layout/Autocomplete/styles';
 
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import * as React from 'react';
 import { FC, useState } from 'react';
 import i18n from 'services/localization';
@@ -45,7 +45,7 @@ export const FormButton = styled(Button)`
 type PropsType = {};
 
 export const EmailForm: FC<PropsType> = () => {
-  const { triggerAction } = useChatMessanger();
+  const { triggerAction } = useChatMessenger();
   const [error, setError] = useState<string>('');
   const [touched, setTouched] = useState(false);
   const [value, setValue] = useState('');

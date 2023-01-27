@@ -1,6 +1,7 @@
 import { FormInput } from 'components/Layout/Autocomplete/styles';
 import { DarkButton } from 'components/Layout/styles';
 import styled from 'styled-components';
+import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -10,7 +11,7 @@ export const Wrapper = styled.div`
   border-radius: 10px;
   margin-bottom: 24px;
   position: relative;
-  margin: 0 0 16px 62px;
+  margin: 0 0 24px 62px;
   box-sizing: border-box;
   height: 273px;
 `;
@@ -49,8 +50,15 @@ export const SubmitButton = styled(DarkButton)`
 export const QuestionInput = styled(FormInput)`
   margin: 0 0 14px !important;
   width: 100% !important;
+
+  .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+    color: initial;
+  }
+
   input,
   textarea {
     background: #fff !important;
+    color: ${colors.doveGray};
+    font-family: 'Inter-Medium';
   }
 `;

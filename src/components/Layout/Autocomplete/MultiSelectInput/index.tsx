@@ -8,7 +8,7 @@ import { useAutocomplete } from '@mui/material';
 
 import { Close } from 'screens/intro/styles';
 import { colors } from 'utils/colors';
-import { useChatMessanger } from 'contexts/MessangerContext';
+import { useChatMessenger } from 'contexts/MessangerContext';
 import { isResultsType } from 'utils/helpers';
 import { TextInput } from 'components/Layout/Input/styles';
 
@@ -68,7 +68,7 @@ export const MultiSelectInput: FC<PropsType> = ({
     value: values,
     onChange: onChange,
   });
-  const { currentMsgType } = useChatMessanger();
+  const { currentMsgType } = useChatMessenger();
 
   const onDelete = (selectedIndex: number) => {
     onChange(

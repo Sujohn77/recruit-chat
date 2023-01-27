@@ -1,3 +1,4 @@
+import { useAuthContext } from 'contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import Api, { apiInstance, authInstance } from 'services';
 import { APP_VERSION } from './auth';
@@ -24,8 +25,8 @@ const data = {
   ...apiPayload,
 };
 
-// TODO: refactor
 export const useRequisitions = (accessToken: string | null) => {
+  const { subscriberID } = useAuthContext();
   const [requisitions, setRequisitions] = useState<
     { title: string; category: string }[]
   >([]);
@@ -33,10 +34,8 @@ export const useRequisitions = (accessToken: string | null) => {
 
   useEffect(() => {
     const getCategories = async (accessToken: string) => {
-      let response = null;
-
-      authInstance.setAuthHeader(accessToken);
-      response = await apiInstance.searchRequisitions(data);
+      apiInstance.setAuthHeader(accessToken);
+      const response = await apiInstance.searchRequisitions(data);
 
       if (response?.data?.requisitions?.length) {
         const requisitions = response.data.requisitions;
@@ -49,8 +48,8 @@ export const useRequisitions = (accessToken: string | null) => {
         );
       }
     };
-    accessToken && getCategories(accessToken);
-  }, [accessToken]);
+    subscriberID && accessToken && getCategories(accessToken);
+  }, [accessToken, subscriberID]);
 
   return { requisitions, locations };
 };

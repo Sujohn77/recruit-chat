@@ -13,7 +13,8 @@ import { ThemeContextProvider } from 'contexts/ThemeContext';
 import { apiInstance, authInstance } from 'services';
 import { IApiThemeResponse } from 'utils/api';
 import { useSearchParams } from 'react-router-dom';
-import { AuthProvider } from 'contexts/AuthContext';
+import { AuthProvider, useAuthContext } from 'contexts/AuthContext';
+import { HomeContent } from 'components/HomeContent';
 
 export const Container = styled.div`
   width: 370px;
@@ -28,10 +29,6 @@ const regExpUuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const Home = () => {
-  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
-    null
-  );
-
   const [isAccess, setIsAccess] = useState(false);
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
   const [originDomain, setOriginDomain] = useState<string | null>(null);
@@ -48,7 +45,6 @@ export const Home = () => {
       const origin = event.origin.match(/:\/\/(.[^/]+)/);
       const isOrigin = originDomain == null && !!origin?.length;
       if (isOrigin && window.location.href.indexOf(origin[1]) === -1) {
-        console.log(origin[1]);
         setOriginDomain(origin[1]);
       }
     };
@@ -94,26 +90,15 @@ export const Home = () => {
 
   return (
     <Container id="chat-bot">
-      <ChatProvider chatBotID={chatBotID}>
-        <ThemeContextProvider value={theme}>
-          <FileUploadProvider>
-            <SocketProvider>
-              <AuthProvider>
-                {isSelectedOption !== null && (
-                  <Chat
-                    setIsSelectedOption={setIsSelectedOption}
-                    isSelectedOption={isSelectedOption}
-                  />
-                )}
-                <Intro
-                  setIsSelectedOption={setIsSelectedOption}
-                  isSelectedOption={isSelectedOption}
-                />
-              </AuthProvider>
-            </SocketProvider>
-          </FileUploadProvider>
-        </ThemeContextProvider>
-      </ChatProvider>
+      <AuthProvider>
+        <ChatProvider chatBotID={chatBotID}>
+          <ThemeContextProvider value={theme}>
+            <FileUploadProvider>
+              <HomeContent />
+            </FileUploadProvider>
+          </ThemeContextProvider>
+        </ChatProvider>
+      </AuthProvider>
     </Container>
   );
 };
