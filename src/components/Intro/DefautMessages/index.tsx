@@ -27,14 +27,14 @@ const messages = {
 };
 
 type PropsType = {
-  handleOptionsClick: () => void;
+  setIsEmailForm: Dispatch<SetStateAction<boolean>>;
   text: string;
   isOptions?: boolean;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 };
 
 export const DefaultMessages: FC<PropsType> = ({
-  handleOptionsClick,
+  setIsEmailForm,
   text,
   isOptions = true,
   setIsSelectedOption,
@@ -48,9 +48,8 @@ export const DefaultMessages: FC<PropsType> = ({
     if (subscriberID) {
       setIsSelectedOption(true);
       triggerAction({ type, payload: { item, isChatMessage: true } });
-    } else {
-      handleOptionsClick();
     }
+    setIsEmailForm(!subscriberID);
   };
 
   const chooseOptions = messages.options.map((opt, index) => (

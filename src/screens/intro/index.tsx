@@ -38,10 +38,6 @@ export const Intro: FC<PropsType> = ({
   const [isNeedSupport, setIsNeedSupport] = useState(false);
   const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
 
-  const handleOptionsClick = () => {
-    setIsEmailForm(true);
-  };
-
   const handleSupportClick = () => {
     setIsNeedSupport(true);
   };
@@ -49,12 +45,12 @@ export const Intro: FC<PropsType> = ({
   const lookingForJobTxt = i18n.t('messages:initialMessage');
   const continueTxt = i18n.t('messages:wantContinue');
 
-  const isOtpMessages = isOTPpSent && !isNeedSupport;
+  const isOtpMessages = isOTPpSent && !isNeedSupport && isEmailForm;
 
   return (
     <S.Wrapper isClosed={!!isSelectedOption && !!accessToken}>
       <DefaultMessages
-        handleOptionsClick={handleOptionsClick}
+        setIsEmailForm={setIsEmailForm}
         text={lookingForJobTxt}
         isOptions={!isQuestionSubmit}
         setIsSelectedOption={setIsSelectedOption}
@@ -88,7 +84,7 @@ export const Intro: FC<PropsType> = ({
 
       {isQuestionSubmit && (
         <DefaultMessages
-          handleOptionsClick={handleOptionsClick}
+          setIsEmailForm={setIsEmailForm}
           text={continueTxt}
           setIsSelectedOption={setIsSelectedOption}
         />
