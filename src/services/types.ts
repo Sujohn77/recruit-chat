@@ -414,7 +414,6 @@ export interface IJobAlertRequest {
   email: string;
   location: string;
   jobCategory: string | null;
-  externalSystemId: number;
 }
 
 // Responses

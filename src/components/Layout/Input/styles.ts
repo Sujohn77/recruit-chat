@@ -80,4 +80,6 @@ export const ErrorText = styled.span`
   top: 20px;
   font-size: 13px;
   color: #d32f2f;
+  display: flex;
+  align-items: center;
 `;

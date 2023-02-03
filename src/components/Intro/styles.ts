@@ -3,12 +3,14 @@ import { colors } from 'utils/colors';
 
 export const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.message.chat.backgroundColor};
-  padding: 16px 20px;
+  padding: 22px 24px;
+  padding-bottom: 16px;
   border-radius: 20px;
   width: 250px;
   margin: 17px auto 24px !important;
   font-size: 14px;
   box-sizing: border-box;
+  position: relative;
 
   animation: fadeHeight 0.6s ease-in-out !important;
 

@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   margin: 0 0 24px 62px;
   box-sizing: border-box;
   height: 273px;
+  position: relative;
 `;
 
 export const Title = styled.p`

@@ -60,7 +60,7 @@ const AuthProvider = ({ children }: PropsType) => {
 
       return response.ok;
     } catch (err) {
-      setError(error);
+      setError('');
     }
   };
 

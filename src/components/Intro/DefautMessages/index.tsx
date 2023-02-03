@@ -45,6 +45,7 @@ export const DefaultMessages: FC<PropsType> = ({
 
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
+
     if (subscriberID) {
       setIsSelectedOption(true);
       triggerAction({ type, payload: { item, isChatMessage: true } });

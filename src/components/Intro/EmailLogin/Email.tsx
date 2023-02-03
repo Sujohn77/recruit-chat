@@ -3,23 +3,21 @@ import { ButtonsTheme } from 'components/Layout/Buttons/types';
 import { DefaultInput } from 'components/Layout/Input';
 import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { useAuthContext } from 'contexts/AuthContext';
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
+import { Close } from 'screens/intro/styles';
 
 import { useTheme } from 'styled-components';
+import { colors } from 'utils/colors';
 import { InputTheme } from 'utils/constants';
 import { validateEmail } from 'utils/helpers';
 import { ThemeType } from 'utils/theme/default';
 import * as S from '../styles';
 
-type PropsType = {};
+type PropsType = {
+  setIsEmailForm: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export const EmailForm: FC<PropsType> = () => {
+export const EmailForm: FC<PropsType> = ({ setIsEmailForm }) => {
   const { loginByEmail, setError, error, verifyEmail, isOTPpSent } =
     useAuthContext();
 
@@ -70,6 +68,12 @@ export const EmailForm: FC<PropsType> = () => {
           <S.EmailSentText>You’ve sent your email!</S.EmailSentText>
         </>
       )}
+      <Close
+        height="12px"
+        onClick={() => setIsEmailForm(false)}
+        color={colors.doveGray}
+        style={{ right: '7px', top: '8px' }}
+      />
     </S.Wrapper>
   );
 };

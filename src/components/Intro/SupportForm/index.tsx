@@ -10,6 +10,7 @@ import { INPUT_TYPES } from 'components/Layout/Input/types';
 import { DefaultButton } from 'components/Layout/Buttons';
 import { ButtonsTheme } from 'components/Layout/Buttons/types';
 import { colors } from 'utils/colors';
+import { Close } from 'screens/intro/styles';
 
 const rows = 3;
 
@@ -28,11 +29,13 @@ const validateFields = (email: string, text: string) => {
 type PropsType = {
   setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
   isQuestionSubmit: boolean;
+  setIsSupportForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export const SupportForm: FC<PropsType> = ({
   setIsQuestionSubmit,
   isQuestionSubmit,
+  setIsSupportForm,
 }) => {
   const { triggerAction } = useChatMessenger();
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
@@ -104,6 +107,12 @@ export const SupportForm: FC<PropsType> = ({
           We will send you an email with a response!
         </S.SuccessText>
       )}
+      <Close
+        height="12px"
+        onClick={() => setIsSupportForm(false)}
+        color={colors.doveGray}
+        style={{ right: '7px', top: '8px' }}
+      />
     </S.Wrapper>
   );
 };

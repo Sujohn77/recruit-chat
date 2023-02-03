@@ -224,7 +224,9 @@ export const MessageInput: FC<PropsType> = () => {
     getAccessWriteType(currentMsgType) &&
     (file || draftMessage || !!inputValues.length);
   const offset =
-    status !== Status.PENDING && !!searchLocations.length ? S.inputOffset : '0';
+    status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
+      ? S.inputOffset
+      : '0';
 
   return (
     <S.MessagesInput offset={offset}>

@@ -84,14 +84,14 @@ export const Home = () => {
     }
   }, [originDomain, chatBotID]);
 
-  if (isAccess) {
+  if (!isAccess) {
     return null;
   }
 
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        <ChatProvider chatBotID={chatBotID}>
+        <ChatProvider>
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>
               <HomeContent />

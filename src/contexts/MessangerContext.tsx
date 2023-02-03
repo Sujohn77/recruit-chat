@@ -51,7 +51,7 @@ import { loginUser } from 'services/auth';
 import { useAuthContext } from './AuthContext';
 
 type PropsType = {
-  chatBotID: string | null;
+  chatBotID?: string | null;
   children: React.ReactNode;
 };
 
@@ -76,7 +76,7 @@ export const validationUserContacts = ({
   return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
 
-const ChatProvider = ({ chatBotID, children }: PropsType) => {
+const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -162,7 +162,6 @@ const ChatProvider = ({ chatBotID, children }: PropsType) => {
           email: email,
           location: getFormattedLocations(locations)[0],
           jobCategory: alertCategories?.length ? alertCategories[0] : '',
-          externalSystemId: 789,
         });
       } catch (err) {
         clearAuthConfig();
