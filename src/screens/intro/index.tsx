@@ -56,7 +56,9 @@ export const Intro: FC<PropsType> = ({
         setIsSelectedOption={setIsSelectedOption}
       />
 
-      {!isOtpMessages && <EmailForm setIsEmailForm={setIsEmailForm} />}
+      {isEmailForm && !isOtpMessages && (
+        <EmailForm setIsEmailForm={setIsEmailForm} />
+      )}
 
       {isOtpMessages && <TrialPassword />}
 
@@ -69,6 +71,7 @@ export const Intro: FC<PropsType> = ({
             margin: '0 auto 16px',
             display: 'block',
             animation: 'fadeHeight 0.6s ease-in',
+            background: '#fff',
           }}
           theme={ButtonsTheme.Purple}
           onClick={handleSupportClick}

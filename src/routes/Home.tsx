@@ -84,7 +84,7 @@ export const Home = () => {
     }
   }, [originDomain, chatBotID]);
 
-  if (!isAccess) {
+  if (isAccess) {
     return null;
   }
 

@@ -21,7 +21,6 @@ import {
   IJobAlertRequest,
   IJobAlertResponse,
   IVerifyEmailResponse,
-  IVerifyErrorResponse,
 } from './types';
 
 export const FORM_URLENCODED = {
