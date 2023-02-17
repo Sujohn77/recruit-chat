@@ -11,7 +11,7 @@ const defaultTheme = {
   borderStyle: 'solid',
   borderWidth: '0px',
   borderColor: '#ccc',
-
+  chatbotName: '',
   header: {
     color: colors.alto,
   },

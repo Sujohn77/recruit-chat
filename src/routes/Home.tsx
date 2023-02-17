@@ -35,17 +35,19 @@ export const Home = () => {
   const [searchParams] = useSearchParams();
 
   const [chatBotID, setChatBotID] = useState<string | null>(null);
+  const [guid, setGuid] = useState<string | null>(null);
 
   useEffect(() => {
     const onPostMessage = (event: MessageEvent) => {
       if (regExpUuid.test(event.data)) {
-        setChatBotID(event.data);
+        setGuid(event.data);
       }
 
       const origin = event.origin.match(/:\/\/(.[^/]+)/);
       const isOrigin = originDomain == null && !!origin?.length;
+      console.log(event);
       if (isOrigin && window.location.href.indexOf(origin[1]) === -1) {
-        setOriginDomain(origin[1]);
+        setOriginDomain(event.origin);
       }
     };
 
@@ -59,39 +61,41 @@ export const Home = () => {
   useEffect(() => {
     const newChatBotId = searchParams.get('chatBotId');
     if (newChatBotId) {
-      setChatBotID(newChatBotId);
+      setGuid(newChatBotId);
     }
   }, [searchParams]);
 
   useEffect(() => {
     const vefiryChat = async (guid: string, originDomain: string) => {
-      const bufferKey = Buffer.from(`${guid}:${originDomain}`);
+      const bufferKey = Buffer.from(`${guid}|${originDomain}`);
       const encodedKey = bufferKey.toString('base64');
       const response = await authInstance.verify(encodedKey);
+      if (!response.data) return;
 
-      if (response.data?.isDomainVerified) {
+      const { isDomainVerified, chatBotStyle, chatBotId } = response.data;
+      if (isDomainVerified) {
         setIsAccess(true);
-        response.data.chatBotStyle &&
-          setTheme(JSON.parse(response.data.chatBotStyle));
+        chatBotStyle && setTheme(JSON.parse(chatBotStyle));
+        setChatBotID(chatBotId);
       } else {
         setChatBotID(null);
         setOriginDomain(null);
       }
     };
 
-    if (originDomain && chatBotID) {
-      vefiryChat(chatBotID, originDomain);
+    if (originDomain && guid) {
+      vefiryChat(guid, originDomain);
     }
-  }, [originDomain, chatBotID]);
+  }, [originDomain, guid]);
 
-  if (isAccess) {
+  if (!isAccess) {
     return null;
   }
 
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        <ChatProvider>
+        <ChatProvider chatBotID={chatBotID}>
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>
               <HomeContent />

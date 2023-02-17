@@ -129,13 +129,6 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
       return [
         {
-          subType: MessageType.TEXT_WITH_CHOICE,
-          text: i18n.t('messages:alertPeriod'),
-        },
-      ];
-    case CHAT_ACTIONS.SET_ALERT_PERIOD:
-      return [
-        {
           subType: MessageType.TEXT,
           text: i18n.t('messages:alertEmail'),
         },
@@ -144,7 +137,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t('messages:successSubscribed', { period: param }),
+          text: i18n.t('messages:successSubscribed'),
         },
       ];
     case CHAT_ACTIONS.APPLY_POSITION:

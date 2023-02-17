@@ -139,10 +139,7 @@ export const MessageInput: FC<PropsType> = () => {
   }, [draftMessage, sendMessage]);
 
   useEffect(() => {
-    if (
-      currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS ||
-      currentMsgType === CHAT_ACTIONS.SET_ALERT_PERIOD
-    ) {
+    if (currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS) {
       setInputValues([]);
     }
   }, [currentMsgType]);

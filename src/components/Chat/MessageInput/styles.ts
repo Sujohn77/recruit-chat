@@ -8,7 +8,10 @@ export const inputOffset = '-30px';
 export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   min-height: 50px;
   z-index: 1;
-  position: relative !important;
+  /* position: relative !important; */
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   padding: 10px 16px;
@@ -28,7 +31,8 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   position: absolute;
   width: 100%;
   left: 0;
-  top: ${({ searchOptionsHeight }) => -searchOptionsHeight - searchHeaderHeight + 'px'};
+  top: ${({ searchOptionsHeight }) =>
+    -searchOptionsHeight - searchHeaderHeight + 'px'};
   color: ${({ theme: { searchResults } }) => searchResults.color};
   font-weight: 500;
   z-index: 1;

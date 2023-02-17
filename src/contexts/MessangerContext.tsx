@@ -199,10 +199,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
           setAlertCategories(payload?.items!);
           return;
         }
-        case CHAT_ACTIONS.SET_ALERT_PERIOD: {
-          setAlertPeriod(payload?.item!);
-          break;
-        }
         case CHAT_ACTIONS.INTERESTED_IN: {
           const job = getItemById(offerJobs, payload?.item!);
           setPrefferedJob(job!);

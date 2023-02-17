@@ -34,7 +34,7 @@ export const Chat: FC<PropsType> = ({
   const { file, notification, resetFile } = useFileUploadContext();
   const title = viewJob
     ? i18n.t('chat_item_description:view_job_title')
-    : i18n.t('chat_item_description:title');
+    : theme.chatbotName || i18n.t('chat_item_description:title');
 
   const handleApplyJobClick = (viewJob: IRequisition | null) => {
     setViewJob(null);

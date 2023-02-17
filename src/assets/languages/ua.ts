@@ -45,7 +45,7 @@ export const ua = {
     daily: 'Daily',
     alertEmail:
       "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
-    successSubscribed: "You've successfully subscribed to Weekly job alerts.",
+    successSubscribed: "You've successfully subscribed to job alerts.",
     thanks: 'Thanks!',
     contactLater: 'We will only contact you for potential job opportunities.',
     niceToMeet: 'Nice to meet you, {{name}}',

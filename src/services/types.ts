@@ -29,6 +29,7 @@ export interface ISendMessageResponse {
 export interface IVerifyChatBotResponse {
   isDomainVerified: boolean;
   chatBotStyle: string | null;
+  chatBotId: string | null;
 }
 
 export interface IUpdateMessagesResponse {
