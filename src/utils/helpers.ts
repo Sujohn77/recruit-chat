@@ -44,6 +44,8 @@ import {
 import { IApiThemeResponse } from './api';
 import { sendMessage } from 'services/hooks';
 
+const emptyFunc = () => console.log();
+
 export interface IMessageProps {
     color?: string;
     backColor?: string;
@@ -165,10 +167,9 @@ export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf):
         localId: requestMessage.localId,
         content: {
             typeId: MessageTypeId.text,
-            subTypeId: null,
+            subType: requestMessage.subType,
             contextId: requestMessage.contextId || null,
             text: requestMessage.msg,
-            subType: MessageType.TEXT,
             url: null,
         },
         dateCreated: {
@@ -190,7 +191,6 @@ export const capitalizeFirstLetter = (str: string) => {
 
 // CONTEXT
 
-const emptyFunc = () => console.log();
 export const chatMessangerDefaultState: IChatMessangerContext = {
     messages: [],
     status: null,
@@ -215,18 +215,6 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
     setViewJob: emptyFunc,
     submitMessage: emptyFunc,
     setIsInitialized: emptyFunc,
-};
-
-export const authDefaultState: IAuthContext = {
-    loginByEmail: emptyFunc,
-    setError: emptyFunc,
-    clearAuthConfig: emptyFunc,
-    error: '',
-    subscriberID: null,
-    isVerified: false,
-    isOTPpSent: false,
-    verifyEmail: '',
-    mobileSubscribeId: null,
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -455,20 +443,23 @@ export const pushMessage = ({ action, messages, setMessages, accessToken }: IPus
             // Push initial message
             const initialMessage = {
                 ...defaultServerMessage,
-                msg: initialMessages[0].content.text || '',
+                msg: initialMessages[0].content.text,
+                subType: initialMessages[0].content.subType,
+                // msg: initialMessages[0].content.text || '',
                 localId: `${initialMessages[0].localId}`,
             };
 
-            // !messages.length && sendMessage(initialMessage, accessToken);
+            !messages.length && sendMessage(initialMessage, accessToken);
 
-            // // Send chat message
-            // const msg = {
-            //   ...defaultServerMessage,
-            //   msg: message.content.text,
-            //   localId: `${message.localId}`,
-            // };
+            // Send chat message
+            const msg = {
+                ...defaultServerMessage,
+                msg: initialMessages[0].content.text,
+                subType: initialMessages[0].content.subType,
+                localId: `${message.localId}`,
+            };
 
-            // sendMessage(msg, accessToken);
+            sendMessage(msg, accessToken);
         }
     }
 
