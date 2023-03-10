@@ -22,7 +22,8 @@ const data = {
     pageSize: 20,
     page: 1,
     keyword: '',
-    ...apiPayload,
+    companyId: '6591',
+    externalSystemId: 789,
 };
 
 export const useRequisitions = (accessToken: string | null) => {

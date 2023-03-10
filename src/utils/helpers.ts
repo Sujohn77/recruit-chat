@@ -39,6 +39,7 @@ import {
     getReplaceMessageType,
     isPushMessageType,
     isReversePush,
+    LocalStorage,
     TextFieldTypes,
 } from './constants';
 import { IApiThemeResponse } from './api';
@@ -167,7 +168,8 @@ export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf):
         localId: requestMessage.localId,
         content: {
             typeId: MessageTypeId.text,
-            subType: requestMessage.subType,
+            // subType: requestMessage.subType,
+            subType: MessageType.TEXT,
             contextId: requestMessage.contextId || null,
             text: requestMessage.msg,
             url: null,
@@ -310,6 +312,7 @@ export const getParsedMessage = ({
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
+    console.log(messages);
     const parsedMessages = messages.map((msg) => {
         const content: IContent = {
             subType: msg.content.subType,
@@ -441,25 +444,16 @@ export const pushMessage = ({ action, messages, setMessages, accessToken }: IPus
     if (message.content.text) {
         if (accessToken) {
             // Push initial message
-            const initialMessage = {
-                ...defaultServerMessage,
-                msg: initialMessages[0].content.text,
-                subType: initialMessages[0].content.subType,
-                // msg: initialMessages[0].content.text || '',
-                localId: `${initialMessages[0].localId}`,
-            };
-
-            !messages.length && sendMessage(initialMessage, accessToken);
-
-            // Send chat message
-            const msg = {
-                ...defaultServerMessage,
-                msg: initialMessages[0].content.text,
-                subType: initialMessages[0].content.subType,
-                localId: `${message.localId}`,
-            };
-
-            sendMessage(msg, accessToken);
+            // TODO: uncomment when backend is ready
+            // const isInitialMessage = !messages.length;
+            // const serverMessage = {
+            //     ...defaultServerMessage,
+            //     msg: isInitialMessage ? initialMessages[0].content.text : message.content.text,
+            //     // subType: isInitialMessage ? initialMessages[0].content.subType : message.content.subType,
+            //     // msg: initialMessages[0].content.text || '',
+            //     localId: `${initialMessages[0].localId}`,
+            // };
+            // sendMessage(serverMessage, accessToken);
         }
     }
 
@@ -676,6 +670,12 @@ export const parseThemeResponse = (res: IApiThemeResponse) => {
         chatbotName: res.chatbot_name,
         chatbotHeaderTextColor: res.chatbot_header_text_colour,
     };
+};
+
+export const getStorageValue = (key: LocalStorage, defaultValue?: string | number | null) => {
+    const item = localStorage.getItem(key);
+    const value = item ? JSON.parse(item) : item;
+    return value || defaultValue;
 };
 
 export const generateOtp = ({ length = 6 }: { length?: number }) => {

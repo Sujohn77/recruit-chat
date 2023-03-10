@@ -38,15 +38,11 @@ export const Home = () => {
 
     useEffect(() => {
         const onPostMessage = (event: MessageEvent) => {
-            if (regExpUuid.test(event.data)) {
+            if (event.data.ChatBotGUID && regExpUuid.test(event.data.ChatBotGUID)) {
                 setGuid(event.data);
-            }
-
-            const origin = event.origin.match(/:\/\/(.[^/]+)/);
-            const isOrigin = originDomain == null && !!origin?.length;
-            console.log(event);
-            if (isOrigin && window.location.href.indexOf(origin[1]) === -1) {
-                setOriginDomain(event.origin);
+            } else if (event.data.chatbot_name) {
+                setTheme(event.data);
+            } else if (regExpUuid.test(event.data)) {
             }
         };
 
@@ -64,30 +60,7 @@ export const Home = () => {
         }
     }, [searchParams]);
 
-    useEffect(() => {
-        const vefiryChat = async (guid: string, originDomain: string) => {
-            const bufferKey = Buffer.from(`${guid}|${originDomain}`);
-            const encodedKey = bufferKey.toString('base64');
-            const response = await authInstance.verify(encodedKey);
-            if (!response.data) return;
-
-            const { isDomainVerified, chatBotStyle, chatBotId } = response.data;
-            if (isDomainVerified) {
-                setIsAccess(true);
-                chatBotStyle && setTheme(JSON.parse(chatBotStyle));
-                setChatBotID(chatBotId);
-            } else {
-                setChatBotID(null);
-                setOriginDomain(null);
-            }
-        };
-
-        if (originDomain && guid) {
-            vefiryChat(guid, originDomain);
-        }
-    }, [originDomain, guid]);
-
-    if (!isAccess) {
+    if (isAccess) {
         return null;
     }
 

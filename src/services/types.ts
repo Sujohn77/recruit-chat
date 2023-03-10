@@ -57,7 +57,7 @@ export interface IApiMessage {
     candidateId: number;
     contextId: string | null;
     msg: string | undefined;
-    subType: MessageType;
+    // subType: MessageType;
     images: Record<'url', string>[];
     messageTemplateId?: string;
     localId: string;
@@ -139,6 +139,7 @@ export interface IMessage extends I_id, IMessageContent {
     isOwn: boolean;
     sender: IUserSelf;
     searchValue: string;
+    isReceived?: boolean;
 }
 export interface ISendMessageResponse {
     chatId: number;
@@ -237,9 +238,9 @@ export interface ISearchJobsPayload {
     page: number;
     keyword: string;
     companyId: string;
-    minDatePosted: string;
-    categories: string[];
-    location: {
+    minDatePosted?: string;
+    categories?: string[];
+    location?: {
         city: string;
         state: null;
         postalCode: null;

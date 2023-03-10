@@ -6,6 +6,7 @@ import { authInstance } from 'services';
 import { IAuthContext } from './types';
 
 import { LocalStorage } from 'utils/constants';
+import { useChatMessenger } from './MessangerContext';
 
 type PropsType = {
     children: React.ReactNode;
@@ -27,12 +28,13 @@ export const authDefaultState: IAuthContext = {
 const AuthContext = createContext<IAuthContext>(authDefaultState);
 
 const AuthProvider = ({ children }: PropsType) => {
+    const { accessToken } = useChatMessenger();
     const [isOTPpSent, setIsOTPSent] = useState(false);
     const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
     const [isVerified, setIsVerified] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [subscriberID, setSubscriberID] = useState<number | null>(
-        Number(localStorage.getItem(LocalStorage.SubscriberID)) || 8
+        Number(localStorage.getItem(LocalStorage.SubscriberID)) || null
     );
     const [mobileSubscribeId, setMobileSubscribeId] = useState<number | null>(null);
 
@@ -44,10 +46,11 @@ const AuthProvider = ({ children }: PropsType) => {
                 email: verifyEmail || email || '',
                 verificationCode: oneTimePassword || undefined,
             };
+
+            accessToken && authInstance.setAuthHeader(accessToken);
             const response = await authInstance.verifyByEmail(data);
             if (response.data?.isEmailExists) {
                 const { isOTPSent, MSISDN, isEmailVerified, subscriberID } = response.data;
-
                 if (subscriberID) {
                     setSubscriberID(subscriberID);
                     localStorage.setItem(LocalStorage.SubscriberID, `${subscriberID}`);

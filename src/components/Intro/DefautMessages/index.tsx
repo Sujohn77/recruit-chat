@@ -3,7 +3,7 @@ import { useChatMessenger } from 'contexts/MessangerContext';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import i18n from 'services/localization';
 import { useTheme } from 'styled-components';
-import { ICONS } from 'utils/constants';
+import { ICONS, LocalStorage } from 'utils/constants';
 import { ThemeType } from 'utils/theme/default';
 import { CHAT_ACTIONS } from 'utils/types';
 import * as S from './styles';
@@ -43,6 +43,7 @@ export const DefaultMessages: FC<PropsType> = ({ setIsEmailForm, text, isOptions
         if (isVerified && initialOption) {
             const { message: item, type } = initialOption;
             triggerAction({ type, payload: { item, isChatMessage: true } });
+
             setInitialOption(null);
         }
     }, [isVerified, triggerAction, initialOption]);
@@ -50,12 +51,18 @@ export const DefaultMessages: FC<PropsType> = ({ setIsEmailForm, text, isOptions
     const onClick = (option: IOption) => {
         const { message: item, type } = option;
 
-        if (subscriberID) {
-            setIsSelectedOption(true);
-            triggerAction({ type, payload: { item, isChatMessage: true } });
-        } else {
-            setInitialOption(option);
-        }
+        setIsSelectedOption(true);
+        triggerAction({ type, payload: { item, isChatMessage: true } });
+        localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
+
+        // if (subscriberID) {
+        //     setIsSelectedOption(true);
+        //     triggerAction({ type, payload: { item, isChatMessage: true } });
+        //     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
+        // } else {
+        //     setInitialOption(option);
+        // }
+
         setIsEmailForm(!subscriberID);
     };
 

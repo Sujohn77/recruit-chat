@@ -42,7 +42,7 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) 
     const lookingForJobTxt = i18n.t('messages:initialMessage');
     const continueTxt = i18n.t('messages:wantContinue');
 
-    const isOtpMessages = isOTPpSent && !isNeedSupport;
+    // const isOtpMessages = isOTPpSent && !isNeedSupport;
 
     return (
         <S.Wrapper isClosed={!!isSelectedOption && !!accessToken}>
@@ -53,9 +53,9 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) 
                 setIsSelectedOption={setIsSelectedOption}
             />
 
-            {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
+            {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
 
-            {isOtpMessages && !isVerified && <TrialPassword />}
+            {isOtpMessages && !isVerified && <TrialPassword />} */}
 
             {!isNeedSupport && isEmailForm && !isVerified && (
                 <DefaultButton
