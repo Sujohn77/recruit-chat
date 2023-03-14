@@ -28,7 +28,7 @@ export const Container = styled.div`
 const regExpUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const Home = () => {
-    const [isAccess, setIsAccess] = useState(false);
+    // const [isAccess, setIsAccess] = useState(false);
     const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
     const [originDomain, setOriginDomain] = useState<string | null>(null);
     const [searchParams] = useSearchParams();
@@ -59,10 +59,6 @@ export const Home = () => {
             setGuid(newChatBotId);
         }
     }, [searchParams]);
-
-    if (isAccess) {
-        return null;
-    }
 
     return (
         <Container id="chat-bot">

@@ -82,10 +82,17 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
             return [
                 {
-                    subType: MessageType.TEXT,
+                    subType: MessageType.TEXT_WITH_BUTTON,
                     text: 'Your resume has been attached. You can click the X to remove it and re-upload another one or click here to upload and search for jobs',
                 },
             ];
+        // case CHAT_ACTIONS.SEARCH_WITH_RESUME:
+        //     return [
+        //         {
+        //             subType: MessageType.FILE,
+        //             text: param,
+        //         },
+        //     ];
         case CHAT_ACTIONS.SAVE_TRANSCRIPT:
             return [
                 {
@@ -328,9 +335,9 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
     );
 };
 
-export const isReversePush = (type: CHAT_ACTIONS) => {
-    return type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
-};
+// export const isReversePush = (type: CHAT_ACTIONS) => {
+//     return type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
+// };
 
 export const getChatActionResponse = ({
     type,
@@ -340,7 +347,7 @@ export const getChatActionResponse = ({
 }: IGetChatResponseProps): { newMessages: ILocalMessage[] } => {
     const messages = getChatActionMessages(type, param);
 
-    if (!accessToken) return { newMessages: [] };
+    // if (!accessToken) return { newMessages: [] };
 
     if (additionalCondition !== null && additionalCondition !== undefined && !additionalCondition) {
         const newType = type === CHAT_ACTIONS.SET_WORK_PERMIT ? CHAT_ACTIONS.NO_PERMIT_WORK : CHAT_ACTIONS.NO_MATCH;

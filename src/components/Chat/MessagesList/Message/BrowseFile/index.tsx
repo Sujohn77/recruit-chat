@@ -33,6 +33,8 @@ export const BrowseFile: FC<PropsType> = () => {
     };
     const browseTxt = i18n.t('buttons:browse');
     const cancelTxt = i18n.t('buttons:cancel');
+    const dragAndDropTxt = i18n.t('messages:uploadCV');
+
     return (
         <div>
             <DragAndDrop handleDrop={handleDrop}>
@@ -40,7 +42,7 @@ export const BrowseFile: FC<PropsType> = () => {
                     <S.Avatar onClick={onHandleUpload} />
                 </S.Circle>
 
-                <S.Text>Lorem ipsum dolor sit amet</S.Text>
+                <S.Text>{dragAndDropTxt}</S.Text>
                 <S.Text>or</S.Text>
                 <S.Browse htmlFor="myfile">{browseTxt}</S.Browse>
                 <input

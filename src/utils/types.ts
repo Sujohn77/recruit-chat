@@ -40,6 +40,7 @@ export enum MessageType {
     SALARY_FORM = 'salary_form',
     QUESTION_FORM = 'question_form',
     MULTIPLE_OPTIONS = 'MULTIPLE_OPTIONS',
+    TEXT_WITH_BUTTON = 'text_with_button',
     THANKS = 'thanks',
 }
 export interface IState {
@@ -115,6 +116,7 @@ export enum CHAT_ACTIONS {
     HIRING_PROCESS = 'hiring_process',
     UPLOAD_CV = 'upload_cv',
     SEND_ALERT_CATEGORIES = 'send_alert_categories',
+    SEARCH_WITH_RESUME = 'send_with_resume',
 }
 
 export enum Status {

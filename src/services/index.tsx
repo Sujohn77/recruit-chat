@@ -50,9 +50,10 @@ class Api {
     markChatRead = (chatId?: number) =>
         this.client.post<IUpdateMessagesResponse>('/api/messenger/chat/acknowledge', { chatId });
     getUserSelf = (data: AppKeyType) => this.client.get<IUserSelf>('api/user/self', data);
+    uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
     searchRequisitions = (data: ISearchJobsPayload) =>
         this.client.post<IRequisitionsResponse>('api/chatbot/searchRequisition', data);
-    uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
+    searchWithResume = () => this.client.get<IRequisitionsResponse>('api/requisition/searchbyresume/');
     createCandidate = (data: ICreationCandidatePayload) =>
         this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
     sendTranscript = (data: ISendTranscript & IApiSignedRequest) =>

@@ -80,6 +80,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     const { requisitions, locations } = useRequisitions(accessToken);
     const { subscriberID, clearAuthConfig } = useAuthContext();
+    const [resumeName, setResumeName] = useState('');
 
     // Effects
     useEffect(() => {
@@ -165,6 +166,10 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 case CHAT_ACTIONS.INTERESTED_IN: {
                     const job = getItemById(offerJobs, payload?.item!);
                     setPrefferedJob(job!);
+                    break;
+                }
+                case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
+                    payload?.item && setResumeName(payload?.item);
                     break;
                 }
                 case CHAT_ACTIONS.GET_USER_AGE: {
@@ -285,6 +290,10 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     const isPermitWork = payload?.item === 'Yes';
                     setUser({ ...user, isPermitWork });
                     additionalCondition = isPermitWork;
+                    break;
+                }
+                case CHAT_ACTIONS.SEARCH_WITH_RESUME: {
+                    apiInstance.searchWithResume();
                     break;
                 }
                 case CHAT_ACTIONS.APPLY_ETHNIC: {
@@ -417,6 +426,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 nextMessages,
                 accessToken,
                 setIsInitialized,
+                resumeName,
             }}
         >
             {children}

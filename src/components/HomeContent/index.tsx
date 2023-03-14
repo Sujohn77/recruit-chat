@@ -10,9 +10,7 @@ export const HomeContent = () => {
 
     return (
         <SocketProvider>
-            {accessToken && isSelectedOption && (
-                <Chat setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
-            )}
+            {isSelectedOption && <Chat setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />}
             <Intro setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
         </SocketProvider>
     );

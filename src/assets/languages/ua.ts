@@ -9,6 +9,7 @@ export const ua = {
         refine_search: 'Уточнити пошук роботи',
         find_job: 'Знайти роботу',
         ask_questions: 'Задати питання',
+        searchJobs: 'Пошук пропозицій по резюме',
     },
     placeHolders: {
         message: 'Повідомелння',
@@ -31,6 +32,7 @@ export const ua = {
     messages: {
         initialMessage: 'Привіт! Ви шукаєте роботу?',
         uploadCV: 'Завантажити CV',
+        dragAndDrop: 'Перетяніть своє резюме сюди',
         answerQuestions: 'Відповісти на запитання',
         whatJobTitle: 'Яка посада вам подобається? Спробуємо знайти схожу роботу.',
         botMessageYou:

@@ -9,6 +9,7 @@ export const en = {
         refine_search: 'Refine job search',
         find_job: 'Find a job',
         ask_questions: 'Ask questions',
+        searchJobs: 'Search jobs with resume',
     },
     placeHolders: {
         message: 'Type a message',
@@ -32,6 +33,7 @@ export const en = {
     messages: {
         initialMessage: 'Hi! Are you looking for a job?',
         uploadCV: 'Upload CV',
+        dragAndDrop: 'Drag and drop a resume file here',
         answerQuestions: 'Answer questions',
         whatJobTitle: "What's your preferred job title? We'll try finding similar jobs.",
         botMessageYou: 'Where do you want to work? This can be your current location or a list of preferred locations.',

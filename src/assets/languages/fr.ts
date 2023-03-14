@@ -9,6 +9,7 @@ export const fr = {
         refine_search: "Affiner la recherche d'emploi",
         find_job: 'Trouver un emploi',
         ask_questions: 'Poser des questions',
+        searchJobs: 'Search jobs with resume',
     },
     placeHolders: {
         message: 'Taper un message',
@@ -26,6 +27,7 @@ export const fr = {
     messages: {
         initialMessage: 'Un salut! Vous cherchent un travail?',
         uploadCV: 'Upload un prix conventionnel',
+        dragAndDrop: 'Faites glisser et déposez un fichier CV ici',
         answerQeustions: 'Répondent un questionss',
         whatJobTitle: 'Que pareil - votre preferred fonction? Nous sommes essayer retrouve un travaux pareils.',
         botMessageYou:

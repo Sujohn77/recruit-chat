@@ -38,7 +38,6 @@ import {
     defaultServerMessage,
     getReplaceMessageType,
     isPushMessageType,
-    isReversePush,
     LocalStorage,
     TextFieldTypes,
 } from './constants';
@@ -217,6 +216,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
     setViewJob: emptyFunc,
     submitMessage: emptyFunc,
     setIsInitialized: emptyFunc,
+    resumeName: '',
 };
 
 export const fileUploadDefaultState: IFileUploadContext = {
@@ -404,15 +404,15 @@ export const getMessagesOnAction = ({ action, messages, responseAction, addition
         });
     }
 
-    if (isReversePush(type)) {
-        const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
-        const message = getParsedMessage({
-            text,
-            subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
-            isChatMessage: !!action.payload?.isChatMessage,
-        });
-        return [message, ...responseAction.newMessages, ...updatedMessages];
-    }
+    // if (isReversePush(type)) {
+    //     const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
+    //     const message = getParsedMessage({
+    //         text,
+    //         subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
+    //         isChatMessage: !!action.payload?.isChatMessage,
+    //     });
+    //     return [message, ...responseAction.newMessages, ...updatedMessages];
+    // }
 
     return [...responseAction.newMessages, ...updatedMessages];
 };
@@ -526,7 +526,8 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
             return CHAT_ACTIONS.SET_LOCATIONS;
         case CHAT_ACTIONS.SET_LOCATIONS:
             return CHAT_ACTIONS.SEND_LOCATIONS;
-
+        case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
+            return CHAT_ACTIONS.SEARCH_WITH_RESUME;
         default:
             return chatMsgType;
     }
