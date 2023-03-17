@@ -81,7 +81,7 @@ export const fr = {
         no_match: 'Désolé, encore rien trouvé',
         enter_email_title: 'Veuillez entrer votre e-mail et nous vous enverrons un e-mail',
         transcript_sent: 'Votre relevé de notes a été envoyé à votre adresse e-mail',
-        categories_title: 'Titre de la catégorie recherchée',
+        categories_title: 'Sélectionnez un intitulé de poste',
         locations_title: 'Localisation recherchée',
         all_categories: 'Toutes les catégories',
         hiring_help_title:

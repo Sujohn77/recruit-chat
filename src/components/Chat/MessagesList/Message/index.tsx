@@ -18,7 +18,7 @@ import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
 import { ThanksMessage } from './ThanksMessage';
 import { ButtonMessage } from './ButtonMessage';
-import { TextWithButton } from './TextWithButton';
+import { SubmitFileMessage } from './SubmitFileMessage';
 import { useChatMessenger } from '../../../../contexts/MessangerContext';
 import i18n from '../../../../services/localization';
 
@@ -81,13 +81,13 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
         case MessageType.REFINE_SERCH: {
             return <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SERCH} />;
         }
-        case MessageType.TEXT_WITH_BUTTON:
+        case MessageType.SUBMIT_FILE:
             return (
-                <TextWithButton
+                <SubmitFileMessage
                     message={message}
                     isLastMessage={isLastMessage}
                     onClick={triggerNextAction}
-                    buttonTxt={i18n.t('buttons.searchJobs')}
+                    buttonTxt={i18n.t('buttons:searchJobs')}
                 />
             );
         case MessageType.THANKS: {

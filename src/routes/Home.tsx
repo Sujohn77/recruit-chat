@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Buffer } from 'buffer';
-import { Chat } from '../components/Chat';
 
-import '../App.css';
-
-import { Intro } from '../screens/intro';
 import { ChatProvider } from 'contexts/MessangerContext';
-import { SocketProvider } from 'contexts/SocketContext';
+
 import { FileUploadProvider } from 'contexts/FileUploadContext';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
-import { apiInstance, authInstance } from 'services';
+
 import { IApiThemeResponse } from 'utils/api';
-import { useSearchParams } from 'react-router-dom';
-import { AuthProvider, useAuthContext } from 'contexts/AuthContext';
+import { LocalStorage } from '../utils/constants';
+import { AuthProvider } from 'contexts/AuthContext';
 import { HomeContent } from 'components/HomeContent';
 
+import '../App.css';
 export const Container = styled.div`
     width: 370px;
     // margin: 45px auto 15px;
@@ -26,23 +22,23 @@ export const Container = styled.div`
 `;
 
 const regExpUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 
 export const Home = () => {
-    // const [isAccess, setIsAccess] = useState(false);
     const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
-    const [originDomain, setOriginDomain] = useState<string | null>(null);
-    const [searchParams] = useSearchParams();
 
     const [chatBotID, setChatBotID] = useState<string | null>(null);
-    const [guid, setGuid] = useState<string | null>(null);
 
     useEffect(() => {
         const onPostMessage = (event: MessageEvent) => {
-            if (event.data.ChatBotGUID && regExpUuid.test(event.data.ChatBotGUID)) {
-                setGuid(event.data);
-            } else if (event.data.chatbot_name) {
-                setTheme(event.data);
-            } else if (regExpUuid.test(event.data)) {
+            if (regExpUuid.test(event.data?.guid)) {
+                setChatBotID(event.data.guid);
+            }
+            if (event.data?.style) {
+                setTheme(event.data.style);
+            }
+            if (regExpJWT.test(event.data?.token)) {
+                localStorage.setItem(LocalStorage.Token, event.data.token);
             }
         };
 
@@ -51,14 +47,7 @@ export const Home = () => {
         return () => {
             window.removeEventListener('message', onPostMessage);
         };
-    }, [originDomain]);
-
-    useEffect(() => {
-        const newChatBotId = searchParams.get('chatBotId');
-        if (newChatBotId) {
-            setGuid(newChatBotId);
-        }
-    }, [searchParams]);
+    }, []);
 
     return (
         <Container id="chat-bot">

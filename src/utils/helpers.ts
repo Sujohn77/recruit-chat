@@ -18,7 +18,7 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IAuthContext, IChatMessangerContext, IFileUploadContext, IUser } from 'contexts/types';
+import { IChatMessangerContext, IFileUploadContext, IUser } from 'contexts/types';
 import {
     ContactType,
     IApiMessage,
@@ -34,15 +34,11 @@ import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
-import {
-    defaultServerMessage,
-    getReplaceMessageType,
-    isPushMessageType,
-    LocalStorage,
-    TextFieldTypes,
-} from './constants';
+import { getReplaceMessageType, isPushMessageType, LocalStorage, TextFieldTypes } from './constants';
 import { IApiThemeResponse } from './api';
-import { sendMessage } from 'services/hooks';
+import { Buffer } from 'buffer';
+import jwt_decode from 'jwt-decode';
+window.Buffer = Buffer;
 
 const emptyFunc = () => console.log();
 
@@ -79,6 +75,12 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
     };
 };
 
+export const isTokenExpired = (token: string) => {
+    let decodedToken: { exp: number } = jwt_decode(token);
+    let currentDate = new Date();
+    console.log(decodedToken);
+    return decodedToken.exp * 1000 < currentDate.getTime();
+};
 export const getActionTypeByOption = (option: USER_INPUTS) => {
     switch (option.toLowerCase()) {
         case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
@@ -207,7 +209,7 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
     viewJob: null,
     prefferedJob: null,
     nextMessages: [],
-    accessToken: null,
+
     chooseButtonOption: emptyFunc,
     triggerAction: emptyFunc,
     setSnapshotMessages: emptyFunc,
@@ -223,7 +225,7 @@ export const fileUploadDefaultState: IFileUploadContext = {
     file: null,
     notification: null,
     resetFile: emptyFunc,
-    saveFile: emptyFunc,
+    showFile: emptyFunc,
     sendFile: emptyFunc,
     setNotification: emptyFunc,
 };
@@ -312,7 +314,6 @@ export const getParsedMessage = ({
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
-    console.log(messages);
     const parsedMessages = messages.map((msg) => {
         const content: IContent = {
             subType: msg.content.subType,
@@ -394,7 +395,7 @@ export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
     return true;
 };
 export const getMessagesOnAction = ({ action, messages, responseAction, additionalCondition }: IGetUpdatedMessages) => {
-    const { type, payload } = action;
+    const { type } = action;
     let updatedMessages = [...messages];
 
     if (!isPushMessageType(type)) {
@@ -424,7 +425,7 @@ const initialMessages = getParsedMessages([
     },
 ]);
 
-export const pushMessage = ({ action, messages, setMessages, accessToken }: IPushMessage) => {
+export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => {
     const { type, payload } = action;
     const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
 
@@ -442,19 +443,17 @@ export const pushMessage = ({ action, messages, setMessages, accessToken }: IPus
     if (message.content.subType !== MessageType.TEXT || !!text) setMessages([message, ...updatedMessages]);
 
     if (message.content.text) {
-        if (accessToken) {
-            // Push initial message
-            // TODO: uncomment when backend is ready
-            // const isInitialMessage = !messages.length;
-            // const serverMessage = {
-            //     ...defaultServerMessage,
-            //     msg: isInitialMessage ? initialMessages[0].content.text : message.content.text,
-            //     // subType: isInitialMessage ? initialMessages[0].content.subType : message.content.subType,
-            //     // msg: initialMessages[0].content.text || '',
-            //     localId: `${initialMessages[0].localId}`,
-            // };
-            // sendMessage(serverMessage, accessToken);
-        }
+        // Push initial message
+        // TODO: uncomment when backend is ready
+        // const isInitialMessage = !messages.length;
+        // const serverMessage = {
+        //     ...defaultServerMessage,
+        //     msg: isInitialMessage ? initialMessages[0].content.text : message.content.text,
+        //     // subType: isInitialMessage ? initialMessages[0].content.subType : message.content.subType,
+        //     // msg: initialMessages[0].content.text || '',
+        //     localId: `${initialMessages[0].localId}`,
+        // };
+        // sendMessage(serverMessage);
     }
 
     return updatedMessages;
@@ -538,7 +537,7 @@ export const getSearchJobsData = (category: string, city: string): ISearchJobsPa
         pageSize: 10,
         page: 0,
         keyword: '*',
-        companyId: '6591',
+        // companyId: '6591',
         minDatePosted: '2016-11-13T00:00:00',
         categories: [category],
         location: {
@@ -675,7 +674,7 @@ export const parseThemeResponse = (res: IApiThemeResponse) => {
 
 export const getStorageValue = (key: LocalStorage, defaultValue?: string | number | null) => {
     const item = localStorage.getItem(key);
-    const value = item ? JSON.parse(item) : item;
+    const value = item && typeof item == 'object' ? JSON.parse(item) : item;
     return value || defaultValue;
 };
 

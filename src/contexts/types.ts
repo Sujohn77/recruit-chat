@@ -30,14 +30,14 @@ export interface IChatMessangerContext {
     prefferedJob: IRequisition | null;
     submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
     nextMessages: IPortionMessages[];
-    accessToken: string | null;
+
     setIsInitialized: Dispatch<SetStateAction<boolean>>;
     resumeName: string;
 }
 
 export interface IFileUploadContext {
     file: File | null;
-    saveFile: Dispatch<SetStateAction<File | null>>;
+    showFile: Dispatch<SetStateAction<File | null>>;
     sendFile: (file: File) => void;
     resetFile: () => void;
     notification: string | null;
@@ -48,7 +48,7 @@ export interface IAuthContext {
     setError: (error: string | null) => void;
     loginByEmail: ({ email, oneTimePassword }: { email?: string; oneTimePassword?: string }) => void;
     error: string | null;
-    subscriberID: number | null;
+
     mobileSubscribeId: number | null;
     isVerified: boolean;
     isOTPpSent: boolean;

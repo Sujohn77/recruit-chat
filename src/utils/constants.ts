@@ -82,7 +82,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
             return [
                 {
-                    subType: MessageType.TEXT_WITH_BUTTON,
+                    subType: MessageType.SUBMIT_FILE,
                     text: 'Your resume has been attached. You can click the X to remove it and re-upload another one or click here to upload and search for jobs',
                 },
             ];
@@ -99,7 +99,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
                     subType: MessageType.EMAIL_FORM,
                 },
             ];
-        case CHAT_ACTIONS.SEND_EMAIL:
+        case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL:
             return [
                 {
                     subType: MessageType.TRANSCRIPT,
@@ -312,7 +312,7 @@ export const getReplaceMessageType = (type: CHAT_ACTIONS) => {
     switch (type) {
         case CHAT_ACTIONS.SAVE_TRANSCRIPT:
             return MessageType.TEXT;
-        case CHAT_ACTIONS.SEND_EMAIL:
+        case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL:
             return MessageType.EMAIL_FORM;
         case CHAT_ACTIONS.INTERESTED_IN:
             return MessageType.JOB_POSITIONS;
@@ -330,7 +330,7 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
         type !== CHAT_ACTIONS.REFINE_SEARCH &&
         type !== CHAT_ACTIONS.APPLY_POSITION &&
         type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
-        type !== CHAT_ACTIONS.SEND_EMAIL &&
+        type !== CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL &&
         type !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
     );
 };
@@ -343,15 +343,12 @@ export const getChatActionResponse = ({
     type,
     additionalCondition,
     param,
-    accessToken,
 }: IGetChatResponseProps): { newMessages: ILocalMessage[] } => {
     const messages = getChatActionMessages(type, param);
 
-    // if (!accessToken) return { newMessages: [] };
-
     if (additionalCondition !== null && additionalCondition !== undefined && !additionalCondition) {
         const newType = type === CHAT_ACTIONS.SET_WORK_PERMIT ? CHAT_ACTIONS.NO_PERMIT_WORK : CHAT_ACTIONS.NO_MATCH;
-        return getChatActionResponse({ type: newType, accessToken });
+        return getChatActionResponse({ type: newType });
     }
 
     const responseChatMessages = getParsedMessages(messages);
@@ -363,7 +360,7 @@ export const getChatActionResponse = ({
     //         subType: msg.content.subType,
     //         localId: `${msg.localId}`,
     //     };
-    //     sendMessage(serverMessage, accessToken);
+    //     sendMessage(serverMessage);
     // }
 
     // const isPushMessage = isPushMessageType(type);
@@ -399,6 +396,7 @@ export enum InputTheme {
 }
 
 export enum LocalStorage {
+    Token = 'token',
     SubscriberID = 'subscriberID',
     InitChatActionType = 'initChatActionType',
 }

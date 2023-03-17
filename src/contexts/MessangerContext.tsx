@@ -19,6 +19,7 @@ import {
     pushMessage,
     getFormattedLocations,
     getStorageValue,
+    popMessage,
 } from 'utils/helpers';
 import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
 import { apiPayload, useRequisitions } from 'services/hooks';
@@ -28,6 +29,7 @@ import { apiInstance } from 'services';
 import { chatId } from 'components/Chat';
 import { loginUser } from 'services/auth';
 import { useAuthContext } from './AuthContext';
+import { useFileUploadContext } from './FileUploadContext';
 
 type PropsType = {
     chatBotID?: string | null;
@@ -54,6 +56,10 @@ export const validationUserContacts = ({
 };
 
 const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
+    // Context
+
+    const { file } = useFileUploadContext();
+
     // State
     const [category, setCategory] = useState<string | null>(null);
     const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -61,10 +67,9 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const [viewJob, setViewJob] = useState<IRequisition | null>(null);
     const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
     const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
-    const [alertPeriod, setAlertPeriod] = useState<string | null>(null);
+
     const [user, setUser] = useState<IUser | null>(null);
 
-    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [messages, setMessages] = useState<ILocalMessage[]>([]);
     const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
     const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
@@ -78,24 +83,11 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const [isInitialized, setIsInitialized] = useState(false);
     const [isLoadedMessages, setIsLoadedMessages] = useState(false);
 
-    const { requisitions, locations } = useRequisitions(accessToken);
-    const { subscriberID, clearAuthConfig } = useAuthContext();
+    const { requisitions, locations, setJobPositions } = useRequisitions();
+    const { clearAuthConfig } = useAuthContext();
     const [resumeName, setResumeName] = useState('');
 
     // Effects
-    useEffect(() => {
-        loginUser({ data: info })
-            .then((result) => {
-                console.log(result);
-                result?.access_token && setAccessToken(result.access_token);
-            })
-            .catch((error) => {
-                if (error.message) {
-                    setIsInitialized(true);
-                }
-            });
-    }, []);
-
     useEffect(() => {
         if (isInitialized) {
             const processedSnapshots: IMessage[] = getParsedSnapshots({
@@ -121,7 +113,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
             try {
                 apiInstance.createJobAlert({
                     chatBotID,
-                    subscriberID,
                     email: email,
                     location: getFormattedLocations(locations)[0],
                     jobCategory: alertCategories?.length ? alertCategories[0] : '',
@@ -134,7 +125,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     const triggerAction = useCallback(
         (action: ITriggerActionProps) => {
-            console.log(action);
             const { type, payload } = action;
             const isInitialAction = type === CHAT_ACTIONS.FIND_JOB || type === CHAT_ACTIONS.ANSWER_QUESTIONS;
             if (type === chatAction?.type && isInitialAction) {
@@ -170,6 +160,12 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 }
                 case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
                     payload?.item && setResumeName(payload?.item);
+                    break;
+                }
+                case CHAT_ACTIONS.RESET_FILE: {
+                    const updatedMessages = messages;
+                    updatedMessages.shift();
+                    setMessages(updatedMessages);
                     break;
                 }
                 case CHAT_ACTIONS.GET_USER_AGE: {
@@ -241,14 +237,14 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
             if (!isErrors) {
                 if (isPushMessageType(action.type)) {
                     setStatus(Status.PENDING);
-                    pushMessage({ action, messages, setMessages, accessToken });
+                    pushMessage({ action, messages, setMessages });
                 }
 
                 setCurrentMsgType(getNextActionType(type));
                 setChatAction(action);
             }
         },
-        [user, isInitialized, messages, requisitions.length, accessToken]
+        [user, isInitialized, messages, requisitions.length]
     );
 
     useEffect(() => {
@@ -282,7 +278,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     }
                     break;
                 }
-                case CHAT_ACTIONS.SAVE_TRANSCRIPT: {
+                case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
                     apiInstance.sendTranscript({ chatId, ...apiPayload });
                     break;
                 }
@@ -293,7 +289,9 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     break;
                 }
                 case CHAT_ACTIONS.SEARCH_WITH_RESUME: {
-                    apiInstance.searchWithResume();
+                    const response = await apiInstance.searchWithResume();
+                    response.data && setJobPositions(response.data.requisitions);
+                    removeLastMessage();
                     break;
                 }
                 case CHAT_ACTIONS.APPLY_ETHNIC: {
@@ -314,7 +312,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 type,
                 additionalCondition,
                 param,
-                accessToken,
             });
             if (response.newMessages.length) {
                 setStatus(Status.DONE);
@@ -337,6 +334,10 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
         },
         [messages, searchLocations.length, currentMsgType, user, isInitialized, requisitions.length, chatBotID]
     );
+
+    const removeLastMessage = () => {
+        setMessages(popMessage({ type: MessageType.SUBMIT_FILE, messages }));
+    };
 
     const clearFilters = () => {
         setCategory(null);
@@ -369,7 +370,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
         });
 
         if (type) {
-            const response = getChatActionResponse({ type, accessToken });
+            const response = getChatActionResponse({ type });
             setMessages([...response.newMessages, ...updatedMessages]);
         } else {
             const chatType = getNextActionType(currentMsgType);
@@ -380,7 +381,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     const updateMessages = async (serverMessages: IMessage[]) => {
         const parsedMessages = getServerParsedMessages(serverMessages);
-        console.log(parsedMessages);
+
         if (!messages.length) {
             setMessages(parsedMessages.reverse());
         } else {
@@ -424,7 +425,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 setError,
                 setViewJob,
                 nextMessages,
-                accessToken,
                 setIsInitialized,
                 resumeName,
             }}

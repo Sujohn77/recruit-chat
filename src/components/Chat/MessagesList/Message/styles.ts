@@ -54,6 +54,16 @@ export const MessageBox = styled.div<IMessageProps>`
     `};
 `;
 
+export const Cancel = styled.div`
+    font-size: 14px;
+    line-height: 17px;
+    border-bottom: 1px solid ${(props) => props.theme.primaryColor};
+    color: ${(props) => props.theme.primaryColor};
+    cursor: pointer;
+    margin-top: 0.25em;
+    width: fit-content;
+`;
+
 export const MessageButton = styled.div<IMessageProps>`
     position: relative;
     border-radius: 10px;
@@ -139,6 +149,14 @@ export const ActionButton = styled(Button)`
     color: ${({ theme: { button } }) => button.secondaryColor};
     width: fit-content;
     align-self: flex-start;
-    margin-top: 0.25em !important;
+    color: ${({ theme: { button } }) => button.secondaryColor}!important;
     background: ${(props) => props.theme.primaryColor}!important;
+    margin: 1em 0 !important;
+    border-radius: 20px !important;
+    font-size: 14px !important;
+    padding: 11px 12px !important;
+    font-family: 'Inter-Medium' !important;
+    span {
+        line-height: 17px;
+    }
 `;

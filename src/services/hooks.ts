@@ -1,6 +1,6 @@
-import { useAuthContext } from 'contexts/AuthContext';
 import { useEffect, useState } from 'react';
-import Api, { apiInstance, authInstance } from 'services';
+import Api, { apiInstance } from 'services';
+import { IRequisition } from '../utils/types';
 import { APP_VERSION } from './auth';
 
 import { IApiMessage, LocationType } from './types';
@@ -8,8 +8,7 @@ import { handleRefreshToken } from './utils';
 
 const apiInstanse = new Api();
 
-export const sendMessage = (message: IApiMessage, accessToken: string) => {
-    apiInstanse.setAuthHeader(accessToken);
+export const sendMessage = (message: IApiMessage) => {
     handleRefreshToken(() => apiInstanse.sendMessage(message));
 };
 
@@ -22,33 +21,39 @@ const data = {
     pageSize: 20,
     page: 1,
     keyword: '',
-    companyId: '6591',
     externalSystemId: 789,
+    ...apiPayload,
 };
 
-export const useRequisitions = (accessToken: string | null) => {
-    const { subscriberID } = useAuthContext();
+export const useRequisitions = () => {
     const [requisitions, setRequisitions] = useState<{ title: string; category: string }[]>([]);
     const [locations, setLocations] = useState<LocationType[]>([]);
 
-    useEffect(() => {
-        const getCategories = async (accessToken: string) => {
-            apiInstance.setAuthHeader(accessToken);
-            const response = await apiInstance.searchRequisitions(data);
+    const setJobPositions = (requisitions: IRequisition[]) => {
+        setRequisitions(
+            requisitions?.map((c: any) => ({
+                title: c.title,
+                category: c.categories[0],
+            })) as any
+        );
+        setLocations(requisitions.map((r) => r.location));
+    };
 
-            if (response?.data?.requisitions?.length) {
-                const requisitions = response.data.requisitions;
-                setLocations(requisitions.map((r) => r.location));
-                setRequisitions(
-                    response.data.requisitions?.map((c: any) => ({
-                        title: c.title,
-                        category: c.categories[0],
-                    })) as any
-                );
+    useEffect(() => {
+        const getCategories = async () => {
+            try {
+                const response = await apiInstance.searchRequisitions(data);
+
+                if (response?.data?.requisitions?.length) {
+                    const requisitions = response.data.requisitions;
+                    setJobPositions(requisitions);
+                }
+            } catch (err) {
+                console.log(err);
             }
         };
-        subscriberID && accessToken && getCategories(accessToken);
-    }, [accessToken, subscriberID]);
+        getCategories();
+    }, []);
 
-    return { requisitions, locations };
+    return { requisitions, locations, setJobPositions };
 };

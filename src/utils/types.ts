@@ -40,7 +40,7 @@ export enum MessageType {
     SALARY_FORM = 'salary_form',
     QUESTION_FORM = 'question_form',
     MULTIPLE_OPTIONS = 'MULTIPLE_OPTIONS',
-    TEXT_WITH_BUTTON = 'text_with_button',
+    SUBMIT_FILE = 'submit_file',
     THANKS = 'thanks',
 }
 export interface IState {
@@ -90,7 +90,7 @@ export enum CHAT_ACTIONS {
     ASK_QUESTION = 'ask_question',
     CHANGE_LANG = 'change_lang',
     SAVE_TRANSCRIPT = 'save_transcript',
-    SEND_EMAIL = 'send_email',
+    SEND_TRANSCRIPT_EMAIL = 'send_transcript_email',
     FETCH_JOBS = 'fetch_jobs',
     SET_JOB_ALERT = 'set_job_alert',
     SET_ALERT_CATEGORIES = 'set_alert_category',
@@ -117,6 +117,7 @@ export enum CHAT_ACTIONS {
     UPLOAD_CV = 'upload_cv',
     SEND_ALERT_CATEGORIES = 'send_alert_categories',
     SEARCH_WITH_RESUME = 'send_with_resume',
+    RESET_FILE = 'reset_file',
 }
 
 export enum Status {
@@ -223,14 +224,12 @@ export interface IPushMessage {
     action: ITriggerActionProps;
     messages: ILocalMessage[];
     setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
-    accessToken?: string | null;
 }
 
 export interface IGetChatResponseProps {
     type: CHAT_ACTIONS;
     additionalCondition?: boolean | null;
     param?: string | undefined;
-    accessToken: string | null;
 }
 
 export interface IFilterItemsWithType {

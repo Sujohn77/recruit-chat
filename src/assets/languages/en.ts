@@ -87,7 +87,7 @@ export const en = {
         no_match: 'Sorry, No match yet',
         enter_email_title: 'Please enter your email and we will send you an email',
         transcript_sent: 'Your transcript has been sent to your email',
-        categories_title: 'Searched category title',
+        categories_title: 'Select a Job Title',
         locations_title: 'Searched location',
         all_categories: 'All Categories',
         hiring_help_title: 'Great question. Check out our help section to learn more on how we hire.',

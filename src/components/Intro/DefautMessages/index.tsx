@@ -36,7 +36,7 @@ type PropsType = {
 export const DefaultMessages: FC<PropsType> = ({ setIsEmailForm, text, isOptions = true, setIsSelectedOption }) => {
     const theme = useTheme() as ThemeType;
     const [initialOption, setInitialOption] = useState<IOption | null>(null);
-    const { subscriberID, isVerified } = useAuthContext();
+    const { isVerified } = useAuthContext();
     const { triggerAction } = useChatMessenger();
 
     useEffect(() => {
@@ -63,7 +63,7 @@ export const DefaultMessages: FC<PropsType> = ({ setIsEmailForm, text, isOptions
         //     setInitialOption(option);
         // }
 
-        setIsEmailForm(!subscriberID);
+        // setIsEmailForm(!subscriberID);
     };
 
     const chooseOptions = messages.options.map((opt, index) => (

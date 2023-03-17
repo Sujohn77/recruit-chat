@@ -237,8 +237,10 @@ export interface ISearchJobsPayload {
     pageSize: number;
     page: number;
     keyword: string;
-    companyId: string;
+    companyId?: string;
     minDatePosted?: string;
+    appKey?: string;
+    codeVersion?: string;
     categories?: string[];
     location?: {
         city: string;
@@ -411,7 +413,7 @@ export interface IVerifyEmailRequest {
 
 export interface IJobAlertRequest {
     chatBotID: string | null;
-    subscriberID: number | null;
+    // subscriberID: number | null;
     email: string;
     location: string;
     jobCategory: string | null;

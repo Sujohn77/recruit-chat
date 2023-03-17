@@ -84,7 +84,7 @@ export const ua = {
         view_job_title: 'Переглянути роботу',
         no_match: 'Вибачте, таких пропозицій ще немає',
         enter_email_title: 'Будь ласка, введіть свою електронну адресу, і ми надішлемо вам електронний лист',
-        categories_title: 'Назва шуканої категорії',
+        categories_title: 'Виберіть назву робочої позиції',
         locations_title: 'Місце пошуку',
         all_categories: 'Усі категорії',
         hiring_help_title: 'Great question. Check out our help section to learn more on how we hire.',

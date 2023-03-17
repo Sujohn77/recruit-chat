@@ -29,8 +29,7 @@ type PropsType = {
 };
 
 export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) => {
-    const { accessToken } = useChatMessenger();
-    const { isOTPpSent, isVerified } = useAuthContext();
+    const { isVerified } = useAuthContext();
     const [isEmailForm, setIsEmailForm] = useState(false);
     const [isNeedSupport, setIsNeedSupport] = useState(false);
     const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
@@ -45,7 +44,7 @@ export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) 
     // const isOtpMessages = isOTPpSent && !isNeedSupport;
 
     return (
-        <S.Wrapper isClosed={!!isSelectedOption && !!accessToken}>
+        <S.Wrapper isClosed={!!isSelectedOption}>
             <DefaultMessages
                 setIsEmailForm={setIsEmailForm}
                 text={lookingForJobTxt}

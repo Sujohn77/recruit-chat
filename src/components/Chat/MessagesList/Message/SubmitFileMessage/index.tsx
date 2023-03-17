@@ -1,12 +1,15 @@
 import moment from 'moment';
 import React, { FC, memo } from 'react';
 
-import { ICONS, IMAGES } from 'utils/constants';
+import { IMAGES } from 'utils/constants';
 import { getMessageProps } from 'utils/helpers';
-import { ILocalMessage, MessageType } from 'utils/types';
+import { ILocalMessage } from 'utils/types';
 
 import { MS_1000 } from '..';
-import { Icon } from '../../styles';
+import { useFileUploadContext } from '../../../../../contexts/FileUploadContext';
+import i18n from '../../../../../services/localization';
+import { resumeElementId } from '../BrowseFile';
+
 import * as S from '../styles';
 
 interface IProps {
@@ -15,7 +18,8 @@ interface IProps {
     onClick: () => void;
     buttonTxt: string;
 }
-export const TextWithButton: FC<IProps> = memo(({ message, isLastMessage, buttonTxt, onClick }) => {
+export const SubmitFileMessage: FC<IProps> = memo(({ message, isLastMessage, buttonTxt, onClick }) => {
+    const { resetFile } = useFileUploadContext();
     const messageProps = { ...getMessageProps(message) };
 
     const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format('HH:mm A');
@@ -30,12 +34,23 @@ export const TextWithButton: FC<IProps> = memo(({ message, isLastMessage, button
 
         return null;
     };
+
+    const onResetResume = () => {
+        const resumeInput = document.getElementById(resumeElementId) as HTMLInputElement;
+        if (resumeInput) {
+            resumeInput.value = '';
+            resetFile();
+        }
+    };
+
+    const cancelTxt = i18n.t('buttons:cancel');
     const isActionButton = buttonTxt && onClick;
     return (
         <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
             <S.MessageText>{message.content.text || message.content.subType}</S.MessageText>
             {isActionButton && <S.ActionButton onClick={onClick}>{buttonTxt}</S.ActionButton>}
             {renderSendingTime(message)}
+            {<S.Cancel onClick={onResetResume}>{cancelTxt}</S.Cancel>}
         </S.MessageBox>
     );
 });

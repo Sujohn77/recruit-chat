@@ -1,13 +1,12 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 
 import { ChatHeader } from './ChatHeader';
 import * as S from './styles';
 
 import { MessageInput } from './MessageInput';
-import { useFileUploadContext } from 'contexts/FileUploadContext';
+
 import { MessagesList } from './MessagesList';
-import { ICONS } from 'utils/constants';
-import { Close } from 'screens/intro/styles';
+
 import i18n from 'services/localization';
 import { ViewJob } from './ViewJob';
 
@@ -27,7 +26,7 @@ export const chatId = 2433044;
 export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedOption }) => {
     const theme = useTheme() as ThemeType;
     const { viewJob, setViewJob, triggerAction } = useChatMessenger();
-    const { file, notification, resetFile } = useFileUploadContext();
+
     const title = viewJob
         ? i18n.t('chat_item_description:view_job_title')
         : theme.chatbotName || i18n.t('chat_item_description:title');
@@ -44,14 +43,6 @@ export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedO
             <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
             <MessagesList />
             <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
-
-            {(file || notification) && (
-                <S.Notification>
-                    {file?.name && <S.Icon src={ICONS.ATTACHED_FILE} />}
-                    <S.NotificationText>{file?.name || notification}</S.NotificationText>
-                    {file?.name && <Close onClick={() => resetFile()} color={theme.primaryColor} />}
-                </S.Notification>
-            )}
             <MessageInput />
         </S.Wrapper>
     );

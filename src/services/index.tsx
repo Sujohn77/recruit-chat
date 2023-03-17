@@ -1,11 +1,12 @@
 import apisauce, { ApisauceInstance } from 'apisauce';
+import { LocalStorage } from '../utils/constants';
+import { getStorageValue, isTokenExpired } from '../utils/helpers';
 
 import {
     AppKeyType,
     IApiMessage,
     IApiSignedRequest,
     ICreationCandidatePayload,
-    IGetAllRequisitions,
     IRequisitionsResponse,
     ISearchJobsPayload,
     ISendMessageResponse,
@@ -30,6 +31,8 @@ export const FORM_URLENCODED = {
 const BASE_API_URL = 'https://qa-integrations.loopworks.com/';
 class Api {
     protected client: ApisauceInstance;
+    protected jwtToken: string;
+    protected lastRequest: any;
 
     constructor(baseURL = BASE_API_URL) {
         this.client = apisauce.create({
@@ -41,7 +44,46 @@ class Api {
             },
             transformResponse: (response: any) => JSON.parse(response),
         });
+
+        this.client.axiosInstance.interceptors.request.use(this.requestInterceptor);
+        this.client.axiosInstance.interceptors.response.use(
+            function (response) {
+                return response;
+            },
+            function (error) {
+                console.log(error);
+                window.parent.postMessage(
+                    {
+                        event_id: 'refresh_token',
+                        callback: this.lastRequest,
+                    },
+                    '*'
+                );
+                return Promise.reject(error);
+            }
+        );
     }
+
+    requestInterceptor = (request: any) => {
+        const token = getStorageValue(LocalStorage.Token);
+        console.log(JSON.parse(atob(token.split('.')[1])).exp);
+        const isExpired = token ? isTokenExpired(token) : true;
+
+        if (isExpired) {
+            window.parent.postMessage(
+                {
+                    event_id: 'refresh_token',
+                    callback: () => this.requestInterceptor(request),
+                },
+                '*'
+            );
+        } else {
+            if (request && request.headers) request.headers.Authorization = `Bearer ${token}`;
+            this.lastRequest = request;
+            return request;
+        }
+    };
+
     setAuthHeader = (token: string) => {
         return this.client.setHeader('Authorization', `Bearer ${token}`);
     };
@@ -52,7 +94,7 @@ class Api {
     getUserSelf = (data: AppKeyType) => this.client.get<IUserSelf>('api/user/self', data);
     uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
     searchRequisitions = (data: ISearchJobsPayload) =>
-        this.client.post<IRequisitionsResponse>('api/chatbot/searchRequisition', data);
+        this.client.post<IRequisitionsResponse>('api/chatbot/searchRequisition', { ...data });
     searchWithResume = () => this.client.get<IRequisitionsResponse>('api/requisition/searchbyresume/');
     createCandidate = (data: ICreationCandidatePayload) =>
         this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
@@ -60,6 +102,10 @@ class Api {
         this.client.post<ISendTranscriptResponse>('api/messenger/chat/transcript/send', data);
     createJobAlert = (data: IJobAlertRequest) => {
         return this.client.post<IJobAlertResponse>('api/chatbot/createJobAlert', data);
+    };
+    clearAxiosConfig = () => {
+        localStorage.removeItem(LocalStorage.Token);
+        delete this.client.headers.Authorization;
     };
 }
 
