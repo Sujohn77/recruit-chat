@@ -15,11 +15,10 @@ import * as S from '../styles';
 interface IProps {
     message: ILocalMessage;
     isLastMessage?: boolean;
-    onClick: () => void;
     buttonTxt: string;
 }
-export const SubmitFileMessage: FC<IProps> = memo(({ message, isLastMessage, buttonTxt, onClick }) => {
-    const { resetFile } = useFileUploadContext();
+export const SubmitFileMessage: FC<IProps> = memo(({ message, isLastMessage, buttonTxt }) => {
+    const { resetFile, searchWithResume } = useFileUploadContext();
     const messageProps = { ...getMessageProps(message) };
 
     const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format('HH:mm A');
@@ -44,11 +43,11 @@ export const SubmitFileMessage: FC<IProps> = memo(({ message, isLastMessage, but
     };
 
     const cancelTxt = i18n.t('buttons:cancel');
-    const isActionButton = buttonTxt && onClick;
+    const isActionButton = buttonTxt;
     return (
         <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
             <S.MessageText>{message.content.text || message.content.subType}</S.MessageText>
-            {isActionButton && <S.ActionButton onClick={onClick}>{buttonTxt}</S.ActionButton>}
+            {isActionButton && <S.ActionButton onClick={() => searchWithResume()}>{buttonTxt}</S.ActionButton>}
             {renderSendingTime(message)}
             {<S.Cancel onClick={onResetResume}>{cancelTxt}</S.Cancel>}
         </S.MessageBox>

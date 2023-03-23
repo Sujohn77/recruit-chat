@@ -17,11 +17,10 @@ export const apiPayload = {
     codeVersion: APP_VERSION,
 };
 
-const data = {
+const requisitionParams = {
     pageSize: 20,
     page: 1,
-    keyword: '',
-    externalSystemId: 789,
+    keyword: '*',
     ...apiPayload,
 };
 
@@ -42,7 +41,7 @@ export const useRequisitions = () => {
     useEffect(() => {
         const getCategories = async () => {
             try {
-                const response = await apiInstance.searchRequisitions(data);
+                const response = await apiInstance.searchRequisitions(requisitionParams);
 
                 if (response?.data?.requisitions?.length) {
                     const requisitions = response.data.requisitions;

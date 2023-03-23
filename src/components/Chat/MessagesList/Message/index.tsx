@@ -37,10 +37,10 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
     const subType = message.content.subType;
     const messageProps = { ...getMessageProps(message) };
 
-    const triggerNextAction = () => {
-        const type = getNextActionType(currentMsgType);
-        type && triggerAction({ type, payload: { item: resumeName } });
-    };
+    // const triggerNextAction = () => {
+    //     const type = getNextActionType(currentMsgType);
+    //     type && triggerAction({ type, payload: { item: resumeName } });
+    // };
 
     switch (subType) {
         case MessageType.INITIAL_MESSAGE:
@@ -86,7 +86,6 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
                 <SubmitFileMessage
                     message={message}
                     isLastMessage={isLastMessage}
-                    onClick={triggerNextAction}
                     buttonTxt={i18n.t('buttons:searchJobs')}
                 />
             );

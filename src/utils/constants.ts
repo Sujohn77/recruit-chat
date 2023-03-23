@@ -396,7 +396,10 @@ export enum InputTheme {
 }
 
 export enum LocalStorage {
-    Token = 'token',
     SubscriberID = 'subscriberID',
     InitChatActionType = 'initChatActionType',
+}
+
+export enum SessionStorage {
+    Token = 'token',
 }

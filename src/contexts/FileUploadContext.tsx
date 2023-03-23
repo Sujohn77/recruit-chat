@@ -11,14 +11,21 @@ type PropsType = {
     children: React.ReactNode;
 };
 
+export interface IResumeData {
+    candidateId: number;
+    fileName: string;
+    lastModified: string;
+    blob: string | ArrayBuffer;
+}
+
 const FileUploadContext = createContext<IFileUploadContext>(fileUploadDefaultState);
 
 const FileUploadProvider = ({ children }: PropsType) => {
     const { triggerAction, messages, submitMessage } = useChatMessenger();
     const [file, setFile] = useState<File | null>(null);
-    const [fileResult, setFileResult] = useState<string | ArrayBuffer | null>(null);
     const [messageId, setMessageId] = useState<number | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
+    const [resumeData, setResumeData] = useState<IResumeData | null>(null);
 
     const showSearchWithResumeMsg = (file: File) => {
         const isLastMsgEqualToUploadType = messages[0].content.subType === MessageType.UPLOAD_CV;
@@ -30,9 +37,16 @@ const FileUploadProvider = ({ children }: PropsType) => {
         let reader = new FileReader();
 
         reader.onloadend = () => {
-            if (fileResult !== reader.result && file && reader.result) {
+            if (file && reader.result) {
                 const result = reader.result as string;
-                setFileResult(result.replace(`data:${file.type};base64,`, ''));
+
+                const data = {
+                    candidateId: 50994334,
+                    fileName: file.name,
+                    lastModified: `${new Date(file.lastModified).toISOString()}`,
+                    blob: result.replace(`data:${file.type};base64,`, ''),
+                };
+                setResumeData(data);
             }
         };
 
@@ -52,24 +66,26 @@ const FileUploadProvider = ({ children }: PropsType) => {
         }
     }, [messageId]);
 
-    const sendFile = async (file: File) => {
-        triggerAction({
-            type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
-            payload: { item: file.name },
-        });
+    const searchWithResume = async () => {
+        if (resumeData) {
+            const { blob, ...data } = resumeData;
+            const response = await apiInstance.searchWithResume({ ...data, resumeBlob: blob });
+
+            response.data &&
+                triggerAction({
+                    type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
+                    payload: { items: response.data.requisitions },
+                });
+        }
 
         setFile(null);
     };
 
     const saveResume = async (file: File) => {
-        const data = {
-            candidateId: 50994334,
-            fileName: file.name,
-            lastModified: `${new Date(file.lastModified).toISOString()}`,
-            blob: fileResult!,
-        };
-        const response = await apiInstance.uploadCV(data);
-        response.data?.resumeId && setMessageId(response.data?.resumeId); // REPLACE when backend messages scheme is ready
+        if (resumeData) {
+            const response = await apiInstance.uploadCV(resumeData);
+            response.data?.resumeId && setMessageId(response.data?.resumeId); // REPLACE when backend messages scheme is ready
+        }
     };
 
     const showFile = (file: File) => {
@@ -93,10 +109,11 @@ const FileUploadProvider = ({ children }: PropsType) => {
             value={{
                 file,
                 showFile,
-                sendFile,
+                searchWithResume,
                 resetFile,
                 notification,
                 setNotification,
+                resumeData,
             }}
         >
             {children}

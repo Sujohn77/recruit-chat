@@ -28,18 +28,9 @@ import { useTextField } from 'utils/hooks';
 type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
-    const { file, sendFile, setNotification } = useFileUploadContext();
-    const {
-        category,
-        triggerAction,
-        searchLocations,
-        status,
-        locations,
-        requisitions,
-        currentMsgType,
-        setError,
-        error,
-    } = useChatMessenger();
+    const { file, setNotification } = useFileUploadContext();
+    const { category, triggerAction, searchLocations, status, locations, currentMsgType, setError, error } =
+        useChatMessenger();
 
     // State
     const [draftMessage, setDraftMessage] = useState<string | null>(null);
@@ -182,11 +173,7 @@ export const MessageInput: FC<PropsType> = () => {
     };
 
     const onClick = () => {
-        if (file) {
-            sendFile(file);
-        } else {
-            sendMessage(draftMessage);
-        }
+        sendMessage(draftMessage);
     };
 
     const botTypingTxt = i18n.t('placeHolders:bot_typing');

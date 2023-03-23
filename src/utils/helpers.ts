@@ -18,7 +18,7 @@ import {
 import { colors } from './colors';
 import moment from 'moment';
 
-import { IChatMessangerContext, IFileUploadContext, IUser } from 'contexts/types';
+import { IChatMessengerContext, IFileUploadContext, IUser } from 'contexts/types';
 import {
     ContactType,
     IApiMessage,
@@ -34,7 +34,7 @@ import { getProcessedSnapshots } from '../firebase/config';
 import { profile } from 'contexts/mockData';
 
 import i18n from 'services/localization';
-import { getReplaceMessageType, isPushMessageType, LocalStorage, TextFieldTypes } from './constants';
+import { getReplaceMessageType, isPushMessageType, LocalStorage, TextFieldTypes, SessionStorage } from './constants';
 import { IApiThemeResponse } from './api';
 import { Buffer } from 'buffer';
 import jwt_decode from 'jwt-decode';
@@ -194,7 +194,7 @@ export const capitalizeFirstLetter = (str: string) => {
 
 // CONTEXT
 
-export const chatMessangerDefaultState: IChatMessangerContext = {
+export const chatMessengerDefaultState: IChatMessengerContext = {
     messages: [],
     status: null,
     category: null,
@@ -209,7 +209,6 @@ export const chatMessangerDefaultState: IChatMessangerContext = {
     viewJob: null,
     prefferedJob: null,
     nextMessages: [],
-
     chooseButtonOption: emptyFunc,
     triggerAction: emptyFunc,
     setSnapshotMessages: emptyFunc,
@@ -226,8 +225,9 @@ export const fileUploadDefaultState: IFileUploadContext = {
     notification: null,
     resetFile: emptyFunc,
     showFile: emptyFunc,
-    sendFile: emptyFunc,
+    searchWithResume: emptyFunc,
     setNotification: emptyFunc,
+    resumeData: null,
 };
 
 export const validateEmail = (value: string) => {
@@ -672,8 +672,8 @@ export const parseThemeResponse = (res: IApiThemeResponse) => {
     };
 };
 
-export const getStorageValue = (key: LocalStorage, defaultValue?: string | number | null) => {
-    const item = localStorage.getItem(key);
+export const getStorageValue = (key: LocalStorage | SessionStorage, defaultValue?: string | number | null) => {
+    const item = localStorage.getItem(key) || sessionStorage.getItem(key);
     const value = item && typeof item == 'object' ? JSON.parse(item) : item;
     return value || defaultValue;
 };

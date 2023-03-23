@@ -2,13 +2,14 @@ import { Dispatch, SetStateAction } from 'react';
 import { IMessage, ISnapshot, LocationType } from 'services/types';
 import { Status } from 'utils/constants';
 import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
+import { IResumeData } from './FileUploadContext';
 
 export interface ISearchRequisition {
     title: string;
     category: string;
 }
 
-export interface IChatMessangerContext {
+export interface IChatMessengerContext {
     messages: ILocalMessage[];
     requisitions: ISearchRequisition[];
     category: string | null;
@@ -38,10 +39,11 @@ export interface IChatMessangerContext {
 export interface IFileUploadContext {
     file: File | null;
     showFile: Dispatch<SetStateAction<File | null>>;
-    sendFile: (file: File) => void;
+    searchWithResume: () => void;
     resetFile: () => void;
     notification: string | null;
     setNotification: Dispatch<SetStateAction<string | null>>;
+    resumeData: IResumeData | null;
 }
 
 export interface IAuthContext {

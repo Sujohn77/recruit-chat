@@ -5,7 +5,7 @@ import { MessageType, ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IRequisition } f
 import { IMessage, ISnapshot } from 'services/types';
 import { getChatActionResponse, isPushMessageType, LocalStorage, Status } from 'utils/constants';
 import {
-    chatMessangerDefaultState,
+    chatMessengerDefaultState,
     replaceItemsWithType,
     getItemById,
     getServerParsedMessages,
@@ -21,7 +21,7 @@ import {
     getStorageValue,
     popMessage,
 } from 'utils/helpers';
-import { IChatMessangerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
+import { IChatMessengerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
 import { apiPayload, useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
@@ -36,7 +36,7 @@ type PropsType = {
     children: React.ReactNode;
 };
 
-const ChatContext = createContext<IChatMessangerContext>(chatMessangerDefaultState);
+const ChatContext = createContext<IChatMessengerContext>(chatMessengerDefaultState);
 
 export const info = {
     username: 'RomanAndreevUpworkPlaypen',
@@ -56,10 +56,6 @@ export const validationUserContacts = ({
 };
 
 const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
-    // Context
-
-    const { file } = useFileUploadContext();
-
     // State
     const [category, setCategory] = useState<string | null>(null);
     const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -86,6 +82,12 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const { requisitions, locations, setJobPositions } = useRequisitions();
     const { clearAuthConfig } = useAuthContext();
     const [resumeName, setResumeName] = useState('');
+
+    useEffect(() => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Current chat action: ', currentMsgType);
+        }
+    }, [currentMsgType]);
 
     // Effects
     useEffect(() => {
@@ -279,7 +281,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     break;
                 }
                 case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
-                    apiInstance.sendTranscript({ chatId, ...apiPayload });
+                    apiInstance.sendTranscript({ ChatID: chatId });
                     break;
                 }
                 case CHAT_ACTIONS.SET_WORK_PERMIT: {
@@ -289,9 +291,8 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     break;
                 }
                 case CHAT_ACTIONS.SEARCH_WITH_RESUME: {
-                    const response = await apiInstance.searchWithResume();
-                    response.data && setJobPositions(response.data.requisitions);
                     removeLastMessage();
+                    payload?.items && setJobPositions(payload.items);
                     break;
                 }
                 case CHAT_ACTIONS.APPLY_ETHNIC: {

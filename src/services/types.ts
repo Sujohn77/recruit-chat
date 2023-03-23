@@ -49,7 +49,7 @@ export interface ISendTranscriptResponse {
 }
 
 export interface ISendTranscript {
-    chatId: number;
+    ChatID: number;
 }
 
 export interface IApiMessage {
@@ -252,7 +252,14 @@ export interface ISearchJobsPayload {
         radius: null;
         radiusUnit: 'km';
     };
-    externalSystemId: number;
+    externalSystemId?: number;
+}
+
+export interface IResumeDataPayload {
+    candidateId: number;
+    fileName: string;
+    lastModified: string;
+    resumeBlob: string | ArrayBuffer;
 }
 
 export interface IUploadCVPayload {

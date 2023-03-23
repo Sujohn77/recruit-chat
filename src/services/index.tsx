@@ -1,5 +1,6 @@
 import apisauce, { ApisauceInstance } from 'apisauce';
-import { LocalStorage } from '../utils/constants';
+import { info } from '../contexts/MessangerContext';
+import { LocalStorage, SessionStorage } from '../utils/constants';
 import { getStorageValue, isTokenExpired } from '../utils/helpers';
 
 import {
@@ -22,6 +23,7 @@ import {
     IJobAlertRequest,
     IJobAlertResponse,
     IVerifyEmailResponse,
+    IResumeDataPayload,
 } from './types';
 
 export const FORM_URLENCODED = {
@@ -52,6 +54,7 @@ class Api {
             },
             function (error) {
                 console.log(error);
+                sessionStorage.removeItem(SessionStorage.Token);
                 window.parent.postMessage(
                     {
                         event_id: 'refresh_token',
@@ -65,23 +68,27 @@ class Api {
     }
 
     requestInterceptor = (request: any) => {
-        const token = getStorageValue(LocalStorage.Token);
-        console.log(JSON.parse(atob(token.split('.')[1])).exp);
-        const isExpired = token ? isTokenExpired(token) : true;
-
-        if (isExpired) {
-            window.parent.postMessage(
-                {
-                    event_id: 'refresh_token',
-                    callback: () => this.requestInterceptor(request),
-                },
-                '*'
-            );
-        } else {
-            if (request && request.headers) request.headers.Authorization = `Bearer ${token}`;
+        const token = getStorageValue(SessionStorage.Token);
+        // const basicAuthToken = Buffer.from(`${info.username}:${info.password}`).toString('base64');
+        // const isExpired = token ? isTokenExpired(token) : true;
+        if (token) {
+            if (request && request.headers) request.headers['Authorization'] = 'chatbot-jwt-token ' + token;
             this.lastRequest = request;
-            return request;
         }
+        return request;
+        // if (isExpired) {
+        //     window.parent.postMessage(
+        //         {
+        //             event_id: 'refresh_token',
+        //             // callback: this.requestInterceptor.bind(request),
+        //         },
+        //         '*'
+        //     );
+        // } else {
+        //     if (request && request.headers) request.headers.post['chatbot-jwt-token'] = token;
+        //     this.lastRequest = request;
+        //     return request;
+        // }
     };
 
     setAuthHeader = (token: string) => {
@@ -94,17 +101,18 @@ class Api {
     getUserSelf = (data: AppKeyType) => this.client.get<IUserSelf>('api/user/self', data);
     uploadCV = (data: IUploadCVPayload) => this.client.post<IUploadResponse>('api/candidate/resume/upload', data);
     searchRequisitions = (data: ISearchJobsPayload) =>
-        this.client.post<IRequisitionsResponse>('api/chatbot/searchRequisition', { ...data });
-    searchWithResume = () => this.client.get<IRequisitionsResponse>('api/requisition/searchbyresume/');
+        this.client.post<IRequisitionsResponse>('api/requisition/search', { ...data });
+    searchWithResume = (data: IResumeDataPayload) =>
+        this.client.post<IRequisitionsResponse>('api/requisition/searchbyresume/', data);
     createCandidate = (data: ICreationCandidatePayload) =>
         this.client.post<ICreateCandidateResponse>('api/candidate/create', data);
-    sendTranscript = (data: ISendTranscript & IApiSignedRequest) =>
+    sendTranscript = (data: ISendTranscript) =>
         this.client.post<ISendTranscriptResponse>('api/messenger/chat/transcript/send', data);
     createJobAlert = (data: IJobAlertRequest) => {
-        return this.client.post<IJobAlertResponse>('api/chatbot/createJobAlert', data);
+        return this.client.post<IJobAlertResponse>('api/chatbot/create-job-alert', data);
     };
     clearAxiosConfig = () => {
-        localStorage.removeItem(LocalStorage.Token);
+        sessionStorage.removeItem(SessionStorage.Token);
         delete this.client.headers.Authorization;
     };
 }

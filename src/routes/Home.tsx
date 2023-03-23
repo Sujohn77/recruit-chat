@@ -7,7 +7,7 @@ import { FileUploadProvider } from 'contexts/FileUploadContext';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
 
 import { IApiThemeResponse } from 'utils/api';
-import { LocalStorage } from '../utils/constants';
+import { LocalStorage, SessionStorage } from '../utils/constants';
 import { AuthProvider } from 'contexts/AuthContext';
 import { HomeContent } from 'components/HomeContent';
 
@@ -31,6 +31,7 @@ export const Home = () => {
 
     useEffect(() => {
         const onPostMessage = (event: MessageEvent) => {
+            debugger;
             if (regExpUuid.test(event.data?.guid)) {
                 setChatBotID(event.data.guid);
             }
@@ -38,7 +39,7 @@ export const Home = () => {
                 setTheme(event.data.style);
             }
             if (regExpJWT.test(event.data?.token)) {
-                localStorage.setItem(LocalStorage.Token, event.data.token);
+                sessionStorage.setItem(SessionStorage.Token, event.data.token);
             }
         };
 
