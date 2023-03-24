@@ -31,7 +31,6 @@ export const Home = () => {
 
     useEffect(() => {
         const onPostMessage = (event: MessageEvent) => {
-            debugger;
             if (regExpUuid.test(event.data?.guid)) {
                 setChatBotID(event.data.guid);
             }
@@ -39,6 +38,9 @@ export const Home = () => {
                 setTheme(event.data.style);
             }
             if (regExpJWT.test(event.data?.token)) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(event.data?.token);
+                }
                 sessionStorage.setItem(SessionStorage.Token, event.data.token);
             }
         };
@@ -53,13 +55,15 @@ export const Home = () => {
     return (
         <Container id="chat-bot">
             <AuthProvider>
-                <ChatProvider chatBotID={chatBotID}>
-                    <ThemeContextProvider value={theme}>
-                        <FileUploadProvider>
-                            <HomeContent />
-                        </FileUploadProvider>
-                    </ThemeContextProvider>
-                </ChatProvider>
+                {chatBotID && (
+                    <ChatProvider chatBotID={chatBotID}>
+                        <ThemeContextProvider value={theme}>
+                            <FileUploadProvider>
+                                <HomeContent />
+                            </FileUploadProvider>
+                        </ThemeContextProvider>
+                    </ChatProvider>
+                )}
             </AuthProvider>
         </Container>
     );

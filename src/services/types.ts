@@ -260,6 +260,7 @@ export interface IResumeDataPayload {
     fileName: string;
     lastModified: string;
     resumeBlob: string | ArrayBuffer;
+    resumeId: number;
 }
 
 export interface IUploadCVPayload {

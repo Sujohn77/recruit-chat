@@ -1,4 +1,5 @@
 import apisauce, { ApisauceInstance } from 'apisauce';
+import { AxiosInterceptorManager, AxiosRequestConfig } from 'axios';
 import { info } from '../contexts/MessangerContext';
 import { LocalStorage, SessionStorage } from '../utils/constants';
 import { getStorageValue, isTokenExpired } from '../utils/helpers';
@@ -67,13 +68,17 @@ class Api {
         );
     }
 
-    requestInterceptor = (request: any) => {
+    requestInterceptor = (request: AxiosRequestConfig) => {
         const token = getStorageValue(SessionStorage.Token);
         // const basicAuthToken = Buffer.from(`${info.username}:${info.password}`).toString('base64');
         // const isExpired = token ? isTokenExpired(token) : true;
+
         if (token) {
+            process.env.NODE_ENV === 'development' && console.log(request.headers);
             if (request && request.headers) request.headers['Authorization'] = 'chatbot-jwt-token ' + token;
             this.lastRequest = request;
+        } else {
+            process.env.NODE_ENV === 'development' && console.log('no token');
         }
         return request;
         // if (isExpired) {

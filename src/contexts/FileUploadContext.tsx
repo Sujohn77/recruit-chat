@@ -23,14 +23,14 @@ const FileUploadContext = createContext<IFileUploadContext>(fileUploadDefaultSta
 const FileUploadProvider = ({ children }: PropsType) => {
     const { triggerAction, messages, submitMessage } = useChatMessenger();
     const [file, setFile] = useState<File | null>(null);
-    const [messageId, setMessageId] = useState<number | null>(null);
+    const [resumeId, setResumeId] = useState<number | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
     const [resumeData, setResumeData] = useState<IResumeData | null>(null);
 
-    const showSearchWithResumeMsg = (file: File) => {
+    const showSearchWithResumeMsg = (file: File, resumeData: IResumeData) => {
         const isLastMsgEqualToUploadType = messages[0].content.subType === MessageType.UPLOAD_CV;
         isLastMsgEqualToUploadType && triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-        saveResume(file);
+        saveResume(file, resumeData);
     };
 
     useEffect(() => {
@@ -40,36 +40,33 @@ const FileUploadProvider = ({ children }: PropsType) => {
             if (file && reader.result) {
                 const result = reader.result as string;
 
-                const data = {
+                const resumeData = {
                     candidateId: 50994334,
                     fileName: file.name,
                     lastModified: `${new Date(file.lastModified).toISOString()}`,
                     blob: result.replace(`data:${file.type};base64,`, ''),
                 };
-                setResumeData(data);
+                setResumeData(resumeData);
+                showSearchWithResumeMsg(file, resumeData);
             }
         };
-
-        if (file) {
-            showSearchWithResumeMsg(file);
-        }
 
         file && reader.readAsDataURL(file);
     }, [file]);
 
     useEffect(() => {
-        if (messageId) {
+        if (resumeId) {
             submitMessage({
                 type: MessageType.FILE,
-                messageId,
+                messageId: resumeId,
             });
         }
-    }, [messageId]);
+    }, [resumeId]);
 
     const searchWithResume = async () => {
-        if (resumeData) {
+        if (resumeData && resumeId) {
             const { blob, ...data } = resumeData;
-            const response = await apiInstance.searchWithResume({ ...data, resumeBlob: blob });
+            const response = await apiInstance.searchWithResume({ ...data, resumeBlob: blob, resumeId: resumeId });
 
             response.data &&
                 triggerAction({
@@ -81,11 +78,9 @@ const FileUploadProvider = ({ children }: PropsType) => {
         setFile(null);
     };
 
-    const saveResume = async (file: File) => {
-        if (resumeData) {
-            const response = await apiInstance.uploadCV(resumeData);
-            response.data?.resumeId && setMessageId(response.data?.resumeId); // REPLACE when backend messages scheme is ready
-        }
+    const saveResume = async (file: File, resumeData: IResumeData) => {
+        const response = await apiInstance.uploadCV(resumeData);
+        response.data?.resumeId && setResumeId(response.data?.resumeId);
     };
 
     const showFile = (file: File) => {
