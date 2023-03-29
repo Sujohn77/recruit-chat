@@ -48,7 +48,7 @@ export const useRequisitions = () => {
                     setJobPositions(requisitions);
                 }
             } catch (err) {
-                console.log(err);
+                process.env.NODE_ENV === 'development' && console.log(err);
             }
         };
         getCategories();

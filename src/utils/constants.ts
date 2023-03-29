@@ -331,6 +331,7 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
         type !== CHAT_ACTIONS.APPLY_POSITION &&
         type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
         type !== CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL &&
+        type !== CHAT_ACTIONS.SEARCH_WITH_RESUME &&
         type !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
     );
 };
@@ -339,11 +340,7 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
 //     return type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
 // };
 
-export const getChatActionResponse = ({
-    type,
-    additionalCondition,
-    param,
-}: IGetChatResponseProps): { newMessages: ILocalMessage[] } => {
+export const getChatActionResponse = ({ type, additionalCondition, param }: IGetChatResponseProps): ILocalMessage[] => {
     const messages = getChatActionMessages(type, param);
 
     if (additionalCondition !== null && additionalCondition !== undefined && !additionalCondition) {
@@ -364,11 +361,7 @@ export const getChatActionResponse = ({
     // }
 
     // const isPushMessage = isPushMessageType(type);
-    return {
-        newMessages: responseChatMessages,
-        // isPushMessage,
-        // isFirstResponse: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV,
-    };
+    return responseChatMessages;
 };
 
 export enum EnvironmentMode {

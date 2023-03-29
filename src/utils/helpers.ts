@@ -78,7 +78,7 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 export const isTokenExpired = (token: string) => {
     let decodedToken: { exp: number } = jwt_decode(token);
     let currentDate = new Date();
-    console.log(decodedToken);
+
     return decodedToken.exp * 1000 < currentDate.getTime();
 };
 export const getActionTypeByOption = (option: USER_INPUTS) => {
@@ -394,9 +394,18 @@ export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
     }
     return true;
 };
-export const getMessagesOnAction = ({ action, messages, responseAction, additionalCondition }: IGetUpdatedMessages) => {
+export const getMessagesOnAction = ({
+    action,
+    messages,
+    responseMessages,
+    additionalCondition,
+}: IGetUpdatedMessages) => {
     const { type } = action;
-    let updatedMessages = [...messages];
+
+    let updatedMessages =
+        type === CHAT_ACTIONS.SEARCH_WITH_RESUME
+            ? popMessage({ type: MessageType.UPLOAD_CV, messages })
+            : [...messages];
 
     if (!isPushMessageType(type)) {
         updatedMessages = popMessage({
@@ -414,8 +423,8 @@ export const getMessagesOnAction = ({ action, messages, responseAction, addition
     //     });
     //     return [message, ...responseAction.newMessages, ...updatedMessages];
     // }
-
-    return [...responseAction.newMessages, ...updatedMessages];
+    console.log('push', responseMessages, updatedMessages);
+    return [...responseMessages, ...updatedMessages];
 };
 
 const initialMessages = getParsedMessages([
@@ -498,6 +507,7 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
         case CHAT_ACTIONS.FIND_JOB:
         case CHAT_ACTIONS.APPLY_ETHNIC:
         case CHAT_ACTIONS.GET_USER_EMAIL:
+        case CHAT_ACTIONS.SEARCH_WITH_RESUME:
             return CHAT_ACTIONS.SET_CATEGORY;
         case CHAT_ACTIONS.SET_ALERT_EMAIL:
             return CHAT_ACTIONS.SET_CATEGORY;
@@ -608,23 +618,34 @@ export const getUniqueItems = (items: string[]) => {
     });
     return uniqueItems;
 };
-
-export const isResultsType = (type: CHAT_ACTIONS | null) => {
-    return (
+interface IIsResultType {
+    type: CHAT_ACTIONS | null;
+    matchedItems: string[];
+    value?: string;
+}
+export const isResultsType = ({ type, matchedItems, value }: IIsResultType) => {
+    const isForcedShow = type === CHAT_ACTIONS.SEARCH_WITH_RESUME;
+    if (isForcedShow) {
+        return true;
+    }
+    const isAllowedType =
         !type ||
         type === CHAT_ACTIONS.FIND_JOB ||
         type === CHAT_ACTIONS.ASK_QUESTION ||
         type === CHAT_ACTIONS.SET_JOB_ALERT ||
         type === CHAT_ACTIONS.SET_CATEGORY ||
-        // type === CHAT_ACTIONS.GET_USER_EMAIL ||
-        type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
         type === CHAT_ACTIONS.REFINE_SEARCH ||
+        type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
         type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
         type === CHAT_ACTIONS.SEND_LOCATIONS ||
         type === CHAT_ACTIONS.UPLOAD_CV ||
         type === CHAT_ACTIONS.SET_LOCATIONS ||
-        type === CHAT_ACTIONS.SET_ALERT_CATEGORIES
-    );
+        type === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+
+    if (value !== undefined) {
+        return isAllowedType && value && !!matchedItems.length;
+    }
+    return isAllowedType && !!matchedItems.length;
 };
 
 export const isMultiSelectType = (type: CHAT_ACTIONS | null) => {

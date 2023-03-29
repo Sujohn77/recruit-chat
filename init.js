@@ -1,50 +1,64 @@
-const appendChatBot = (style) => {
+var guid = '6B2B076E-2E86-4B55-A5E2-F10739449D19';
+
+const appendChatBot = (style, token) => {
     const ifrm = document.createElement('iframe'),
-        chatbotId = '32ea2d2b-f066-4358-b908-d3a779f588a0',
-        url_string = `https://loopchatbot.z14.web.core.windows.net/?chatBotId=${chatbotId}`;
+        url_string = `https://loopchatbot.z14.web.core.windows.net`;
     ifrm.setAttribute('src', url_string);
     ifrm.setAttribute('id', 'chat-iframe');
     ifrm.setAttribute('width', '370px');
-    ifrm.setAttribute('style', style);
     ifrm.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-
     ifrm.style.cssText = `
-        position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;height: 601px;
-      `;
+                    position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;height: 601px;
+                `;
 
     document.body.appendChild(ifrm);
 
     ifrm.addEventListener('load', () => {
-        ifrm.contentWindow.postMessage(null, ifrm.src);
+        ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
     });
-    ifrm.onerror = refreshToken;
-};
+    ifrm.onerror = () => refreshToken();
 
-let jwtToken;
-const refreshToken = async () => {
-    try {
-        const response = await fetch('api/chatbot/token');
-        console.log(response);
-        jwtToken = response.token;
-    } catch (err) {
-        if (err.httpStatusCode === 403) {
-            console.log(err);
+    function onMessage(event) {
+        if (url_string.indexOf(event.origin) !== -1 && event.data.event_id === 'refresh_token') {
+            refreshToken(event.data.callback);
         }
+    }
+
+    if (window.addEventListener) {
+        window.addEventListener('message', onMessage);
+    } else {
+        window.attachEvent('onmessage', onMessage); // IE8
     }
 };
 
-const getChatBotStyle = async () => {
-    const body = { ChatBotGUID: 'xxxx' };
-    const headers = jwtToken ? { Authentication: `Bearer ${jwtToken}` } : {};
-    try {
-        const response = await fetch('api/chatbot/style', { body, headers });
-        console.log(response);
-        appendChatBot(response.style);
-    } catch (err) {
-        if (err.httpStatusCode === 403) {
-            console.log(err);
-        }
-    }
+const refreshToken = (callback) => {
+    fetch('https://qa-integrations.loopworks.com/api/chatbot/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ChatbotGuid: guid }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data?.errors) {
+                console.log(data.errors[0]);
+            } else {
+                callback && callback(data);
+            }
+        });
 };
-debugger;
-getChatBotStyle();
+
+const getChatBotStyle = async (token) => {
+    fetch('https://qa-integrations.loopworks.com/api/chatbot/style?ChatBotGuid=' + guid)
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.statusCode === 413) {
+                refreshToken(getChatBotStyle);
+            } else {
+                appendChatBot(JSON.parse(data), token);
+            }
+        });
+};
+
+refreshToken(getChatBotStyle);

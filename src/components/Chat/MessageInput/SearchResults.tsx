@@ -8,60 +8,53 @@ import { searchItemheight } from './styles';
 
 export const maxSearchHeight = 186;
 interface IGetOptionProps {
-  option: any;
-  index: number;
+    option: any;
+    index: number;
 }
 type PropsType = {
-  matchedItems: string[];
-  matchedPart: string;
-  headerName: string;
-  onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
-  getOptionProps?: ({
-    option,
-    index,
-  }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
-  getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
-  setIsShowResults: Dispatch<SetStateAction<boolean>>;
+    matchedItems: string[];
+    matchedPart: string;
+    headerName: string;
+    onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
+    getOptionProps?: ({ option, index }: IGetOptionProps) => React.HTMLAttributes<HTMLLIElement>;
+    getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
+    setIsShowResults: Dispatch<SetStateAction<boolean>>;
 };
 export const SearchResults: FC<PropsType> = ({
-  matchedItems,
-  matchedPart,
-  headerName,
-  getOptionProps,
-  onClick,
-  getListboxProps = () => ({}),
-  setIsShowResults,
+    matchedItems,
+    matchedPart,
+    headerName,
+    getOptionProps,
+    onClick,
+    setIsShowResults,
+    getListboxProps = () => ({}),
 }) => {
-  const items = matchedItems.map((option, index) => {
-    const optionProps = getOptionProps && getOptionProps({ option, index });
+    const items = matchedItems.map((option, index) => {
+        const optionProps = getOptionProps && getOptionProps({ option, index });
+
+        return (
+            <S.SearchPosition
+                key={`search-item-${index}`}
+                {...optionProps}
+                onClick={(e) => {
+                    onClick && onClick(e);
+                    optionProps?.onClick && optionProps.onClick(e);
+                }}
+            >
+                <span>{matchedPart}</span>
+                {option}
+            </S.SearchPosition>
+        );
+    });
+    const searchOptionsHeight = matchedItems.length < 6 ? searchItemheight * matchedItems.length + 1 : maxSearchHeight;
 
     return (
-      <S.SearchPosition
-        key={`search-item-${index}`}
-        {...optionProps}
-        onClick={(e) => {
-          onClick && onClick(e);
-          optionProps?.onClick && optionProps.onClick(e);
-          setIsShowResults(false);
-        }}
-      >
-        <span>{matchedPart}</span>
-        {option}
-      </S.SearchPosition>
+        <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
+            <S.SearchHeader>
+                {headerName}
+                <Close color={colors.gray} onClick={() => setIsShowResults(false)} />
+            </S.SearchHeader>
+            <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>
+        </S.SearchWrapper>
     );
-  });
-  const searchOptionsHeight =
-    matchedItems.length < 6
-      ? searchItemheight * matchedItems.length + 1
-      : maxSearchHeight;
-
-  return (
-    <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
-      <S.SearchHeader>
-        {headerName}
-        <Close color={colors.gray} onClick={() => setIsShowResults(false)} />
-      </S.SearchHeader>
-      <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>
-    </S.SearchWrapper>
-  );
 };

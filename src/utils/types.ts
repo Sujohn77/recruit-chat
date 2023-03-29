@@ -216,7 +216,7 @@ export enum HTTPStatusCodes {
 export interface IGetUpdatedMessages {
     action: ITriggerActionProps;
     messages: ILocalMessage[];
-    responseAction: any;
+    responseMessages: ILocalMessage[];
     additionalCondition: boolean | null;
 }
 

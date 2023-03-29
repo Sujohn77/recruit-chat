@@ -39,7 +39,7 @@ export const Home = () => {
             }
             if (regExpJWT.test(event.data?.token)) {
                 if (process.env.NODE_ENV === 'development') {
-                    console.log(event.data?.token);
+                    // console.log(event.data?.token);
                 }
                 sessionStorage.setItem(SessionStorage.Token, event.data.token);
             }
@@ -52,10 +52,12 @@ export const Home = () => {
         };
     }, []);
 
+    const isChatBot = process.env.NODE_ENV !== 'production' || chatBotID;
+
     return (
         <Container id="chat-bot">
             <AuthProvider>
-                {chatBotID && (
+                {isChatBot && (
                     <ChatProvider chatBotID={chatBotID}>
                         <ThemeContextProvider value={theme}>
                             <FileUploadProvider>

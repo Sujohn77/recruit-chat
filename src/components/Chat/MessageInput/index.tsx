@@ -29,8 +29,17 @@ type PropsType = {};
 
 export const MessageInput: FC<PropsType> = () => {
     const { file, setNotification } = useFileUploadContext();
-    const { category, triggerAction, searchLocations, status, locations, currentMsgType, setError, error } =
-        useChatMessenger();
+    const {
+        category,
+        triggerAction,
+        searchLocations,
+        status,
+        locations,
+        currentMsgType,
+        setError,
+        error,
+        requisitions,
+    } = useChatMessenger();
 
     // State
     const [draftMessage, setDraftMessage] = useState<string | null>(null);
@@ -39,18 +48,18 @@ export const MessageInput: FC<PropsType> = () => {
     const formattedLocations = getFormattedLocations(locations);
     const { searchItems, placeHolder, headerName } = useTextField({
         locations: formattedLocations,
-        requisitions: ['Front', 'Back', 'SEO'].map((t) => ({ category: t, title: t })),
+        requisitions,
         category,
         lastActionType: currentMsgType,
     });
 
-    const inputType = useMemo(() => getInputType({ actionType: currentMsgType, category }), [category, currentMsgType]);
-
     useEffect(() => {
-        if (currentMsgType === CHAT_ACTIONS.REFINE_SEARCH) {
+        if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
             setIsShowResults(true);
         }
     }, [currentMsgType]);
+
+    const inputType = useMemo(() => getInputType({ actionType: currentMsgType, category }), [category, currentMsgType]);
 
     const { matchedPart, matchedItems } = useMemo(
         () =>
@@ -65,7 +74,7 @@ export const MessageInput: FC<PropsType> = () => {
     // Callbacks
     const sendMessage = useCallback(
         (draftMessage: string | null) => {
-            const isCategoryOrLocation = isResultsType(currentMsgType);
+            const isCategoryOrLocation = isResultsType({ type: currentMsgType, matchedItems });
             const isNoMatches = isCategoryOrLocation && !isResults({ draftMessage, searchItems });
             const matchedSearchItem = getMatchedItem({ searchItems, draftMessage });
 
@@ -89,7 +98,7 @@ export const MessageInput: FC<PropsType> = () => {
                 });
             }
 
-            setIsShowResults(false);
+            // setIsShowResults(false);
             setDraftMessage(null);
         },
         [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
@@ -150,7 +159,7 @@ export const MessageInput: FC<PropsType> = () => {
             });
         }
 
-        setIsShowResults(false);
+        // setIsShowResults(false);
     };
 
     const renderInput = (type: TextFieldTypes) => {
@@ -166,7 +175,7 @@ export const MessageInput: FC<PropsType> = () => {
             setInputValue: (value: string) => setDraftMessage(value),
         };
 
-        if (type === TextFieldTypes.MultiSelect && status !== Status.PENDING) {
+        if (type === TextFieldTypes.MultiSelect) {
             return <MultiSelectInput {...inputProps} onChange={onChangeAutocomplete} values={inputValues} />;
         }
         return <Autocomplete {...inputProps} onChange={onChangeCategory} />;

@@ -55,6 +55,29 @@ export const validationUserContacts = ({
     return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
 
+const mockCategories = [
+    {
+        id: 113707683,
+        externalID: 'Ref123',
+        jobRef: 'Ref123',
+        positionID: null,
+        title: 'JJTest5',
+        description: 'czxczxc',
+        company: 'Apple',
+        categories: ['DEV'],
+        datePosted: '2020-07-10T00:00:00Z',
+        expiryDate: '2020-08-09T00:00:00Z',
+        location: { city: 'Redmond', state: 'Washington', country: 'United States', zip: '98052' },
+        status: 'Open',
+        hiringType: 'Contingent',
+        jobURL: 'https://qa.loop.jobs/go/jobref/64/Ref123',
+        applyURL: 'https://qa.loop.jobs/Apply/ApplyByResume?jobID=113707683',
+        jobCode: null,
+        jobCustomData: [],
+        poolData: { totalCandidateCount: 0, pools: [{ poolId: 656010, candidateCount: 0 }] },
+    },
+];
+
 const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     // State
     const [category, setCategory] = useState<string | null>(null);
@@ -82,10 +105,24 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const { requisitions, locations, setJobPositions } = useRequisitions();
     const { clearAuthConfig } = useAuthContext();
     const [resumeName, setResumeName] = useState('');
+    // Test
+    useEffect(() => {
+        console.log('trigger', currentMsgType);
+        if (
+            currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
+            !messages.some((m) => m.content.subType === MessageType.SUBMIT_FILE)
+        ) {
+            triggerAction({ type: CHAT_ACTIONS.UPLOAD_CV });
+        } else if (currentMsgType === CHAT_ACTIONS.UPLOAD_CV) {
+            triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+        } else if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
+            triggerAction({ type: CHAT_ACTIONS.SEARCH_WITH_RESUME, payload: { items: mockCategories } });
+        }
+    }, [currentMsgType]);
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'development') {
-            console.log('Current chat action: ', currentMsgType);
+            // console.log('Current chat action: ', currentMsgType);
         }
     }, [currentMsgType]);
 
@@ -127,6 +164,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     const triggerAction = useCallback(
         (action: ITriggerActionProps) => {
+            console.log('call', action.type);
             const { type, payload } = action;
             const isInitialAction = type === CHAT_ACTIONS.FIND_JOB || type === CHAT_ACTIONS.ANSWER_QUESTIONS;
             if (type === chatAction?.type && isInitialAction) {
@@ -164,12 +202,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     payload?.item && setResumeName(payload?.item);
                     break;
                 }
-                case CHAT_ACTIONS.RESET_FILE: {
-                    const updatedMessages = messages;
-                    updatedMessages.shift();
-                    setMessages(updatedMessages);
-                    break;
-                }
+
                 case CHAT_ACTIONS.GET_USER_AGE: {
                     setUser({ ...user, age: payload?.item! });
                     break;
@@ -242,7 +275,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     pushMessage({ action, messages, setMessages });
                 }
 
-                setCurrentMsgType(getNextActionType(type));
                 setChatAction(action);
             }
         },
@@ -251,6 +283,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     useEffect(() => {
         if (chatAction !== null && messages.length) {
+            console.log('async call', chatAction.type);
             updateStateOnRequest(chatAction);
         }
     }, [chatAction]);
@@ -268,14 +301,21 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 case CHAT_ACTIONS.SEND_LOCATIONS: {
                     if (category) {
                         const data = getSearchJobsData(category, searchLocations[0]?.split(',')[0]);
-                        const apiResponse = await apiInstance.searchRequisitions(data);
-                        additionalCondition = !!apiResponse.data?.requisitions.length;
-                        setCategory(null);
-                        setSearchLocations([]);
-                        if (apiResponse.data?.requisitions.length) {
-                            setOfferJobs(apiResponse.data?.requisitions);
-                        } else {
-                            triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
+                        try {
+                            const apiResponse = await apiInstance.searchRequisitions(data);
+                            additionalCondition = !!apiResponse.data?.requisitions.length;
+                            setCategory(null);
+                            setSearchLocations([]);
+                            if (apiResponse.data?.requisitions.length) {
+                                setOfferJobs(apiResponse.data?.requisitions);
+                            } else {
+                                triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
+                            }
+                        } catch (err) {
+                            process.env.NODE_ENV === 'development' && console.log(err);
+                        } finally {
+                            setCategory(null);
+                            setSearchLocations([]);
                         }
                     }
                     break;
@@ -291,8 +331,10 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     break;
                 }
                 case CHAT_ACTIONS.SEARCH_WITH_RESUME: {
-                    removeLastMessage();
-                    payload?.items && setJobPositions(payload.items);
+                    if (payload?.items) {
+                        setJobPositions(payload.items);
+                        additionalCondition = !!payload.items.length;
+                    }
                     break;
                 }
                 case CHAT_ACTIONS.APPLY_ETHNIC: {
@@ -309,36 +351,31 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
             //  Update state with response
             const param = action.payload?.item || '';
-            const response = getChatActionResponse({
+            const responseMessages = getChatActionResponse({
                 type,
                 additionalCondition,
                 param,
             });
-            if (response.newMessages.length) {
-                setStatus(Status.DONE);
-                updatedMessages = getMessagesOnAction({
-                    action,
-                    messages: updatedMessages,
-                    responseAction: response,
-                    additionalCondition,
-                });
+            console.log(responseMessages);
 
-                setTimeout(() => {
-                    updatedMessages?.length && setMessages(updatedMessages);
-                }, 500);
+            updatedMessages = getMessagesOnAction({
+                action,
+                messages: updatedMessages,
+                responseMessages,
+                additionalCondition,
+            });
+            console.log('updatedMessages', updatedMessages);
+            // Simulate chat bot thinking
+            setTimeout(() => {
+                updatedMessages?.length && setMessages(updatedMessages);
+                setCurrentMsgType(getNextActionType(type));
+            }, 500);
 
-                setError(null);
-                setChatAction(null);
-            } else {
-                setStatus(Status.ERROR);
-            }
+            setError(null);
+            setChatAction(null);
         },
         [messages, searchLocations.length, currentMsgType, user, isInitialized, requisitions.length, chatBotID]
     );
-
-    const removeLastMessage = () => {
-        setMessages(popMessage({ type: MessageType.SUBMIT_FILE, messages }));
-    };
 
     const clearFilters = () => {
         setCategory(null);
@@ -371,8 +408,8 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
         });
 
         if (type) {
-            const response = getChatActionResponse({ type });
-            setMessages([...response.newMessages, ...updatedMessages]);
+            const responseMessages = getChatActionResponse({ type });
+            setMessages([...responseMessages, ...updatedMessages]);
         } else {
             const chatType = getNextActionType(currentMsgType);
             chatType && updateStateOnRequest({ type: chatType });

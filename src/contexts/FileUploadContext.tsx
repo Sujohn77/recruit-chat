@@ -21,7 +21,7 @@ export interface IResumeData {
 const FileUploadContext = createContext<IFileUploadContext>(fileUploadDefaultState);
 
 const FileUploadProvider = ({ children }: PropsType) => {
-    const { triggerAction, messages, submitMessage } = useChatMessenger();
+    const { triggerAction, messages, submitMessage, currentMsgType } = useChatMessenger();
     const [file, setFile] = useState<File | null>(null);
     const [resumeId, setResumeId] = useState<number | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
@@ -55,6 +55,10 @@ const FileUploadProvider = ({ children }: PropsType) => {
     }, [file]);
 
     useEffect(() => {
+        currentMsgType === CHAT_ACTIONS.SET_LOCATIONS && resetFile();
+    }, [currentMsgType]);
+
+    useEffect(() => {
         if (resumeId) {
             submitMessage({
                 type: MessageType.FILE,
@@ -66,7 +70,12 @@ const FileUploadProvider = ({ children }: PropsType) => {
     const searchWithResume = async () => {
         if (resumeData && resumeId) {
             const { blob, ...data } = resumeData;
-            const response = await apiInstance.searchWithResume({ ...data, resumeBlob: blob, resumeId: resumeId });
+            const payload = {
+                ...data,
+                resumeBlob: blob,
+            };
+
+            const response = await apiInstance.searchWithResume(payload);
 
             response.data &&
                 triggerAction({
@@ -94,7 +103,6 @@ const FileUploadProvider = ({ children }: PropsType) => {
     };
 
     const resetFile = () => {
-        triggerAction({ type: CHAT_ACTIONS.RESET_FILE });
         setFile(null);
         setNotification(null);
     };

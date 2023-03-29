@@ -54,7 +54,6 @@ class Api {
                 return response;
             },
             function (error) {
-                console.log(error);
                 sessionStorage.removeItem(SessionStorage.Token);
                 window.parent.postMessage(
                     {
