@@ -420,7 +420,7 @@ export interface IVerifyEmailRequest {
 }
 
 export interface IJobAlertRequest {
-    chatBotID: string | null;
+    // chatBotID: string | null;
     // subscriberID: number | null;
     email: string;
     location: string;

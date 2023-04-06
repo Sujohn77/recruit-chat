@@ -35,7 +35,9 @@ export const useRequisitions = () => {
                 category: c.categories[0],
             })) as any
         );
-        setLocations(requisitions.map((r) => r.location));
+        if (requisitions.length) {
+            setLocations(requisitions.map((r) => r.location));
+        }
     };
 
     useEffect(() => {

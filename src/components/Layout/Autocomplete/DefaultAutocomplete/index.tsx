@@ -45,7 +45,7 @@ export const Autocomplete: FC<PropsType> = (props) => {
         setIsShowResults(false);
     };
 
-    const isResults = isShowResults || isResultsType({ type: currentMsgType, matchedItems, value });
+    const isResults = isShowResults && isResultsType({ type: currentMsgType, matchedItems });
     const isNumberType = currentMsgType === CHAT_ACTIONS.APPLY_AGE && user?.email;
     const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
 

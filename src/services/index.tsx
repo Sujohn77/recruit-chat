@@ -113,7 +113,7 @@ class Api {
     sendTranscript = (data: ISendTranscript) =>
         this.client.post<ISendTranscriptResponse>('api/messenger/chat/transcript/send', data);
     createJobAlert = (data: IJobAlertRequest) => {
-        return this.client.post<IJobAlertResponse>('api/chatbot/create-job-alert', data);
+        return this.client.post<IJobAlertResponse>('api/chatbot/createJobAlert', data);
     };
     clearAxiosConfig = () => {
         sessionStorage.removeItem(SessionStorage.Token);

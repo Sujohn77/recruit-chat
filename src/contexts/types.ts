@@ -31,7 +31,7 @@ export interface IChatMessengerContext {
     prefferedJob: IRequisition | null;
     submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
     nextMessages: IPortionMessages[];
-
+    setJobPositions: (requisitions: IRequisition[]) => void;
     setIsInitialized: Dispatch<SetStateAction<boolean>>;
     resumeName: string;
 }

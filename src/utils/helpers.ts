@@ -217,6 +217,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
     setViewJob: emptyFunc,
     submitMessage: emptyFunc,
     setIsInitialized: emptyFunc,
+    setJobPositions: emptyFunc,
     resumeName: '',
 };
 
@@ -401,16 +402,16 @@ export const getMessagesOnAction = ({
     additionalCondition,
 }: IGetUpdatedMessages) => {
     const { type } = action;
-
-    let updatedMessages =
-        type === CHAT_ACTIONS.SEARCH_WITH_RESUME
-            ? popMessage({ type: MessageType.UPLOAD_CV, messages })
-            : [...messages];
+    let updatedMessages = messages;
+    if (type === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
+        updatedMessages = popMessage({ type: MessageType.UPLOAD_CV, messages });
+        updatedMessages = popMessage({ type: MessageType.SUBMIT_FILE, messages });
+    }
 
     if (!isPushMessageType(type)) {
         updatedMessages = popMessage({
             type: getReplaceMessageType(type),
-            messages: !messages.length ? [...messages, ...initialMessages] : messages,
+            messages: !updatedMessages.length ? [...updatedMessages, ...initialMessages] : updatedMessages,
         });
     }
 
@@ -623,13 +624,10 @@ interface IIsResultType {
     matchedItems: string[];
     value?: string;
 }
-export const isResultsType = ({ type, matchedItems, value }: IIsResultType) => {
-    const isForcedShow = type === CHAT_ACTIONS.SEARCH_WITH_RESUME;
-    if (isForcedShow) {
-        return true;
-    }
+export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
     const isAllowedType =
         !type ||
+        type === CHAT_ACTIONS.SEARCH_WITH_RESUME ||
         type === CHAT_ACTIONS.FIND_JOB ||
         type === CHAT_ACTIONS.ASK_QUESTION ||
         type === CHAT_ACTIONS.SET_JOB_ALERT ||
@@ -642,9 +640,6 @@ export const isResultsType = ({ type, matchedItems, value }: IIsResultType) => {
         type === CHAT_ACTIONS.SET_LOCATIONS ||
         type === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
 
-    if (value !== undefined) {
-        return isAllowedType && value && !!matchedItems.length;
-    }
     return isAllowedType && !!matchedItems.length;
 };
 

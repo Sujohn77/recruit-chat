@@ -83,16 +83,15 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
             return [
                 {
                     subType: MessageType.SUBMIT_FILE,
-                    text: 'Your resume has been attached. You can click the X to remove it and re-upload another one or click here to upload and search for jobs',
                 },
             ];
-        // case CHAT_ACTIONS.SEARCH_WITH_RESUME:
-        //     return [
-        //         {
-        //             subType: MessageType.FILE,
-        //             text: param,
-        //         },
-        //     ];
+        case CHAT_ACTIONS.REFINE_SEARCH:
+            return [
+                {
+                    subType: MessageType.TEXT,
+                    text: i18n.t('messages:whatJobTitle'),
+                },
+            ];
         case CHAT_ACTIONS.SAVE_TRANSCRIPT:
             return [
                 {

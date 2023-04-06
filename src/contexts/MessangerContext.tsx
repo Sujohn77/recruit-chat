@@ -88,7 +88,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
 
     const [user, setUser] = useState<IUser | null>(null);
-
+    console.log('searchLocations', searchLocations);
     const [messages, setMessages] = useState<ILocalMessage[]>([]);
     const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
     const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
@@ -106,19 +106,19 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const { clearAuthConfig } = useAuthContext();
     const [resumeName, setResumeName] = useState('');
     // Test
-    useEffect(() => {
-        console.log('trigger', currentMsgType);
-        if (
-            currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
-            !messages.some((m) => m.content.subType === MessageType.SUBMIT_FILE)
-        ) {
-            triggerAction({ type: CHAT_ACTIONS.UPLOAD_CV });
-        } else if (currentMsgType === CHAT_ACTIONS.UPLOAD_CV) {
-            triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-        } else if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
-            triggerAction({ type: CHAT_ACTIONS.SEARCH_WITH_RESUME, payload: { items: mockCategories } });
-        }
-    }, [currentMsgType]);
+    // useEffect(() => {
+    //     console.log('trigger', currentMsgType);
+    //     if (
+    //         currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
+    //         !messages.some((m) => m.content.subType === MessageType.SUBMIT_FILE)
+    //     ) {
+    //         triggerAction({ type: CHAT_ACTIONS.UPLOAD_CV });
+    //     } else if (currentMsgType === CHAT_ACTIONS.UPLOAD_CV) {
+    //         triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+    //     } else if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
+    //         triggerAction({ type: CHAT_ACTIONS.SEARCH_WITH_RESUME, payload: { items: mockCategories } });
+    //     }
+    // }, [currentMsgType]);
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'development') {
@@ -151,7 +151,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
         if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
             try {
                 apiInstance.createJobAlert({
-                    chatBotID,
                     email: email,
                     location: getFormattedLocations(locations)[0],
                     jobCategory: alertCategories?.length ? alertCategories[0] : '',
@@ -191,6 +190,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 }
                 case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
                     setAlertCategories(payload?.items!);
+                    console.log(payload?.items!);
                     return;
                 }
                 case CHAT_ACTIONS.INTERESTED_IN: {
@@ -253,6 +253,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
                     if (emailOrPhone && !error?.length) {
                         clearFilters();
+                        console.log('clear');
                         createJobAlert({ type, email: emailOrPhone });
                         setUser({
                             ...user,
@@ -266,6 +267,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 }
                 case CHAT_ACTIONS.REFINE_SEARCH: {
                     clearFilters();
+                    console.log('clear');
                     break;
                 }
             }
@@ -304,8 +306,8 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                         try {
                             const apiResponse = await apiInstance.searchRequisitions(data);
                             additionalCondition = !!apiResponse.data?.requisitions.length;
-                            setCategory(null);
                             setSearchLocations([]);
+                            setCategory(null);
                             if (apiResponse.data?.requisitions.length) {
                                 setOfferJobs(apiResponse.data?.requisitions);
                             } else {
@@ -334,6 +336,8 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     if (payload?.items) {
                         setJobPositions(payload.items);
                         additionalCondition = !!payload.items.length;
+                    } else {
+                        triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
                     }
                     break;
                 }
@@ -465,6 +469,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 nextMessages,
                 setIsInitialized,
                 resumeName,
+                setJobPositions,
             }}
         >
             {children}

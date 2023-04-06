@@ -21,7 +21,7 @@ export interface IResumeData {
 const FileUploadContext = createContext<IFileUploadContext>(fileUploadDefaultState);
 
 const FileUploadProvider = ({ children }: PropsType) => {
-    const { triggerAction, messages, submitMessage, currentMsgType } = useChatMessenger();
+    const { triggerAction, messages, submitMessage, currentMsgType, setJobPositions } = useChatMessenger();
     const [file, setFile] = useState<File | null>(null);
     const [resumeId, setResumeId] = useState<number | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
@@ -55,7 +55,10 @@ const FileUploadProvider = ({ children }: PropsType) => {
     }, [file]);
 
     useEffect(() => {
-        currentMsgType === CHAT_ACTIONS.SET_LOCATIONS && resetFile();
+        if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
+            setJobPositions([]);
+            resetFile();
+        }
     }, [currentMsgType]);
 
     useEffect(() => {

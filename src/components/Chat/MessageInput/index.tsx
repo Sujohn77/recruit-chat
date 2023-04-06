@@ -17,7 +17,7 @@ import {
     validateEmailOrPhone,
 } from 'utils/helpers';
 import { useChatMessenger } from 'contexts/MessangerContext';
-import { CHAT_ACTIONS } from 'utils/types';
+import { CHAT_ACTIONS, MessageType } from 'utils/types';
 import { useFileUploadContext } from 'contexts/FileUploadContext';
 import { MultiSelectInput } from 'components/Layout/Autocomplete/MultiSelectInput';
 import { Autocomplete } from 'components/Layout/Autocomplete/DefaultAutocomplete';
@@ -54,7 +54,7 @@ export const MessageInput: FC<PropsType> = () => {
     });
 
     useEffect(() => {
-        if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
+        if (currentMsgType === CHAT_ACTIONS.SET_CATEGORY && (draftMessage !== '' || file)) {
             setIsShowResults(true);
         }
     }, [currentMsgType]);
@@ -70,7 +70,7 @@ export const MessageInput: FC<PropsType> = () => {
             }),
         [searchItems, draftMessage, searchLocations]
     );
-
+    console.log(matchedItems, searchLocations);
     // Callbacks
     const sendMessage = useCallback(
         (draftMessage: string | null) => {
@@ -182,7 +182,9 @@ export const MessageInput: FC<PropsType> = () => {
     };
 
     const onClick = () => {
-        sendMessage(draftMessage);
+        if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
+            sendMessage(draftMessage);
+        }
     };
 
     const botTypingTxt = i18n.t('placeHolders:bot_typing');
