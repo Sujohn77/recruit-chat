@@ -83,6 +83,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
             return [
                 {
                     subType: MessageType.SUBMIT_FILE,
+                    text: i18n.t('messages:submitFile'),
                 },
             ];
         case CHAT_ACTIONS.REFINE_SEARCH:
@@ -394,4 +395,5 @@ export enum LocalStorage {
 
 export enum SessionStorage {
     Token = 'token',
+    ApiError = 'ApiError',
 }

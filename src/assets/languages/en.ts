@@ -79,6 +79,8 @@ export const en = {
         noMatchMessage:
             "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
         wantContinue: 'Do you want to continue?',
+        submitFile:
+            'Your resume has been attached.\n You can click the X to remove it and re-upload another one or click below to upload and search for jobs',
     },
     chat_item_description: {
         lookingFor: 'Hi! Are you looking for a job',

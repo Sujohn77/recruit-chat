@@ -74,6 +74,8 @@ export const fr = {
         noMatchMessage:
             "Désolé, nous n'avons trouvé aucune correspondance pour les recommandations d'emploi personnelles. Vous trouverez ci-dessous les actions que vous pouvez entreprendre.",
         wantContinue: 'Voulez-vous continuer?',
+        submitFile:
+            "Votre CV a été joint.\n Vous pouvez cliquer sur le X pour le supprimer et en télécharger un autre ou cliquer ci-dessous pour télécharger et rechercher des offres d'emploi",
     },
     chat_item_description: {
         title: 'Bot de carrière',

@@ -46,7 +46,7 @@ export const SubmitFileMessage: FC<IProps> = memo(({ message, isLastMessage, but
     const isActionButton = buttonTxt;
     return (
         <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
-            <S.MessageText>{message.content.text || message.content.subType}</S.MessageText>
+            {message.content.text && <S.MessageText>{message.content.text}</S.MessageText>}
             {isActionButton && <S.ActionButton onClick={() => searchWithResume()}>{buttonTxt}</S.ActionButton>}
             {renderSendingTime(message)}
             {<S.Cancel onClick={onResetResume}>{cancelTxt}</S.Cancel>}

@@ -54,7 +54,9 @@ class Api {
                 return response;
             },
             function (error) {
+                process.env.NODE_ENV === 'development' && console.log('ApiError', error?.message);
                 sessionStorage.removeItem(SessionStorage.Token);
+                sessionStorage.setItem(SessionStorage.ApiError, JSON.stringify(error.message));
                 window.parent.postMessage(
                     {
                         event_id: 'refresh_token',

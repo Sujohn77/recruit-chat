@@ -77,6 +77,8 @@ export const ua = {
         emailAnswer: 'Thanks! We will send you an answer on email',
         noMatchMessage:
             "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
+        submitFile:
+            'Ваше резюме прикріплено.\nВи можете натиснути X, щоб видалити його та завантажити інший, або клацнути нижче, щоб завантажити та шукати вакансії',
     },
     chat_item_description: {
         transcript_sent: 'Стенограма надіслана на вашу пошту ',

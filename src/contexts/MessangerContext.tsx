@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useContext, useState, useEffect } fr
 
 import { MessageType, ILocalMessage, CHAT_ACTIONS, USER_INPUTS, IRequisition } from 'utils/types';
 import { IMessage, ISnapshot } from 'services/types';
-import { getChatActionResponse, isPushMessageType, LocalStorage, Status } from 'utils/constants';
+import { getChatActionResponse, isPushMessageType, LocalStorage, SessionStorage, Status } from 'utils/constants';
 import {
     chatMessengerDefaultState,
     replaceItemsWithType,
@@ -19,17 +19,14 @@ import {
     pushMessage,
     getFormattedLocations,
     getStorageValue,
-    popMessage,
 } from 'utils/helpers';
 import { IChatMessengerContext, IPortionMessages, ISubmitMessageProps, ITriggerActionProps, IUser } from './types';
-import { apiPayload, useRequisitions } from 'services/hooks';
+import { useRequisitions } from 'services/hooks';
 import { getParsedSnapshots } from 'services/utils';
 import i18n from 'services/localization';
 import { apiInstance } from 'services';
 import { chatId } from 'components/Chat';
-import { loginUser } from 'services/auth';
 import { useAuthContext } from './AuthContext';
-import { useFileUploadContext } from './FileUploadContext';
 
 type PropsType = {
     chatBotID?: string | null;
@@ -55,28 +52,28 @@ export const validationUserContacts = ({
     return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
 
-const mockCategories = [
-    {
-        id: 113707683,
-        externalID: 'Ref123',
-        jobRef: 'Ref123',
-        positionID: null,
-        title: 'JJTest5',
-        description: 'czxczxc',
-        company: 'Apple',
-        categories: ['DEV'],
-        datePosted: '2020-07-10T00:00:00Z',
-        expiryDate: '2020-08-09T00:00:00Z',
-        location: { city: 'Redmond', state: 'Washington', country: 'United States', zip: '98052' },
-        status: 'Open',
-        hiringType: 'Contingent',
-        jobURL: 'https://qa.loop.jobs/go/jobref/64/Ref123',
-        applyURL: 'https://qa.loop.jobs/Apply/ApplyByResume?jobID=113707683',
-        jobCode: null,
-        jobCustomData: [],
-        poolData: { totalCandidateCount: 0, pools: [{ poolId: 656010, candidateCount: 0 }] },
-    },
-];
+// const mockCategories = [
+//     {
+//         id: 113707683,
+//         externalID: 'Ref123',
+//         jobRef: 'Ref123',
+//         positionID: null,
+//         title: 'JJTest5',
+//         description: 'czxczxc',
+//         company: 'Apple',
+//         categories: ['DEV'],
+//         datePosted: '2020-07-10T00:00:00Z',
+//         expiryDate: '2020-08-09T00:00:00Z',
+//         location: { city: 'Redmond', state: 'Washington', country: 'United States', zip: '98052' },
+//         status: 'Open',
+//         hiringType: 'Contingent',
+//         jobURL: 'https://qa.loop.jobs/go/jobref/64/Ref123',
+//         applyURL: 'https://qa.loop.jobs/Apply/ApplyByResume?jobID=113707683',
+//         jobCode: null,
+//         jobCustomData: [],
+//         poolData: { totalCandidateCount: 0, pools: [{ poolId: 656010, candidateCount: 0 }] },
+//     },
+// ];
 
 const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     // State
@@ -105,6 +102,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
     const { requisitions, locations, setJobPositions } = useRequisitions();
     const { clearAuthConfig } = useAuthContext();
     const [resumeName, setResumeName] = useState('');
+
     // Test
     // useEffect(() => {
     //     console.log('trigger', currentMsgType);
@@ -161,9 +159,21 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
         }
     };
 
+    // Initiate an action & set state
     const triggerAction = useCallback(
         (action: ITriggerActionProps) => {
-            console.log('call', action.type);
+            // Check if there were errors before
+            const apiError = sessionStorage.getItem(SessionStorage.ApiError);
+            const parsedError = apiError && JSON.parse(apiError);
+            if (!!apiError) {
+                console.log('apiError', apiError);
+                if (typeof parsedError == 'string') setError(parsedError);
+
+                sessionStorage.removeItem(SessionStorage.ApiError);
+                return;
+            }
+
+            // Check if all previous actions were completed
             const { type, payload } = action;
             const isInitialAction = type === CHAT_ACTIONS.FIND_JOB || type === CHAT_ACTIONS.ANSWER_QUESTIONS;
             if (type === chatAction?.type && isInitialAction) {
@@ -174,7 +184,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
             }
 
             let isErrors = false;
-
             switch (type) {
                 case CHAT_ACTIONS.SET_CATEGORY: {
                     const searchCategory = payload?.item!.toLowerCase();
@@ -190,7 +199,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 }
                 case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
                     setAlertCategories(payload?.items!);
-                    console.log(payload?.items!);
                     return;
                 }
                 case CHAT_ACTIONS.INTERESTED_IN: {
@@ -202,7 +210,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                     payload?.item && setResumeName(payload?.item);
                     break;
                 }
-
                 case CHAT_ACTIONS.GET_USER_AGE: {
                     setUser({ ...user, age: payload?.item! });
                     break;
@@ -253,7 +260,6 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
                     if (emailOrPhone && !error?.length) {
                         clearFilters();
-                        console.log('clear');
                         createJobAlert({ type, email: emailOrPhone });
                         setUser({
                             ...user,
@@ -285,20 +291,19 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
 
     useEffect(() => {
         if (chatAction !== null && messages.length) {
-            console.log('async call', chatAction.type);
-            updateStateOnRequest(chatAction);
+            getChatBotResponse(chatAction);
         }
     }, [chatAction]);
 
     // Callbacks
-    const updateStateOnRequest = useCallback(
+    const getChatBotResponse = useCallback(
         async (action: ITriggerActionProps) => {
             const { type, payload } = action;
 
             let additionalCondition = null;
             let updatedMessages = [...messages];
 
-            //  Make async action
+            //  Async actions
             switch (type) {
                 case CHAT_ACTIONS.SEND_LOCATIONS: {
                     if (category) {
@@ -369,10 +374,12 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
                 additionalCondition,
             });
             console.log('updatedMessages', updatedMessages);
-            // Simulate chat bot thinking
+
+            // Simulate chat bot reaction
             setTimeout(() => {
                 updatedMessages?.length && setMessages(updatedMessages);
                 setCurrentMsgType(getNextActionType(type));
+                setStatus(Status.DONE);
             }, 500);
 
             setError(null);
@@ -416,7 +423,7 @@ const ChatProvider = ({ chatBotID = '6', children }: PropsType) => {
             setMessages([...responseMessages, ...updatedMessages]);
         } else {
             const chatType = getNextActionType(currentMsgType);
-            chatType && updateStateOnRequest({ type: chatType });
+            chatType && getChatBotResponse({ type: chatType });
             setMessages(updatedMessages);
         }
     };
