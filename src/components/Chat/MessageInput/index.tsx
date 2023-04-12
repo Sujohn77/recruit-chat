@@ -54,7 +54,7 @@ export const MessageInput: FC<PropsType> = () => {
     });
 
     useEffect(() => {
-        if (currentMsgType === CHAT_ACTIONS.SET_CATEGORY && (draftMessage !== '' || file)) {
+        if (currentMsgType === CHAT_ACTIONS.SET_CATEGORY && (!!draftMessage || !!file)) {
             setIsShowResults(true);
         }
     }, [currentMsgType]);
@@ -70,7 +70,7 @@ export const MessageInput: FC<PropsType> = () => {
             }),
         [searchItems, draftMessage, searchLocations]
     );
-    console.log(matchedItems, searchLocations);
+
     // Callbacks
     const sendMessage = useCallback(
         (draftMessage: string | null) => {

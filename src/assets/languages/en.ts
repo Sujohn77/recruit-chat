@@ -56,7 +56,7 @@ export const en = {
         whatFullName: "What's your full name?",
         fewQuestions: 'We have a few questions about your background and experience to get your application started.',
         jobRecommendations: 'Thanks Here are your job recommendations based on the information you provided.',
-        notFoundJob: 'Didn’t fing the right job? \n \n Here’s what you can do',
+        notFoundJob: 'Didn’t find the right job? \n \n Here’s what you can do',
         applyThanks: 'Thanks for applying for this position',
         provideName: 'Please provide your name',
         provideEmail: 'Please provide your email',
@@ -81,6 +81,7 @@ export const en = {
         wantContinue: 'Do you want to continue?',
         submitFile:
             'Your resume has been attached.\n You can click the X to remove it and re-upload another one or click below to upload and search for jobs',
+        botThanks: 'Thank you for expressing your interest in this job, please check your email for updates.',
     },
     chat_item_description: {
         lookingFor: 'Hi! Are you looking for a job',

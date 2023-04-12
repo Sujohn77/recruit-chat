@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
-import { getMessageProps, getNextActionType, getParsedMessage } from 'utils/helpers';
+import { getMessageProps } from 'utils/helpers';
 
-import { MessageType, IContent, ILocalMessage } from 'utils/types';
+import { MessageType, ILocalMessage } from 'utils/types';
 import { BrowseFile } from './BrowseFile';
 import { EmailForm } from './EmailForm';
 import { JobOffers } from './JobOffers';
@@ -16,10 +16,8 @@ import { InterestedIn } from './InterestedIn';
 import { HiringHelp } from './HiringHelp';
 import { SalaryForm } from './SalaryForm';
 import { QuestionForm } from './QuestionForm';
-import { ThanksMessage } from './ThanksMessage';
 import { ButtonMessage } from './ButtonMessage';
 import { SubmitFileMessage } from './SubmitFileMessage';
-import { useChatMessenger } from '../../../../contexts/MessangerContext';
 import i18n from '../../../../services/localization';
 
 // import { useThemeContext } from 'contexts/ThemeContext';
@@ -33,7 +31,6 @@ type PropsType = {
 
 export const MS_1000 = 1000;
 export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
-    const { triggerAction, currentMsgType, resumeName } = useChatMessenger();
     const subType = message.content.subType;
     const messageProps = { ...getMessageProps(message) };
 
@@ -78,8 +75,8 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
             return <SalaryForm message={message} />;
         }
         case MessageType.NO_MATCH:
-        case MessageType.REFINE_SERCH: {
-            return <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SERCH} />;
+        case MessageType.REFINE_SEARCH: {
+            return <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SEARCH} />;
         }
         case MessageType.SUBMIT_FILE:
             return (
@@ -89,9 +86,6 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
                     buttonTxt={i18n.t('buttons:searchJobs')}
                 />
             );
-        case MessageType.THANKS: {
-            return <ThanksMessage />;
-        }
         default: {
             return null;
         }

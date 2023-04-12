@@ -51,7 +51,7 @@ export const fr = {
         whatFullName: 'Comme vous appellent complet?',
         fewQuestions: 'We have a few questions about your background and experience to get your application started.',
         jobRecommendations: 'Thanks ici sont vos job recommandations, basé sur une information, dont vous assurèrent.',
-        notFoundJob: 'Non fit fing un travail correct? \n \n ici - celui, que vous peuvent faire',
+        notFoundJob: 'Non fit find un travail correct? \n \n ici - celui, que vous peuvent faire',
         applyThanks: "Merci d'avoir postulé pour ce poste",
         provideName: 'Veuillez fournir votre nom',
         provideEmail: 'Veuillez fournir votre e-mail',
@@ -76,6 +76,8 @@ export const fr = {
         wantContinue: 'Voulez-vous continuer?',
         submitFile:
             "Votre CV a été joint.\n Vous pouvez cliquer sur le X pour le supprimer et en télécharger un autre ou cliquer ci-dessous pour télécharger et rechercher des offres d'emploi",
+        botThanks:
+            "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
     },
     chat_item_description: {
         title: 'Bot de carrière',

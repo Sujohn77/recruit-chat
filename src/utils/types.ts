@@ -21,7 +21,7 @@ export enum MessageType {
     TEXT = 'text',
     JOB_POSITIONS = 'job_positions',
     NO_MATCH = 'no_match',
-    REFINE_SERCH = 'refine_search',
+    REFINE_SEARCH = 'refine_search',
     RECOMMENDATIONS = 'recommendations',
     UPLOAD_CV = 'upload_cv',
     BUTTON = 'button',

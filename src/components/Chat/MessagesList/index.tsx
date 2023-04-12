@@ -16,50 +16,50 @@ type PropsType = {};
 const MESSAGE_SCROLL_LIST_DIV_ID = 'message-scroll-list';
 
 export const MessagesList: FC<PropsType> = () => {
-  const { messages, currentMsgType, status, nextMessages } = useChatMessenger();
-  const { onLoadNextMessagesPage } = useSocketContext();
-  const messagesRef = useRef<HTMLDivElement>(null);
+    const { messages, currentMsgType, status, nextMessages } = useChatMessenger();
+    const { onLoadNextMessagesPage } = useSocketContext();
+    const messagesRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (currentMsgType !== null && !nextMessages.length) {
-      scrollToBottom();
-    }
-  }, [messages.length, currentMsgType, nextMessages]); // TODO: test scroll
+    useEffect(() => {
+        if (currentMsgType !== null && !nextMessages.length) {
+            scrollToBottom();
+        }
+    }, [messages.length, currentMsgType, nextMessages]); // TODO: test scroll
 
-  useEffect(() => {
-    scrollToBottom();
-  }, []);
+    useEffect(() => {
+        scrollToBottom();
+    }, []);
 
-  const scrollToBottom = () => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-    }
-  };
+    const scrollToBottom = () => {
+        if (messagesRef.current) {
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+        }
+    };
 
-  const onLoadMore = () => {
-    onLoadNextMessagesPage?.();
-  };
+    const onLoadMore = () => {
+        onLoadNextMessagesPage?.();
+    };
 
-  return (
-    <S.MessagesArea>
-      <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>
-        <InfiniteScrollView
-          scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
-          onLoadMore={onLoadMore}
-          style={infiniteScrollStyle}
-          loader={<Loader />}
-          inverse
-        >
-          {messages.map((message, index) => (
-            <Message
-              key={`${message.localId}-${message.dateCreated}`}
-              message={message}
-              isLastMessage={index === 0}
-            />
-          ))}
-        </InfiniteScrollView>
-      </S.MessageListContainer>
-      {status === Status.PENDING && <Loader />}
-    </S.MessagesArea>
-  );
+    return (
+        <S.MessagesArea>
+            <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>
+                <InfiniteScrollView
+                    scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
+                    onLoadMore={onLoadMore}
+                    style={infiniteScrollStyle}
+                    // loader={<Loader />}
+                    inverse
+                >
+                    {messages.map((message, index) => (
+                        <Message
+                            key={`${message.localId}-${message.dateCreated}`}
+                            message={message}
+                            isLastMessage={index === 0}
+                        />
+                    ))}
+                </InfiniteScrollView>
+            </S.MessageListContainer>
+            {status === Status.PENDING && <Loader />}
+        </S.MessagesArea>
+    );
 };

@@ -601,12 +601,17 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const getFormattedLocations = (locations: LocationType[]) => {
-    const items = locations.map((item) => {
-        if (item.state) {
-            return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
-        }
-        return `${item.city}, ${item.country.slice(0, 13)}`;
-    });
+    const items = locations
+        .filter((location) => !!location?.city)
+        .map((item) => {
+            if (!item.country) {
+                return item.city;
+            }
+            if (item.state) {
+                return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
+            }
+            return `${item.city}, ${item.country.slice(0, 13)}`;
+        });
     return getUniqueItems(items);
 };
 

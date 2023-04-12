@@ -223,7 +223,8 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         case CHAT_ACTIONS.GET_USER_EMAIL:
             return [
                 {
-                    subType: MessageType.THANKS,
+                    text: i18n.t('messages:botThanks'),
+                    subType: MessageType.TEXT,
                 },
                 {
                     text: i18n.t('messages:contactLater'),
@@ -255,7 +256,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
             return [{ subType: MessageType.SALARY_FORM }, { text: i18n.t('messages:desireSalary') }];
         }
         case CHAT_ACTIONS.NO_PERMIT_WORK: {
-            return [{ subType: MessageType.REFINE_SERCH }, { text: i18n.t('messages:noPermitWork') }];
+            return [{ subType: MessageType.REFINE_SEARCH }, { text: i18n.t('messages:noPermitWork') }];
         }
         case CHAT_ACTIONS.SET_SALARY: {
             return [

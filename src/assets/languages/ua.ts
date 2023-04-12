@@ -55,7 +55,7 @@ export const ua = {
         whatFullName: "What's your full name?",
         fewQuestions: 'We have a few questions about your background and experience to get your application started.',
         jobRecommendations: 'Thanks Here are your job recommendations based on the information you provided.',
-        notFoundJob: 'Didn’t fing the right job? \n \n Here’s what you can do',
+        notFoundJob: 'Didn’t find the right job? \n \n Here’s what you can do',
         applyThanks: 'Thanks for applying for this position',
         provideName: 'Please provide your name',
         provideEmail: 'Please provide your email',
@@ -79,6 +79,8 @@ export const ua = {
             "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
         submitFile:
             'Ваше резюме прикріплено.\nВи можете натиснути X, щоб видалити його та завантажити інший, або клацнути нижче, щоб завантажити та шукати вакансії',
+        botThanks:
+            'Дякуємо, що висловили інтерес до цієї вакансії, перевіряйте свою електронну пошту на наявність оновлень.',
     },
     chat_item_description: {
         transcript_sent: 'Стенограма надіслана на вашу пошту ',
