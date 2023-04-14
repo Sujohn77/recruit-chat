@@ -1,9 +1,9 @@
 import { useFileUploadContext } from "contexts/FileUploadContext";
 import { ChangeEvent, FC, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 
 import { DragAndDrop } from "components";
-import i18n from "services/localization";
 import { ICONS } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
 import * as S from "./styles";
@@ -13,6 +13,7 @@ import { Close } from "../../../../Intro/DefaultMessages/styles";
 export const resumeElementId = "chatbot_resume";
 
 export const BrowseFile: FC = () => {
+  const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
   const { file, notification, resetFile, showFile } = useFileUploadContext();
@@ -41,9 +42,6 @@ export const BrowseFile: FC = () => {
     }
     resetFile();
   };
-  const browseTxt = i18n.t("buttons:browse");
-  const cancelTxt = i18n.t("buttons:cancel");
-  const dragAndDropTxt = i18n.t("messages:uploadCV");
 
   return (
     <S.Wrapper>
@@ -52,9 +50,9 @@ export const BrowseFile: FC = () => {
           <S.Avatar onClick={onHandleUpload} />
         </S.Circle>
 
-        <S.Text>{dragAndDropTxt}</S.Text>
+        <S.Text>{t("messages:uploadCV")}</S.Text>
         <S.Text>or</S.Text>
-        <S.Browse htmlFor={resumeElementId}>{browseTxt}</S.Browse>
+        <S.Browse htmlFor={resumeElementId}>{t("buttons:browse")}</S.Browse>
         <input
           type="file"
           id={resumeElementId}
@@ -64,7 +62,9 @@ export const BrowseFile: FC = () => {
           hidden
           onChange={onChangeFile}
         />
-        {file && <S.Cancel onClick={onClearFile}>{cancelTxt}</S.Cancel>}
+        {file && (
+          <S.Cancel onClick={onClearFile}>{t("buttons:cancel")}</S.Cancel>
+        )}
       </DragAndDrop>
 
       {(file || notification) && (

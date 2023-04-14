@@ -1,8 +1,9 @@
 import { useChatMessenger } from "contexts/MessengerContext";
+import { FC } from "react";
 import { Button } from "@mui/material";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
-import i18n from "services/localization";
 import { CHAT_ACTIONS } from "utils/types";
 
 export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
@@ -17,6 +18,7 @@ export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   margin-bottom: 24px;
   min-height: 245px;
 `;
+
 export const Title = styled.p`
   margin: 0 0 46px;
   white-space: pre-line;
@@ -25,6 +27,7 @@ export const Title = styled.p`
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
 `;
+
 export const SetJobAlert = styled(Button)`
   margin: 0 0 16px !important;
   color: ${(props) => props.theme.primaryColor}!important;
@@ -32,6 +35,7 @@ export const SetJobAlert = styled(Button)`
   border-radius: 100px !important;
   text-transform: initial !important;
 `;
+
 export const RefineJobSearch = styled(Button)`
   background-color: ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
@@ -39,24 +43,28 @@ export const RefineJobSearch = styled(Button)`
   text-transform: initial !important;
 `;
 
-export const NotFoundOffer = ({ isRefineOnly = false }) => {
+interface INotFoundOfferProps {
+  isRefineOnly?: boolean;
+}
+
+export const NotFoundOffer: FC<INotFoundOfferProps> = ({
+  isRefineOnly = false,
+}) => {
+  const { t } = useTranslation();
   const { triggerAction } = useChatMessenger();
-  const title = i18n.t("messages:notFoundJob");
-  const jobAlertTxt = i18n.t("buttons:set_job_alert");
-  const refineSearchTxt = i18n.t("buttons:refine_search");
 
   return (
     <Wrapper>
-      <Title>{title}</Title>
+      <Title>{t("messages:notFoundJob")}</Title>
       <SetJobAlert
         onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
       >
-        {jobAlertTxt}
+        {t("buttons:set_job_alert")}
       </SetJobAlert>
       <RefineJobSearch
         onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
       >
-        {refineSearchTxt}
+        {t("buttons:refine_search")}
       </RefineJobSearch>
     </Wrapper>
   );

@@ -1,8 +1,9 @@
 import { FC, memo } from "react";
-import { getMessageProps } from "utils/helpers";
+import { useTranslation } from "react-i18next";
 
-import { MessageType, ILocalMessage } from "utils/types";
 import * as S from "./styles";
+import { getMessageProps } from "utils/helpers";
+import { MessageType, ILocalMessage } from "utils/types";
 
 import { BrowseFile } from "./BrowseFile";
 import { EmailForm } from "./EmailForm";
@@ -19,7 +20,6 @@ import { SalaryForm } from "./SalaryForm";
 import { QuestionForm } from "./QuestionForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SubmitFileMessage } from "./SubmitFileMessage";
-import i18n from "../../../../services/localization";
 
 type PropsType = {
   message: ILocalMessage;
@@ -30,6 +30,7 @@ type PropsType = {
 
 export const MS_1000 = 1000;
 export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
+  const { t } = useTranslation();
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
 
@@ -84,7 +85,7 @@ export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
         <SubmitFileMessage
           message={message}
           isLastMessage={isLastMessage}
-          buttonTxt={i18n.t("buttons:searchJobs")}
+          buttonTxt={t("buttons:searchJobs")}
         />
       );
     default: {

@@ -1,8 +1,8 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { Dispatch, FC, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
-import i18n from "services/localization";
 
 import { validateEmail } from "utils/helpers";
 import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
@@ -25,23 +25,25 @@ const validateFields = (email: string, text: string) => {
   return errors;
 };
 
-type PropsType = {
-  setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
+interface ISupportFormProps {
   isQuestionSubmit: boolean;
+  setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
   setIsSupportForm: Dispatch<SetStateAction<boolean>>;
-};
+}
 
-export const SupportForm: FC<PropsType> = ({
+export const SupportForm: FC<ISupportFormProps> = ({
   setIsQuestionSubmit,
   isQuestionSubmit,
   setIsSupportForm,
 }) => {
+  const { t } = useTranslation();
   const { triggerAction } = useChatMessenger();
+
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
   const [email, setEmail] = useState("");
-
   const [description, setDescription] = useState("");
-  const sendTxt = i18n.t("buttons:send");
+
+  const emailError = errors.find((e) => e.name === "email")?.text || "";
 
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);
@@ -54,7 +56,7 @@ export const SupportForm: FC<PropsType> = ({
       setErrors(updatedErrors);
     }
   };
-  const emailError = errors.find((e) => e.name === "email")?.text || "";
+
   const descriptionError =
     errors.find((e) => e.name === "description")?.text || "";
 
@@ -100,7 +102,7 @@ export const SupportForm: FC<PropsType> = ({
         <DefaultButton
           onClick={onSubmit}
           theme={ButtonsTheme.Purple}
-          value={sendTxt}
+          value={t("buttons:send")}
         />
       ) : (
         <S.SuccessText>
