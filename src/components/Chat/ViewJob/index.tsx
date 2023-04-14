@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
-import { getFormattedDate } from 'utils/helpers';
-import { IRequisition } from 'utils/types';
-import parse from 'html-react-parser';
-import * as S from './styles';
+import { FC } from "react";
+import parse from "html-react-parser";
+
+import { getFormattedDate } from "utils/helpers";
+import { IRequisition } from "utils/types";
+import * as S from "./styles";
 
 type PropsType = {
   item: IRequisition | null;
@@ -10,10 +11,7 @@ type PropsType = {
 };
 
 export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
-  if (!item) {
-    return null;
-  }
-  return (
+  return !item ? null : (
     <S.ViewBody>
       <S.ViewShortInfo>
         <S.TextHeaderTitle>{item.title}</S.TextHeaderTitle>

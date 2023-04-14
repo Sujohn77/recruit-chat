@@ -1,74 +1,76 @@
-import { SearchResults } from 'components/Chat/MessageInput/SearchResults';
-import { DefaultInput } from 'components/Layout/Input';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
-import { useChatMessenger } from 'contexts/MessangerContext';
-import React, { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
-import { TextFieldTypes } from 'utils/constants';
-import { getNextActionType, isResultsType } from 'utils/helpers';
-import { CHAT_ACTIONS } from 'utils/types';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from "react";
 
-type PropsType = {
-    value: string;
-    matchedItems: string[];
-    headerName: string;
-    matchedPart: string;
-    setInputValue: (value: string | null) => void;
-    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    placeHolder: string;
-    type: TextFieldTypes;
-    setIsShowResults: Dispatch<SetStateAction<boolean>>;
-    isShowResults: boolean;
-};
+import { SearchResults } from "components/Chat/MessageInput/SearchResults";
+import { DefaultInput } from "components/Layout";
+import { INPUT_TYPES } from "components/Layout/Input/types";
+import { TextFieldTypes } from "utils/constants";
+import { isResultsType } from "utils/helpers";
+import { CHAT_ACTIONS } from "utils/types";
 
-export const Autocomplete: FC<PropsType> = (props) => {
-    const { triggerAction, currentMsgType, user, error } = useChatMessenger();
-    const {
-        matchedItems,
-        value,
-        headerName,
-        matchedPart,
-        onChange,
-        placeHolder,
-        setInputValue,
-        isShowResults,
-        setIsShowResults,
-    } = props;
+interface IAutocompleteProps {
+  value: string;
+  matchedItems: string[];
+  headerName: string;
+  matchedPart: string;
+  placeHolder: string;
+  isShowResults: boolean;
+  type: TextFieldTypes;
+  setInputValue: (value: string | null) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  setIsShowResults: Dispatch<SetStateAction<boolean>>;
+}
 
-    const onClick = (e: MouseEvent<HTMLLIElement>) => {
-        setInputValue(null);
+export const Autocomplete: FC<IAutocompleteProps> = (props) => {
+  const { triggerAction, currentMsgType, user, error } = useChatMessenger();
+  const {
+    matchedItems,
+    value,
+    headerName,
+    matchedPart,
+    onChange,
+    placeHolder,
+    setInputValue,
+    isShowResults,
+    setIsShowResults,
+  } = props;
 
-        currentMsgType &&
-            triggerAction({
-                type: currentMsgType,
-                payload: { item: e.currentTarget.textContent },
-            });
-        setIsShowResults(false);
-    };
+  const onClick = (e: MouseEvent<HTMLLIElement>) => {
+    setInputValue(null);
 
-    const isResults = isShowResults && isResultsType({ type: currentMsgType, matchedItems });
-    const isNumberType = currentMsgType === CHAT_ACTIONS.APPLY_AGE && user?.email;
-    const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
+    currentMsgType &&
+      triggerAction({
+        type: currentMsgType,
+        payload: { item: e.currentTarget.textContent },
+      });
+    setIsShowResults(false);
+  };
 
-    return (
-        <div>
-            {isResults && (
-                <SearchResults
-                    setIsShowResults={setIsShowResults}
-                    headerName={headerName}
-                    matchedItems={matchedItems}
-                    matchedPart={matchedPart}
-                    onClick={onClick}
-                />
-            )}
+  const isResults =
+    isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+  const isNumberType = currentMsgType === CHAT_ACTIONS.APPLY_AGE && user?.email;
+  const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
 
-            <DefaultInput
-                type={inputType}
-                value={value}
-                onChange={onChange}
-                placeHolder={placeHolder}
-                setIsShowResults={setIsShowResults}
-                error={error}
-            />
-        </div>
-    );
+  return (
+    <div>
+      {isResults && (
+        <SearchResults
+          setIsShowResults={setIsShowResults}
+          headerName={headerName}
+          matchedItems={matchedItems}
+          matchedPart={matchedPart}
+          onClick={onClick}
+        />
+      )}
+
+      <DefaultInput
+        type={inputType}
+        value={value}
+        onChange={onChange}
+        placeHolder={placeHolder}
+        setIsShowResults={setIsShowResults}
+        error={error}
+      />
+    </div>
+  );
 };

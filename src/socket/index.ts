@@ -1,21 +1,20 @@
-import { Query, QueryDocumentSnapshot } from '@firebase/firestore-types';
+import { Query, QueryDocumentSnapshot } from "@firebase/firestore-types";
 import {
   endBefore,
-  getDoc,
   getDocs,
   limit,
   onSnapshot,
   orderBy,
   query,
   startAt,
-} from 'firebase/firestore';
-import { ISnapshot } from '../utils/types';
+} from "firebase/firestore";
+import { ISnapshot } from "../utils/types";
 import {
   ISocketPresetOptions,
   SocketCollectionPreset,
   SOCKET_PRESET_OPTIONS,
   SORT_ORDERS,
-} from './socket.options';
+} from "./socket.options";
 
 /**
  * General class for Firebase socket connection

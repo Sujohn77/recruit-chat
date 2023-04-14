@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
-import { MessageItem, MessageText } from '../styles';
+import styled from "styled-components";
+import { MessageItem, MessageText } from "../styles";
 
 export const InterestedInText = styled(MessageText)`
   margin-bottom: 12px;
@@ -16,6 +15,7 @@ export const MessageJobItem = styled(MessageItem)`
       message: { interestedJob },
     },
   }) => interestedJob.color};
+
   &:before {
     background: ${({ theme: { message } }) => message.backgroundColor};
   }

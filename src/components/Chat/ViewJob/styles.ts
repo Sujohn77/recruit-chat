@@ -1,9 +1,9 @@
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+import { colors } from "utils/colors";
 
-import { Slide } from '../MessagesList/Message/JobOffers';
-import { MenuItemWrapper } from '../../Layout/BurgerMenu/styles';
-import { DarkButton } from 'components/Layout/styles';
+import { Slide } from "../MessagesList/Message/JobOffers";
+import { MenuItemWrapper } from "../../Layout/BurgerMenu/styles";
+import { DarkButton } from "components/Layout/styles";
 
 export const ViewBody = styled.div`
   position: absolute;
@@ -81,8 +81,9 @@ export const ViewText = styled.div`
   white-space: pre-line;
   line-height: 17px;
   font-size: 14px;
+
   p {
-    margin: 0 0 12p;x
+    margin: 0 0 12px;
   }
 `;
 

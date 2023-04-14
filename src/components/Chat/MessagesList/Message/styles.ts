@@ -1,39 +1,42 @@
-import { Button } from '@material-ui/core';
-import { InfoItem } from 'components/Chat/ViewJob/styles';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
-import { IMessageProps } from 'utils/helpers';
-import { DefaultButton } from '../../../Layout/Buttons';
+import { Button } from "@material-ui/core";
+import styled from "styled-components";
+
+import { InfoItem } from "components/Chat/ViewJob/styles";
+import { colors } from "utils/colors";
+import { IMessageProps } from "utils/helpers";
 
 export const MessageBox = styled.div<IMessageProps>`
-    position: relative;
-    border-radius: 10px;
-    min-height: 41px;
-    font-size: 14px;
-    line-height: 17px;
-    box-sizing: border-box;
-    width: fit-content;
-    max-width: 270px;
-    margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
-    color: ${({ theme: { message }, isOwn }) => (isOwn ? message?.own.color : message?.chat.color)};
-    cursor: ${({ cursor }) => cursor};
-    padding: ${({ padding }) => padding};
-    background: ${({ isOwn, theme }) => (isOwn ? theme.primaryColor : theme.message.chat.backgroundColor)};
+  position: relative;
+  border-radius: 10px;
+  min-height: 41px;
+  font-size: 14px;
+  line-height: 17px;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 270px;
+  margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
+  color: ${({ theme: { message }, isOwn }) =>
+    isOwn ? message?.own.color : message?.chat.color};
+  cursor: ${({ cursor }) => cursor};
+  padding: ${({ padding }) => padding};
+  background: ${({ isOwn, theme }) =>
+    isOwn ? theme.primaryColor : theme.message.chat.backgroundColor};
 
-    p {
-        animation: ${({ isLastMessage }) => isLastMessage && `0.3s message ease-in`};
+  p {
+    animation: ${({ isLastMessage }) =>
+      isLastMessage && `0.3s message ease-in`};
+  }
+
+  @keyframes message {
+    0% {
+      opacity: 0;
     }
-
-    @keyframes message {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
+    100% {
+      opacity: 1;
     }
+  }
 
-    ${({ backColor = '#D9D9D9', isOwn = false, theme }) => `
+  ${({ backColor = "#D9D9D9", isOwn = false, theme }) => `
         margin-bottom: 24px;
         &:after {
             content: '';
@@ -44,56 +47,56 @@ export const MessageBox = styled.div<IMessageProps>`
             border-style: solid;
             border-width: 20px 20px 0 0;
             border-color: ${
-                isOwn ? theme.primaryColor : theme.message.chat.backgroundColor
+              isOwn ? theme.primaryColor : theme.message.chat.backgroundColor
             } transparent transparent transparent;
             position: absolute;
             bottom: -12px;
-            transform:  ${isOwn && 'matrix(-1, 0, 0, 1, 0, 0)'} ;
-            left:  ${isOwn ? 'calc(100% - 20px)' : '0'} ;
+            transform:  ${isOwn && "matrix(-1, 0, 0, 1, 0, 0)"} ;
+            left:  ${isOwn ? "calc(100% - 20px)" : "0"} ;
         }   
     `};
 `;
 
 export const Cancel = styled.div`
-    font-size: 14px;
-    line-height: 17px;
-    border-bottom: 1px solid ${(props) => props.theme.primaryColor};
-    color: ${(props) => props.theme.primaryColor};
-    cursor: pointer;
-    margin-top: 0.25em;
-    width: fit-content;
+  font-size: 14px;
+  line-height: 17px;
+  border-bottom: 1px solid ${(props) => props.theme.primaryColor};
+  color: ${(props) => props.theme.primaryColor};
+  cursor: pointer;
+  margin-top: 0.25em;
+  width: fit-content;
 `;
 
 export const MessageButton = styled.div<IMessageProps>`
-    position: relative;
-    border-radius: 10px;
-    min-height: 41px;
-    font-size: 14px;
-    line-height: 17px;
-    box-sizing: border-box;
-    width: fit-content;
-    max-width: 270px;
-    margin-left: ${({ isOwn = false }) => (isOwn ? 'auto' : 'initial')};
-    color: ${({
-        theme: {
-            message: { button },
-        },
-    }) => button.color};
-    cursor: ${({ cursor }) => cursor};
-    padding: ${({ padding }) => padding};
-    background: ${({ theme }) => theme.messageButtonColor};
+  position: relative;
+  border-radius: 10px;
+  min-height: 41px;
+  font-size: 14px;
+  line-height: 17px;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 270px;
+  margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
+  color: ${({
+    theme: {
+      message: { button },
+    },
+  }) => button.color};
+  cursor: ${({ cursor }) => cursor};
+  padding: ${({ padding }) => padding};
+  background: ${({ theme }) => theme.messageButtonColor};
 
-    border-radius: 100px;
-    margin-bottom: 16px !important;
+  border-radius: 100px;
+  margin-bottom: 16px !important;
 `;
 
 export const MessageContent = styled.div<{ isFile?: boolean }>`
-    align-items: center;
-    display: flex;
-    gap: 8px;
-    ${({ isFile, theme }) =>
-        isFile &&
-        `
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  ${({ isFile, theme }) =>
+    isFile &&
+    `
         background:${colors.white};
         border-radius: 8px;
         padding: 8px;
@@ -114,49 +117,49 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
 `;
 
 export const MessageText = styled.p`
-    margin: 0;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: 218px;
-    white-space: pre-line;
+  margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 218px;
+  white-space: pre-line;
 `;
 
 export const InitialMessage = styled.div`
-    color: ${({ theme: { message } }) => message.chat.color};
-    font-size: 14px;
-    line-height: 17px;
-    margin-bottom: 32px;
+  color: ${({ theme: { message } }) => message.chat.color};
+  font-size: 14px;
+  line-height: 17px;
+  margin-bottom: 32px;
 `;
 export const MessageUnsendIcon = styled.img`
-    width: 12px;
-    height: 12px;
-    filter: invert(1);
+  width: 12px;
+  height: 12px;
+  filter: invert(1);
 `;
 export const TimeText = styled.div`
-    color: ${({ theme: { text } }) => text.postedDate};
-    white-space: nowrap;
-    font-size: 10px;
-    line-height: 12px;
-    margin-top: auto;
-    margin-left: 8px;
-    width: fit-content;
-    display: inline-block;
+  color: ${({ theme: { text } }) => text.postedDate};
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 12px;
+  margin-top: auto;
+  margin-left: 8px;
+  width: fit-content;
+  display: inline-block;
 `;
 
 export const MessageItem = styled(InfoItem)``;
 
 export const ActionButton = styled(Button)`
-    color: ${({ theme: { button } }) => button.secondaryColor};
-    width: fit-content;
-    align-self: flex-start;
-    color: ${({ theme: { button } }) => button.secondaryColor}!important;
-    background: ${(props) => props.theme.primaryColor}!important;
-    margin: 1em 0 !important;
-    border-radius: 20px !important;
-    font-size: 14px !important;
-    padding: 11px 12px !important;
-    font-family: 'Inter-Medium' !important;
-    span {
-        line-height: 17px;
-    }
+  color: ${({ theme: { button } }) => button.secondaryColor};
+  width: fit-content;
+  align-self: flex-start;
+  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+  background: ${(props) => props.theme.primaryColor}!important;
+  margin: 1em 0 !important;
+  border-radius: 20px !important;
+  font-size: 14px !important;
+  padding: 11px 12px !important;
+  font-family: "Inter-Medium" !important;
+  span {
+    line-height: 17px;
+  }
 `;

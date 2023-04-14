@@ -1,14 +1,14 @@
-import { DarkButton } from 'components/Layout/styles';
-import { useChatMessenger } from 'contexts/MessangerContext';
-import React, { FC, useCallback } from 'react';
-import Carousel from 'react-material-ui-carousel';
-import i18n from 'services/localization';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
-import { CHAT_ACTIONS } from 'utils/types';
-import { NoMatchJob } from '../NoMatchJob';
-import { NotFoundOffer } from './NoFound';
-import { Category, JobOfferWrapper, OfferTitle, ReadMore } from './styles';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useState } from "react";
+import Carousel from "react-material-ui-carousel";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+
+import { DarkButton } from "components/Layout/styles";
+import { colors } from "utils/colors";
+import { CHAT_ACTIONS } from "utils/types";
+import { NotFoundOffer } from "./NoFound";
+import { Category, JobOfferWrapper, OfferTitle, ReadMore } from "./styles";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -29,6 +29,7 @@ export const Wrapper = styled.div`
     }
   }
 `;
+
 export const PrevSlide = styled.div`
   cursor: pointer;
   padding: 0.1em 0 0;
@@ -46,7 +47,9 @@ export const PrevSlide = styled.div`
   z-index: 1;
   transform: rotate(-135deg);
 `;
+
 export const Switchers = styled.div``;
+
 export const Slide = styled.div`
   width: 9px;
   height: 9px;
@@ -55,7 +58,7 @@ export const Slide = styled.div`
   box-sizing: border-box;
 
   &::before {
-    content: '';
+    content: "";
     width: 100%;
     height: 100%;
     border-width: 1.5px 1.5px 0 0;
@@ -65,7 +68,7 @@ export const Slide = styled.div`
   }
 
   &:after {
-    content: '';
+    content: "";
     float: left;
     position: relative;
     top: -100%;
@@ -76,6 +79,7 @@ export const Slide = styled.div`
     border-color: ${colors.alabaster};
   }
 `;
+
 export const NextSide = styled(PrevSlide)`
   right: 5px;
   transform: rotate(45deg);
@@ -83,29 +87,38 @@ export const NextSide = styled(PrevSlide)`
 `;
 
 export const JobOffer = ({
-  category = 'Engineering',
+  category = "Engineering",
   title,
   handleReadMore,
   handleButtonClick,
 }: any) => {
-  const readMoreTxt = i18n.t('chat_item_description:read_more');
-  const interestedTxt = i18n.t('chat_item_description:interested_in');
+  const { t } = useTranslation();
+
   return (
     <JobOfferWrapper>
-      <Category>{'Engineering'}</Category>
+      <Category>{"Engineering"}</Category>
       <OfferTitle>{title}</OfferTitle>
-      <ReadMore onClick={handleReadMore}>{readMoreTxt}</ReadMore>
-      <DarkButton onClick={handleButtonClick}>{interestedTxt}</DarkButton>
+
+      <ReadMore onClick={handleReadMore}>
+        {t("chat_item_description:read_more")}
+      </ReadMore>
+
+      <DarkButton onClick={handleButtonClick}>
+        {t("chat_item_description:interested_in")}
+      </DarkButton>
     </JobOfferWrapper>
   );
 };
-type PropsType = {
-  // onSubmit: (id: string | number) => void;
-};
 
-export const JobOffers: FC<PropsType> = () => {
+interface IJobOffersProps {
+  // onSubmit: (id: string | number) => void;
+}
+
+export const JobOffers: FC<IJobOffersProps> = () => {
   const { offerJobs, category, setViewJob, triggerAction } = useChatMessenger();
-  const [index, setIndex] = React.useState(0);
+
+  const [index, setIndex] = useState(0);
+
   const handleChange = (current: number, prev: number) => {
     setIndex(current);
   };

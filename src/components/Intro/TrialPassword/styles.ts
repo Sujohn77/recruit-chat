@@ -1,6 +1,6 @@
-import { ImageButton } from 'screens/intro/styles';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+import { colors } from "utils/colors";
+import { ImageButton } from "screens/intro/styles";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -26,7 +26,6 @@ export const Wrapper = styled.div`
 export const InputDescription = styled.p`
   margin: 16px 0 24px;
   color: rgba(0, 0, 0, 0.5);
-
   text-align: center;
 `;
 

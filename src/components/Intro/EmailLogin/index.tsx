@@ -1,28 +1,27 @@
-import { DefaultButton } from 'components/Layout/Buttons';
-import { ButtonsTheme } from 'components/Layout/Buttons/types';
-import { DefaultInput } from 'components/Layout/Input';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
-import { useAuthContext } from 'contexts/AuthContext';
-import React, { ChangeEvent, FC, useState } from 'react';
-import { Close } from 'screens/intro/styles';
+import { useAuthContext } from "contexts/AuthContext";
+import React, { ChangeEvent, FC, useState } from "react";
+import { useTheme } from "styled-components";
 
-import { useTheme } from 'styled-components';
-import { colors } from 'utils/colors';
-import { InputTheme } from 'utils/constants';
-import { validateEmail } from 'utils/helpers';
-import { ThemeType } from 'utils/theme/default';
-import * as S from '../styles';
+import * as S from "../styles";
+import { Close } from "screens/intro/styles";
+import { ThemeType } from "utils/theme/default";
+import { validateEmail } from "utils/helpers";
+import { InputTheme } from "utils/constants";
+import { ButtonsTheme } from "utils/types";
+import { colors } from "utils/colors";
+import { INPUT_TYPES } from "components/Layout/Input/types";
+import { DefaultButton, DefaultInput } from "components/Layout";
 
-type PropsType = {
+interface IEmailFormProps {
   setIsEmailForm: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const EmailForm: FC<PropsType> = ({ setIsEmailForm }) => {
+export const EmailForm: FC<IEmailFormProps> = ({ setIsEmailForm }) => {
   const { loginByEmail, setError, error, verifyEmail, isOTPpSent } =
     useAuthContext();
 
   const theme = useTheme() as ThemeType;
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const onClick = () => {
     const emailError = validateEmail(email);
@@ -32,7 +31,7 @@ export const EmailForm: FC<PropsType> = ({ setIsEmailForm }) => {
     } else {
       emailError !== error && setError(emailError);
     }
-    setEmail('');
+    setEmail("");
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +48,7 @@ export const EmailForm: FC<PropsType> = ({ setIsEmailForm }) => {
         onChange={onChange}
         theme={InputTheme.Default}
         error={!verifyEmail ? error : null}
-        style={{ fontSize: '14px' }}
+        style={{ fontSize: "14px" }}
         isErrorIcon
       />
       {!isOTPpSent ? (
@@ -72,7 +71,7 @@ export const EmailForm: FC<PropsType> = ({ setIsEmailForm }) => {
         height="12px"
         onClick={() => setIsEmailForm(false)}
         color={colors.doveGray}
-        style={{ right: '7px', top: '8px' }}
+        style={{ right: "7px", top: "8px" }}
       />
     </S.Wrapper>
   );

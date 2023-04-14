@@ -1,4 +1,4 @@
-import defaultTheme from 'utils/theme/default';
+import defaultTheme from "utils/theme/default";
 
 type ThemeInterface = typeof defaultTheme;
 

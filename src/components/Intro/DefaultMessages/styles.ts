@@ -1,10 +1,9 @@
 import { Button } from "@mui/material";
-
+import { MessageBox } from "components/Chat/MessagesList/Message/styles";
 import styled from "styled-components";
-import { colors } from "../../utils/colors";
+import { colors } from "utils/colors";
 
 const borderWidth = "1.5px";
-const animationDuration = "0.25s";
 
 export const Flex = styled.div`
   display: flex;
@@ -12,29 +11,10 @@ export const Flex = styled.div`
   gap: 12px;
   width: 100%;
 `;
-export const Wrapper = styled.div`
-  width: 370px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
 
-  animation: ${({ isClosed }: { isClosed: boolean }) =>
-    isClosed && `fadeOut ${animationDuration} ease-in-out`};
-  overflow: hidden;
-  animation-fill-mode: forwards;
-
-  @keyframes fadeOut {
-    0% {
-      /* transform: scale(1); */
-      opacity: 1;
-    }
-
-    100% {
-      /* transform: scale(0);
-            transform-origin: 100% 100%; */
-      opacity: 0;
-    }
-  }
+export const Wrapper = styled(Flex)`
+  margin-left: 16px;
+  margin-bottom: 18px;
 `;
 
 export const Close = styled.div<{ height?: string; color?: string }>`
@@ -97,6 +77,31 @@ export const Message = styled.div`
   }
 `;
 
+export const Question = styled(MessageBox)`
+  width: 225px;
+  padding: 0px 16px;
+  line-height: 41px;
+  border: none;
+  /* overflow: hidden; */
+  color: ${({ theme: { message } }) => message.chat.color};
+  font-weight: 500;
+  height: 41px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  animation: fade 0.3s ease-in;
+  @keyframes fade {
+    0% {
+      transform: scale(0.85) translate(-30px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1) translate(0);
+      opacity: 1;
+    }
+  }
+`;
+
 export const Text = styled.span`
   font-size: 14px;
   font-family: Inter-Medium;
@@ -107,7 +112,12 @@ export const Image = styled.img<{ size?: string }>`
   width: ${({ size = "20px" }) => size};
   height: ${({ size = "20px" }) => size};
 `;
-export const IntroImage = styled(Image)``;
+export const IntroImage = styled(Image)<{ isRounded?: boolean }>`
+  max-width: 34px;
+  border-radius: ${(props) => props.isRounded && "50%"};
+  border: ${(props) => `1px solid ${props.theme.primaryColor}`};
+  box-sizing: border-box;
+`;
 export const IntroImageBackground = styled.div<{ source: string }>`
   width: 20px;
   height: 20px;
@@ -119,6 +129,7 @@ export const Options = styled(Flex)`
   width: fit-content;
   gap: 8px;
   animation: fade 0.4s ease-in;
+  margin: 22px 0 0;
 `;
 
 export const InfoContent = styled.div`

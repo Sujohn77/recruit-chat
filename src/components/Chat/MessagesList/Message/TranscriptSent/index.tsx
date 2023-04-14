@@ -1,7 +1,7 @@
-import * as React from 'react';
-import i18n from 'services/localization';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { colors } from "utils/colors";
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -29,11 +29,12 @@ export const Avatar = styled.div`
   background-color: ${colors.white};
 `;
 
-export const TranscriptSent = () => {
-  const enterEmailTxt = i18n.t('chat_item_description:transcript_sent');
+export const TranscriptSent: FC = () => {
+  const { t } = useTranslation();
+
   return (
     <Wrapper>
-      <Title>{enterEmailTxt}</Title>
+      <Title>{t("chat_item_description:transcript_sent")}</Title>
       <Avatar />
     </Wrapper>
   );

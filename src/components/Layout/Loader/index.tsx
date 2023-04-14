@@ -1,6 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import { FC } from "react";
+import styled from "styled-components";
 
 export const Dot = styled.span`
   width: 6px;
@@ -8,6 +7,7 @@ export const Dot = styled.span`
   border-radius: 50%;
   background: ${({ theme: { message } }) => message.backgroundColor};
   animation: fade 1.5s infinite;
+
   @keyframes fade {
     0% {
       opacity: 0;
@@ -30,8 +30,10 @@ export const Wrapper = styled.div`
   left: 16px;
 `;
 
-export const Loader = () => {
-  const dots = Array.from({ length: 3 }).map((v, index) => <Dot key={'dot-' + index} />);
+export const Loader: FC = () => {
+  const dots = Array.from({ length: 3 }).map((v, index) => (
+    <Dot key={"dot-" + index} />
+  ));
 
   return <Wrapper>{dots}</Wrapper>;
 };

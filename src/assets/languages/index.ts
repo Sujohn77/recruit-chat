@@ -1,4 +1,3 @@
-export * from './en';
-export * from './fr';
-export {ua} from './ua';
-
+export * from "./en";
+export * from "./fr";
+export { ua } from "./ua";

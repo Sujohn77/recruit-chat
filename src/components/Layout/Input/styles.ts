@@ -1,7 +1,8 @@
-import { TextField } from '@mui/material';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
-import { InputTheme } from 'utils/constants';
+import { TextField } from "@mui/material";
+import styled from "styled-components";
+
+import { colors } from "utils/colors";
+import { InputTheme } from "utils/constants";
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -50,18 +51,18 @@ export const TextInput = styled.input`
   color: ${colors.silverChalice};
   border: none;
   background: ${({ theme }) =>
-    theme === InputTheme.Default ? '#fff' : 'none'};
+    theme === InputTheme.Default ? "#fff" : "none"};
   font-size: 16px;
   line-height: 19px;
   outline: none;
   width: ${({ theme }) =>
     theme === InputTheme.Default
-      ? '-webkit-fill-available'
-      : '250px!important'};
-  height: ${({ theme }) => (theme === InputTheme.Default ? '38px' : '40px')};
+      ? "-webkit-fill-available"
+      : "250px!important"};
+  height: ${({ theme }) => (theme === InputTheme.Default ? "38px" : "40px")};
   border-radius: ${({ theme }) =>
-    theme === InputTheme.Default ? '10px' : '0'};
-  padding: ${({ theme }) => (theme === InputTheme.Default ? '0 10px' : '0')};
+    theme === InputTheme.Default ? "10px" : "0"};
+  padding: ${({ theme }) => (theme === InputTheme.Default ? "0 10px" : "0")};
 `;
 
 export const TextAreaInput = styled.textarea`

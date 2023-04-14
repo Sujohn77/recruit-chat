@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+import { colors } from "utils/colors";
 
 export const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.message.chat.backgroundColor};
@@ -11,7 +11,6 @@ export const Wrapper = styled.div`
   font-size: 14px;
   box-sizing: border-box;
   position: relative;
-
   animation: fadeHeight 0.6s ease-in-out !important;
 
   @keyframes fadeHeight {
@@ -32,7 +31,6 @@ export const Wrapper = styled.div`
 export const InputDescription = styled.p`
   margin: 16px 0 24px;
   color: rgba(0, 0, 0, 0.5);
-
   text-align: center;
 `;
 

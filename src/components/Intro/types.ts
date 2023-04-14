@@ -1,4 +1,4 @@
 export enum IntroFormFields {
-  oneTimePassword = 'oneTimePassword',
-  email = 'email',
+  oneTimePassword = "oneTimePassword",
+  email = "email",
 }

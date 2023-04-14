@@ -1,10 +1,11 @@
-import { useChatMessenger } from 'contexts/MessangerContext';
-import { map } from 'lodash';
-import React, { FC } from 'react';
-import { getNextActionType, IMessageProps } from 'utils/helpers';
-import { CHAT_ACTIONS } from 'utils/types';
-import { MessageBox, MessageText } from '../styles';
-import * as S from './styles';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC } from "react";
+import map from "lodash/map";
+
+import { IMessageProps } from "utils/helpers";
+import { CHAT_ACTIONS } from "utils/types";
+import { MessageBox, MessageText } from "../styles";
+import * as S from "./styles";
 
 interface IProps extends IMessageProps {
   text: string;
@@ -24,6 +25,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
   };
 
   const options = currentMsgType && getMessageOptions(currentMsgType);
+
   const optionItems = map(options, (opt, index) => (
     <S.Option
       {...messageProps}
@@ -33,6 +35,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
       {opt}
     </S.Option>
   ));
+
   return (
     <div>
       <MessageBox {...messageProps}>
@@ -48,7 +51,7 @@ export const getMessageOptions = (type: CHAT_ACTIONS) => {
     // case CHAT_ACTIONS.SET_ALERT_PERIOD:
     //   return ['Daily', 'Weekly', 'Monthly'];
     case CHAT_ACTIONS.SET_WORK_PERMIT:
-      return ['Yes', 'No'];
+      return ["Yes", "No"];
     default:
       return [];
   }

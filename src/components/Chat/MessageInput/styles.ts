@@ -1,14 +1,13 @@
-import Box from '@mui/material/Box';
-import styled from 'styled-components';
+import Box from "@mui/material/Box";
+import styled from "styled-components";
 
-export const searchItemheight = 31;
+export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
-export const inputOffset = '-30px';
-// export const searchInputHeight = 60;
+export const inputOffset = "-30px";
+
 export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   min-height: 50px;
   z-index: 1;
-  /* position: relative !important; */
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -32,7 +31,7 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   width: 100%;
   left: 0;
   top: ${({ searchOptionsHeight }) =>
-    -searchOptionsHeight - searchHeaderHeight + 'px'};
+    -searchOptionsHeight - searchHeaderHeight + "px"};
   color: ${({ theme: { searchResults } }) => searchResults.color};
   font-weight: 500;
   z-index: 1;
@@ -64,7 +63,7 @@ export const SearchBody = styled.ul`
 `;
 
 export const SearchPosition = styled.li`
-  height: ${searchItemheight}px;
+  height: ${searchItemHeight}px;
   box-sizing: border-box;
   width: 100%;
   padding: 7px 16px;

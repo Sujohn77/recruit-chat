@@ -1,7 +1,7 @@
-import { Flex } from 'screens/intro/styles';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
-import { MessageBox } from '../styles';
+import styled from "styled-components";
+import { Flex } from "screens/intro/styles";
+import { colors } from "utils/colors";
+import { MessageBox } from "../styles";
 
 export const Wrapper = styled(MessageBox)`
   padding: 12px 16px;

@@ -1,15 +1,15 @@
-import React, { FC, useState } from 'react';
-import { CHAT_ACTIONS } from 'utils/types';
+import { FC, useState } from "react";
+import { CHAT_ACTIONS } from "utils/types";
 
-import { DropDown } from './DropDown';
-import * as S from './styles';
+import { DropDown } from "./DropDown";
+import * as S from "./styles";
 
 export interface IMenuItem {
   type: CHAT_ACTIONS;
   text: string;
 }
 
-type PropsType = {
+interface IMenuItemProps {
   item: {
     type: CHAT_ACTIONS;
     text: string;
@@ -17,9 +17,9 @@ type PropsType = {
     options?: string[];
   };
   onClick: (item: IMenuItem) => void;
-};
+}
 
-export const MenuItem: FC<PropsType> = ({ onClick, item }) => {
+export const MenuItem: FC<IMenuItemProps> = ({ onClick, item }) => {
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
 
   return (

@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import { FC } from "react";
+import styled from "styled-components";
+import { colors } from "utils/colors";
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -13,6 +13,7 @@ export const Wrapper = styled.div`
   opacity: 0;
   z-index: 1;
   cursor: pointer;
+
   @keyframes fade-in {
     0% {
       opacity: 0;

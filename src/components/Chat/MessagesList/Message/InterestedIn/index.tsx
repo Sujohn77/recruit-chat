@@ -1,11 +1,10 @@
-import { useChatMessenger } from 'contexts/MessangerContext';
-import React, { FC } from 'react';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC } from "react";
 
-import { getMessageProps } from 'utils/helpers';
-import { ILocalMessage } from 'utils/types';
-
-import { MessageBox } from '../styles';
-import * as S from './styles';
+import { getMessageProps } from "utils/helpers";
+import { ILocalMessage } from "utils/types";
+import * as S from "./styles";
+import { MessageBox } from "../styles";
 
 interface IProps {
   message: ILocalMessage;

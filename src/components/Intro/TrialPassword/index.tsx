@@ -1,15 +1,16 @@
-import { TextMessage } from 'components/Chat/MessagesList/Message/TextMessage';
-import * as React from 'react';
-import { ImageButton, IntroImage, Message } from 'screens/intro/styles';
-import { useTheme } from 'styled-components';
-import { ICONS } from 'utils/constants';
-import { generateLocalId } from 'utils/helpers';
-import { ThemeType } from 'utils/theme/default';
-import { MessageType } from 'utils/types';
-import { OtpForm } from './OtpForm';
-import * as S from './styles';
+import { useTheme } from "styled-components";
+import { FC } from "react";
 
-export const TrialPassword = () => {
+import { TextMessage } from "components/Chat/MessagesList/Message/TextMessage";
+import { IntroImage } from "screens/intro/styles";
+import { generateLocalId } from "utils/helpers";
+import { ThemeType } from "utils/theme/default";
+import { MessageType } from "utils/types";
+import { ICONS } from "utils/constants";
+import { OtpForm } from "./OtpForm";
+import * as S from "./styles";
+
+export const TrialPassword: FC = () => {
   const theme = useTheme() as ThemeType;
 
   return (
@@ -27,7 +28,7 @@ export const TrialPassword = () => {
             _id: generateLocalId(),
             content: {
               subType: MessageType.TEXT,
-              text: 'We have sent you a temporary code by email. Enter it in the box below!',
+              text: "We have sent you a temporary code by email. Enter it in the box below!",
             },
           }}
         />

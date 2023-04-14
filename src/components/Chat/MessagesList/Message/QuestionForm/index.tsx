@@ -1,12 +1,11 @@
-import React, { FC, useState } from 'react';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import * as S from './styles';
-import i18n from 'services/localization';
-
-import { validateEmail } from 'utils/helpers';
-import { useChatMessenger } from 'contexts/MessangerContext';
-import { CHAT_ACTIONS } from 'utils/types';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
+import { validateEmail } from "utils/helpers";
+import { CHAT_ACTIONS } from "utils/types";
+import { INPUT_TYPES } from "components/Layout/Input/types";
+import * as S from "./styles";
 
 type PropsType = {};
 const rows = 3;
@@ -15,20 +14,21 @@ const validateFields = (email: string, text: string) => {
   const errors = [];
   const emailError = validateEmail(email);
   if (emailError) {
-    errors.push({ name: 'email', text: emailError });
+    errors.push({ name: "email", text: emailError });
   }
   if (!text) {
-    errors.push({ name: 'description', text: 'Required' });
+    errors.push({ name: "description", text: "Required" });
   }
   return errors;
 };
 
 export const QuestionForm: FC<PropsType> = () => {
+  const { t } = useTranslation();
   const { triggerAction } = useChatMessenger();
+
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
-  const [email, setEmail] = useState('');
-  const [description, setDescription] = useState('');
-  const sendTxt = i18n.t('buttons:send');
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
 
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);
@@ -38,9 +38,11 @@ export const QuestionForm: FC<PropsType> = () => {
       setErrors(updatedErrors);
     }
   };
-  const emailError = errors.find((e) => e.name === 'email')?.text || '';
+
+  const emailError = errors.find((e) => e.name === "email")?.text || "";
+
   const descriptionError =
-    errors.find((e) => e.name === 'description')?.text || '';
+    errors.find((e) => e.name === "description")?.text || "";
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
@@ -66,7 +68,7 @@ export const QuestionForm: FC<PropsType> = () => {
           type={INPUT_TYPES.TEXT}
           value={email}
           onChange={onChangeEmail}
-          placeholder={'Email'}
+          placeholder={"Email"}
           error={!!emailError}
           helperText={emailError}
         />
@@ -75,11 +77,11 @@ export const QuestionForm: FC<PropsType> = () => {
           minRows={rows}
           value={description}
           onChange={onChangeDescription}
-          placeholder={'Text'}
+          placeholder={"Text"}
           error={!!descriptionError}
           helperText={descriptionError}
         />
-        <S.SubmitButton onClick={onSubmit}>{sendTxt}</S.SubmitButton>
+        <S.SubmitButton onClick={onSubmit}>{t("buttons:send")}</S.SubmitButton>
       </S.Wrapper>
     </div>
   );
