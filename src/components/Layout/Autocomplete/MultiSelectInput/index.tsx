@@ -1,5 +1,12 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { Dispatch, FC, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  FocusEvent,
+  MouseEvent,
+  SetStateAction,
+} from "react";
 import { useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
 import map from "lodash/map";
@@ -78,6 +85,19 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     );
   };
 
+  const onInputClick = (e: MouseEvent<HTMLInputElement>) => {
+    setIsShowResults(true);
+  };
+
+  const onInputFocus = (e: FocusEvent<HTMLInputElement, Element>) => {
+    getInputProps()?.onFocus?.(e);
+  };
+
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    getInputProps()?.onChange?.(e);
+    setInputValue(e?.target.value);
+  };
+
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
 
@@ -108,20 +128,11 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
 
         <TextInput
           {...getInputProps()}
-          onFocus={(e) => {
-            const inputProps = getInputProps();
-            inputProps?.onFocus?.(e);
-          }}
+          onFocus={onInputFocus}
           placeholder={placeHolder}
           value={value}
-          onClick={(e) => {
-            setIsShowResults(true);
-          }}
-          onChange={(event) => {
-            const inputProps = getInputProps();
-            inputProps.onChange && inputProps.onChange(event);
-            setInputValue(event?.target.value);
-          }}
+          onClick={onInputClick}
+          onChange={onChangeHandler}
         />
       </S.InputWrapper>
     </S.Wrapper>
