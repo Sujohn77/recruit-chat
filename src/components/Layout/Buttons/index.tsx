@@ -20,10 +20,10 @@ export const DefaultButton: FC<IButtonProps> = ({
   variant = "contained",
 }) => (
   <ButtonWrapper
+    type="button"
     onClick={onClick}
     background={theme}
     value={value}
-    type="button"
     variant={variant}
     style={style}
   >

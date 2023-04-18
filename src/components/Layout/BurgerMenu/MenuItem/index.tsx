@@ -29,6 +29,7 @@ export const MenuItem: FC<IMenuItemProps> = ({ onClick, item }) => {
       onMouseLeave={() => item.isDropdown && setIsOpenDropDown(false)}
     >
       {item.text}
+
       {isOpenDropDown && (
         <DropDown
           onClick={(value: string) => onClick({ ...item, text: value })}

@@ -9,10 +9,10 @@ import {
   CSSProperties,
 } from "react";
 
+import * as S from "./styles";
 import { IMAGES } from "assets";
 import { INPUT_TYPES, InputTheme } from "utils/constants";
 import { Image } from "screens/Intro/styles";
-import * as S from "./styles";
 
 type PropsType = {
   value: string;
