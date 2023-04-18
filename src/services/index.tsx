@@ -6,7 +6,6 @@ import { getStorageValue } from "../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
-  IApiSignedRequest,
   ICreationCandidatePayload,
   IRequisitionsResponse,
   ISearchJobsPayload,

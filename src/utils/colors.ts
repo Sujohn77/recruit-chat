@@ -12,6 +12,7 @@ export const colors = {
   silverDark: "#C3C3C3",
   alabaster: "#FAFAFA",
   gray: "#868686",
+  gray2: "#8E8E8E",
   gallery: "#f0eeee",
   scorpion: "#565656",
   persian: "#00a881",
@@ -20,8 +21,5 @@ export const colors = {
   purple: "#908DFF",
   doveGray: "#616161",
   lightgreen: "#90ee90",
-};
-
-export const chatColors = {
-  messageBackground: colors.alto,
+  silverChalice2: "#A6A6A6",
 };

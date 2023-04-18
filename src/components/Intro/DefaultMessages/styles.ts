@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
-import { MessageBox } from "components/Chat/MessagesList/Message/styles";
+import { MessageBox } from "components/Chat/chatComponents/MessagesList/Message/styles";
 import styled from "styled-components";
+
 import { colors } from "utils/colors";
 
 const borderWidth = "1.5px";
@@ -24,6 +25,7 @@ export const Close = styled.div<{ height?: string; color?: string }>`
   cursor: pointer;
   width: 18px;
   height: 18px;
+
   &:before,
   &:after {
     content: "";
@@ -35,9 +37,11 @@ export const Close = styled.div<{ height?: string; color?: string }>`
     top: 1px;
     left: 9px;
   }
+
   &:before {
     transform: rotate(-45deg);
   }
+
   &:after {
     transform: rotate(45deg);
   }
@@ -48,9 +52,6 @@ export const Message = styled.div`
   padding: 11px 16px;
   white-space: nowrap;
   overflow: hidden;
-  background: ${({ theme: { message } }) =>
-    message.chat.backgroundColor}!important;
-
   font-size: calc(8px + 1vmin);
   margin: 0 0 10px;
   text-align: center;
@@ -58,6 +59,9 @@ export const Message = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  background: ${({ theme: { message } }) =>
+    message.chat.backgroundColor}!important;
+
   span {
     color: ${({ theme }) => theme?.message.initialColor}!important;
   }
@@ -82,13 +86,13 @@ export const Question = styled(MessageBox)`
   padding: 0px 16px;
   line-height: 41px;
   border: none;
-  /* overflow: hidden; */
   color: ${({ theme: { message } }) => message.chat.color};
   font-weight: 500;
   height: 41px;
   box-sizing: border-box;
   margin-bottom: 12px;
   animation: fade 0.3s ease-in;
+
   @keyframes fade {
     0% {
       transform: scale(0.85) translate(-30px);
@@ -112,18 +116,21 @@ export const Image = styled.img<{ size?: string }>`
   width: ${({ size = "20px" }) => size};
   height: ${({ size = "20px" }) => size};
 `;
+
 export const IntroImage = styled(Image)<{ isRounded?: boolean }>`
   max-width: 34px;
   border-radius: ${(props) => props.isRounded && "50%"};
   border: ${(props) => `1px solid ${props.theme.primaryColor}`};
   box-sizing: border-box;
 `;
+
 export const IntroImageBackground = styled.div<{ source: string }>`
   width: 20px;
   height: 20px;
   background: ${({ source }) => source} no-repeat;
   background-size: cover;
 `;
+
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;
@@ -143,6 +150,7 @@ export const InfoContent = styled.div`
       width: 0;
     }
   }
+
   height: 100%;
   overflow: hidden;
 `;

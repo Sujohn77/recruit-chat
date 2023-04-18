@@ -1,11 +1,11 @@
 import { useAuthContext } from "contexts/AuthContext";
 import { Dispatch, FC, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ButtonsTheme } from "utils/types";
 import { DefaultMessages, SupportForm } from "components";
 import { DefaultButton } from "components/Layout";
 import * as S from "./styles";
-import { useTranslation } from "react-i18next";
 
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",

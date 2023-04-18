@@ -13,14 +13,14 @@ import { SocketCollectionPreset } from "socket/socket.options";
 import { IMessage, ISnapshot } from "services/types";
 import { chatId } from "utils/constants";
 
-type PropsType = {
+interface ISocketProviderProps {
   children: React.ReactNode;
-};
+}
 
 const socketDefaultState = {};
 const SocketContext = createContext<any>({ socketDefaultState });
 
-const SocketProvider = ({ children }: PropsType) => {
+const SocketProvider = ({ children }: ISocketProviderProps) => {
   const { setSnapshotMessages, setIsInitialized } = useChatMessenger();
 
   const onUpdateMessages = useCallback(

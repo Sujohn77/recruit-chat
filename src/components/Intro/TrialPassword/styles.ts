@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colors } from "utils/colors";
-import { ImageButton } from "screens/intro/styles";
+import { Button } from "@mui/material";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -55,6 +55,18 @@ export const OtpContent = styled.div`
     color: ${colors.dustyGray};
     font-family: Inter-Medium;
   }
+`;
+
+export const ImageButton = styled(Button)`
+  min-width: 34px !important;
+  height: 34px;
+  width: 34px;
+  flex-shrink: 1;
+  border-radius: 50% !important;
+  background: ${colors.alto}!important;
+  text-align: center !important;
+  line-height: 34px;
+  box-sizing: border-box;
 `;
 
 export const IntroImageButton = styled(ImageButton)`

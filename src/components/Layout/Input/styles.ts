@@ -16,6 +16,8 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const TextAreaInputWrapper = styled.div``;
+
 export const FormInput = styled(TextField)`
   input,
   textarea {

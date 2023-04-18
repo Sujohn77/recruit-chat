@@ -1,12 +1,11 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from "react";
 
-import { SearchResults } from "components/Chat/MessageInput/SearchResults";
 import { DefaultInput } from "components/Layout";
-import { INPUT_TYPES } from "components/Layout/Input/types";
-import { TextFieldTypes } from "utils/constants";
+import { INPUT_TYPES, TextFieldTypes } from "utils/constants";
 import { isResultsType } from "utils/helpers";
 import { CHAT_ACTIONS } from "utils/types";
+import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
 
 interface IAutocompleteProps {
   value: string;
@@ -22,7 +21,6 @@ interface IAutocompleteProps {
 }
 
 export const Autocomplete: FC<IAutocompleteProps> = (props) => {
-  const { triggerAction, currentMsgType, user, error } = useChatMessenger();
   const {
     matchedItems,
     value,
@@ -34,6 +32,8 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     isShowResults,
     setIsShowResults,
   } = props;
+
+  const { triggerAction, currentMsgType, user, error } = useChatMessenger();
 
   const onClick = (e: MouseEvent<HTMLLIElement>) => {
     setInputValue(null);
@@ -48,7 +48,9 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
 
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+
   const isNumberType = currentMsgType === CHAT_ACTIONS.APPLY_AGE && user?.email;
+
   const inputType = isNumberType ? INPUT_TYPES.NUMBER : INPUT_TYPES.TEXT;
 
   return (

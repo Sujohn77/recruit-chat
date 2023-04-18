@@ -1,10 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
+import findIndex from "lodash/findIndex";
 import sortBy from "lodash/sortBy";
 import remove from "lodash/remove";
-import findIndex from "lodash/findIndex";
-
 import {
   IChatRoom,
   IMessage,

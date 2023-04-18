@@ -3,13 +3,12 @@ import React, { ChangeEvent, FC, useState } from "react";
 import { useTheme } from "styled-components";
 
 import * as S from "../styles";
-import { Close } from "screens/intro/styles";
-import { ThemeType } from "utils/theme/default";
-import { validateEmail } from "utils/helpers";
-import { InputTheme } from "utils/constants";
-import { ButtonsTheme } from "utils/types";
 import { colors } from "utils/colors";
-import { INPUT_TYPES } from "components/Layout/Input/types";
+import { ButtonsTheme } from "utils/types";
+import { validateEmail } from "utils/helpers";
+import { INPUT_TYPES, InputTheme } from "utils/constants";
+import { ThemeType } from "utils/theme/default";
+import { Close } from "screens/Intro/styles";
 import { DefaultButton, DefaultInput } from "components/Layout";
 
 interface IEmailFormProps {
@@ -19,8 +18,8 @@ interface IEmailFormProps {
 export const EmailForm: FC<IEmailFormProps> = ({ setIsEmailForm }) => {
   const { loginByEmail, setError, error, verifyEmail, isOTPpSent } =
     useAuthContext();
-
   const theme = useTheme() as ThemeType;
+
   const [email, setEmail] = useState("");
 
   const onClick = () => {

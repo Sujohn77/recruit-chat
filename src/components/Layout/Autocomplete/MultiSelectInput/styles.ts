@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+export const Wrapper = styled.div``;
+
 export const InputWrapper = styled.div`
   width: 270px;
   padding: 1px;

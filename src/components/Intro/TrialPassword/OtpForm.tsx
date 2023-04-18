@@ -1,21 +1,23 @@
 import { useAuthContext } from "contexts/AuthContext";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import * as IntoStyles from "../styles";
 import { ButtonsTheme } from "utils/types";
-import { InputTheme } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
-import { INPUT_TYPES } from "components/Layout/Input/types";
+import { INPUT_TYPES, InputTheme } from "utils/constants";
 import { DefaultButton, DefaultInput } from "components/Layout";
 
-export const OtpForm = () => {
+export const OtpForm: FC = () => {
   const { loginByEmail, isVerified, error, setError } = useAuthContext();
+
   const [lengthError, setLengthError] = useState<string | null>(null);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const theme = useTheme() as ThemeType;
   const [oneTimePassword, setOneTimePassword] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  const theme = useTheme() as ThemeType;
+
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export const OtpForm = () => {
     } else {
       setLengthError("Incorrect length");
       setOneTimePassword("");
-      ref.current?.focus();
+      ref?.current?.focus();
     }
   };
 
@@ -56,6 +58,7 @@ export const OtpForm = () => {
         style={{ textAlign: "center", marginBottom: "16px" }}
         ref={ref}
       />
+
       {(!isSubmit || !isVerified) && (
         <DefaultButton
           value="Send"
@@ -64,6 +67,7 @@ export const OtpForm = () => {
           style={{ padding: "0 10px" }}
         />
       )}
+
       {isVerified && isSubmit && <S.OtpSentText>Thanks!</S.OtpSentText>}
     </IntoStyles.Wrapper>
   );

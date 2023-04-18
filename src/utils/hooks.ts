@@ -1,6 +1,7 @@
 import { ISearchRequisition } from "contexts/types";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import map from "lodash/map";
 
 import { searchAlertCategories } from "components/Chat/mockData";
 import { CHAT_ACTIONS } from "./types";
@@ -22,7 +23,7 @@ export const useTextField = ({
   const { t } = useTranslation();
 
   const getTextFieldProps = useCallback(
-    ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
+    ({ lastActionType, requisitions, locations }: IUseTextField) => {
       if (lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
         return {
           searchItems: searchAlertCategories,
@@ -40,7 +41,7 @@ export const useTextField = ({
       }
 
       return {
-        searchItems: requisitions.map((r) => r.title),
+        searchItems: map(requisitions, (r) => r.title),
         headerName: t("chat_item_description:categories_title"),
         placeHolder:
           lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test

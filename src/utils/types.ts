@@ -1,7 +1,7 @@
 import { ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
-import { CHAT_OPTIONS } from "screens/intro";
+import { CHAT_OPTIONS } from "screens/Intro";
 import {
   IChatRoomID,
   IMessage,
@@ -266,4 +266,11 @@ export interface IRequisition extends IWithID, ILocation {
   hiringType: string | null;
   jobURL: string | null;
   applyURL: string | null;
+}
+
+export interface IMenuItem {
+  type: CHAT_ACTIONS;
+  text: string;
+  isDropdown?: boolean;
+  options?: string[];
 }

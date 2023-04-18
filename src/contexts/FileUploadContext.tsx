@@ -7,9 +7,9 @@ import { fileUploadDefaultState } from "utils/helpers";
 import { CHAT_ACTIONS, MessageType } from "utils/types";
 import { apiInstance } from "services";
 
-type PropsType = {
+interface IFileUploadProviderProps {
   children: React.ReactNode;
-};
+}
 
 export interface IResumeData {
   candidateId: number;
@@ -22,7 +22,7 @@ const FileUploadContext = createContext<IFileUploadContext>(
   fileUploadDefaultState
 );
 
-const FileUploadProvider = ({ children }: PropsType) => {
+const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
   const {
     triggerAction,
     messages,

@@ -1,4 +1,4 @@
-import { CHAT_ACTIONS } from 'utils/types';
+import { CHAT_ACTIONS } from "utils/types";
 
 export interface IOption {
   icon: string;

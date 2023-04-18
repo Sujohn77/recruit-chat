@@ -2,30 +2,14 @@ import { useAuthContext } from "contexts/AuthContext";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
-import i18n from "services/localization";
+import map from "lodash/map";
 
-import { ICONS, LocalStorage } from "utils/constants";
+import { ICONS } from "assets";
+import { LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
-import { CHAT_ACTIONS } from "utils/types";
+import { messages } from "./data";
 import { IOption } from "./types";
 import * as S from "./styles";
-
-const messages = {
-  options: [
-    {
-      icon: ICONS.SEARCH_ICON,
-      message: i18n.t("buttons:find_job"),
-      type: CHAT_ACTIONS.FIND_JOB,
-      size: "16px",
-    },
-    {
-      icon: ICONS.QUESTION,
-      message: i18n.t("buttons:ask_questions"),
-      type: CHAT_ACTIONS.ASK_QUESTION,
-      size: "16px",
-    },
-  ],
-};
 
 interface IDefaultMessagesProps {
   text: string;
@@ -73,7 +57,7 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
     // setIsEmailForm(!subscriberID);
   };
 
-  const chooseOptions = messages.options.map((opt, index) => (
+  const chooseOptions = map(messages.options, (opt, index) => (
     <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={""} />}
       <S.Text>{opt.message}</S.Text>

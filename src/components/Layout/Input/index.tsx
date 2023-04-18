@@ -6,21 +6,21 @@ import {
   SetStateAction,
   forwardRef,
   ForwardedRef,
+  CSSProperties,
 } from "react";
-import { CSSProperties } from "styled-components";
 
-import { IMAGES, InputTheme } from "utils/constants";
-import { Image } from "screens/intro/styles";
-import { INPUT_TYPES } from "./types";
+import { IMAGES } from "assets";
+import { INPUT_TYPES, InputTheme } from "utils/constants";
+import { Image } from "screens/Intro/styles";
 import * as S from "./styles";
 
 type PropsType = {
-  type?: INPUT_TYPES;
-  placeHolder?: string;
   value: string;
   onChange: (
     value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  type?: INPUT_TYPES;
+  placeHolder?: string;
   setIsShowResults?: Dispatch<SetStateAction<boolean>>;
   rows?: number;
   theme?: InputTheme;
@@ -33,10 +33,10 @@ type PropsType = {
 export const DefaultInput: FC<PropsType> = forwardRef(
   (
     {
-      type = INPUT_TYPES.TEXT,
-      placeHolder,
       value,
       onChange,
+      type = INPUT_TYPES.TEXT,
+      placeHolder,
       setIsShowResults,
       rows = 3,
       theme = InputTheme.Secondary,
@@ -50,25 +50,19 @@ export const DefaultInput: FC<PropsType> = forwardRef(
 
     if (type === INPUT_TYPES.TEXTAREA) {
       return (
-        <div>
+        <S.TextAreaInputWrapper>
           <S.TextAreaInput
             value={value}
-            placeholder={!isFocus && !error ? placeHolder : ""}
             onChange={onChange}
-            onClick={() => {
-              setIsShowResults && setIsShowResults(true);
-            }}
-            onFocus={() => {
-              setIsFocus(true);
-            }}
-            onBlur={() => {
-              setIsFocus(false);
-            }}
             rows={rows}
             style={style}
+            placeholder={!isFocus && !error ? placeHolder : ""}
+            onClick={() => setIsShowResults?.(true)}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
           />
           {error && <S.ErrorText>{error}</S.ErrorText>}
-        </div>
+        </S.TextAreaInputWrapper>
       );
     }
 
@@ -80,21 +74,17 @@ export const DefaultInput: FC<PropsType> = forwardRef(
           value={value}
           placeholder={!isFocus && !error ? placeHolder : ""}
           onChange={onChange}
-          onClick={() => {
-            setIsShowResults && setIsShowResults(true);
-          }}
-          onFocus={() => {
-            setIsFocus(true);
-          }}
-          onBlur={() => {
-            setIsFocus(false);
-          }}
           theme={theme}
           style={style}
+          onClick={() => setIsShowResults?.(true)}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
+
         {error !== null && (
           <S.ErrorText>
             {error}
+
             {isErrorIcon && (
               <Image
                 src={IMAGES.WARN}

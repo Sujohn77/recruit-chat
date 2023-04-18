@@ -1,7 +1,4 @@
-import { Button } from "@mui/material";
-
 import styled from "styled-components";
-import { colors } from "../../utils/colors";
 
 const borderWidth = "1.5px";
 const animationDuration = "0.25s";
@@ -12,6 +9,7 @@ export const Flex = styled.div`
   gap: 12px;
   width: 100%;
 `;
+
 export const Wrapper = styled.div`
   width: 370px;
   position: absolute;
@@ -44,6 +42,7 @@ export const Close = styled.div<{ height?: string; color?: string }>`
   cursor: pointer;
   width: 18px;
   height: 18px;
+
   &:before,
   &:after {
     content: "";
@@ -78,10 +77,11 @@ export const Message = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  animation: opacity 0.3s ease-in;
+
   span {
     color: ${({ theme }) => theme?.message.initialColor}!important;
   }
-  animation: opacity 0.3s ease-in;
 
   &:nth-child(2) {
     animation: opacity 0.6s ease-in;
@@ -107,13 +107,16 @@ export const Image = styled.img<{ size?: string }>`
   width: ${({ size = "20px" }) => size};
   height: ${({ size = "20px" }) => size};
 `;
+
 export const IntroImage = styled(Image)``;
+
 export const IntroImageBackground = styled.div<{ source: string }>`
   width: 20px;
   height: 20px;
   background: ${({ source }) => source} no-repeat;
   background-size: cover;
 `;
+
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;
@@ -134,16 +137,4 @@ export const InfoContent = styled.div`
   }
   height: 100%;
   overflow: hidden;
-`;
-
-export const ImageButton = styled(Button)`
-  min-width: 34px !important;
-  height: 34px;
-  width: 34px;
-  flex-shrink: 1;
-  border-radius: 50% !important;
-  background: ${colors.alto}!important;
-  text-align: center !important;
-  line-height: 34px;
-  box-sizing: border-box;
 `;

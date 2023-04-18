@@ -3,13 +3,15 @@ import React, { Dispatch, FC, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 
-import { ThemeType } from "utils/theme/default";
-import { CHAT_ACTIONS, IRequisition } from "utils/types";
-import { MessagesList } from "./MessagesList";
-import { MessageInput } from "./MessageInput";
-import { ChatHeader } from "./ChatHeader";
-import { ViewJob } from "./ViewJob";
+import {
+  ChatHeader,
+  MessageInput,
+  MessagesList,
+  ViewJob,
+} from "./chatComponents";
 import * as S from "./styles";
+import { CHAT_ACTIONS, IRequisition } from "utils/types";
+import { ThemeType } from "utils/theme/default";
 
 interface IChatProps {
   isSelectedOption: boolean;

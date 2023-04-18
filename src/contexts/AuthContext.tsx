@@ -5,9 +5,9 @@ import { IAuthContext } from "./types";
 import { authInstance } from "services";
 import { LocalStorage } from "utils/constants";
 
-type PropsType = {
+interface IAuthProviderProps {
   children: React.ReactNode;
-};
+}
 
 const emptyFunc = () => console.log();
 
@@ -25,7 +25,7 @@ export const authDefaultState: IAuthContext = {
 
 const AuthContext = createContext<IAuthContext>(authDefaultState);
 
-const AuthProvider = ({ children }: PropsType) => {
+const AuthProvider = ({ children }: IAuthProviderProps) => {
   const [isOTPpSent, setIsOTPSent] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);

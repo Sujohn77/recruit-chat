@@ -1,32 +1,19 @@
 import React, { Component, ReactNode, RefObject } from "react";
-import styled from "styled-components";
+import * as S from "./styles";
 
-interface IProps {
+interface IDragAndDropProps {
   handleDrop: (files: any) => void;
   children: ReactNode;
 }
 
-export const Wrapper = styled.div`
-  background: ${({ theme: { message } }) => message.backgroundColor};
-  border-radius: 10px;
-  padding: 32px 17px 16px;
-  margin: 0 auto;
-  display: flex;
-  flex-flow: column;
-  width: 220px;
-  align-items: center;
-  color: ${({ theme: { message } }) => message.primaryColor};
-  margin-bottom: 12px;
-  position: relative;
-`;
-
-export class DragAndDrop extends Component<IProps> {
+export class DragAndDrop extends Component<IDragAndDropProps> {
   state = {
     drag: false,
     dragging: false,
   };
   dragCounter: number = 0;
   dropRef: RefObject<HTMLDivElement> = React.createRef();
+
   handleDrag = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,6 +27,7 @@ export class DragAndDrop extends Component<IProps> {
       this.dragCounter++;
     }
   };
+
   handleDragOut = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -82,9 +70,9 @@ export class DragAndDrop extends Component<IProps> {
   }
   render() {
     return (
-      <Wrapper ref={this.dropRef}>
+      <S.DragAndDropWrapper ref={this.dropRef}>
         {this.state.dragging && (
-          <div
+          <S.Border
             style={{
               border: "dashed grey 4px",
               backgroundColor: "rgba(255,255,255,.8)",
@@ -96,24 +84,14 @@ export class DragAndDrop extends Component<IProps> {
               zIndex: 9999,
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: 0,
-                left: 0,
-                textAlign: "center",
-                color: "grey",
-                fontSize: 36,
-              }}
-            >
-              <div>drop here</div>
-            </div>
-          </div>
+            <S.Center>
+              <S.Title>drop here</S.Title>
+            </S.Center>
+          </S.Border>
         )}
 
         {this.props.children}
-      </Wrapper>
+      </S.DragAndDropWrapper>
     );
   }
 }

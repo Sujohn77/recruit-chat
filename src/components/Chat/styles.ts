@@ -9,14 +9,15 @@ export const Wrapper = styled.div`
   border-radius: 10px;
   overflow: hidden;
   z-index: 1;
-
   height: 0;
+
   animation: ${({ isOpened }: { isOpened: boolean }) =>
     isOpened
       ? `open ${animationDuration} ease-in`
       : `close ${animationDuration} ease-in`};
   animation-fill-mode: forwards;
   margin-left: auto;
+
   @keyframes open {
     0% {
       height: 0;
@@ -37,6 +38,7 @@ export const Wrapper = styled.div`
       margin-top: 30px;
     }
   }
+
   @keyframes close {
     0% {
       height: 600px;

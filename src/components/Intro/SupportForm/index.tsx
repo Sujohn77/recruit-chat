@@ -1,15 +1,15 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
+import find from "lodash/find";
 
-import * as S from "./styles";
-
-import { validateEmail } from "utils/helpers";
 import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
+import { INPUT_TYPES } from "utils/constants";
+import { validateEmail } from "utils/helpers";
 import { colors } from "utils/colors";
-import { Close } from "screens/intro/styles";
+import { Close } from "screens/Intro/styles";
 import { DefaultButton } from "components/Layout";
-import { INPUT_TYPES } from "components/Layout/Input/types";
+import * as S from "./styles";
 
 const rows = 3;
 
@@ -43,7 +43,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
 
-  const emailError = errors.find((e) => e.name === "email")?.text || "";
+  const emailError = find(errors, (e) => e.name === "email")?.text || "";
 
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);

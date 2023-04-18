@@ -1,15 +1,7 @@
-import UPLOAD_FILE from "../assets/imgs/file.png";
-import CLOCK from "../assets/imgs/clock.png";
+import moment from "moment";
 
-import OPENED_BURGER from "../assets/icons/openedBurger.svg";
-import BURGER from "../assets/icons/burger.svg";
-import INPUT_PLANE from "../assets/icons/plane.svg";
-import ATTACHED_FILE from "../assets/icons/attachedFile.svg";
-import FINGER_UP from "../assets/icons/fingerUp.svg";
-import LOGO from "../assets/icons/logo.svg";
-import WARN from "../assets/imgs/warning.png";
-import SEARCH_ICON from "../assets/icons/search.svg";
-import QUESTION from "../assets/icons/question.svg";
+import i18n from "services/localization";
+import { generateLocalId, getParsedMessages } from "./helpers";
 import {
   CHAT_ACTIONS,
   HTTPStatusCodes,
@@ -17,25 +9,6 @@ import {
   ILocalMessage,
   MessageType,
 } from "./types";
-import { generateLocalId, getParsedMessages } from "./helpers";
-import moment from "moment";
-import i18n from "services/localization";
-
-export const IMAGES = {
-  UPLOAD_FILE,
-  CLOCK,
-  WARN,
-};
-export const ICONS = {
-  OPENED_BURGER,
-  BURGER,
-  INPUT_PLANE,
-  ATTACHED_FILE,
-  FINGER_UP,
-  LOGO,
-  SEARCH_ICON,
-  QUESTION,
-};
 
 export const currencies = ["$", "€"];
 
@@ -419,4 +392,22 @@ export enum SessionStorage {
   ApiError = "ApiError",
 }
 
+export enum INPUT_TYPES {
+  TEXT = "text",
+  TEXTAREA = "textarea",
+  NUMBER = "number",
+  EMAIL = "email",
+}
+
+export enum IUserLoginDataKeys {
+  GrantType = "grant_type",
+  Username = "username",
+  Password = "password",
+  TwoFactorAuthCode = "twofactorauthcode",
+  AppKey = "appKey",
+  CodeVersion = "codeVersion",
+}
+
 export const chatId = 2433044;
+
+export const resumeElementId = "chatbot_resume";

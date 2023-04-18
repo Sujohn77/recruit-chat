@@ -6,6 +6,13 @@ import {
   IUser,
 } from "contexts/types";
 import randomString from "random-string";
+import capitalize from "lodash/capitalize";
+import findIndex from "lodash/findIndex";
+import sortBy from "lodash/sortBy";
+import find from "lodash/find";
+import { Buffer } from "buffer";
+import jwt_decode from "jwt-decode";
+
 import {
   MessageType,
   ILocalMessage,
@@ -23,7 +30,15 @@ import {
   IPushMessage,
 } from "./types";
 import { colors } from "./colors";
-
+import { getProcessedSnapshots } from "../firebase/config";
+import {
+  getReplaceMessageType,
+  isPushMessageType,
+  LocalStorage,
+  TextFieldTypes,
+  SessionStorage,
+} from "./constants";
+import { IApiThemeResponse } from "./api";
 import {
   ContactType,
   IApiMessage,
@@ -33,21 +48,8 @@ import {
   LocationType,
   ServerMessageType,
 } from "services/types";
-
-import { capitalize, findIndex, sortBy } from "lodash";
-import { getProcessedSnapshots } from "../firebase/config";
-
 import i18n from "services/localization";
-import {
-  getReplaceMessageType,
-  isPushMessageType,
-  LocalStorage,
-  TextFieldTypes,
-  SessionStorage,
-} from "./constants";
-import { IApiThemeResponse } from "./api";
-import { Buffer } from "buffer";
-import jwt_decode from "jwt-decode";
+
 window.Buffer = Buffer;
 
 const emptyFunc = () => console.log();
@@ -769,27 +771,26 @@ export const getMatchedItem = ({
   draftMessage: string | null;
   searchItems: string[];
 }) => {
-  return searchItems.find(
+  return find(
+    searchItems,
     (l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || "")
   );
 };
 
-export const parseThemeResponse = (res: IApiThemeResponse) => {
-  return {
-    primaryColor: res.client_primary_colour,
-    secondaryColor: res.client_secondary_color,
-    imageUrl: res.chatbot_logo_URL,
-    borderStyle: res.chatbot_border_style,
-    borderWidth: res.chatbot_border_thickness,
-    borderColor: res.chatbot_border_color,
-    headerColor: res.chatbot_header_color,
-    messageButtonColor: res.chatbot_bubble_color,
-    buttonSecondaryColor: res.chat_button_secondary_color,
-    searchResultsColor: res.chat_search_results_color,
-    chatbotName: res.chatbot_name,
-    chatbotHeaderTextColor: res.chatbot_header_text_colour,
-  };
-};
+export const parseThemeResponse = (res: IApiThemeResponse) => ({
+  primaryColor: res.client_primary_colour,
+  secondaryColor: res.client_secondary_color,
+  imageUrl: res.chatbot_logo_URL,
+  borderStyle: res.chatbot_border_style,
+  borderWidth: res.chatbot_border_thickness,
+  borderColor: res.chatbot_border_color,
+  headerColor: res.chatbot_header_color,
+  messageButtonColor: res.chatbot_bubble_color,
+  buttonSecondaryColor: res.chat_button_secondary_color,
+  searchResultsColor: res.chat_search_results_color,
+  chatbotName: res.chatbot_name,
+  chatbotHeaderTextColor: res.chatbot_header_text_colour,
+});
 
 export const getStorageValue = (
   key: LocalStorage | SessionStorage,
@@ -797,6 +798,7 @@ export const getStorageValue = (
 ) => {
   const item = localStorage.getItem(key) || sessionStorage.getItem(key);
   const value = item && typeof item == "object" ? JSON.parse(item) : item;
+
   return value || defaultValue;
 };
 
@@ -812,3 +814,11 @@ export const generateOtp = ({ length = 6 }: { length?: number }) => {
 
   return otp;
 };
+
+// ----------------------------------- regex ----------------------------------- //
+export const regExpUuid =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
+
+// ---------------------------------------------------------------------------- //

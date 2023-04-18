@@ -52,10 +52,10 @@ import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
 import { apiInstance } from "services";
 
-type PropsType = {
-  chatBotID?: string | null;
+interface IChatProviderProps {
   children: React.ReactNode;
-};
+  chatBotID?: string | null;
+}
 
 const ChatContext = createContext<IChatMessengerContext>(
   chatMessengerDefaultState
@@ -101,7 +101,7 @@ export const validationUserContacts = ({
 //     },
 // ];
 
-const ChatProvider = ({ chatBotID = "6", children }: PropsType) => {
+const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -110,8 +110,9 @@ const ChatProvider = ({ chatBotID = "6", children }: PropsType) => {
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
 
-  const [user, setUser] = useState<IUser | null>(null);
   console.log("searchLocations", searchLocations);
+  
+  const [user, setUser] = useState<IUser | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);

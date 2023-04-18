@@ -4,13 +4,13 @@ import { useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
 import map from "lodash/map";
 
-import { SearchResults } from "components/Chat/MessageInput/SearchResults";
 import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
 import { TextInput } from "components/Layout/Input/styles";
-import { Close } from "screens/intro/styles";
+import { Close } from "screens/Intro/styles";
 import { isResultsType } from "utils/helpers";
 import { colors } from "utils/colors";
 import * as S from "./styles";
+import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
 
 interface IMultiSelectInputProps {
   value: string;
@@ -18,11 +18,11 @@ interface IMultiSelectInputProps {
   matchedPart: string;
   matchedItems: string[];
   headerName: string;
-  setInputValue: (value: string | null) => void;
-  onChange: (event: any, values: string[]) => void;
   placeHolder: string;
-  setIsShowResults: Dispatch<SetStateAction<boolean>>;
   isShowResults: boolean;
+  setIsShowResults: Dispatch<SetStateAction<boolean>>;
+  onChange: (event: any, values: string[]) => void;
+  setInputValue: (value: string | null) => void;
 }
 
 export interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -68,12 +68,13 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     value: values,
     onChange: onChange,
   });
+
   const { currentMsgType } = useChatMessenger();
 
   const onDelete = (selectedIndex: number) => {
     onChange(
       null,
-      values.filter((value, index) => selectedIndex !== index)
+      filter(values, (value, index) => selectedIndex !== index)
     );
   };
 
@@ -81,7 +82,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
 
   return (
-    <div>
+    <S.Wrapper>
       {isResults && (
         <SearchResults
           headerName={headerName}
@@ -109,7 +110,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
           {...getInputProps()}
           onFocus={(e) => {
             const inputProps = getInputProps();
-            inputProps.onFocus && inputProps.onFocus(e);
+            inputProps?.onFocus?.(e);
           }}
           placeholder={placeHolder}
           value={value}
@@ -123,6 +124,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
           }}
         />
       </S.InputWrapper>
-    </div>
+    </S.Wrapper>
   );
 };
