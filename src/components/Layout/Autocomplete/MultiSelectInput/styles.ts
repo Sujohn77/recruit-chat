@@ -1,5 +1,6 @@
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+
+export const Wrapper = styled.div``;
 
 export const InputWrapper = styled.div`
   width: 270px;

@@ -1,92 +1,77 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { useAuthContext } from "contexts/AuthContext";
+import { Dispatch, FC, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import * as S from './styles';
-
-import { ICONS } from '../../utils/constants';
-
-import { useChatMessenger } from 'contexts/MessangerContext';
-import i18n from 'services/localization';
-import { CHAT_ACTIONS } from 'utils/types';
-
-import { useTheme } from 'styled-components';
-import { ThemeType } from 'utils/theme/default';
-import { EmailForm } from 'components/Intro/EmailLogin/Email';
-import { TrialPassword } from 'components/Intro/TrialPassword';
-import { DefaultButton } from 'components/Layout/Buttons';
-import { ButtonsTheme } from 'components/Layout/Buttons/types';
-import { SupportForm } from 'components/Intro/SupportForm';
-import { DefaultMessages } from 'components/Intro/DefautMessages';
-import { useAuthContext } from 'contexts/AuthContext';
+import { ButtonsTheme } from "utils/types";
+import { DefaultMessages, SupportForm } from "components";
+import { DefaultButton } from "components/Layout";
+import * as S from "./styles";
 
 export enum CHAT_OPTIONS {
-    FIND_JOB = 'FIND JOB',
-    ASK_QUESTION = 'ASK QUESTION',
+  FIND_JOB = "FIND JOB",
+  ASK_QUESTION = "ASK QUESTION",
 }
 
-type PropsType = {
-    setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
-    isSelectedOption: boolean | boolean | null;
-};
+interface IIntroScreenProps {
+  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  isSelectedOption: boolean | boolean | null;
+}
 
-export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) => {
-    const { isVerified } = useAuthContext();
-    const [isEmailForm, setIsEmailForm] = useState(false);
-    const [isNeedSupport, setIsNeedSupport] = useState(false);
-    const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
+export const Intro: FC<IIntroScreenProps> = ({
+  setIsSelectedOption,
+  isSelectedOption,
+}) => {
+  const { t } = useTranslation();
+  const { isVerified } = useAuthContext();
 
-    const handleSupportClick = () => {
-        setIsNeedSupport(true);
-    };
+  const [isEmailForm, setIsEmailForm] = useState(false);
+  const [isNeedSupport, setIsNeedSupport] = useState(false);
+  const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
 
-    const lookingForJobTxt = i18n.t('messages:initialMessage');
-    const continueTxt = i18n.t('messages:wantContinue');
+  const handleSupportClick = () => {
+    setIsNeedSupport(true);
+  };
 
-    // const isOtpMessages = isOTPpSent && !isNeedSupport;
+  // const isOtpMessages = isOTPpSent && !isNeedSupport;
 
-    return (
-        <S.Wrapper isClosed={!!isSelectedOption}>
-            <DefaultMessages
-                setIsEmailForm={setIsEmailForm}
-                text={lookingForJobTxt}
-                isOptions={!isQuestionSubmit}
-                setIsSelectedOption={setIsSelectedOption}
-            />
+  return (
+    <S.Wrapper isClosed={!!isSelectedOption}>
+      <DefaultMessages
+        setIsEmailForm={setIsEmailForm}
+        text={t("messages:initialMessage")}
+        isOptions={!isQuestionSubmit}
+        setIsSelectedOption={setIsSelectedOption}
+      />
 
-            {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
+      {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
 
             {isOtpMessages && !isVerified && <TrialPassword />} */}
 
-            {!isNeedSupport && isEmailForm && !isVerified && (
-                <DefaultButton
-                    variant="outlined"
-                    value="Support"
-                    style={{
-                        width: '250px',
-                        margin: '0 auto 16px',
-                        display: 'block',
-                        animation: 'fadeHeight 0.6s ease-in',
-                        background: '#fff',
-                    }}
-                    theme={ButtonsTheme.Purple}
-                    onClick={handleSupportClick}
-                />
-            )}
+      {!isNeedSupport && isEmailForm && !isVerified && (
+        <DefaultButton
+          variant="outlined"
+          value="Support"
+          style={S.ButtonStyles}
+          theme={ButtonsTheme.Purple}
+          onClick={handleSupportClick}
+        />
+      )}
 
-            {isNeedSupport && !isVerified && (
-                <SupportForm
-                    isQuestionSubmit={isQuestionSubmit}
-                    setIsQuestionSubmit={setIsQuestionSubmit}
-                    setIsSupportForm={setIsNeedSupport}
-                />
-            )}
+      {isNeedSupport && !isVerified && (
+        <SupportForm
+          isQuestionSubmit={isQuestionSubmit}
+          setIsQuestionSubmit={setIsQuestionSubmit}
+          setIsSupportForm={setIsNeedSupport}
+        />
+      )}
 
-            {isQuestionSubmit && (
-                <DefaultMessages
-                    setIsEmailForm={setIsEmailForm}
-                    text={continueTxt}
-                    setIsSelectedOption={setIsSelectedOption}
-                />
-            )}
-        </S.Wrapper>
-    );
+      {isQuestionSubmit && (
+        <DefaultMessages
+          setIsEmailForm={setIsEmailForm}
+          text={t("messages:wantContinue")}
+          setIsSelectedOption={setIsSelectedOption}
+        />
+      )}
+    </S.Wrapper>
+  );
 };

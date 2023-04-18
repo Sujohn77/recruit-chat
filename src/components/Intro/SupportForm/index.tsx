@@ -1,63 +1,49 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { useChatMessenger } from "contexts/MessengerContext";
+import { Dispatch, FC, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
+import find from "lodash/find";
 
-import * as S from './styles';
-import i18n from 'services/localization';
+import * as S from "./styles";
+import { colors } from "utils/colors";
+import { INPUT_TYPES } from "utils/constants";
+import { validateFields } from "utils/helpers";
+import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
+import { DefaultButton } from "components/Layout";
+import { Close } from "screens/Intro/styles";
 
-import { validateEmail } from 'utils/helpers';
-import { useChatMessenger } from 'contexts/MessangerContext';
-import { CHAT_ACTIONS } from 'utils/types';
-import { INPUT_TYPES } from 'components/Layout/Input/types';
-import { DefaultButton } from 'components/Layout/Buttons';
-import { ButtonsTheme } from 'components/Layout/Buttons/types';
-import { colors } from 'utils/colors';
-import { Close } from 'screens/intro/styles';
+interface ISupportFormProps {
+  isQuestionSubmit: boolean;
+  setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
+  setIsSupportForm: Dispatch<SetStateAction<boolean>>;
+}
 
 const rows = 3;
 
-const validateFields = (email: string, text: string) => {
-  const errors = [];
-  const emailError = validateEmail(email);
-  if (emailError) {
-    errors.push({ name: 'email', text: emailError });
-  }
-  if (!text) {
-    errors.push({ name: 'description', text: 'Required' });
-  }
-  return errors;
-};
-
-type PropsType = {
-  setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
-  isQuestionSubmit: boolean;
-  setIsSupportForm: Dispatch<SetStateAction<boolean>>;
-};
-
-export const SupportForm: FC<PropsType> = ({
+export const SupportForm: FC<ISupportFormProps> = ({
   setIsQuestionSubmit,
   isQuestionSubmit,
   setIsSupportForm,
 }) => {
+  const { t } = useTranslation();
   const { triggerAction } = useChatMessenger();
-  const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
-  const [email, setEmail] = useState('');
 
-  const [description, setDescription] = useState('');
-  const sendTxt = i18n.t('buttons:send');
+  const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
+
+  const emailError = find(errors, (e) => e.name === "email")?.text || "";
 
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);
     if (!updatedErrors.length) {
       setIsQuestionSubmit(true);
-      setEmail('');
-      setDescription('');
+      setEmail("");
+      setDescription("");
       triggerAction({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
     } else {
       setErrors(updatedErrors);
     }
   };
-  const emailError = errors.find((e) => e.name === 'email')?.text || '';
-  const descriptionError =
-    errors.find((e) => e.name === 'description')?.text || '';
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
@@ -75,6 +61,13 @@ export const SupportForm: FC<PropsType> = ({
     }
   };
 
+  const onClose = () => setIsSupportForm(false);
+
+  const descriptionError =
+    find(errors, (e) => e.name === "description")?.text || "";
+
+  // TODO: add translation
+
   return (
     <S.Wrapper>
       <S.Title>Support</S.Title>
@@ -83,7 +76,7 @@ export const SupportForm: FC<PropsType> = ({
         type={INPUT_TYPES.TEXT}
         value={email}
         onChange={onChangeEmail}
-        placeholder={'Email'}
+        placeholder={"Email"}
         error={!!emailError}
         helperText={emailError}
       />
@@ -92,26 +85,28 @@ export const SupportForm: FC<PropsType> = ({
         minRows={rows}
         value={description}
         onChange={onChangeDescription}
-        placeholder={'I have a question...'}
+        placeholder={"I have a question..."}
         error={!!descriptionError}
         helperText={descriptionError}
       />
+
       {!isQuestionSubmit ? (
         <DefaultButton
           onClick={onSubmit}
           theme={ButtonsTheme.Purple}
-          value={sendTxt}
+          value={t("buttons:send")}
         />
       ) : (
         <S.SuccessText>
           We will send you an email with a response!
         </S.SuccessText>
       )}
+
       <Close
         height="12px"
-        onClick={() => setIsSupportForm(false)}
+        onClick={onClose}
         color={colors.doveGray}
-        style={{ right: '7px', top: '8px' }}
+        style={S.CloseBtnStyle}
       />
     </S.Wrapper>
   );

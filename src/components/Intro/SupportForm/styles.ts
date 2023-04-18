@@ -1,7 +1,13 @@
-import { FormInput } from 'components/Layout/Autocomplete/styles';
-import { DarkButton } from 'components/Layout/styles';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+
+import { FormInput } from "components/Layout/Autocomplete/styles";
+import { DarkButton } from "components/Layout/styles";
+import { colors } from "utils/colors";
+
+export const CloseBtnStyle = {
+  right: "7px",
+  top: "8px",
+};
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -23,7 +29,7 @@ export const Title = styled.p`
   line-height: 17px;
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
-  font-family: 'Inter-Bold';
+  font-family: "Inter-Bold";
 `;
 
 export const Description = styled.p`
@@ -60,6 +66,6 @@ export const QuestionInput = styled(FormInput)`
   textarea {
     background: #fff !important;
     color: ${colors.doveGray};
-    font-family: 'Inter-Medium';
+    font-family: "Inter-Medium";
   }
 `;

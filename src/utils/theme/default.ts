@@ -1,23 +1,23 @@
-import { colors } from 'utils/colors';
+import { colors } from "utils/colors";
 
 const defaultTheme = {
-  primaryColor: '#787878',
-  secondaryColor: '#d9d9d9',
+  primaryColor: colors.boulder,
+  secondaryColor: colors.alto,
   imageUrl: null,
-  headerColor: '#D9D9D9',
-  messageButtonColor: '#D9D9D9',
-  buttonSecondaryColor: '#8E8E8E',
+  headerColor: colors.alto,
+  messageButtonColor: colors.alto,
+  buttonSecondaryColor: colors.gray2,
   searchResultsColor: colors.silver,
-  borderStyle: 'solid',
-  borderWidth: '0px',
-  borderColor: '#ccc',
-  chatbotName: '',
+  borderStyle: "solid",
+  borderWidth: "0px",
+  borderColor: "#ccc",
+  chatbotName: "",
   header: {
     color: colors.alto,
   },
 
   loader: {
-    background: '#d3d3d370',
+    background: "#d3d3d370",
   },
 
   searchResults: {
@@ -44,7 +44,7 @@ const defaultTheme = {
       backgroundColor: colors.alto,
     },
     file: {
-      backgroundColor: '#B0B0B0',
+      backgroundColor: colors.silverChalice,
       color: colors.alto,
     },
     transcriptForm: {
@@ -63,7 +63,7 @@ const defaultTheme = {
       backgroundColor: colors.alto,
     },
     postedDate: colors.alabaster,
-    initialColor: '#454545',
+    initialColor: colors.tundora,
   },
 
   text: {
@@ -90,10 +90,10 @@ const defaultTheme = {
   forms: {
     browse: {
       colors: colors.black,
-      background: '#A6A6A6',
+      background: colors.silverChalice2,
     },
   },
 };
-export default defaultTheme;
 
+export default defaultTheme;
 export type ThemeType = typeof defaultTheme;

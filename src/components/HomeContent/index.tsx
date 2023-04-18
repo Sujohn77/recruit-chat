@@ -1,16 +1,27 @@
-import { Chat } from 'components/Chat';
+import { SocketProvider } from "contexts/SocketContext";
+import { FC, useState } from "react";
 
-import { SocketProvider } from 'contexts/SocketContext';
-import React, { useState } from 'react';
-import { Intro } from 'screens/intro';
+import { Chat } from "components";
+import { Intro } from "screens";
 
-export const HomeContent = () => {
-    const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(null);
+export const HomeContent: FC = () => {
+  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
+    null
+  );
 
-    return (
-        <SocketProvider>
-            {isSelectedOption && <Chat setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />}
-            <Intro setIsSelectedOption={setIsSelectedOption} isSelectedOption={isSelectedOption} />
-        </SocketProvider>
-    );
+  return (
+    <SocketProvider>
+      {isSelectedOption && (
+        <Chat
+          setIsSelectedOption={setIsSelectedOption}
+          isSelectedOption={isSelectedOption}
+        />
+      )}
+
+      <Intro
+        setIsSelectedOption={setIsSelectedOption}
+        isSelectedOption={isSelectedOption}
+      />
+    </SocketProvider>
+  );
 };

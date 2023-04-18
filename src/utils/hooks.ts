@@ -1,66 +1,77 @@
-import { searchAlertCategories } from 'components/Chat/mockData';
-import { ISearchRequisition } from 'contexts/types';
-import { useCallback } from 'react';
-import i18n from 'services/localization';
-import { getNextActionType } from './helpers';
-import { CHAT_ACTIONS } from './types';
+import { ISearchRequisition } from "contexts/types";
+import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import map from "lodash/map";
+
+import { searchAlertCategories } from "components/Chat/mockData";
+import { CHAT_ACTIONS } from "./types";
 
 interface IUseTextField {
-    lastActionType: CHAT_ACTIONS | null;
-    locations: string[];
-    category: string | null;
-    requisitions: ISearchRequisition[];
+  lastActionType: CHAT_ACTIONS | null;
+  locations: string[];
+  category: string | null;
+  requisitions: ISearchRequisition[];
 }
 
-// TODO: refactor
-export const useTextField = ({ lastActionType, requisitions, locations, category }: IUseTextField) => {
-    const getTextFieldProps = useCallback(({ lastActionType, requisitions, locations, category }: IUseTextField) => {
-        if (lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
-            return {
-                searchItems: searchAlertCategories,
-                placeHolder: i18n.t('placeHolders:alert_category'),
-                headerName: i18n.t('chat_item_description:all_categories'),
-            };
-        }
+// TODO: refactor/test
+export const useTextField = ({
+  lastActionType,
+  requisitions,
+  locations,
+  category,
+}: IUseTextField) => {
+  const { t } = useTranslation();
 
-        if (lastActionType === CHAT_ACTIONS.SET_LOCATIONS) {
-            return {
-                searchItems: locations,
-                placeHolder: i18n.t('placeHolders:chooseLocation'),
-                headerName: i18n.t('chat_item_description:locations_title'),
-            };
-        }
-
+  const getTextFieldProps = useCallback(
+    ({ lastActionType, requisitions, locations }: IUseTextField) => {
+      if (lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
         return {
-            searchItems: requisitions.map((r) => r.title),
-            headerName: i18n.t('chat_item_description:categories_title'),
-            placeHolder:
-                lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test
-                    ? i18n.t('placeHolders:startTyping')
-                    : i18n.t('placeHolders:message'),
+          searchItems: searchAlertCategories,
+          placeHolder: t("placeHolders:alert_category"),
+          headerName: t("chat_item_description:all_categories"),
         };
-    }, []);
+      }
 
-    return getTextFieldProps({
-        lastActionType,
-        requisitions,
-        locations,
-        category,
-    });
+      if (lastActionType === CHAT_ACTIONS.SET_LOCATIONS) {
+        return {
+          searchItems: locations,
+          placeHolder: t("placeHolders:chooseLocation"),
+          headerName: t("chat_item_description:locations_title"),
+        };
+      }
+
+      return {
+        searchItems: map(requisitions, (r) => r.title),
+        headerName: t("chat_item_description:categories_title"),
+        placeHolder:
+          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test
+            ? t("placeHolders:startTyping")
+            : t("placeHolders:message"),
+      };
+    },
+    []
+  );
+
+  return getTextFieldProps({
+    lastActionType,
+    requisitions,
+    locations,
+    category,
+  });
 };
 
 export const useApiKey = () => {
-    const url: any = new URL(window.location.href);
-    let apiKey: undefined | string = undefined;
+  const url: any = new URL(window.location.href);
+  let apiKey: undefined | string = undefined;
 
-    for (const p of url.searchParams.entries()) {
-        const [key, value] = p;
+  for (const p of url.searchParams.entries()) {
+    const [key, value] = p;
 
-        if (key === 'apikey') {
-            apiKey = value;
-            break;
-        }
+    if (key === "apikey") {
+      apiKey = value;
+      break;
     }
+  }
 
-    return apiKey;
+  return apiKey;
 };

@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { api, IApiThemeResponse } from 'utils/api';
-import { parseThemeResponse } from 'utils/helpers';
-import { useApiKey } from 'utils/hooks';
-import defaultTheme from 'utils/theme/default';
+import { useEffect, useState } from "react";
+import { ThemeProvider } from "styled-components";
 
-type PropsType = {
+import { api, IApiThemeResponse } from "utils/api";
+import { parseThemeResponse } from "utils/helpers";
+import { useApiKey } from "utils/hooks";
+import defaultTheme from "utils/theme/default";
+
+interface IThemeContextProviderProps {
   children: React.ReactNode;
   value: IApiThemeResponse | null;
-};
+}
 
-const ThemeContextProvider = ({ value, children }: PropsType) => {
+const ThemeContextProvider = ({
+  value,
+  children,
+}: IThemeContextProviderProps) => {
   const apiKey = useApiKey();
   const [apiTheme, setApiTheme] = useState<any>({});
 
@@ -25,8 +29,9 @@ const ThemeContextProvider = ({ value, children }: PropsType) => {
       });
     }
   }, [apiKey]);
+
   const theme: typeof defaultTheme = { ...defaultTheme, ...apiTheme };
-  // console.log(theme);
+
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 
