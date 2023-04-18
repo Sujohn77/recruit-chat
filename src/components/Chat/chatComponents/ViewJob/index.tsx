@@ -1,16 +1,17 @@
 import { FC } from "react";
 import parse from "html-react-parser";
 
-import { getFormattedDate } from "utils/helpers";
-import { IRequisition } from "utils/types";
 import * as S from "./styles";
+import { IRequisition } from "utils/types";
+import { getFormattedDate } from "utils/helpers";
 
-type PropsType = {
+interface IViewJobProps {
   item: IRequisition | null;
   onClick: () => void;
-};
+}
 
-export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
+// TODO: add translation
+export const ViewJob: FC<IViewJobProps> = ({ item, onClick }) => {
   return !item ? null : (
     <S.ViewBody>
       <S.ViewShortInfo>
@@ -29,6 +30,7 @@ export const ViewJob: FC<PropsType> = ({ item, onClick }) => {
             {item.company}
           </p>
         )}
+
         {item.status && (
           <p>
             <b>Status: </b>

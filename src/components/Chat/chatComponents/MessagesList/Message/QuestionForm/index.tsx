@@ -3,30 +3,14 @@ import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import find from "lodash/find";
 
-import { INPUT_TYPES } from "utils/constants";
-import { validateEmail } from "utils/helpers";
-import { CHAT_ACTIONS } from "utils/types";
 import * as S from "./styles";
+import { CHAT_ACTIONS } from "utils/types";
+import { INPUT_TYPES } from "utils/constants";
+import { validateFields } from "utils/helpers";
 
-type PropsType = {};
 const rows = 3;
 
-const validateFields = (email: string, text: string) => {
-  const errors = [];
-  const emailError = validateEmail(email);
-
-  if (emailError) {
-    errors.push({ name: "email", text: emailError });
-  }
-
-  if (!text) {
-    errors.push({ name: "description", text: "Required" });
-  }
-
-  return errors;
-};
-
-export const QuestionForm: FC<PropsType> = () => {
+export const QuestionForm: FC = () => {
   const { t } = useTranslation();
   const { triggerAction } = useChatMessenger();
 

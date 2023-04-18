@@ -3,27 +3,16 @@ import { Dispatch, FC, SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import find from "lodash/find";
 
-import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
-import { INPUT_TYPES } from "utils/constants";
-import { validateEmail } from "utils/helpers";
-import { colors } from "utils/colors";
-import { Close } from "screens/Intro/styles";
-import { DefaultButton } from "components/Layout";
 import * as S from "./styles";
+import { colors } from "utils/colors";
+import { INPUT_TYPES } from "utils/constants";
+import { validateFields } from "utils/helpers";
+import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
+import { DefaultButton } from "components/Layout";
+import { Close } from "screens/Intro/styles";
 
 const rows = 3;
-
-const validateFields = (email: string, text: string) => {
-  const errors = [];
-  const emailError = validateEmail(email);
-  if (emailError) {
-    errors.push({ name: "email", text: emailError });
-  }
-  if (!text) {
-    errors.push({ name: "description", text: "Required" });
-  }
-  return errors;
-};
+const closeStl = { right: "7px", top: "8px" };
 
 interface ISupportFormProps {
   isQuestionSubmit: boolean;
@@ -76,6 +65,10 @@ export const SupportForm: FC<ISupportFormProps> = ({
     }
   };
 
+  const onClose = () => setIsSupportForm(false);
+
+  // TODO: add translation
+
   return (
     <S.Wrapper>
       <S.Title>Support</S.Title>
@@ -112,9 +105,9 @@ export const SupportForm: FC<ISupportFormProps> = ({
 
       <Close
         height="12px"
-        onClick={() => setIsSupportForm(false)}
+        onClick={onClose}
         color={colors.doveGray}
-        style={{ right: "7px", top: "8px" }}
+        style={closeStl}
       />
     </S.Wrapper>
   );

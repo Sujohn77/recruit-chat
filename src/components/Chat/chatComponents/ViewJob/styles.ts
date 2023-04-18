@@ -15,10 +15,10 @@ export const ViewBody = styled.div`
   box-sizing: border-box;
   font-family: Inter-Medium;
   font-weight: 500;
-
   animation: fade-in 0.25s ease-in forwards;
   opacity: 0;
   z-index: 1;
+
   @keyframes fade-in {
     0% {
       opacity: 0.7;
@@ -49,6 +49,7 @@ export const BackButton = styled(Slide)`
 export const p = styled.div`
   margin: 0;
 `;
+
 export const HeaderTitle = styled.div``;
 
 export const TextTitle = styled.h3`

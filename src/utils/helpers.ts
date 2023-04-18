@@ -828,6 +828,21 @@ export const generateOtp = ({ length = 6 }: { length?: number }) => {
   return otp;
 };
 
+export const validateFields = (email: string, text: string) => {
+  const errors = [];
+  const emailError = validateEmail(email);
+
+  if (emailError) {
+    errors.push({ name: "email", text: emailError });
+  }
+
+  if (!text) {
+    errors.push({ name: "description", text: "Required" });
+  }
+
+  return errors;
+};
+
 // ----------------------------------- regex ----------------------------------- //
 export const regExpUuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

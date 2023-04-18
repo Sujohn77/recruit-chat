@@ -11,6 +11,8 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
+import * as S from "./styles";
+import { ICONS } from "assets";
 import { Status, TextFieldTypes } from "utils/constants";
 import {
   getAccessWriteType,
@@ -27,8 +29,6 @@ import {
 import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
-import * as S from "./styles";
-import { ICONS } from "assets";
 
 type PropsType = {};
 

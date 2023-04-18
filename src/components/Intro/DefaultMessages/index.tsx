@@ -4,12 +4,12 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import map from "lodash/map";
 
+import * as S from "./styles";
+import { messages } from "./data";
+import { IOption } from "./types";
 import { ICONS } from "assets";
 import { LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
-import { messages } from "./data";
-import { IOption } from "./types";
-import * as S from "./styles";
 
 interface IDefaultMessagesProps {
   text: string;

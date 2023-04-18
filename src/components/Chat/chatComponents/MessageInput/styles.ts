@@ -1,5 +1,5 @@
-import Box from "@mui/material/Box";
 import styled from "styled-components";
+import Box from "@mui/material/Box";
 
 export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
@@ -19,6 +19,7 @@ export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   margin-top: ${({ offset }) => !!offset && offset.toString()};
+
   > button {
     padding: 0px;
     margin: 0;
@@ -57,6 +58,7 @@ export const SearchBody = styled.ul`
   padding: 0;
   overflow: auto;
   max-height: 186px;
+
   div {
     width: 100%;
   }
@@ -72,6 +74,7 @@ export const SearchPosition = styled.li`
   font-weight: 400;
   cursor: pointer;
   width: 100%;
+
   span {
     font-weight: 700;
   }
