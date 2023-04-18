@@ -1,10 +1,9 @@
-import { FC } from "react";
-import { CSSProperties } from "styled-components";
+import { CSSProperties, FC } from "react";
 
 import { ButtonsTheme } from "utils/types";
 import { ButtonWrapper } from "./styled";
 
-interface IButtonProps {
+interface IDefaultButtonProps {
   value: string;
   onClick: () => void;
   theme?: ButtonsTheme;
@@ -12,7 +11,7 @@ interface IButtonProps {
   variant?: "text" | "outlined" | "contained";
 }
 
-export const DefaultButton: FC<IButtonProps> = ({
+export const DefaultButton: FC<IDefaultButtonProps> = ({
   value,
   onClick,
   theme = ButtonsTheme.Purple,

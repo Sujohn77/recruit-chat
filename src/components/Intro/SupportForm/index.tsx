@@ -11,14 +11,13 @@ import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
 import { DefaultButton } from "components/Layout";
 import { Close } from "screens/Intro/styles";
 
-const rows = 3;
-const closeStl = { right: "7px", top: "8px" };
-
 interface ISupportFormProps {
   isQuestionSubmit: boolean;
   setIsQuestionSubmit: Dispatch<SetStateAction<boolean>>;
   setIsSupportForm: Dispatch<SetStateAction<boolean>>;
 }
+
+const rows = 3;
 
 export const SupportForm: FC<ISupportFormProps> = ({
   setIsQuestionSubmit,
@@ -46,9 +45,6 @@ export const SupportForm: FC<ISupportFormProps> = ({
     }
   };
 
-  const descriptionError =
-    find(errors, (e) => e.name === "description")?.text || "";
-
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
     if (errors.length) {
@@ -66,6 +62,9 @@ export const SupportForm: FC<ISupportFormProps> = ({
   };
 
   const onClose = () => setIsSupportForm(false);
+
+  const descriptionError =
+    find(errors, (e) => e.name === "description")?.text || "";
 
   // TODO: add translation
 
@@ -107,7 +106,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
         height="12px"
         onClick={onClose}
         color={colors.doveGray}
-        style={closeStl}
+        style={S.CloseBtnStyle}
       />
     </S.Wrapper>
   );

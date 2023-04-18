@@ -4,6 +4,11 @@ import { FormInput } from "components/Layout/Autocomplete/styles";
 import { DarkButton } from "components/Layout/styles";
 import { colors } from "utils/colors";
 
+export const CloseBtnStyle = {
+  right: "7px",
+  top: "8px",
+};
+
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;

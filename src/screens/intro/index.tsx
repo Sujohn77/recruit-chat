@@ -51,13 +51,7 @@ export const Intro: FC<IIntroScreenProps> = ({
         <DefaultButton
           variant="outlined"
           value="Support"
-          style={{
-            width: "250px",
-            margin: "0 auto 16px",
-            display: "block",
-            animation: "fadeHeight 0.6s ease-in",
-            background: "#fff",
-          }}
+          style={S.ButtonStyles}
           theme={ButtonsTheme.Purple}
           onClick={handleSupportClick}
         />
