@@ -1,6 +1,7 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
+import find from "lodash/find";
 
 import { INPUT_TYPES } from "utils/constants";
 import { validateEmail } from "utils/helpers";
@@ -13,12 +14,15 @@ const rows = 3;
 const validateFields = (email: string, text: string) => {
   const errors = [];
   const emailError = validateEmail(email);
+
   if (emailError) {
     errors.push({ name: "email", text: emailError });
   }
+
   if (!text) {
     errors.push({ name: "description", text: "Required" });
   }
+
   return errors;
 };
 
@@ -39,10 +43,10 @@ export const QuestionForm: FC<PropsType> = () => {
     }
   };
 
-  const emailError = errors.find((e) => e.name === "email")?.text || "";
+  const emailError = find(errors, (e) => e.name === "email")?.text || "";
 
   const descriptionError =
-    errors.find((e) => e.name === "description")?.text || "";
+    find(errors, (e) => e.name === "description")?.text || "";
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
@@ -61,8 +65,8 @@ export const QuestionForm: FC<PropsType> = () => {
   };
 
   return (
-    <div>
-      <S.Wrapper>
+    <S.Wrapper>
+      <S.Content>
         <S.Title>Question form</S.Title>
         <S.QuestionInput
           type={INPUT_TYPES.TEXT}
@@ -82,7 +86,7 @@ export const QuestionForm: FC<PropsType> = () => {
           helperText={descriptionError}
         />
         <S.SubmitButton onClick={onSubmit}>{t("buttons:send")}</S.SubmitButton>
-      </S.Wrapper>
-    </div>
+      </S.Content>
+    </S.Wrapper>
   );
 };

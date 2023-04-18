@@ -7,6 +7,7 @@ import React, {
   useState,
   useEffect,
 } from "react";
+import map from "lodash/map";
 
 import {
   MessageType,
@@ -111,7 +112,7 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
 
   console.log("searchLocations", searchLocations);
-  
+
   const [user, setUser] = useState<IUser | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
@@ -447,7 +448,7 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
   };
 
   const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
-    const updatedMessages = messages.map((msg, index) =>
+    const updatedMessages = map(messages, (msg, index) =>
       msg.content.subType === type && !msg._id
         ? { ...msg, _id: messageId }
         : msg
@@ -496,7 +497,7 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
       if (newMessages.length) {
         setMessages([...messages, ...parsedMessages]);
       } else {
-        const updatedMessages = messages.map((localmsg) => {
+        const updatedMessages = map(messages, (localmsg) => {
           const updatedIndex = parsedMessages.findIndex(
             (msg) => msg.localId === localmsg.localId
           );

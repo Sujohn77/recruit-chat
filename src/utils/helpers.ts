@@ -8,8 +8,10 @@ import {
 import randomString from "random-string";
 import capitalize from "lodash/capitalize";
 import findIndex from "lodash/findIndex";
+import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
 import find from "lodash/find";
+import map from "lodash/map";
 import { Buffer } from "buffer";
 import jwt_decode from "jwt-decode";
 
@@ -51,6 +53,23 @@ import {
 import i18n from "services/localization";
 
 window.Buffer = Buffer;
+
+interface IIsMatches {
+  item: string;
+  compareItem: string;
+}
+
+interface IGetMatchedItems {
+  message: string | null;
+  searchItems: string[];
+  searchLocations: string[];
+}
+
+interface IIsResultType {
+  type: CHAT_ACTIONS | null;
+  matchedItems: string[];
+  value?: string;
+}
 
 const emptyFunc = () => console.log();
 
@@ -99,6 +118,7 @@ export const isTokenExpired = (token: string) => {
 
   return decodedToken.exp * 1000 < currentDate.getTime();
 };
+
 export const getActionTypeByOption = (option: USER_INPUTS) => {
   switch (option.toLowerCase()) {
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
@@ -266,6 +286,7 @@ export const validateEmailOrPhone = (value: string) => {
   if (!value) {
     return i18n.t("labels:required");
   }
+
   const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
   const phoneRegExp =
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -273,13 +294,10 @@ export const validateEmailOrPhone = (value: string) => {
   if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
     return i18n.t("labels:email_or_phone_invalid");
   }
+
   return "";
 };
 
-interface IIsMatches {
-  item: string;
-  compareItem: string;
-}
 const isMatches = ({ item, compareItem }: IIsMatches) => {
   const compareWord = compareItem.toLowerCase();
   const searchItem = item.toLowerCase();
@@ -290,18 +308,13 @@ const isMatches = ({ item, compareItem }: IIsMatches) => {
   );
 };
 
-interface IGetMatchedItems {
-  message: string | null;
-  searchItems: string[];
-  searchLocations: string[];
-}
 export const getMatchedItems = ({
   message,
   searchItems,
   searchLocations,
 }: IGetMatchedItems) => {
   const compareItem = message?.toLowerCase() || "";
-  const matchedPositions = searchItems.filter((item) =>
+  const matchedPositions = filter(searchItems, (item) =>
     isMatches({ item, compareItem })
   );
 
@@ -309,11 +322,12 @@ export const getMatchedItems = ({
     matchedPositions.length && message?.length
       ? matchedPositions[0].slice(0, message.length)
       : "";
-  const matchedItems = matchedPositions
-    .filter((p) => {
+  const matchedItems = map(
+    filter(matchedPositions, (p) => {
       return !searchLocations.includes(p);
-    })
-    .map((item) => item.slice(message?.length, item.length));
+    }),
+    (item) => item.slice(message?.length, item.length)
+  );
 
   return {
     matchedItems,
@@ -349,7 +363,7 @@ export const getParsedMessage = ({
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
-  const parsedMessages = messages.map((msg) => {
+  const parsedMessages = map(messages, (msg) => {
     const content: IContent = {
       subType: msg.content.subType,
       text: msg.content.text,
@@ -425,8 +439,9 @@ export const getMessageBySubtype = ({
 };
 
 export const getItemById = (items: any[], id: string) => {
-  return items.find((job) => job.id === Number(id));
+  return find(items, (job) => job.id === Number(id));
 };
+
 export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
   switch (type) {
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
@@ -437,6 +452,7 @@ export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
   }
   return true;
 };
+
 export const getMessagesOnAction = ({
   action,
   messages,
@@ -566,7 +582,7 @@ export const replaceLocalMessages = ({
   messages,
   parsedMessages,
 }: IReplaceLocalMessages) => {
-  return messages.map((msg) => {
+  return map(messages, (msg) => {
     if (!msg._id) {
       const updatedMessage = parsedMessages.find(
         (updateMsg) => updateMsg.localId === msg.localId
@@ -649,25 +665,23 @@ export const getCreateCandidateData = ({
 }: {
   user: IUser;
   prefferedJob: IRequisition | null;
-}) => {
-  return {
-    firstName: user.name!.split("")[0]!,
-    lastName: user.name!.split("")[1],
-    profile: {
-      currentJobTitle: prefferedJob?.title!,
-      currentEmployer: "",
+}) => ({
+  firstName: user.name!.split("")[0]!,
+  lastName: user.name!.split("")[1],
+  profile: {
+    currentJobTitle: prefferedJob?.title!,
+    currentEmployer: "",
+  },
+  typeId: "",
+  contactMethods: [
+    {
+      address: user.email!,
+      isPrimary: true,
+      location: "Home",
+      type: ContactType.EMAIL,
     },
-    typeId: "",
-    contactMethods: [
-      {
-        address: user.email!,
-        isPrimary: true,
-        location: "Home",
-        type: ContactType.EMAIL,
-      },
-    ],
-  };
-};
+  ],
+});
 
 export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
   switch (type) {
@@ -685,9 +699,9 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const getFormattedLocations = (locations: LocationType[]) => {
-  const items = locations
-    .filter((location) => !!location?.city)
-    .map((item) => {
+  const items = map(
+    filter(locations, (location) => !!location?.city),
+    (item) => {
       if (!item.country) {
         return item.city;
       }
@@ -695,7 +709,9 @@ export const getFormattedLocations = (locations: LocationType[]) => {
         return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
       }
       return `${item.city}, ${item.country.slice(0, 13)}`;
-    });
+    }
+  );
+
   return getUniqueItems(items);
 };
 
@@ -706,13 +722,10 @@ export const getUniqueItems = (items: string[]) => {
       uniqueItems.push(item);
     }
   });
+
   return uniqueItems;
 };
-interface IIsResultType {
-  type: CHAT_ACTIONS | null;
-  matchedItems: string[];
-  value?: string;
-}
+
 export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
   const isAllowedType =
     !type ||

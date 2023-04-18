@@ -3,13 +3,13 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
 import map from "lodash/map";
-
 import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
-import { TextInput } from "components/Layout/Input/styles";
-import { Close } from "screens/Intro/styles";
-import { isResultsType } from "utils/helpers";
-import { colors } from "utils/colors";
+
 import * as S from "./styles";
+import { colors } from "utils/colors";
+import { isResultsType } from "utils/helpers";
+import { Close } from "screens/Intro/styles";
+import { TextInput } from "components/Layout/Input/styles";
 import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
 
 interface IMultiSelectInputProps {

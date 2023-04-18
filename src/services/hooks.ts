@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import map from "lodash/map";
 
 import { APP_VERSION } from "./auth";
 import { handleRefreshToken } from "./utils";
@@ -41,7 +42,7 @@ export const useRequisitions = () => {
       })) as any
     );
     if (requisitions.length) {
-      setLocations(requisitions.map((r) => r.location));
+      setLocations(map(requisitions, (r) => r.location));
     }
   };
 

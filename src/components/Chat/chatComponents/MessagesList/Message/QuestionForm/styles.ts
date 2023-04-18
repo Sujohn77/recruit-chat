@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { DarkButton } from "components/Layout/styles";
 import { FormInput } from "components/Layout/Autocomplete/styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div``;
+
+export const Content = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 17px 20px 26px;

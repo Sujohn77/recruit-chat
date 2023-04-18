@@ -58,7 +58,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
   };
 
   const descriptionError =
-    errors.find((e) => e.name === "description")?.text || "";
+    find(errors, (e) => e.name === "description")?.text || "";
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
