@@ -31,7 +31,7 @@ export const ViewJob: FC<IViewJobProps> = ({ item, onClick }) => {
           </p>
         )}
 
-        {item.status && (
+        {item?.status && (
           <p>
             <b>Status: </b>
             {item.status}
