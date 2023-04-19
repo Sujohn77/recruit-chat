@@ -1,5 +1,23 @@
 var guid = "6B2B076E-2E86-4B55-A5E2-F10739449D19";
 
+const refreshToken = (callback) => {
+  fetch("https://qa-integrations.loopworks.com/api/chatbot/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ChatbotGuid: guid }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data?.errors) {
+        console.log("data.errors[0]", data.errors[0]);
+      } else {
+        callback?.(data);
+      }
+    });
+};
+
 const appendChatBot = (style, token) => {
   const ifrm = document.createElement("iframe"),
     url_string = `https://loopchatbot.z14.web.core.windows.net`;
@@ -7,9 +25,13 @@ const appendChatBot = (style, token) => {
   ifrm.setAttribute("id", "chat-iframe");
   ifrm.setAttribute("width", "370px");
   ifrm.setAttribute("sandbox", "allow-scripts allow-same-origin");
-  ifrm.style.cssText = `
-                    position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;height: 601px;
-                `;
+  ifrm.style.cssText = `position: fixed;
+                    right: 10px;
+                    bottom: 10px;
+                    z-index: 2;
+                    transition: all 0.5s ease-in-out;
+                    border: none;
+                    height: 601px;`;
 
   document.body.appendChild(ifrm);
 
@@ -32,24 +54,6 @@ const appendChatBot = (style, token) => {
   } else {
     window.attachEvent("onmessage", onMessage); // IE8
   }
-};
-
-const refreshToken = (callback) => {
-  fetch("https://qa-integrations.loopworks.com/api/chatbot/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ChatbotGuid: guid }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data?.errors) {
-        console.log("data.errors[0]", data.errors[0]);
-      } else {
-        callback && callback(data);
-      }
-    });
 };
 
 const getChatBotStyle = async (token) => {
