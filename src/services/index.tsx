@@ -30,6 +30,8 @@ export const FORM_URLENCODED = {
 };
 
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
+const isDevMode = process.env.NODE_ENV === "development";
+
 class Api {
   protected client: ApisauceInstance;
   protected jwtToken: string;
@@ -53,7 +55,7 @@ class Api {
         return response;
       },
       async function (error) {
-        if (process.env.NODE_ENV === "development") {
+        if (isDevMode) {
           console.log("ApiError", error?.message);
           console.log("error?.response?.status", error?.response?.status);
         }
@@ -98,13 +100,17 @@ class Api {
     // const isExpired = token ? isTokenExpired(token) : true;
 
     if (token) {
-      process.env.NODE_ENV === "development" &&
+      if (isDevMode) {
         console.log("requestInterceptor - request.headers", request.headers);
-      if (request && request.headers)
+      }
+
+      if (request && request.headers) {
         request.headers["Authorization"] = "chatbot-jwt-token " + token;
+      }
+
       this.lastRequest = request;
     } else {
-      process.env.NODE_ENV === "development" && console.log("no token");
+      isDevMode && console.log("no token");
     }
     return request;
     // if (isExpired) {
