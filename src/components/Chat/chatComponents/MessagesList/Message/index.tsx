@@ -21,15 +21,16 @@ import { QuestionForm } from "./QuestionForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SubmitFileMessage } from "./SubmitFileMessage";
 
-type PropsType = {
+interface IMessageProps {
   message: ILocalMessage;
   isLastMessage: boolean;
   // onClick: (content: IContent) => void;
   // handleOfferSubmit: ((id: string | number) => void) | undefined;
-};
+}
 
 export const MS_1000 = 1000;
-export const Message: FC<PropsType> = memo(({ message, isLastMessage }) => {
+
+export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
   const { t } = useTranslation();
   const subType = message.content.subType;
   const messageProps = { ...getMessageProps(message) };
