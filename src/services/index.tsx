@@ -1,4 +1,4 @@
-import apisauce, { ApisauceInstance } from "apisauce";
+import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
 import { AxiosRequestConfig } from "axios";
 
 import { SessionStorage } from "../utils/constants";
@@ -43,7 +43,8 @@ class Api {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",
       },
-      transformResponse: (response: any) => JSON.parse(response),
+      transformResponse: (response: any) =>
+        response ? JSON.parse(response) : response,
     });
 
     this.client.axiosInstance.interceptors.request.use(this.requestInterceptor);
@@ -51,14 +52,33 @@ class Api {
       function (response) {
         return response;
       },
-      function (error) {
-        process.env.NODE_ENV === "development" &&
+      async function (error) {
+        if (process.env.NODE_ENV === "development") {
           console.log("ApiError", error?.message);
+          console.log("error?.response?.status", error?.response?.status);
+        }
+
+        if (
+          error?.response?.status !== 401 &&
+          error?.response?.status !== 403
+        ) {
+          sessionStorage.setItem(
+            SessionStorage.ApiError,
+            JSON.stringify(error.message)
+          );
+        }
+
+        const originalRequest = error.config;
+        if (error?.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const res: ApiResponse<string> = await apiInstance.refreshToken();
+          if (res.ok && res.data) {
+            apiInstance.setAuthHeader(res.data);
+            this.client(originalRequest);
+          }
+        }
+
         sessionStorage.removeItem(SessionStorage.Token);
-        sessionStorage.setItem(
-          SessionStorage.ApiError,
-          JSON.stringify(error.message)
-        );
         window.parent.postMessage(
           {
             event_id: "refresh_token",
@@ -66,6 +86,7 @@ class Api {
           },
           "*"
         );
+
         return Promise.reject(error);
       }
     );
@@ -77,7 +98,8 @@ class Api {
     // const isExpired = token ? isTokenExpired(token) : true;
 
     if (token) {
-      process.env.NODE_ENV === "development" && console.log(request.headers);
+      process.env.NODE_ENV === "development" &&
+        console.log("requestInterceptor - request.headers", request.headers);
       if (request && request.headers)
         request.headers["Authorization"] = "chatbot-jwt-token " + token;
       this.lastRequest = request;
@@ -100,6 +122,12 @@ class Api {
     // }
   };
 
+  refreshToken = (guid = "6B2B076E-2E86-4B55-A5E2-F10739449D19") => {
+    return this.client.post<string>("api/chatbot/token", {
+      ChatbotGuid: guid,
+    });
+  };
+
   setAuthHeader = (token: string) => {
     return this.client.setHeader("Authorization", `Bearer ${token}`);
   };
@@ -116,9 +144,7 @@ class Api {
   uploadCV = (data: IUploadCVPayload) =>
     this.client.post<IUploadResponse>("api/candidate/resume/upload", data);
   searchRequisitions = (data: ISearchJobsPayload) =>
-    this.client.post<IRequisitionsResponse>("api/requisition/search", {
-      ...data,
-    });
+    this.client.post<IRequisitionsResponse>("api/requisition/search", data);
   searchWithResume = (data: IResumeDataPayload) =>
     this.client.post<IRequisitionsResponse>(
       "api/requisition/searchbyresume/",
