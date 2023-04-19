@@ -45,7 +45,7 @@ const refreshToken = (callback) => {
     .then((response) => response.json())
     .then((data) => {
       if (data?.errors) {
-        console.log(data.errors[0]);
+        console.log("data.errors[0]", data.errors[0]);
       } else {
         callback && callback(data);
       }

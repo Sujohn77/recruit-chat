@@ -363,7 +363,8 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
                 triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
               }
             } catch (err) {
-              process.env.NODE_ENV === "development" && console.log(err);
+              process.env.NODE_ENV === "development" &&
+                console.log("getChatBotResponse", err);
             } finally {
               setCategory(null);
               setSearchLocations([]);
@@ -409,7 +410,7 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
         additionalCondition,
         param,
       });
-      console.log(responseMessages);
+      console.log("responseMessages", responseMessages);
 
       updatedMessages = getMessagesOnAction({
         action,
