@@ -480,3 +480,17 @@ export interface GenerateGrantTypeData {
 export type GenerateGrantType = (
   userData: IUserLoginRequestData | GenerateGrantTypeData
 ) => string;
+
+export interface IQuestionOptions {
+  answersNumber: number; // maximum number of answers to be returned for the question
+  includeUnstructuredSources: boolean; // flag to enable Query over Unstructured Sources
+  confidenceScoreThreshold: number; // minimum threshold score for answers, value ranges from 0 to 1.
+}
+
+export interface IAskAQuestionRequest {
+  question: string;
+  languageCode?: string | null; // the language in which the question was asked [not required]. en_us by default, so leave this field null if the question is in English
+  options?: null | IQuestionOptions; // options - QnA configuration options [not required, can be null]
+}
+
+export interface IAskAQuestionResponse {}

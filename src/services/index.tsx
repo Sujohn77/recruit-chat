@@ -23,6 +23,7 @@ import {
   IJobAlertResponse,
   IVerifyEmailResponse,
   IResumeDataPayload,
+  IAskAQuestionRequest,
 } from "./types";
 
 export const FORM_URLENCODED = {
@@ -76,7 +77,7 @@ class Api {
           const res: ApiResponse<string> = await apiInstance.refreshToken();
           if (res.ok && res.data) {
             apiInstance.setAuthHeader(res.data);
-            this.client(originalRequest);
+            // this.client(originalRequest);
           }
         }
 
@@ -132,6 +133,10 @@ class Api {
     return this.client.post<string>("api/chatbot/token", {
       ChatbotGuid: guid,
     });
+  };
+
+  askAQuestion = (data: IAskAQuestionRequest) => {
+    return this.client.get<string[]>("api/questionAnswering/answers", data);
   };
 
   setAuthHeader = (token: string) => {
