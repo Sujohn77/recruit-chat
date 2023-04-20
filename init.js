@@ -1,4 +1,4 @@
-var guid = "6B2B076E-2E86-4B55-A5E2-F10739449D19";
+var guid = "f466faec-ea83-4122-8c23-458ab21e96be";
 
 const refreshToken = (callback) => {
   fetch("https://qa-integrations.loopworks.com/api/chatbot/token", {
