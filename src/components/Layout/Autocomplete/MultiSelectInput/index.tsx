@@ -7,10 +7,9 @@ import {
   MouseEvent,
   SetStateAction,
 } from "react";
-import { useAutocomplete } from "@mui/material";
+import { AutocompleteGetTagProps, useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
 import map from "lodash/map";
-import { AutocompleteGetTagProps } from "@mui/base/AutocompleteUnstyled";
 
 import * as S from "./styles";
 import { colors } from "utils/colors";
