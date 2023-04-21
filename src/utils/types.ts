@@ -58,20 +58,17 @@ export interface IState {
   status: Status;
 }
 
+export interface IContent {
+  subType: MessageType;
+  text?: string;
+}
+
 export interface ILocalMessage {
   _id: number | string | null;
   localId?: string | number;
   dateCreated?: { seconds: number };
-  content: {
-    subType: MessageType;
-    text?: string;
-  };
+  content: IContent;
   isOwn?: boolean;
-}
-
-export interface IContent {
-  subType: MessageType;
-  text?: string;
 }
 
 export enum USER_INPUTS {
