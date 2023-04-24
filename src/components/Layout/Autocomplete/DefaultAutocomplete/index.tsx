@@ -18,6 +18,7 @@ interface IAutocompleteProps {
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
+  subHeaderName?: null | string;
 }
 
 export const Autocomplete: FC<IAutocompleteProps> = (props) => {
@@ -31,6 +32,7 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     setInputValue,
     isShowResults,
     setIsShowResults,
+    subHeaderName = null,
   } = props;
 
   const { triggerAction, currentMsgType, user, error } = useChatMessenger();
@@ -57,6 +59,7 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     <div>
       {isResults && (
         <SearchResults
+          subHeaderName={subHeaderName}
           setIsShowResults={setIsShowResults}
           headerName={headerName}
           matchedItems={matchedItems}

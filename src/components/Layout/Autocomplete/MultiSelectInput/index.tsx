@@ -29,15 +29,14 @@ interface IMultiSelectInputProps {
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
+  subHeaderName?: null | string;
 }
 
-export interface TagProps extends ReturnType<AutocompleteGetTagProps> {
+interface TagProps extends ReturnType<AutocompleteGetTagProps> {
   label: string;
 }
 
-export function Tag(props: TagProps) {
-  const { label, onDelete } = props;
-
+function Tag({ label, onDelete }: TagProps) {
   return (
     <S.TagWrapper>
       <span>{label}</span>
@@ -57,6 +56,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   isShowResults,
   setInputValue,
   setIsShowResults,
+  subHeaderName = null,
 }) => {
   const {
     getInputProps,
@@ -104,6 +104,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     <S.Wrapper>
       {isResults && (
         <SearchResults
+          subHeaderName={subHeaderName}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}

@@ -29,6 +29,7 @@ export const useTextField = ({
           searchItems: searchAlertCategories,
           placeHolder: t("placeHolders:alert_category"),
           headerName: t("chat_item_description:all_categories"),
+          subHeaderName: null,
         };
       }
 
@@ -37,6 +38,7 @@ export const useTextField = ({
           searchItems: locations,
           placeHolder: t("placeHolders:chooseLocation"),
           headerName: t("chat_item_description:locations_title"),
+          subHeaderName: null,
         };
       }
 
@@ -47,6 +49,9 @@ export const useTextField = ({
           lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test
             ? t("placeHolders:startTyping")
             : t("placeHolders:message"),
+        // TODO: add translation =)
+        subHeaderName:
+          "We have processed your resume and found the following jobs",
       };
     },
     []

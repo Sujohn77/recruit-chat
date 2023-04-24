@@ -49,7 +49,7 @@ export const MessageInput: FC<PropsType> = () => {
 
   // State
   const formattedLocations = getFormattedLocations(locations);
-  const { searchItems, placeHolder, headerName } = useTextField({
+  const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
     locations: formattedLocations,
     requisitions,
     category,
@@ -191,6 +191,7 @@ export const MessageInput: FC<PropsType> = () => {
     const inputProps = {
       type,
       headerName: headerName,
+      subHeaderName,
       matchedItems,
       matchedPart,
       value: draftMessage || "",
