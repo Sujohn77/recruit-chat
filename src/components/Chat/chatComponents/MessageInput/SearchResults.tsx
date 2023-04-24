@@ -39,9 +39,9 @@ export const SearchResults: FC<ISearchResultsProps> = ({
       <S.SearchPosition
         key={`search-item-${index}`}
         {...optionProps}
-        onClick={(e) => {
-          onClick && onClick(e);
-          optionProps?.onClick && optionProps.onClick(e);
+        onClick={(event: MouseEvent<HTMLLIElement>) => {
+          onClick?.(event);
+          optionProps?.onClick?.(event);
         }}
       >
         <span>{matchedPart}</span>
