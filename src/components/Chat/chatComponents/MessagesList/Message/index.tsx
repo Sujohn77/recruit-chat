@@ -5,7 +5,7 @@ import * as S from "./styles";
 import { getMessageProps } from "utils/helpers";
 import { MessageType, ILocalMessage } from "utils/types";
 
-import { BrowseFile } from "./BrowseFile";
+import { UploadCV } from "./UploadCV";
 import { EmailForm } from "./EmailForm";
 import { JobOffers } from "./JobOffers";
 
@@ -20,6 +20,7 @@ import { SalaryForm } from "./SalaryForm";
 import { QuestionForm } from "./QuestionForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SubmitFileMessage } from "./SubmitFileMessage";
+import { UploadedFile } from "./UploadedFile";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -44,7 +45,7 @@ export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
     case MessageType.INITIAL_MESSAGE:
       return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
-      return <BrowseFile />;
+      return <UploadCV />;
     case MessageType.EMAIL_FORM: {
       return <EmailForm />;
     }
@@ -89,6 +90,8 @@ export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
           buttonTxt={t("buttons:searchJobs")}
         />
       );
+    case MessageType.UPLOADED_CV:
+      return <UploadedFile message={message} />;
     default: {
       return null;
     }

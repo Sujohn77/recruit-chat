@@ -48,6 +48,7 @@ export enum MessageType {
   MULTIPLE_OPTIONS = "MULTIPLE_OPTIONS",
   SUBMIT_FILE = "submit_file",
   THANKS = "thanks",
+  UPLOADED_CV = "uploaded_cv",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -121,6 +122,7 @@ export enum CHAT_ACTIONS {
   SEND_ALERT_CATEGORIES = "send_alert_categories",
   SEARCH_WITH_RESUME = "send_with_resume",
   RESET_FILE = "reset_file",
+  UPLOADED_CV = "uploaded_cv",
 }
 
 export enum Status {

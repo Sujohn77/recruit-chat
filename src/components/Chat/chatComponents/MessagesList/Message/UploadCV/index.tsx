@@ -11,7 +11,7 @@ import { Close } from "components/Intro/DefaultMessages/styles";
 import * as S from "./styles";
 import * as ChatStyles from "../../../../styles";
 
-export const BrowseFile: FC = () => {
+export const UploadCV: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
@@ -83,6 +83,16 @@ export const BrowseFile: FC = () => {
           )}
         </ChatStyles.Notification>
       )}
+
+      {/* {uploadedFileName && (
+        <ChatStyles.Notification>
+          {uploadedFileName && <ChatStyles.Icon src={ICONS.ATTACHED_FILE} />}
+
+          <ChatStyles.NotificationText>
+            {uploadedFileName}
+          </ChatStyles.NotificationText>
+        </ChatStyles.Notification>
+      )} */}
     </S.Wrapper>
   );
 };

@@ -32,7 +32,6 @@ export const SearchResults: FC<ISearchResultsProps> = ({
   onClick,
   setIsShowResults,
   getListboxProps = () => ({}),
-  subHeaderName = null,
 }) => {
   const items = map(matchedItems, (option, index) => {
     const optionProps = getOptionProps && getOptionProps({ option, index });
@@ -61,8 +60,6 @@ export const SearchResults: FC<ISearchResultsProps> = ({
 
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
-      {subHeaderName && <S.SubHeader>{subHeaderName}</S.SubHeader>}
-
       <S.SearchHeader>
         {headerName}
         <Close color={colors.gray} onClick={onClose} />

@@ -40,6 +40,10 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
   const onClick = (e: MouseEvent<HTMLLIElement>) => {
     setInputValue(null);
 
+    console.log("====================================");
+    console.log("currentMsgType", currentMsgType);
+    console.log("====================================");
+
     currentMsgType &&
       triggerAction({
         type: currentMsgType,

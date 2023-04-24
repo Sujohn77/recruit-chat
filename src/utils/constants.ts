@@ -286,6 +286,14 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.SET_LOCATIONS: {
       return [];
     }
+    case CHAT_ACTIONS.UPLOADED_CV: {
+      return [
+        {
+          subType: MessageType.UPLOADED_CV,
+          text: param,
+        },
+      ];
+    }
     default:
       return [];
   }
