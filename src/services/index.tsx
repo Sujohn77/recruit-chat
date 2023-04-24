@@ -135,8 +135,8 @@ class Api {
     });
   };
 
-  askAQuestion = (data: IAskAQuestionRequest) => {
-    return this.client.get<string[]>("api/questionAnswering/answers", data);
+  askAQuestion = (params: IAskAQuestionRequest) => {
+    return this.client.get<string[]>(`api/questionAnswering/answers`, params);
   };
 
   setAuthHeader = (token: string) => {

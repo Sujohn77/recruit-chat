@@ -102,7 +102,7 @@ export const validationUserContacts = ({
 //     },
 // ];
 
-const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
+const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   // State
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -151,7 +151,7 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {
-      // console.log('Current chat action: ', currentMsgType);
+      // console.log("Current chat action: ", currentMsgType);
     }
   }, [currentMsgType]);
 
@@ -401,6 +401,22 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
           }
           break;
         }
+        case CHAT_ACTIONS.ASK_QUESTION: {
+          if (payload?.question) {
+            const data = {
+              question: payload.question.trim(),
+              languageCode: "en_us",
+              options: {
+                answersNumber: 1,
+                includeUnstructuredSources: true,
+                confidenceScoreThreshold: 0.5,
+              },
+            };
+
+            apiInstance.askAQuestion(data);
+          }
+          break;
+        }
       }
 
       //  Update state with response
@@ -478,7 +494,15 @@ const ChatProvider = ({ chatBotID = "6", children }: IChatProviderProps) => {
       setMessages([...responseMessages, ...updatedMessages]);
     } else {
       const chatType = getNextActionType(currentMsgType);
-      chatType && getChatBotResponse({ type: chatType });
+
+      if (chatType) {
+        const action =
+          currentMsgType === CHAT_ACTIONS.ASK_QUESTION
+            ? { type: chatType, payload: { question: excludeItem } }
+            : { type: chatType };
+
+        getChatBotResponse(action);
+      }
       setMessages(updatedMessages);
     }
   };

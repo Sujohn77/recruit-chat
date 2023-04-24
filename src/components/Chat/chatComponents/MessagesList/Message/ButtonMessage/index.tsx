@@ -2,9 +2,9 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, memo, useCallback } from "react";
 
-import { getMessageProps } from "utils/helpers";
-import { IContent, ILocalMessage, MessageType } from "utils/types";
 import * as S from "../styles";
+import { getMessageProps } from "utils/helpers";
+import { ILocalMessage, MessageType } from "utils/types";
 
 interface IButtonMessageProps {
   message: ILocalMessage;
@@ -12,19 +12,15 @@ interface IButtonMessageProps {
 
 export const ButtonMessage: FC<IButtonMessageProps> = memo(({ message }) => {
   const { chooseButtonOption, messages } = useChatMessenger();
-  const messageProps = { ...getMessageProps(message) };
 
-  const onClick = useCallback(
-    (content: IContent) => {
-      if (content.subType === MessageType.BUTTON) {
-        content.text && chooseButtonOption(content.text);
-      }
-    },
-    [messages.length]
-  );
+  const onClick = useCallback(() => {
+    if (message.content.subType === MessageType.BUTTON) {
+      message.content.text && chooseButtonOption(message.content.text);
+    }
+  }, [messages.length]);
 
   return (
-    <S.MessageButton onClick={() => onClick(message.content)} {...messageProps}>
+    <S.MessageButton onClick={onClick} {...getMessageProps(message)}>
       <S.MessageText>{message.content.text}</S.MessageText>
     </S.MessageButton>
   );

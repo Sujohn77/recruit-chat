@@ -1,5 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
-import { IMessage, ISnapshot, LocationType } from "services/types";
+import {
+  IMessage,
+  IQuestionOptions,
+  ISnapshot,
+  LocationType,
+} from "services/types";
 import { Status } from "utils/constants";
 import {
   CHAT_ACTIONS,
@@ -92,11 +97,19 @@ export interface IAddMessageProps {
   subType?: MessageType;
   isChatMessage?: boolean;
 }
+
 type PayloadType = {
   item?: string | null;
   items?: any[];
   isChatMessage?: boolean;
+
+  // ------- ask a question ------- //
+  question?: string;
+  languageCode?: string | null;
+  options?: null | IQuestionOptions;
+  // ----------------------------- //
 };
+
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;
   payload?: PayloadType;
