@@ -56,11 +56,13 @@ export interface IChatMessengerContext {
 export interface IFileUploadContext {
   file: File | null;
   showFile: Dispatch<SetStateAction<File | null>>;
-  searchWithResume: () => void;
-  resetFile: () => void;
   notification: string | null;
-  setNotification: Dispatch<SetStateAction<string | null>>;
   resumeData: IResumeData | null;
+  isFileDownloading: boolean;
+  isJobSearchingLoading: boolean;
+  resetFile: () => void;
+  searchWithResume: () => void;
+  setNotification: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface IAuthContext {

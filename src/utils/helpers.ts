@@ -262,16 +262,6 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   resumeName: "",
 };
 
-export const fileUploadDefaultState: IFileUploadContext = {
-  file: null,
-  notification: null,
-  resetFile: emptyFunc,
-  showFile: emptyFunc,
-  searchWithResume: emptyFunc,
-  setNotification: emptyFunc,
-  resumeData: null,
-};
-
 export const validateEmail = (value: string) => {
   if (!value) {
     return i18n.t("labels:required");

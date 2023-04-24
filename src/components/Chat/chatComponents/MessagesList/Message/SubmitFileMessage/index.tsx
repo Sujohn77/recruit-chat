@@ -19,8 +19,8 @@ interface IProps {
 export const SubmitFileMessage: FC<IProps> = memo(
   ({ message, isLastMessage, buttonTxt }) => {
     const { t } = useTranslation();
-    const { resetFile, searchWithResume } = useFileUploadContext();
-    const messageProps = { ...getMessageProps(message) };
+    const { resetFile, searchWithResume, isJobSearchingLoading } =
+      useFileUploadContext();
 
     const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
       "HH:mm A"
@@ -50,18 +50,22 @@ export const SubmitFileMessage: FC<IProps> = memo(
     };
 
     return (
-      <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
+      <S.MessageBox {...getMessageProps(message)} isLastMessage={isLastMessage}>
         {message.content.text && (
           <S.MessageText>{message.content.text}</S.MessageText>
         )}
 
         {!!buttonTxt && (
-          <S.ActionButton onClick={() => searchWithResume()}>
+          <S.ActionButton
+            disabled={isJobSearchingLoading}
+            onClick={searchWithResume}
+          >
             {buttonTxt}
           </S.ActionButton>
         )}
 
         {renderSendingTime(message)}
+
         {<S.Cancel onClick={onResetResume}>{t("buttons:cancel")}</S.Cancel>}
       </S.MessageBox>
     );
