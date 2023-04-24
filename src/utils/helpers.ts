@@ -130,6 +130,9 @@ export const getActionTypeByOption = (option: USER_INPUTS) => {
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
+    case USER_INPUTS.UPLOADED_CV: {
+      return CHAT_ACTIONS.UPLOADED_CV;
+    }
 
     default: {
       return null;

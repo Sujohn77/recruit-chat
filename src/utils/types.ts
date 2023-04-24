@@ -80,6 +80,7 @@ export enum USER_INPUTS {
   HOW_MUCH_EXPERIENCE = "How much work experience do I need for your company?",
   HOW_SUBMIT_CV = "Can I submit my CV",
   HIRING_PROCESS = "What is the hiring process?",
+  UPLOADED_CV = "uploaded_cv",
 }
 
 export enum CHAT_ACTIONS {

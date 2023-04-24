@@ -4,11 +4,12 @@ import moment from "moment";
 import { useTranslation } from "react-i18next";
 
 import { IMAGES } from "assets";
-import { ILocalMessage } from "utils/types";
+import { ILocalMessage, USER_INPUTS } from "utils/types";
 import { getMessageProps } from "utils/helpers";
 import { resumeElementId } from "utils/constants";
 import { MS_1000 } from "..";
 import * as S from "../styles";
+import { useChatMessenger } from "contexts/MessengerContext";
 
 interface IProps {
   message: ILocalMessage;
@@ -19,12 +20,21 @@ interface IProps {
 export const SubmitFileMessage: FC<IProps> = memo(
   ({ message, isLastMessage, buttonTxt }) => {
     const { t } = useTranslation();
-    const { resetFile, searchWithResume, isJobSearchingLoading } =
+    const { chooseButtonOption } = useChatMessenger();
+    const { resetFile, searchWithResume, isJobSearchingLoading, file } =
       useFileUploadContext();
 
     const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
       "HH:mm A"
     );
+
+    const onSearchWithResume = () => {
+      if (file?.name) {
+        chooseButtonOption(USER_INPUTS.UPLOADED_CV, file?.name);
+        resetFile();
+      }
+      searchWithResume();
+    };
 
     const renderSendingTime = (message: ILocalMessage) => {
       if (message.localId !== message._id && message.isOwn) {
@@ -58,7 +68,7 @@ export const SubmitFileMessage: FC<IProps> = memo(
         {!!buttonTxt && (
           <S.ActionButton
             disabled={isJobSearchingLoading}
-            onClick={searchWithResume}
+            onClick={onSearchWithResume}
           >
             {buttonTxt}
           </S.ActionButton>

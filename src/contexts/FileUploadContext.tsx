@@ -150,8 +150,6 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
 
   return (
     <FileUploadContext.Provider
-      // @ts-ignore
-      displayName="FileUploadContext"
       value={{
         file,
         showFile,

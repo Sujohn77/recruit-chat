@@ -289,6 +289,11 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
     case CHAT_ACTIONS.UPLOADED_CV: {
       return [
         {
+          subType: MessageType.TEXT,
+          // TODO: add translation
+          text: "We have processed your resume and found the following jobs",
+        },
+        {
           subType: MessageType.UPLOADED_CV,
           text: param,
         },

@@ -47,6 +47,7 @@ import {
   ISubmitMessageProps,
   ITriggerActionProps,
   IUser,
+  PayloadType,
 } from "./types";
 import { useRequisitions } from "services/hooks";
 import { getParsedSnapshots } from "services/utils";
@@ -481,7 +482,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     }
   };
 
-  const chooseButtonOption = (excludeItem: USER_INPUTS) => {
+  const chooseButtonOption = (excludeItem: USER_INPUTS, param?: string) => {
     const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,
@@ -490,7 +491,12 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     });
 
     if (type) {
-      const responseMessages = getChatActionResponse({ type });
+      const responseMessages = getChatActionResponse({
+        type,
+        additionalCondition: undefined,
+        param,
+      });
+
       setMessages([...responseMessages, ...updatedMessages]);
     } else {
       const chatType = getNextActionType(currentMsgType);
