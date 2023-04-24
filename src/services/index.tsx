@@ -74,6 +74,7 @@ class Api {
         const originalRequest = error.config;
         if (error?.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
+
           const res: ApiResponse<string> = await apiInstance.refreshToken();
           if (res.ok && res.data) {
             apiInstance.setAuthHeader(res.data);
@@ -129,7 +130,7 @@ class Api {
     // }
   };
 
-  refreshToken = (guid = "6B2B076E-2E86-4B55-A5E2-F10739449D19") => {
+  refreshToken = (guid = "f466faec-ea83-4122-8c23-458ab21e96be") => {
     return this.client.post<string>("api/chatbot/token", {
       ChatbotGuid: guid,
     });
