@@ -26,7 +26,7 @@ export interface IChatMessengerContext {
   category: string | null;
   user: IUser | null;
   status: Status | null;
-  chooseButtonOption: (text: string) => void;
+  chooseButtonOption: (text: string, param?: string) => void;
   triggerAction: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
@@ -100,7 +100,7 @@ export interface IAddMessageProps {
   isChatMessage?: boolean;
 }
 
-type PayloadType = {
+export type PayloadType = {
   item?: string | null;
   items?: any[];
   isChatMessage?: boolean;

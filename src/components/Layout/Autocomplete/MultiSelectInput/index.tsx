@@ -104,7 +104,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     <S.Wrapper>
       {isResults && (
         <SearchResults
-          subHeaderName={subHeaderName}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}

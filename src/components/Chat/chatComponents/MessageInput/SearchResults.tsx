@@ -19,7 +19,6 @@ interface ISearchResultsProps {
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
   getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
   getOptionProps?: (props: IGetOption) => React.HTMLAttributes<HTMLLIElement>;
-  subHeaderName?: null | string;
 }
 
 export const maxSearchHeight = 186;
