@@ -435,17 +435,6 @@ export const getItemById = (items: any[], id: string) => {
   return find(items, (job) => job.id === Number(id));
 };
 
-export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
-  switch (type) {
-    case CHAT_ACTIONS.SET_ALERT_EMAIL:
-    case CHAT_ACTIONS.GET_USER_EMAIL:
-    case CHAT_ACTIONS.APPLY_EMAIL: {
-      return !validateEmail(item).length;
-    }
-  }
-  return true;
-};
-
 export const getMessagesOnAction = ({
   action,
   messages,

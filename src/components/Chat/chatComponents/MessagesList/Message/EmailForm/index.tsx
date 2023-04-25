@@ -51,15 +51,13 @@ export const EmailForm: FC<PropsType> = () => {
   const [value, setValue] = useState("");
 
   const onChange = (e: any) => {
-    if (error) {
-      const updatedError = validateEmail(value);
-      updatedError !== error && setError(updatedError);
-    }
+    setError("");
     setValue(e.target.value);
   };
 
   const onClick = (value: string) => {
     const error = validateEmail(value);
+
     if (error) {
       error && setError(error);
     } else {

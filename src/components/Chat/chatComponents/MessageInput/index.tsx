@@ -152,6 +152,7 @@ export const MessageInput: FC<PropsType> = () => {
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
+    setError(null);
 
     if (error) {
       if (currentMsgType === CHAT_ACTIONS.APPLY_AGE && error) {
@@ -166,7 +167,7 @@ export const MessageInput: FC<PropsType> = () => {
         const isError = isPhone
           ? validateEmailOrPhone(value)
           : validateEmail(value);
-        !isError && setError(null);
+        !isError.trim() && setError(null);
       }
     }
 
@@ -187,32 +188,6 @@ export const MessageInput: FC<PropsType> = () => {
     // setIsShowResults(false);
   };
 
-  const renderInput = (type: TextFieldTypes) => {
-    const inputProps = {
-      type,
-      headerName: headerName,
-      subHeaderName,
-      matchedItems,
-      matchedPart,
-      value: draftMessage || "",
-      placeHolder: placeHolder || t("placeHolders:bot_typing"),
-      setIsShowResults,
-      isShowResults,
-      setInputValue: (value: string) => setDraftMessage(value),
-    };
-
-    if (type === TextFieldTypes.MultiSelect) {
-      return (
-        <MultiSelectInput
-          {...inputProps}
-          onChange={onChangeAutocomplete}
-          values={inputValues}
-        />
-      );
-    }
-    return <Autocomplete {...inputProps} onChange={onChangeCategory} />;
-  };
-
   const onClick = () => {
     if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
       sendMessage(draftMessage);
@@ -222,16 +197,41 @@ export const MessageInput: FC<PropsType> = () => {
   const isWriteAccess =
     getAccessWriteType(currentMsgType) &&
     (file || draftMessage || !!inputValues.length);
+
   const offset =
     status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
       ? S.inputOffset
       : "0";
 
+  const inputProps = {
+    type: inputType,
+    headerName: headerName,
+    subHeaderName,
+    matchedItems,
+    matchedPart,
+    value: draftMessage || "",
+    placeHolder: placeHolder || t("placeHolders:bot_typing"),
+    setIsShowResults,
+    isShowResults,
+    setInputValue: (value: string) => {
+      setError(null);
+      setDraftMessage(value);
+    },
+  };
+
   return (
     <S.MessagesInput offset={offset}>
       <BurgerMenu />
 
-      {renderInput(inputType)}
+      {inputType === TextFieldTypes.MultiSelect ? (
+        <MultiSelectInput
+          {...inputProps}
+          onChange={onChangeAutocomplete}
+          values={inputValues}
+        />
+      ) : (
+        <Autocomplete {...inputProps} onChange={onChangeCategory} />
+      )}
 
       {isWriteAccess && (
         <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
