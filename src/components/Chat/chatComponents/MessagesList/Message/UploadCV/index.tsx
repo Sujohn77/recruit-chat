@@ -1,5 +1,5 @@
 import { useFileUploadContext } from "contexts/FileUploadContext";
-import { ChangeEvent, FC, useRef } from "react";
+import { ChangeEvent, FC, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 
@@ -17,9 +17,11 @@ export const UploadCV: FC = () => {
   const inputFile = useRef<HTMLInputElement>(null);
   const { file, notification, resetFile, showFile } = useFileUploadContext();
 
-  const handleDrop = (upload: File) => {
-    showFile(upload);
-  };
+  useEffect(() => {
+    return () => {
+      resetFile();
+    };
+  }, []);
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
@@ -27,13 +29,11 @@ export const UploadCV: FC = () => {
 
     if (event.target.files?.length) {
       const file = event.target.files[0];
-      handleDrop(file);
+      showFile(file);
     }
   };
 
-  const onHandleUpload = () => {
-    inputFile.current?.click();
-  };
+  const onHandleUpload = () => inputFile.current?.click();
 
   const onClearFile = () => {
     if (inputFile.current) {
@@ -44,23 +44,25 @@ export const UploadCV: FC = () => {
 
   return (
     <S.Wrapper>
-      <DragAndDrop handleDrop={handleDrop}>
+      <DragAndDrop handleDrop={showFile}>
         <S.Circle>
-          <S.Avatar onClick={onHandleUpload} />
+          <S.UploadImg onClick={onHandleUpload} />
         </S.Circle>
 
         <S.Text>{t("messages:uploadCV")}</S.Text>
+        {/* // TODO: add translation */}
         <S.Text>or</S.Text>
         <S.Browse htmlFor={resumeElementId}>{t("buttons:browse")}</S.Browse>
         <input
-          type="file"
-          id={resumeElementId}
-          name="myfile"
-          ref={inputFile}
-          accept=".pdf,.doc,.docx"
           hidden
+          type="file"
+          name="myfile"
+          accept=".pdf,.doc,.docx"
+          id={resumeElementId}
+          ref={inputFile}
           onChange={onChangeFile}
         />
+
         {file && (
           <S.Cancel onClick={onClearFile}>{t("buttons:cancel")}</S.Cancel>
         )}

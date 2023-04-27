@@ -19,7 +19,7 @@ import { HiringHelp } from "./HiringHelp";
 import { SalaryForm } from "./SalaryForm";
 import { QuestionForm } from "./QuestionForm";
 import { ButtonMessage } from "./ButtonMessage";
-import { SubmitFileMessage } from "./SubmitFileMessage";
+import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
 
 interface IMessageProps {
@@ -83,13 +83,7 @@ export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
       );
     }
     case MessageType.SUBMIT_FILE:
-      return (
-        <SubmitFileMessage
-          message={message}
-          isLastMessage={isLastMessage}
-          buttonTxt={t("buttons:searchJobs")}
-        />
-      );
+      return <SearchJob message={message} isLastMessage={isLastMessage} />;
     case MessageType.UPLOADED_CV:
       return <UploadedFile message={message} />;
     default: {

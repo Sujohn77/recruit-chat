@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   margin-bottom: 16px;
 `;
 
-export const Avatar = styled.div`
+export const UploadImg = styled.div`
   width: 30px;
   height: 30px;
   filter: contrast(0.2);

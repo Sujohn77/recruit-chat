@@ -162,4 +162,8 @@ export const ActionButton = styled(Button)`
   span {
     line-height: 17px;
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;

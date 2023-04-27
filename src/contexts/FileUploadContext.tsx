@@ -48,12 +48,26 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
   const [isFileDownloading, setIsFileDownloading] = useState(false);
   const [isJobSearchingLoading, setIsJobSearchingLoading] = useState(false);
 
-  const showSearchWithResumeMsg = (file: File, resumeData: IResumeData) => {
-    const isLastMsgEqualToUploadType =
-      messages[0].content.subType === MessageType.UPLOAD_CV;
-    isLastMsgEqualToUploadType &&
-      triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-    saveResume(file, resumeData);
+  const uploadCVHandler = async (file: File, resumeData: IResumeData) => {
+    setIsFileDownloading(true);
+    try {
+      const response = await apiInstance.uploadCV(resumeData);
+
+      if (response.data?.resumeId) {
+        setResumeId(response.data?.resumeId);
+
+        const isLastMsgEqualToUploadType =
+          messages[0].content.subType === MessageType.UPLOAD_CV;
+
+        if (isLastMsgEqualToUploadType) {
+          triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+        }
+      }
+    } catch (error) {
+      // TODO: add error handler
+    } finally {
+      setIsFileDownloading(false);
+    }
   };
 
   useEffect(() => {
@@ -70,7 +84,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           blob: result.replace(`data:${file.type};base64,`, ""),
         };
         setResumeData(resumeData);
-        showSearchWithResumeMsg(file, resumeData);
+        uploadCVHandler(file, resumeData);
       }
     };
 
@@ -118,17 +132,6 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     }
 
     // setFile(null);
-  };
-
-  const saveResume = async (file: File, resumeData: IResumeData) => {
-    setIsFileDownloading(true);
-    try {
-      const response = await apiInstance.uploadCV(resumeData);
-      response.data?.resumeId && setResumeId(response.data?.resumeId);
-    } catch (error) {
-    } finally {
-      setIsFileDownloading(false);
-    }
   };
 
   const showFile = (file: File) => {

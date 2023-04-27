@@ -406,7 +406,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
           if (payload?.question) {
             const data = {
               question: payload.question.trim(),
-              languageCode: "en_us",
+              languageCode: "en",
               options: {
                 answersNumber: 1,
                 includeUnstructuredSources: true,
@@ -414,7 +414,17 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
               },
             };
 
-            apiInstance.askAQuestion(data);
+            const testData = {
+              question: "this is my question",
+              languageCode: "en",
+              options: {
+                answersNumber: 1,
+                includeUnstructuredSources: true,
+                confidenceScoreThreshold: 0.5,
+              },
+            };
+
+            apiInstance.askAQuestion(testData);
           }
           break;
         }
