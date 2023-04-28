@@ -1,7 +1,7 @@
 import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
 import { AxiosRequestConfig } from "axios";
 
-import { SessionStorage } from "../utils/constants";
+import { SessionStorage, isDevMode } from "../utils/constants";
 import { getStorageValue } from "../utils/helpers";
 import {
   AppKeyType,
@@ -31,7 +31,6 @@ export const FORM_URLENCODED = {
 };
 
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
-const isDevMode = process.env.NODE_ENV === "development";
 
 class Api {
   protected client: ApisauceInstance;

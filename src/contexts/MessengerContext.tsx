@@ -20,13 +20,13 @@ import { IMessage, ISnapshot } from "services/types";
 import {
   chatId,
   getChatActionResponse,
+  isDevMode,
   isPushMessageType,
   LocalStorage,
   SessionStorage,
   Status,
 } from "utils/constants";
 import {
-  chatMessengerDefaultState,
   replaceItemsWithType,
   getItemById,
   getServerParsedMessages,
@@ -47,7 +47,6 @@ import {
   ISubmitMessageProps,
   ITriggerActionProps,
   IUser,
-  PayloadType,
 } from "./types";
 import { useRequisitions } from "services/hooks";
 import { getParsedSnapshots } from "services/utils";
@@ -59,6 +58,34 @@ interface IChatProviderProps {
   chatBotID?: string | null;
 }
 
+export const chatMessengerDefaultState: IChatMessengerContext = {
+  messages: [],
+  status: null,
+  category: null,
+  user: null,
+  searchLocations: [],
+  requisitions: [],
+  locations: [],
+  offerJobs: [],
+  currentMsgType: null,
+  alertCategories: null,
+  error: null,
+  viewJob: null,
+  prefferedJob: null,
+  nextMessages: [],
+  resumeName: "",
+  isChatLoading: false,
+  chooseButtonOption: () => {},
+  triggerAction: () => {},
+  setSnapshotMessages: () => {},
+  setCurrentMsgType: () => {},
+  setError: () => {},
+  setViewJob: () => {},
+  submitMessage: () => {},
+  setIsInitialized: () => {},
+  setJobPositions: () => {},
+};
+
 const ChatContext = createContext<IChatMessengerContext>(
   chatMessengerDefaultState
 );
@@ -68,43 +95,28 @@ export const info = {
   password: "SomeStrongPassword1234",
 };
 
+interface IUserContact {
+  isPhoneType: boolean;
+  contact: string | undefined | null;
+}
+
+interface IJobAlertData {
+  email: string;
+  type: CHAT_ACTIONS;
+}
+
 export const validationUserContacts = ({
   isPhoneType,
   contact,
-}: {
-  isPhoneType: boolean;
-  contact: string | undefined | null;
-}) => {
+}: IUserContact) => {
   if (!contact) return "";
 
   return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
 
-// const mockCategories = [
-//     {
-//         id: 113707683,
-//         externalID: 'Ref123',
-//         jobRef: 'Ref123',
-//         positionID: null,
-//         title: 'JJTest5',
-//         description: 'czxczxc',
-//         company: 'Apple',
-//         categories: ['DEV'],
-//         datePosted: '2020-07-10T00:00:00Z',
-//         expiryDate: '2020-08-09T00:00:00Z',
-//         location: { city: 'Redmond', state: 'Washington', country: 'United States', zip: '98052' },
-//         status: 'Open',
-//         hiringType: 'Contingent',
-//         jobURL: 'https://qa.loop.jobs/go/jobref/64/Ref123',
-//         applyURL: 'https://qa.loop.jobs/Apply/ApplyByResume?jobID=113707683',
-//         jobCode: null,
-//         jobCustomData: [],
-//         poolData: { totalCandidateCount: 0, pools: [{ poolId: 656010, candidateCount: 0 }] },
-//     },
-// ];
-
 const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   // State
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
@@ -112,7 +124,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
 
-  console.log("searchLocations", searchLocations);
+  isDevMode && console.log("searchLocations", searchLocations);
 
   const [user, setUser] = useState<IUser | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
@@ -151,7 +163,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   // }, [currentMsgType]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
+    if (isDevMode) {
       // console.log("Current chat action: ", currentMsgType);
     }
   }, [currentMsgType]);
@@ -177,14 +189,9 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     }
   }, [serverMessages.length, isInitialized]);
 
-  const createJobAlert = ({
-    email,
-    type,
-  }: {
-    email: string;
-    type: CHAT_ACTIONS;
-  }) => {
+  const createJobAlert = ({ email, type }: IJobAlertData) => {
     if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
+      setIsChatLoading(true);
       try {
         apiInstance.createJobAlert({
           email: email,
@@ -193,6 +200,8 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         });
       } catch (err) {
         clearAuthConfig();
+      } finally {
+        setIsChatLoading(false);
       }
     }
   };
@@ -353,6 +362,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
               category,
               searchLocations[0]?.split(",")[0]
             );
+            setIsChatLoading(true);
             try {
               const apiResponse = await apiInstance.searchRequisitions(data);
               additionalCondition = !!apiResponse.data?.requisitions.length;
@@ -364,17 +374,23 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                 triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
               }
             } catch (err) {
-              process.env.NODE_ENV === "development" &&
-                console.log("getChatBotResponse", err);
+              isDevMode && console.log("getChatBotResponse", err);
             } finally {
               setCategory(null);
               setSearchLocations([]);
+              setIsChatLoading(false);
             }
           }
           break;
         }
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
-          apiInstance.sendTranscript({ ChatID: chatId });
+          setIsChatLoading(true);
+          try {
+            const response = apiInstance.sendTranscript({ ChatID: chatId });
+          } catch (error) {
+          } finally {
+            setIsChatLoading(false);
+          }
           break;
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
@@ -394,37 +410,45 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         }
         case CHAT_ACTIONS.APPLY_ETHNIC: {
           if (user?.name) {
-            const createCandidateData = getCreateCandidateData({
-              user,
-              prefferedJob,
-            });
-            apiInstance.createCandidate(createCandidateData);
+            setIsChatLoading(true);
+            try {
+              const createCandidateData = getCreateCandidateData({
+                user,
+                prefferedJob,
+              });
+              apiInstance.createCandidate(createCandidateData);
+            } catch (error) {
+            } finally {
+              setIsChatLoading(false);
+            }
           }
           break;
         }
         case CHAT_ACTIONS.ASK_QUESTION: {
           if (payload?.question) {
-            const data = {
-              question: payload.question.trim(),
-              languageCode: "en",
-              options: {
-                answersNumber: 1,
-                includeUnstructuredSources: true,
-                confidenceScoreThreshold: 0.5,
-              },
-            };
+            setIsChatLoading(true);
+            try {
+              const data = {
+                question: payload.question.trim(),
+                languageCode: "en",
+                options: {
+                  answersNumber: 1,
+                  includeUnstructuredSources: true,
+                  confidenceScoreThreshold: 0.5,
+                },
+              };
 
-            const testData = {
-              question: "this is my question",
-              languageCode: "en",
-              options: {
-                answersNumber: 1,
-                includeUnstructuredSources: true,
-                confidenceScoreThreshold: 0.5,
-              },
-            };
+              const response = apiInstance.askAQuestion(data);
 
-            apiInstance.askAQuestion(testData);
+              if (isDevMode) {
+                console.log("====================================");
+                console.log("askAQuestion response", response);
+                console.log("====================================");
+              }
+            } catch (error) {
+            } finally {
+              setIsChatLoading(false);
+            }
           }
           break;
         }
@@ -577,6 +601,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         setIsInitialized,
         resumeName,
         setJobPositions,
+        isChatLoading,
       }}
     >
       {children}

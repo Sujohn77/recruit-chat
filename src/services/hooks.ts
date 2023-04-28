@@ -6,6 +6,7 @@ import { handleRefreshToken } from "./utils";
 import { IApiMessage, LocationType } from "./types";
 import Api, { apiInstance } from "services";
 import { IRequisition } from "utils/types";
+import { isDevMode } from "utils/constants";
 
 type RequisitionType = {
   title: string;
@@ -57,8 +58,7 @@ export const useRequisitions = () => {
           setJobPositions(requisitions);
         }
       } catch (err) {
-        process.env.NODE_ENV === "development" &&
-          console.log("searchRequisitions", err);
+        isDevMode && console.log("searchRequisitions", err);
       }
     })();
   }, []);

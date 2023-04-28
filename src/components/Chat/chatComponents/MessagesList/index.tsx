@@ -1,23 +1,24 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { useSocketContext } from "contexts/SocketContext";
+import { useFileUploadContext } from "contexts/FileUploadContext";
 import { FC, useEffect, useRef } from "react";
 import map from "lodash/map";
 
 import { Loader } from "components/Layout/Loader";
 import { InfiniteScrollView } from "components";
-import { Status } from "utils/constants";
 import { infiniteScrollStyle } from "./styles";
 import { Message } from "./Message";
 import * as S from "./styles";
 
-type PropsType = {};
-
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
-export const MessagesList: FC<PropsType> = () => {
-  const { messages, currentMsgType, status, nextMessages } = useChatMessenger();
-  const { onLoadNextMessagesPage } = useSocketContext();
+export const MessagesList: FC = () => {
   const messagesRef = useRef<HTMLDivElement>(null);
+
+  const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
+  const { onLoadNextMessagesPage } = useSocketContext();
+  const { messages, currentMsgType, status, nextMessages, isChatLoading } =
+    useChatMessenger();
 
   useEffect(() => {
     if (currentMsgType !== null && !nextMessages.length) {
@@ -35,9 +36,10 @@ export const MessagesList: FC<PropsType> = () => {
     }
   };
 
-  const onLoadMore = () => {
-    onLoadNextMessagesPage?.();
-  };
+  const onLoadMore = () => onLoadNextMessagesPage?.();
+
+  const showLoader =
+    isFileDownloading || isJobSearchingLoading || isChatLoading;
 
   return (
     <S.MessagesArea>
@@ -57,7 +59,8 @@ export const MessagesList: FC<PropsType> = () => {
           ))}
         </InfiniteScrollView>
       </S.MessageListContainer>
-      {status === Status.PENDING && <Loader />}
+
+      <Loader showLoader={showLoader} />
     </S.MessagesArea>
   );
 };

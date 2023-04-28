@@ -238,33 +238,6 @@ export const capitalizeFirstLetter = (str: string) => {
 
 // CONTEXT
 
-export const chatMessengerDefaultState: IChatMessengerContext = {
-  messages: [],
-  status: null,
-  category: null,
-  user: null,
-  searchLocations: [],
-  requisitions: [],
-  locations: [],
-  offerJobs: [],
-  currentMsgType: null,
-  alertCategories: null,
-  error: null,
-  viewJob: null,
-  prefferedJob: null,
-  nextMessages: [],
-  chooseButtonOption: emptyFunc,
-  triggerAction: emptyFunc,
-  setSnapshotMessages: emptyFunc,
-  setCurrentMsgType: emptyFunc,
-  setError: emptyFunc,
-  setViewJob: emptyFunc,
-  submitMessage: emptyFunc,
-  setIsInitialized: emptyFunc,
-  setJobPositions: emptyFunc,
-  resumeName: "",
-};
-
 export const validateEmail = (value: string) => {
   if (!value) {
     return i18n.t("labels:required");

@@ -51,6 +51,7 @@ export interface IChatMessengerContext {
   setJobPositions: (requisitions: IRequisition[]) => void;
   setIsInitialized: Dispatch<SetStateAction<boolean>>;
   resumeName: string;
+  isChatLoading: boolean;
 }
 
 export interface IFileUploadContext {

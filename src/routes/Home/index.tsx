@@ -7,7 +7,7 @@ import { FC, useEffect, useState } from "react";
 import { Container } from "./styles";
 import { HomeContent } from "components";
 import { IApiThemeResponse } from "utils/api";
-import { SessionStorage } from "utils/constants";
+import { SessionStorage, isDevMode } from "utils/constants";
 import { regExpJWT, regExpUuid } from "utils/helpers";
 
 export const Home: FC = () => {
@@ -23,7 +23,7 @@ export const Home: FC = () => {
         setTheme(event.data.style);
       }
       if (regExpJWT.test(event.data?.token)) {
-        if (process.env.NODE_ENV === "development") {
+        if (isDevMode) {
           // console.log(event.data?.token);
         }
         sessionStorage.setItem(SessionStorage.Token, event.data.token);

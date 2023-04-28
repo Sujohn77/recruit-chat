@@ -32,3 +32,26 @@ export const profile = {
     "?sv=2015-12-11&sr=c&sig=1VG0h%2Btm6cWGCPZwkfK84PlHGO0Dcmh56z5eSFgM11Q%3D&se=2022-07-29T08%3A43%3A28Z&sp=r",
   tokenType: "bearer",
 };
+
+// const mockCategories = [
+//     {
+//         id: 113707683,
+//         externalID: 'Ref123',
+//         jobRef: 'Ref123',
+//         positionID: null,
+//         title: 'JJTest5',
+//         description: 'czxczxc',
+//         company: 'Apple',
+//         categories: ['DEV'],
+//         datePosted: '2020-07-10T00:00:00Z',
+//         expiryDate: '2020-08-09T00:00:00Z',
+//         location: { city: 'Redmond', state: 'Washington', country: 'United States', zip: '98052' },
+//         status: 'Open',
+//         hiringType: 'Contingent',
+//         jobURL: 'https://qa.loop.jobs/go/jobref/64/Ref123',
+//         applyURL: 'https://qa.loop.jobs/Apply/ApplyByResume?jobID=113707683',
+//         jobCode: null,
+//         jobCustomData: [],
+//         poolData: { totalCandidateCount: 0, pools: [{ poolId: 656010, candidateCount: 0 }] },
+//     },
+// ];
