@@ -58,6 +58,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setIsShowResults,
   subHeaderName = null,
 }) => {
+  const { currentMsgType } = useChatMessenger();
   const {
     getInputProps,
     getTagProps,
@@ -75,7 +76,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     onChange: onChange,
   });
 
-  const { currentMsgType } = useChatMessenger();
+  const autocompleteInputProps = getInputProps();
 
   const onDelete = (selectedIndex: number) => {
     onChange(
@@ -89,11 +90,11 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   };
 
   const onInputFocus = (e: FocusEvent<HTMLInputElement, Element>) => {
-    getInputProps()?.onFocus?.(e);
+    autocompleteInputProps?.onFocus?.(e);
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    getInputProps()?.onChange?.(e);
+    autocompleteInputProps?.onChange?.(e);
     setInputValue(e?.target.value);
   };
 
@@ -126,7 +127,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
         )}
 
         <TextInput
-          {...getInputProps()}
+          {...autocompleteInputProps}
           onFocus={onInputFocus}
           placeholder={placeHolder}
           value={value}
