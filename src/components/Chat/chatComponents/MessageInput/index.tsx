@@ -175,22 +175,29 @@ export const MessageInput: FC<PropsType> = () => {
     setNotification(null);
   };
 
-  const onChangeAutocomplete = (event: any, values: string[]) => {
-    const newValues = values.filter(Boolean);
-    if (currentMsgType && newValues.length) {
+  const onChangeAutocomplete = (
+    e: ChangeEvent<HTMLInputElement>,
+    values: string[]
+  ) => {
+    let newValues = values.filter(Boolean);
+
+    if (e?.currentTarget?.textContent?.trim()) {
+      newValues = [...newValues, e.currentTarget.textContent];
+    }
+
+    if (currentMsgType) {
       setInputValues(newValues);
       triggerAction({
         type: currentMsgType,
-        payload: { items: values },
+        payload: { items: newValues },
       });
     }
-
-    // setIsShowResults(false);
   };
 
   const onClick = () => {
     if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
       sendMessage(draftMessage);
+      setIsShowResults(false);
     }
   };
 
