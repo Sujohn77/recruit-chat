@@ -64,10 +64,11 @@ class Api {
           error?.response?.status !== 401 &&
           error?.response?.status !== 403
         ) {
-          sessionStorage.setItem(
-            SessionStorage.ApiError,
-            JSON.stringify(error.message)
-          );
+          // TODO: add logic to display errors
+          // sessionStorage.setItem(
+          //   SessionStorage.ApiError,
+          //   JSON.stringify(error.message)
+          // );
         }
 
         const originalRequest = error.config;
@@ -129,18 +130,22 @@ class Api {
     // }
   };
 
+  setHeader = (key: string, value: string) => this.client.setHeader(key, value);
+  removeHeader = (key: string) => this.client.deleteHeader(key);
+  setAuthHeader = (token: string) => {
+    return this.client.setHeader("Authorization", `Bearer ${token}`);
+  };
+
   refreshToken = (guid = "f466faec-ea83-4122-8c23-458ab21e96be") => {
     return this.client.post<string>("api/chatbot/token", {
       ChatbotGuid: guid,
     });
   };
 
-  askAQuestion = (params: IAskAQuestionRequest) => {
-    return this.client.get<string[]>(`api/questionAnswering/answers`, params);
-  };
-
-  setAuthHeader = (token: string) => {
-    return this.client.setHeader("Authorization", `Bearer ${token}`);
+  askAQuestion = (data: IAskAQuestionRequest) => {
+    return this.client.get("api/questionAnswering/answers", undefined, {
+      data,
+    });
   };
 
   sendMessage = (payload: IApiMessage) =>
