@@ -19,6 +19,7 @@
         "@types/react": "^18.0.8",
         "@types/react-dom": "^18.0.0",
         "apisauce": "^2.1.5",
+        "autolinker": "^4.0.0",
         "axios": "^0.27.2",
         "buffer": "^6.0.3",
         "firebase": "^9.9.3",
@@ -77,6 +78,7 @@
         "@types/react-i18next": "^8.1.0",
         "@types/react-router-dom": "^5.3.3",
         "@types/styled-components": "^5.1.25",
+        "isomorphic-dompurify": "^1.3.0",
         "jwt-decode": "^3.1.2",
         "react-devtools": "^4.27.1"
     }

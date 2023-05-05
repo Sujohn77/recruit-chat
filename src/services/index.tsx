@@ -24,6 +24,7 @@ import {
   IVerifyEmailResponse,
   IResumeDataPayload,
   IAskAQuestionRequest,
+  IAskAQuestionResponse,
 } from "./types";
 
 export const FORM_URLENCODED = {
@@ -142,11 +143,11 @@ class Api {
     });
   };
 
-  askAQuestion = (data: IAskAQuestionRequest) => {
-    return this.client.get("api/questionAnswering/answers", undefined, {
-      data,
-    });
-  };
+  askAQuestion = (data: IAskAQuestionRequest) =>
+    this.client.post<IAskAQuestionResponse>(
+      "api/questionAnswering/answers",
+      data
+    );
 
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);

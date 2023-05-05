@@ -1,10 +1,6 @@
 import { profile } from "contexts/mockData";
 import moment from "moment";
-import {
-  IChatMessengerContext,
-  IFileUploadContext,
-  IUser,
-} from "contexts/types";
+import { IUser } from "contexts/types";
 import randomString from "random-string";
 import capitalize from "lodash/capitalize";
 import findIndex from "lodash/findIndex";
@@ -14,6 +10,7 @@ import find from "lodash/find";
 import map from "lodash/map";
 import { Buffer } from "buffer";
 import jwt_decode from "jwt-decode";
+import { Match } from "autolinker";
 
 import {
   MessageType,
@@ -39,6 +36,7 @@ import {
   LocalStorage,
   TextFieldTypes,
   SessionStorage,
+  autolinkerClassName,
 } from "./constants";
 import { IApiThemeResponse } from "./api";
 import {
@@ -805,3 +803,11 @@ export const regExpUuid =
 export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 
 // ---------------------------------------------------------------------------- //
+
+export const autolinkerReplaceFn = (match: Match) => {
+  if (match.getType() === "url") {
+    return `<span class=${autolinkerClassName} style="text-decoration: underline; color: #618AED; cursor: pointer;">${match.getAnchorText()}</span>`;
+  } else {
+    return match.getAnchorText();
+  }
+};

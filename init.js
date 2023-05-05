@@ -24,7 +24,16 @@ const appendChatBot = (style, token) => {
   ifrm.setAttribute("src", url_string);
   ifrm.setAttribute("id", "chat-iframe");
   ifrm.setAttribute("width", "370px");
-  ifrm.setAttribute("sandbox", "allow-scripts allow-same-origin");
+  ifrm.setAttribute(
+    "sandbox",
+    "allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
+  );
+  ifrm.sandbox.add(
+    "allow-popups",
+    "allow-popups-to-escape-sandbox",
+    "allow-scripts",
+    "allow-same-origin"
+  );
   ifrm.style.cssText = `position: fixed;
                     right: 10px;
                     bottom: 10px;

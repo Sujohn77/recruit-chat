@@ -493,4 +493,6 @@ export interface IAskAQuestionRequest {
   options?: null | IQuestionOptions; // options - QnA configuration options [not required, can be null]
 }
 
-export interface IAskAQuestionResponse {}
+export interface IAskAQuestionResponse {
+  answers: string[];
+}

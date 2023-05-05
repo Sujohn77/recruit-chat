@@ -22,4 +22,5 @@ export const colors = {
   doveGray: "#616161",
   lightgreen: "#90ee90",
   silverChalice2: "#A6A6A6",
+  cornflowerBlue: "#618AED",
 };

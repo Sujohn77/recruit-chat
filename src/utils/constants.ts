@@ -426,3 +426,5 @@ export enum IUserLoginDataKeys {
 export const chatId = 2433044;
 
 export const resumeElementId = "chatbot_resume";
+
+export const autolinkerClassName = "link-in-message";

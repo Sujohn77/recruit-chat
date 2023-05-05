@@ -8,6 +8,8 @@ import React, {
   useEffect,
 } from "react";
 import map from "lodash/map";
+import Autolinker, { Match } from "autolinker";
+import { ApiResponse } from "apisauce";
 
 import {
   MessageType,
@@ -16,8 +18,9 @@ import {
   USER_INPUTS,
   IRequisition,
 } from "utils/types";
-import { IMessage, ISnapshot } from "services/types";
+import { IAskAQuestionResponse, IMessage, ISnapshot } from "services/types";
 import {
+  autolinkerClassName,
   chatId,
   getChatActionResponse,
   isDevMode,
@@ -40,6 +43,8 @@ import {
   pushMessage,
   getFormattedLocations,
   getStorageValue,
+  generateLocalId,
+  autolinkerReplaceFn,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -189,11 +194,11 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     }
   }, [serverMessages.length, isInitialized]);
 
-  const createJobAlert = ({ email, type }: IJobAlertData) => {
+  const createJobAlert = async ({ email, type }: IJobAlertData) => {
     if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
       setIsChatLoading(true);
       try {
-        apiInstance.createJobAlert({
+        await apiInstance.createJobAlert({
           email: email,
           location: getFormattedLocations(locations)[0],
           jobCategory: alertCategories?.length ? alertCategories[0] : "",
@@ -386,7 +391,9 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
           setIsChatLoading(true);
           try {
-            const response = apiInstance.sendTranscript({ ChatID: chatId });
+            const response = await apiInstance.sendTranscript({
+              ChatID: chatId,
+            });
           } catch (error) {
           } finally {
             setIsChatLoading(false);
@@ -416,7 +423,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                 user,
                 prefferedJob,
               });
-              apiInstance.createCandidate(createCandidateData);
+              await apiInstance.createCandidate(createCandidateData);
             } catch (error) {
             } finally {
               setIsChatLoading(false);
@@ -438,12 +445,38 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                 },
               };
 
-              const response = apiInstance.askAQuestion(data);
+              const response: ApiResponse<IAskAQuestionResponse> =
+                await apiInstance.askAQuestion(data);
 
-              if (isDevMode) {
-                console.log("====================================");
-                console.log("askAQuestion response", response);
-                console.log("====================================");
+              if (response.data?.answers) {
+                const answers: ILocalMessage[] = map(
+                  response.data?.answers,
+                  (answer) => ({
+                    content: {
+                      subType: MessageType.TEXT,
+                      text: Autolinker.link(answer, {
+                        replaceFn: autolinkerReplaceFn,
+                      }),
+                    },
+                    isOwn: false,
+                    localId: generateLocalId(),
+                    _id: null,
+                  })
+                );
+
+                updatedMessages = [...answers, ...messages];
+              } else if (response.data?.answers) {
+                const withoutAnswer: ILocalMessage = {
+                  isOwn: false,
+                  content: {
+                    subType: MessageType.TEXT,
+                    // TODO: add translate
+                    text: "Sorry, I don't have an answer to that question yet...",
+                  },
+                  localId: generateLocalId(),
+                  _id: generateLocalId(),
+                };
+                updatedMessages = [withoutAnswer, ...messages];
               }
             } catch (error) {
             } finally {
@@ -500,7 +533,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   };
 
   const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
-    const updatedMessages = map(messages, (msg, index) =>
+    const updatedMessages = map(messages, (msg) =>
       msg.content.subType === type && !msg._id
         ? { ...msg, _id: messageId }
         : msg
