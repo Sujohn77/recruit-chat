@@ -137,6 +137,7 @@ class Api {
     return this.client.setHeader("Authorization", `Bearer ${token}`);
   };
 
+  // refreshToken = (guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6") => { // James's guid
   refreshToken = (guid = "f466faec-ea83-4122-8c23-458ab21e96be") => {
     return this.client.post<string>("api/chatbot/token", {
       ChatbotGuid: guid,
