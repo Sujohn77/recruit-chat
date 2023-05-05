@@ -682,9 +682,9 @@ export const getUniqueItems = (items: string[]) => {
 export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
   const isAllowedType =
     !type ||
+    // type === CHAT_ACTIONS.ASK_QUESTION ||
     type === CHAT_ACTIONS.SEARCH_WITH_RESUME ||
     type === CHAT_ACTIONS.FIND_JOB ||
-    type === CHAT_ACTIONS.ASK_QUESTION ||
     type === CHAT_ACTIONS.SET_JOB_ALERT ||
     type === CHAT_ACTIONS.SET_CATEGORY ||
     type === CHAT_ACTIONS.REFINE_SEARCH ||
@@ -698,13 +698,6 @@ export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
   return isAllowedType && !!matchedItems.length;
 };
 
-export const isMultiSelectType = (type: CHAT_ACTIONS | null) => {
-  return (
-    type === CHAT_ACTIONS.SET_LOCATIONS ||
-    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES
-  );
-};
-
 export const getInputType = ({
   actionType,
   category,
@@ -712,7 +705,11 @@ export const getInputType = ({
   actionType: CHAT_ACTIONS | null;
   category: string | null;
 }) => {
-  return isMultiSelectType(actionType)
+  const isMultiselectInput =
+    actionType === CHAT_ACTIONS.SET_LOCATIONS ||
+    actionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+
+  return isMultiselectInput
     ? TextFieldTypes.MultiSelect
     : TextFieldTypes.Select;
 };

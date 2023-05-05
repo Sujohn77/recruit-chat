@@ -120,17 +120,15 @@ export const validationUserContacts = ({
 };
 
 const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
-  // State
+  // -------------------------------- State -------------------------------- //
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isLoadedMessages, setIsLoadedMessages] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
   const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
-
-  isDevMode && console.log("searchLocations", searchLocations);
-
   const [user, setUser] = useState<IUser | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
@@ -146,12 +144,18 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   const [status, setStatus] = useState<Status | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isLoadedMessages, setIsLoadedMessages] = useState(false);
-
-  const { requisitions, locations, setJobPositions } = useRequisitions();
-  const { clearAuthConfig } = useAuthContext();
+  const [searchRequisitionsTrigger, setSearchRequisitionsTrigger] = useState(1);
   const [resumeName, setResumeName] = useState("");
 
+  const { clearAuthConfig } = useAuthContext();
+  const { requisitions, locations, setJobPositions } = useRequisitions(
+    searchRequisitionsTrigger,
+    setIsChatLoading
+  );
+
+  // -------------------------------------------------------------------------- //
+
+  isDevMode && console.log("searchLocations", searchLocations);
   // Test
   // useEffect(() => {
   //     console.log('trigger', currentMsgType);
@@ -494,7 +498,6 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         additionalCondition,
         param,
       });
-      console.log("responseMessages", responseMessages);
 
       updatedMessages = getMessagesOnAction({
         action,
@@ -502,7 +505,9 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         responseMessages,
         additionalCondition,
       });
-      console.log("updatedMessages", updatedMessages);
+
+      // console.log("responseMessages", responseMessages);
+      // console.log("updatedMessages", updatedMessages);
 
       // Simulate chat bot reaction
       setTimeout(() => {
@@ -564,7 +569,16 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         param,
       });
 
-      setMessages([...responseMessages, ...updatedMessages]);
+      if (type === CHAT_ACTIONS.ANSWER_QUESTIONS) {
+        setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
+        // TODO: refactor
+        setTimeout(
+          () => setMessages([...responseMessages, ...updatedMessages]),
+          1111
+        );
+      } else {
+        setMessages([...responseMessages, ...updatedMessages]);
+      }
     } else {
       const chatType = getNextActionType(currentMsgType);
 
@@ -607,38 +621,40 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     }
   };
 
+  const chatState = {
+    status,
+    messages,
+    category,
+    searchLocations,
+    locations,
+    requisitions,
+    error,
+    currentMsgType,
+    offerJobs,
+    alertCategories,
+    viewJob,
+    prefferedJob,
+    user,
+    chooseButtonOption,
+    triggerAction,
+    submitMessage,
+    setSnapshotMessages,
+    setCurrentMsgType,
+    setError,
+    setViewJob,
+    nextMessages,
+    setIsInitialized,
+    resumeName,
+    setJobPositions,
+    isChatLoading,
+  };
+
+  console.log("====================================");
+  console.log("chatState", chatState);
+  console.log("====================================");
+
   return (
-    <ChatContext.Provider
-      value={{
-        status,
-        messages,
-        category,
-        searchLocations,
-        locations,
-        requisitions,
-        error,
-        currentMsgType,
-        offerJobs,
-        alertCategories,
-        viewJob,
-        prefferedJob,
-        user,
-        chooseButtonOption,
-        triggerAction,
-        submitMessage,
-        setSnapshotMessages,
-        setCurrentMsgType,
-        setError,
-        setViewJob,
-        nextMessages,
-        setIsInitialized,
-        resumeName,
-        setJobPositions,
-        isChatLoading,
-      }}
-    >
-      {children}
-    </ChatContext.Provider>
+    <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>
   );
 };
 
