@@ -179,10 +179,12 @@ export const MessageInput: FC<PropsType> = () => {
     e: ChangeEvent<HTMLInputElement>,
     values: string[]
   ) => {
+    const newLocation = e?.currentTarget?.textContent;
     let newValues = values.filter(Boolean);
 
-    if (e?.currentTarget?.textContent?.trim()) {
-      newValues = [...newValues, e.currentTarget.textContent];
+    if (newLocation) {
+      if (!newValues.some((location) => location === newLocation))
+        newValues = [...newValues, newLocation];
     }
 
     if (currentMsgType) {
