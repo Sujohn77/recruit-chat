@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import Box from "@mui/material/Box";
 
+interface IPlaneIconProps {
+  disabled: boolean;
+}
+
 export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
 export const inputOffset = "-30px";
@@ -91,7 +95,8 @@ export const SearchPosition = styled.li`
   }
 `;
 
-export const PlaneIcon = styled.img`
+export const PlaneIcon = styled.img<IPlaneIconProps>`
   margin-left: auto;
   cursor: pointer;
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;

@@ -8,8 +8,9 @@ import React, {
   useEffect,
 } from "react";
 import map from "lodash/map";
-import Autolinker, { Match } from "autolinker";
+import findIndex from "lodash/findIndex";
 import { ApiResponse } from "apisauce";
+import Autolinker from "autolinker";
 
 import {
   MessageType,
@@ -20,7 +21,6 @@ import {
 } from "utils/types";
 import { IAskAQuestionResponse, IMessage, ISnapshot } from "services/types";
 import {
-  autolinkerClassName,
   chatId,
   getChatActionResponse,
   isDevMode,
@@ -231,9 +231,12 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
 
       // Check if all previous actions were completed
       const { type, payload } = action;
+      let isErrors = false;
+
       const isInitialAction =
         type === CHAT_ACTIONS.FIND_JOB ||
         type === CHAT_ACTIONS.ANSWER_QUESTIONS;
+
       if (type === chatAction?.type && isInitialAction) {
         if (status === Status.PENDING || !isInitialized) {
           !isInitialized && setInitialAction(action);
@@ -241,7 +244,6 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         return;
       }
 
-      let isErrors = false;
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           const searchCategory = payload?.item!.toLowerCase();
@@ -602,15 +604,18 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     } else {
       const newMessages = parsedMessages.filter((msg) => {
         return (
-          messages.findIndex((localmsg) => msg.localId === localmsg.localId) ===
-          -1
+          findIndex(
+            messages,
+            (localmsg) => msg.localId === localmsg.localId
+          ) === -1
         );
       });
       if (newMessages.length) {
         setMessages([...messages, ...parsedMessages]);
       } else {
         const updatedMessages = map(messages, (localmsg) => {
-          const updatedIndex = parsedMessages.findIndex(
+          const updatedIndex = findIndex(
+            parsedMessages,
             (msg) => msg.localId === localmsg.localId
           );
           return updatedIndex !== -1 ? parsedMessages[updatedIndex] : localmsg;

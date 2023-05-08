@@ -30,9 +30,7 @@ import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
-type PropsType = {};
-
-export const MessageInput: FC<PropsType> = () => {
+export const MessageInput: FC = () => {
   const { t } = useTranslation();
   const { file, setNotification } = useFileUploadContext();
   const {
@@ -58,6 +56,7 @@ export const MessageInput: FC<PropsType> = () => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (
@@ -196,8 +195,16 @@ export const MessageInput: FC<PropsType> = () => {
     }
   };
 
-  const onClick = () => {
-    if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
+  const onClick = async () => {
+    if (
+      (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) &&
+      !isLoading
+    ) {
+      sendMessage(draftMessage);
+      setIsShowResults(false);
+    }
+
+    if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION && !isLoading) {
       sendMessage(draftMessage);
       setIsShowResults(false);
     }
@@ -243,7 +250,12 @@ export const MessageInput: FC<PropsType> = () => {
       )}
 
       {isWriteAccess && (
-        <S.PlaneIcon src={ICONS.INPUT_PLANE} width="16" onClick={onClick} />
+        <S.PlaneIcon
+          onClick={onClick}
+          disabled={isLoading}
+          src={ICONS.INPUT_PLANE}
+          width="16"
+        />
       )}
     </S.MessagesInput>
   );
