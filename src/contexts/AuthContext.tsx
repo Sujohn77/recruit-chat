@@ -9,14 +9,12 @@ interface IAuthProviderProps {
   children: React.ReactNode;
 }
 
-const emptyFunc = () => console.log();
-
 export const authDefaultState: IAuthContext = {
-  loginByEmail: emptyFunc,
-  setError: emptyFunc,
-  clearAuthConfig: emptyFunc,
-  error: "",
+  loginByEmail: () => {},
+  setError: () => {},
+  clearAuthConfig: () => {},
 
+  error: "",
   isVerified: false,
   isOTPpSent: false,
   verifyEmail: "",

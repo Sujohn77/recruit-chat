@@ -226,7 +226,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
       const parsedError = apiError && JSON.parse(apiError);
       if (!!apiError) {
-        console.log("apiError", apiError);
+        console.log("%capiError", apiError, "color: #ff8c00;");
         if (typeof parsedError == "string") setError(parsedError);
 
         sessionStorage.removeItem(SessionStorage.ApiError);
@@ -389,7 +389,12 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                 triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
               }
             } catch (err) {
-              isDevMode && console.log("getChatBotResponse", err);
+              isDevMode &&
+                console.log(
+                  "%c getChatBotResponse err ",
+                  err,
+                  `color: #ff8c00;`
+                );
             } finally {
               setCategory(null);
               setSearchLocations([]);
@@ -678,13 +683,19 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     isChatLoading,
   };
 
-  console.log("====================================");
   console.log(
-    "%cchatState",
-    `color: ${colors.shamrock}; font-size: 12px;`,
+    "%c ----------------------------------------------- ",
+    `color: ${colors.cornflowerBlue}; font-size: 12px;`
+  );
+  console.log(
+    "%c   chat state   ",
+    `color: ${colors.shamrock}; font-size: 14px; background-color: ${colors.black};`,
     chatState
   );
-  console.log("====================================");
+  console.log(
+    "%c ----------------------------------------------- ",
+    `color: ${colors.cornflowerBlue}; font-size: 12px;`
+  );
 
   return (
     <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>

@@ -69,8 +69,6 @@ interface IIsResultType {
   value?: string;
 }
 
-const emptyFunc = () => console.log();
-
 export interface IMessageProps {
   color?: string;
   backColor?: string;
@@ -437,7 +435,12 @@ export const getMessagesOnAction = ({
   //     });
   //     return [message, ...responseAction.newMessages, ...updatedMessages];
   // }
-  console.log("push", responseMessages, updatedMessages);
+  console.log(
+    "%c   push   ",
+    `color: ${colors.lightgreen}; background-color: ${colors.black};`,
+    responseMessages,
+    updatedMessages
+  );
   return [...responseMessages, ...updatedMessages];
 };
 
