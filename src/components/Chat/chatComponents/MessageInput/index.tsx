@@ -43,6 +43,8 @@ export const MessageInput: FC = () => {
     setError,
     error,
     requisitions,
+    chooseButtonOption,
+    isChatLoading,
   } = useChatMessenger();
 
   // State
@@ -56,7 +58,6 @@ export const MessageInput: FC = () => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (
@@ -195,18 +196,16 @@ export const MessageInput: FC = () => {
     }
   };
 
-  const onClick = async () => {
-    if (
-      (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) &&
-      !isLoading
-    ) {
-      sendMessage(draftMessage);
-      setIsShowResults(false);
-    }
+  const onSendMessage = async () => {
+    if (!isChatLoading) {
+      if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
+        sendMessage(draftMessage);
+        setIsShowResults(false);
+      }
 
-    if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION && !isLoading) {
-      sendMessage(draftMessage);
-      setIsShowResults(false);
+      if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION) {
+        draftMessage && chooseButtonOption(draftMessage);
+      }
     }
   };
 
@@ -251,8 +250,8 @@ export const MessageInput: FC = () => {
 
       {isWriteAccess && (
         <S.PlaneIcon
-          onClick={onClick}
-          disabled={isLoading}
+          onClick={onSendMessage}
+          disabled={isChatLoading}
           src={ICONS.INPUT_PLANE}
           width="16"
         />
