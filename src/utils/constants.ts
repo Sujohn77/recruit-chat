@@ -48,6 +48,27 @@ export const initialChatMessage = {
   isOwn: false,
 };
 
+export const popularQuestions = [
+  {
+    text: i18n.t("messages:whatHiring"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
+    text: i18n.t("messages:howSubmitCV"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
+    text: i18n.t("messages:howMuchExperience"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+];
+
 export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
@@ -164,24 +185,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
       return [
-        {
-          text: i18n.t("messages:whatHiring"),
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
-        {
-          text: i18n.t("messages:howSubmitCV"),
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
-        {
-          text: i18n.t("messages:howMuchExperience"),
-          subType: MessageType.BUTTON,
-          isChatMessage: true,
-          isOwn: true,
-        },
+        ...popularQuestions,
         {
           text: i18n.t("messages:popularQuestions"),
           subType: MessageType.TEXT,

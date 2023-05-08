@@ -8,9 +8,11 @@ import React, {
   useEffect,
 } from "react";
 import map from "lodash/map";
+import some from "lodash/some";
 import findIndex from "lodash/findIndex";
 import { ApiResponse } from "apisauce";
 import Autolinker from "autolinker";
+import moment from "moment";
 
 import {
   MessageType,
@@ -26,6 +28,7 @@ import {
   isDevMode,
   isPushMessageType,
   LocalStorage,
+  popularQuestions,
   SessionStorage,
   Status,
 } from "utils/constants";
@@ -56,6 +59,7 @@ import {
 import { useRequisitions } from "services/hooks";
 import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
+import { colors } from "utils/colors";
 import { apiInstance } from "services";
 
 interface IChatProviderProps {
@@ -155,7 +159,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
 
   // -------------------------------------------------------------------------- //
 
-  isDevMode && console.log("searchLocations", searchLocations);
+  // isDevMode && console.log("searchLocations", searchLocations);
   // Test
   // useEffect(() => {
   //     console.log('trigger', currentMsgType);
@@ -467,10 +471,29 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                     isOwn: false,
                     localId: generateLocalId(),
                     _id: null,
+                    dateCreated: { seconds: moment().unix() },
                   })
                 );
 
-                updatedMessages = [...answers, ...messages];
+                const questionMess: ILocalMessage = {
+                  content: {
+                    subType: MessageType.TEXT,
+                    text: payload.question.trim(),
+                  },
+                  isOwn: true,
+                  localId: generateLocalId(),
+                  _id: generateLocalId(),
+                };
+
+                // check if the button with popular questions or the text entered in the input
+                const isSelectedBtn = some(
+                  popularQuestions,
+                  (mess) => mess.text === payload.question
+                );
+
+                updatedMessages = isSelectedBtn
+                  ? [...answers, ...messages]
+                  : [...answers, questionMess, ...messages];
               } else if (response.data?.answers) {
                 const withoutAnswer: ILocalMessage = {
                   isOwn: false,
@@ -481,6 +504,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   },
                   localId: generateLocalId(),
                   _id: generateLocalId(),
+                  dateCreated: { seconds: moment().unix() },
                 };
                 updatedMessages = [withoutAnswer, ...messages];
               }
@@ -585,7 +609,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
       const chatType = getNextActionType(currentMsgType);
 
       if (chatType) {
-        const action =
+        const action: ITriggerActionProps =
           currentMsgType === CHAT_ACTIONS.ASK_QUESTION
             ? { type: chatType, payload: { question: excludeItem } }
             : { type: chatType };
@@ -655,7 +679,11 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   };
 
   console.log("====================================");
-  console.log("chatState", chatState);
+  console.log(
+    "%cchatState",
+    `color: ${colors.shamrock}; font-size: 12px;`,
+    chatState
+  );
   console.log("====================================");
 
   return (
