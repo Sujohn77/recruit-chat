@@ -110,7 +110,7 @@ export const en = {
   chat_menu: {
     save_transcript: "Save transcript",
     change_lang: "Change language",
-    ask_question: "Ask a questions",
+    ask_question: "Ask questions",
     find_job: "Find a job",
   },
 };

@@ -106,7 +106,7 @@ export type PayloadType = {
   items?: any[];
   isChatMessage?: boolean;
 
-  // ------- ask a question ------- //
+  // ------- ask question ------- //
   question?: string;
   languageCode?: string | null;
   options?: null | IQuestionOptions;
