@@ -7,12 +7,13 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import map from "lodash/map";
-import some from "lodash/some";
+import { useTranslation } from "react-i18next";
 import findIndex from "lodash/findIndex";
-import { ApiResponse } from "apisauce";
-import Autolinker from "autolinker";
+import some from "lodash/some";
+import map from "lodash/map";
 import moment from "moment";
+import Autolinker from "autolinker";
+import { ApiResponse } from "apisauce";
 
 import {
   MessageType,
@@ -28,7 +29,7 @@ import {
   isDevMode,
   isPushMessageType,
   LocalStorage,
-  popularQuestions,
+  questions,
   SessionStorage,
   Status,
 } from "utils/constants";
@@ -124,6 +125,7 @@ export const validationUserContacts = ({
 };
 
 const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
+  const { t } = useTranslation();
   // -------------------------------- State -------------------------------- //
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
@@ -210,6 +212,8 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
           email: email,
           location: getFormattedLocations(locations)[0],
           jobCategory: alertCategories?.length ? alertCategories[0] : "",
+          candidateId: 50994334,
+          // candidateId: 49530690,
         });
       } catch (err) {
         clearAuthConfig();
@@ -449,6 +453,26 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         case CHAT_ACTIONS.ASK_QUESTION: {
           if (payload?.question) {
             setIsChatLoading(true);
+            const hiringProcessMessage = getChatActionResponse({
+              type: CHAT_ACTIONS.HIRING_PROCESS,
+            });
+
+            const questionMess: ILocalMessage = {
+              content: {
+                subType: MessageType.TEXT,
+                text: payload.question.trim(),
+              },
+              isOwn: true,
+              localId: generateLocalId(),
+              _id: generateLocalId(),
+            };
+
+            // check if the button with popular questions or the text entered in the input
+            const isSelectedBtn = some(
+              questions,
+              (mess) => mess.text === payload.question
+            );
+
             try {
               const data = {
                 question: payload.question.trim(),
@@ -480,25 +504,14 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   })
                 );
 
-                const questionMess: ILocalMessage = {
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: payload.question.trim(),
-                  },
-                  isOwn: true,
-                  localId: generateLocalId(),
-                  _id: generateLocalId(),
-                };
-
-                // check if the button with popular questions or the text entered in the input
-                const isSelectedBtn = some(
-                  popularQuestions,
-                  (mess) => mess.text === payload.question
-                );
-
                 updatedMessages = isSelectedBtn
-                  ? [...answers, ...messages]
-                  : [...answers, questionMess, ...messages];
+                  ? [...hiringProcessMessage, ...answers, ...messages]
+                  : [
+                      ...hiringProcessMessage,
+                      ...answers,
+                      questionMess,
+                      ...messages,
+                    ];
               } else if (response.data?.answers) {
                 const withoutAnswer: ILocalMessage = {
                   isOwn: false,
@@ -511,9 +524,35 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   _id: generateLocalId(),
                   dateCreated: { seconds: moment().unix() },
                 };
-                updatedMessages = [withoutAnswer, ...messages];
+                updatedMessages = isSelectedBtn
+                  ? [...hiringProcessMessage, withoutAnswer, ...messages]
+                  : [
+                      ...hiringProcessMessage,
+                      withoutAnswer,
+                      questionMess,
+                      ...messages,
+                    ];
               }
             } catch (error) {
+              const withoutAnswer: ILocalMessage = {
+                isOwn: false,
+                content: {
+                  subType: MessageType.TEXT,
+                  // TODO: add translate
+                  text: "Sorry, I don't have an answer to that question yet...",
+                },
+                localId: generateLocalId(),
+                _id: generateLocalId(),
+                dateCreated: { seconds: moment().unix() },
+              };
+              updatedMessages = isSelectedBtn
+                ? [...hiringProcessMessage, withoutAnswer, ...messages]
+                : [
+                    ...hiringProcessMessage,
+                    withoutAnswer,
+                    questionMess,
+                    ...messages,
+                  ];
             } finally {
               setIsChatLoading(false);
             }
@@ -524,11 +563,44 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
 
       //  Update state with response
       const param = action.payload?.item || "";
-      const responseMessages = getChatActionResponse({
+      let responseMessages = getChatActionResponse({
         type,
         additionalCondition,
         param,
       });
+
+      const withPopularQuestions = updatedMessages.some(
+        (msg) =>
+          msg.content.subType === MessageType.BUTTON &&
+          (msg.content.text === t("messages:whatHiring") ||
+            msg.content.text === t("messages:howSubmitCV") ||
+            msg.content.text === t("messages:howMuchExperience") ||
+            msg.content.text === t("messages:popularQuestions"))
+      );
+
+      const responseMessWithPopularQuestions = responseMessages.some(
+        (msg) =>
+          msg.content.subType === MessageType.BUTTON &&
+          (msg.content.text === t("messages:whatHiring") ||
+            msg.content.text === t("messages:howSubmitCV") ||
+            msg.content.text === t("messages:howMuchExperience") ||
+            msg.content.text === t("messages:popularQuestions"))
+      );
+
+      if (withPopularQuestions && responseMessWithPopularQuestions) {
+        responseMessages = responseMessages.filter((msg) => {
+          if (
+            msg.content.text === t("messages:whatHiring") ||
+            msg.content.text === t("messages:howSubmitCV") ||
+            msg.content.text === t("messages:howMuchExperience") ||
+            msg.content.text === t("messages:popularQuestions")
+          ) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
 
       updatedMessages = getMessagesOnAction({
         action,

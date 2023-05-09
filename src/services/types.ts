@@ -437,11 +437,12 @@ export interface IVerifyEmailRequest {
 }
 
 export interface IJobAlertRequest {
-  // chatBotID: string | null;
-  // subscriberID: number | null;
   email: string;
   location: string;
   jobCategory: string | null;
+  candidateId: number;
+  // subscriberID: number | null;
+  // chatBotID: string | null;
 }
 
 // Responses

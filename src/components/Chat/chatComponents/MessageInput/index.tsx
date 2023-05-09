@@ -133,7 +133,7 @@ export const MessageInput: FC = () => {
       const isWriteAccess = getAccessWriteType(currentMsgType) || file;
       if (event.key === "Enter" && isWriteAccess) {
         event.preventDefault();
-        draftMessage && sendMessage(draftMessage);
+        onSendMessage();
       }
     };
     document.addEventListener("keydown", keyDownHandler);
