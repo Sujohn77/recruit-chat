@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { CHAT_ACTIONS } from "utils/types";
+import { colors } from "utils/colors";
 
 export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -34,6 +35,7 @@ export const SetJobAlert = styled(Button)`
   border: 1px solid ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
   text-transform: initial !important;
+  background: ${colors.white};
 `;
 
 export const RefineJobSearch = styled(Button)`

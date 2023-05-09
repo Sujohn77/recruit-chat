@@ -48,7 +48,7 @@ export const initialChatMessage = {
   isOwn: false,
 };
 
-export const popularQuestions = [
+export const questions = [
   {
     text: i18n.t("messages:whatHiring"),
     subType: MessageType.BUTTON,
@@ -185,7 +185,7 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
       return [
-        ...popularQuestions,
+        ...questions,
         {
           text: i18n.t("messages:popularQuestions"),
           subType: MessageType.TEXT,

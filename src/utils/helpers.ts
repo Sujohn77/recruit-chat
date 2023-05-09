@@ -120,9 +120,9 @@ export const getActionTypeByOption = (option: USER_INPUTS) => {
     case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
     }
-    case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
-      return CHAT_ACTIONS.HIRING_PROCESS;
-    }
+    // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
+    //   return CHAT_ACTIONS.HIRING_PROCESS;
+    // }
     case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
