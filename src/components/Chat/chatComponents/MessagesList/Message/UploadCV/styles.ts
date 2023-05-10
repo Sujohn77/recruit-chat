@@ -14,7 +14,7 @@ export const UploadImg = styled.div`
   background-size: cover;
 `;
 
-export const Browse = styled.label`
+export const Button = styled.label`
   margin: 11px 0 16px;
   color: ${({ theme: { button } }) => button.secondaryColor};
   background: ${(props) => props.theme.primaryColor};

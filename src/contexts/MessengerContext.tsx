@@ -94,6 +94,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   submitMessage: () => {},
   setIsInitialized: () => {},
   setJobPositions: () => {},
+  _setMessages: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -686,6 +687,8 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
             setMessages(messages.slice(1));
           }
           break;
+        case CHAT_ACTIONS.UPLOADED_CV:
+          break;
         default:
           setMessages([...responseMessages, ...updatedMessages]);
           break;
@@ -761,20 +764,13 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     resumeName,
     setJobPositions,
     isChatLoading,
+    _setMessages: setMessages,
   };
 
-  console.log(
-    "%c ----------------------------------------------- ",
-    `color: ${colors.cornflowerBlue}; font-size: 12px;`
-  );
   console.log(
     "%c   chat state   ",
     `color: ${colors.shamrock}; font-size: 14px; background-color: ${colors.black};`,
     chatState
-  );
-  console.log(
-    "%c ----------------------------------------------- ",
-    `color: ${colors.cornflowerBlue}; font-size: 12px;`
   );
 
   return (

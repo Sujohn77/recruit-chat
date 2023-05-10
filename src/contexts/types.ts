@@ -52,6 +52,7 @@ export interface IChatMessengerContext {
   setIsInitialized: Dispatch<SetStateAction<boolean>>;
   resumeName: string;
   isChatLoading: boolean;
+  _setMessages: (messages: ILocalMessage[]) => void;
 }
 
 export interface IFileUploadContext {

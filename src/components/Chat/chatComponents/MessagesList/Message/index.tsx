@@ -45,7 +45,7 @@ export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
     case MessageType.INITIAL_MESSAGE:
       return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
-      return <UploadCV />;
+      return <UploadCV isLastMessage={isLastMessage} />;
     case MessageType.EMAIL_FORM: {
       return <EmailForm />;
     }

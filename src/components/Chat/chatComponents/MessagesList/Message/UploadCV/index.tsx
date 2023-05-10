@@ -11,7 +11,11 @@ import { Close } from "components/Intro/DefaultMessages/styles";
 import * as S from "./styles";
 import * as ChatStyles from "../../../../styles";
 
-export const UploadCV: FC = () => {
+interface IUploadCVProps {
+  isLastMessage?: boolean;
+}
+
+export const UploadCV: FC<IUploadCVProps> = ({ isLastMessage }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
@@ -52,7 +56,10 @@ export const UploadCV: FC = () => {
         <S.Text>{t("messages:uploadCV")}</S.Text>
         {/* // TODO: add translation */}
         <S.Text>or</S.Text>
-        <S.Browse htmlFor={resumeElementId}>{t("buttons:browse")}</S.Browse>
+        <S.Button htmlFor={isLastMessage ? resumeElementId : ""}>
+          {t("buttons:browse")}
+        </S.Button>
+
         <input
           hidden
           type="file"

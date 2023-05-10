@@ -26,7 +26,6 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
     if (isLastMessage) {
       if (file?.name) {
         chooseButtonOption(USER_INPUTS.UPLOADED_CV, file?.name);
-        resetFile();
       }
       searchWithResume();
     }

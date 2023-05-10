@@ -3,8 +3,10 @@ import { useChatMessenger } from "./MessengerContext";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { IFileUploadContext } from "./types";
-import { CHAT_ACTIONS, MessageType } from "utils/types";
 import { apiInstance } from "services";
+import { replaceItemsWithType } from "utils/helpers";
+import { getChatActionResponse } from "utils/constants";
+import { CHAT_ACTIONS, MessageType } from "utils/types";
 
 interface IFileUploadProviderProps {
   children: React.ReactNode;
@@ -40,6 +42,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     submitMessage,
     currentMsgType,
     setJobPositions,
+    _setMessages,
   } = useChatMessenger();
   const [file, setFile] = useState<File | null>(null);
   const [resumeId, setResumeId] = useState<number | null>(null);
@@ -120,11 +123,24 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
 
         const response = await apiInstance.searchWithResume(payload);
 
-        response.data &&
+        if (response.data) {
+          resetFile();
+          const updatedMessages = replaceItemsWithType({
+            type: MessageType.BUTTON,
+            messages,
+            excludeItem: CHAT_ACTIONS.UPLOADED_CV,
+          });
+          const responseMessages = getChatActionResponse({
+            type: CHAT_ACTIONS.UPLOADED_CV,
+            param: resumeData.fileName,
+          });
+          _setMessages([...responseMessages, ...updatedMessages]);
+
           triggerAction({
             type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
             payload: { items: response.data.requisitions },
           });
+        }
       } catch (error) {
       } finally {
         setIsJobSearchingLoading(false);
