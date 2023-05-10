@@ -29,11 +29,10 @@ import {
 import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
-import { log } from "console";
 
 export const MessageInput: FC = () => {
   const { t } = useTranslation();
-  const { file, setNotification } = useFileUploadContext();
+  const { file, setNotification, showJobTitles } = useFileUploadContext();
   const {
     category,
     triggerAction,
@@ -48,7 +47,7 @@ export const MessageInput: FC = () => {
     isChatLoading,
   } = useChatMessenger();
 
-  // State
+  // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);
   const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
     locations: formattedLocations,
@@ -59,6 +58,12 @@ export const MessageInput: FC = () => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
+
+  // ------------------------------------------------- //
+
+  useEffect(() => {
+    showJobTitles && setIsShowResults(showJobTitles);
+  }, [showJobTitles]);
 
   useEffect(() => {
     if (
@@ -122,7 +127,6 @@ export const MessageInput: FC = () => {
         });
       }
 
-      // setIsShowResults(false);
       setDraftMessage(null);
     },
     [currentMsgType, matchedItems.length, searchLocations.length, inputValues]

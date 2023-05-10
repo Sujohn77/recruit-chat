@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useChatMessenger } from "./MessengerContext";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { IFileUploadContext } from "./types";
 import { apiInstance } from "services";
@@ -25,6 +31,7 @@ const fileUploadDefaultState: IFileUploadContext = {
   resumeData: null,
   isFileDownloading: false,
   isJobSearchingLoading: false,
+  showJobTitles: false,
   resetFile: () => null,
   showFile: () => null,
   searchWithResume: () => null,
@@ -44,34 +51,28 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     setJobPositions,
     _setMessages,
   } = useChatMessenger();
+
+  // ----------------------------- STATE ----------------------------- //
   const [file, setFile] = useState<File | null>(null);
   const [resumeId, setResumeId] = useState<number | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [resumeData, setResumeData] = useState<IResumeData | null>(null);
   const [isFileDownloading, setIsFileDownloading] = useState(false);
   const [isJobSearchingLoading, setIsJobSearchingLoading] = useState(false);
+  const [showJobTitles, setShowJobTitles] = useState(false);
+  // ---------------------------------------------------------------- //
 
-  const uploadCVHandler = async (file: File, resumeData: IResumeData) => {
-    setIsFileDownloading(true);
-    try {
-      const response = await apiInstance.uploadCV(resumeData);
-
-      if (response.data?.resumeId) {
-        setResumeId(response.data?.resumeId);
-
-        const isLastMsgEqualToUploadType =
-          messages[0].content.subType === MessageType.UPLOAD_CV;
-
-        if (isLastMsgEqualToUploadType) {
-          triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-        }
-      }
-    } catch (error) {
-      // TODO: add error handler
-    } finally {
-      setIsFileDownloading(false);
+  useEffect(() => {
+    // return trigger to the default state (if active)
+    let timeout: undefined | NodeJS.Timeout;
+    if (showJobTitles) {
+      timeout = setTimeout(() => setShowJobTitles(false), 1000);
     }
-  };
+
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, [showJobTitles]);
 
   useEffect(() => {
     let reader = new FileReader();
@@ -110,6 +111,28 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     }
   }, [resumeId]);
 
+  const uploadCVHandler = async (file: File, resumeData: IResumeData) => {
+    setIsFileDownloading(true);
+    try {
+      const response = await apiInstance.uploadCV(resumeData);
+
+      if (response.data?.resumeId) {
+        setResumeId(response.data?.resumeId);
+
+        const isLastMsgEqualToUploadType =
+          messages[0].content.subType === MessageType.UPLOAD_CV;
+
+        if (isLastMsgEqualToUploadType) {
+          triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+        }
+      }
+    } catch (error) {
+      // TODO: add error handler
+    } finally {
+      setIsFileDownloading(false);
+    }
+  };
+
   const searchWithResume = async () => {
     if (resumeData && resumeId) {
       setIsJobSearchingLoading(true);
@@ -135,6 +158,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
             param: resumeData.fileName,
           });
           _setMessages([...responseMessages, ...updatedMessages]);
+          setShowJobTitles(true);
 
           triggerAction({
             type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
@@ -150,22 +174,25 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     // setFile(null);
   };
 
-  const showFile = (file: File) => {
-    if (file.size > 2097152) {
-      setNotification("File may not be more than 2MB");
-      setFile(null);
+  const showFile = useCallback(
+    (file: File) => {
+      if (file.size > 2097152) {
+        setNotification("File may not be more than 2MB");
+        setFile(null);
 
-      return;
-    }
+        return;
+      }
 
-    notification && setNotification(null);
-    setFile(file);
-  };
+      notification && setNotification(null);
+      setFile(file);
+    },
+    [notification]
+  );
 
-  const resetFile = () => {
+  const resetFile = useCallback(() => {
     setFile(null);
     setNotification(null);
-  };
+  }, []);
 
   return (
     <FileUploadContext.Provider
@@ -179,6 +206,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
         resumeData,
         isFileDownloading,
         isJobSearchingLoading,
+        showJobTitles,
       }}
     >
       {children}

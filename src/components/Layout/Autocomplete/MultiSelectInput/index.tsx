@@ -6,6 +6,7 @@ import {
   FocusEvent,
   MouseEvent,
   SetStateAction,
+  useEffect,
 } from "react";
 import { AutocompleteGetTagProps, useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
@@ -29,7 +30,6 @@ interface IMultiSelectInputProps {
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
-  subHeaderName?: null | string;
 }
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -56,7 +56,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   isShowResults,
   setInputValue,
   setIsShowResults,
-  subHeaderName = null,
 }) => {
   const { currentMsgType } = useChatMessenger();
   const {
@@ -73,10 +72,14 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     options: matchedItems,
     getOptionLabel: (option: any) => option,
     value: values,
-    onChange: onChange,
+    onChange,
   });
 
   const autocompleteInputProps = getInputProps();
+
+  useEffect(() => {
+    onChange(null, []);
+  }, [currentMsgType]);
 
   const onDelete = (selectedIndex: number) => {
     onChange(

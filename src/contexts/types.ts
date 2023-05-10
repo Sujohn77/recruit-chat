@@ -65,6 +65,7 @@ export interface IFileUploadContext {
   resetFile: () => void;
   searchWithResume: () => void;
   setNotification: Dispatch<SetStateAction<string | null>>;
+  showJobTitles: boolean;
 }
 
 export interface IAuthContext {
