@@ -360,7 +360,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   );
 
   useEffect(() => {
-    if (chatAction !== null && messages.length) {
+    if (chatAction && messages.length) {
       getChatBotResponse(chatAction);
     }
   }, [chatAction]);
@@ -672,15 +672,23 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         param,
       });
 
-      if (type === CHAT_ACTIONS.ANSWER_QUESTIONS) {
-        setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
-        // TODO: refactor
-        setTimeout(
-          () => setMessages([...responseMessages, ...updatedMessages]),
-          1111
-        );
-      } else {
-        setMessages([...responseMessages, ...updatedMessages]);
+      switch (type) {
+        case CHAT_ACTIONS.ANSWER_QUESTIONS:
+          setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
+          setTimeout(
+            () => setMessages([...responseMessages, ...updatedMessages]),
+            1000
+          );
+          break;
+        case CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME:
+          if (messages[0].content.subType === MessageType.SUBMIT_FILE) {
+            setChatAction(null);
+            setMessages(messages.slice(1));
+          }
+          break;
+        default:
+          setMessages([...responseMessages, ...updatedMessages]);
+          break;
       }
     } else {
       const chatType = getNextActionType(currentMsgType);

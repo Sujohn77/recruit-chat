@@ -5,6 +5,10 @@ import { colors } from "utils/colors";
 import { IMessageProps } from "utils/helpers";
 import { InfoItem } from "../../ViewJob/styles";
 
+interface ICancelProps {
+  disabled?: boolean;
+}
+
 export const MessageBox = styled.div<IMessageProps>`
   position: relative;
   border-radius: 10px;
@@ -57,7 +61,7 @@ export const MessageBox = styled.div<IMessageProps>`
     `};
 `;
 
-export const Cancel = styled.div`
+export const Cancel = styled.div<ICancelProps>`
   font-size: 14px;
   line-height: 17px;
   border-bottom: 1px solid ${(props) => props.theme.primaryColor};
@@ -65,6 +69,8 @@ export const Cancel = styled.div`
   cursor: pointer;
   margin-top: 0.25em;
   width: fit-content;
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;
 
 export const MessageButton = styled.div<IMessageProps>`

@@ -81,6 +81,7 @@ export enum USER_INPUTS {
   HOW_SUBMIT_CV = "Can I submit my CV",
   HIRING_PROCESS = "What is the hiring process?",
   UPLOADED_CV = "uploaded_cv",
+  CANCEL_JOB_SEARCH_WITH_RESUME = "cancel job search with resume",
 }
 
 export enum CHAT_ACTIONS {
@@ -124,6 +125,7 @@ export enum CHAT_ACTIONS {
   SEARCH_WITH_RESUME = "send_with_resume",
   RESET_FILE = "reset_file",
   UPLOADED_CV = "uploaded_cv",
+  CANCEL_JOB_SEARCH_WITH_RESUME = "CANCEL_JOB_SEARCH_WITH_RESUME",
 }
 
 export enum Status {

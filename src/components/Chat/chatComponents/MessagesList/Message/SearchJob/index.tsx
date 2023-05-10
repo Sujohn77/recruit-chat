@@ -1,8 +1,8 @@
 import { useFileUploadContext } from "contexts/FileUploadContext";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, memo, useCallback } from "react";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
 
 import { IMAGES } from "assets";
 import { ILocalMessage, USER_INPUTS } from "utils/types";
@@ -23,11 +23,13 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
     useFileUploadContext();
 
   const onSearchWithResume = () => {
-    if (file?.name) {
-      chooseButtonOption(USER_INPUTS.UPLOADED_CV, file?.name);
-      resetFile();
+    if (isLastMessage) {
+      if (file?.name) {
+        chooseButtonOption(USER_INPUTS.UPLOADED_CV, file?.name);
+        resetFile();
+      }
+      searchWithResume();
     }
-    searchWithResume();
   };
 
   const renderSendingTime = useCallback((message: ILocalMessage) => {
@@ -45,13 +47,17 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
   }, []);
 
   const onResetResume = () => {
-    const resumeInput = document.getElementById(
-      resumeElementId
-    ) as HTMLInputElement;
+    if (isLastMessage) {
+      const resumeInput = document.getElementById(
+        resumeElementId
+      ) as HTMLInputElement;
 
-    if (resumeInput) {
-      resumeInput.value = "";
-      resetFile();
+      if (resumeInput) {
+        resumeInput.value = "";
+        resetFile();
+      }
+
+      chooseButtonOption(USER_INPUTS.CANCEL_JOB_SEARCH_WITH_RESUME);
     }
   };
 
@@ -62,15 +68,20 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
       )}
 
       <S.ActionButton
-        disabled={isJobSearchingLoading}
         onClick={onSearchWithResume}
+        disabled={isJobSearchingLoading || !isLastMessage}
       >
         {t("buttons:searchJobs")}
       </S.ActionButton>
 
       {renderSendingTime(message)}
 
-      <S.Cancel onClick={onResetResume}>{t("buttons:cancel")}</S.Cancel>
+      <S.Cancel
+        onClick={onResetResume}
+        disabled={isJobSearchingLoading || !isLastMessage}
+      >
+        {t("buttons:cancel")}
+      </S.Cancel>
     </S.MessageBox>
   );
 });

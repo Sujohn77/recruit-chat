@@ -129,6 +129,8 @@ export const getActionTypeByOption = (option: USER_INPUTS) => {
     case USER_INPUTS.UPLOADED_CV: {
       return CHAT_ACTIONS.UPLOADED_CV;
     }
+    case USER_INPUTS.CANCEL_JOB_SEARCH_WITH_RESUME:
+      return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
 
     default: {
       return null;
@@ -520,12 +522,15 @@ export const replaceItemsWithType = ({
   messages,
   excludeItem,
 }: IFilterItemsWithType) => {
-  const item = messages.find(
+  const item = find(
+    messages,
     (msg) => msg.content.subType === type && msg.content.text === excludeItem
   );
-  const updatedMessages = messages.filter(
-    (msg, index) => msg.content.subType !== type
+  const updatedMessages = filter(
+    messages,
+    (msg) => msg.content.subType !== type
   );
+
   if (item) {
     item.content.subType = MessageType.TEXT;
     return [item, ...updatedMessages];
