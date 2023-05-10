@@ -29,6 +29,7 @@ import {
 import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
+import { log } from "console";
 
 export const MessageInput: FC = () => {
   const { t } = useTranslation();
@@ -183,6 +184,22 @@ export const MessageInput: FC = () => {
     let newValues = values.filter(Boolean);
 
     if (newLocation) {
+      const lastLocation = newValues[newValues.length - 1];
+      const numberOfCharacters = newLocation.length - lastLocation?.length;
+
+      // it needs to be because of a bug. If you enter a value in the search box and select a location,
+      // the location will be listed without the characters entered in the input box
+      if (newLocation?.substring(numberOfCharacters) === lastLocation) {
+        if (newValues.length > 1) {
+          newValues = [
+            ...newValues.slice(0, newValues.length - 1),
+            newLocation,
+          ];
+        } else {
+          newValues = [];
+        }
+      }
+
       if (!newValues.some((location) => location === newLocation))
         newValues = [...newValues, newLocation];
     }
