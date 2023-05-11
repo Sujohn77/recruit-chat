@@ -10,6 +10,7 @@ import {
   useMemo,
 } from "react";
 import { useTranslation } from "react-i18next";
+import uniq from "lodash/uniq";
 
 import * as S from "./styles";
 import { ICONS } from "assets";
@@ -108,8 +109,8 @@ export const MessageInput: FC = () => {
             : CHAT_ACTIONS.NO_MATCH;
         const payload = {
           items: !!matchedSearchItem
-            ? [...inputValues, matchedSearchItem]
-            : inputValues,
+            ? uniq([...inputValues, matchedSearchItem])
+            : uniq(inputValues),
         };
 
         actionType &&
@@ -209,10 +210,11 @@ export const MessageInput: FC = () => {
     }
 
     if (currentMsgType) {
-      setInputValues(newValues);
+      setInputValues(uniq(newValues));
+      setDraftMessage(null);
       triggerAction({
         type: currentMsgType,
-        payload: { items: newValues },
+        payload: { items: uniq(newValues) },
       });
     }
   };
