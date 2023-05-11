@@ -85,6 +85,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   nextMessages: [],
   resumeName: "",
   isChatLoading: false,
+  showJobAutocompleteBox: false,
   chooseButtonOption: () => {},
   triggerAction: () => {},
   setSnapshotMessages: () => {},
@@ -94,6 +95,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   submitMessage: () => {},
   setIsInitialized: () => {},
   setJobPositions: () => {},
+  setShowJobAutocompleteBox: () => {},
   _setMessages: () => {},
 };
 
@@ -153,12 +155,25 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [searchRequisitionsTrigger, setSearchRequisitionsTrigger] = useState(1);
   const [resumeName, setResumeName] = useState("");
+  const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
     searchRequisitionsTrigger,
     setIsChatLoading
   );
+
+  useEffect(() => {
+    let timeout: undefined | NodeJS.Timeout;
+    // return trigger to the default state (if active)
+    if (showJobAutocompleteBox) {
+      timeout = setTimeout(() => setShowJobAutocompleteBox(false), 1000);
+    }
+
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, [showJobAutocompleteBox]);
 
   // -------------------------------------------------------------------------- //
 
@@ -344,6 +359,9 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         }
         case CHAT_ACTIONS.REFINE_SEARCH: {
           clearFilters();
+
+          setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
+          setShowJobAutocompleteBox(true);
           console.log("clear");
           break;
         }
@@ -765,6 +783,8 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     setJobPositions,
     isChatLoading,
     _setMessages: setMessages,
+    setShowJobAutocompleteBox,
+    showJobAutocompleteBox,
   };
 
   console.log(

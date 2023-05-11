@@ -63,8 +63,8 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
   // ---------------------------------------------------------------- //
 
   useEffect(() => {
-    // return trigger to the default state (if active)
     let timeout: undefined | NodeJS.Timeout;
+    // return trigger to the default state (if active)
     if (showJobTitles) {
       timeout = setTimeout(() => setShowJobTitles(false), 1000);
     }

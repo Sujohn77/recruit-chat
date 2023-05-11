@@ -53,6 +53,8 @@ export interface IChatMessengerContext {
   resumeName: string;
   isChatLoading: boolean;
   _setMessages: (messages: ILocalMessage[]) => void;
+  showJobAutocompleteBox: boolean;
+  setShowJobAutocompleteBox: (show: boolean) => void;
 }
 
 export interface IFileUploadContext {
