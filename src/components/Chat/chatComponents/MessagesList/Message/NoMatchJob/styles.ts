@@ -36,6 +36,7 @@ export const SetJobAlert = styled(Button)`
   border: 1px solid ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
   text-transform: initial !important;
+  background-color: ${colors.white};
 `;
 
 export const RefineJobSearch = styled(Button)`

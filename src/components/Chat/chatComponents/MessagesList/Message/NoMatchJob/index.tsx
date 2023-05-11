@@ -3,6 +3,7 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CHAT_ACTIONS } from "utils/types";
+import { colors } from "utils/colors";
 import * as S from "./styles";
 
 interface INoMatchJobProps {
@@ -32,6 +33,7 @@ export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
       <S.Avatar />
 
       <S.SetJobAlert
+        style={{ backgroundColor: colors.white }}
         onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
       >
         {t("buttons:set_job_alert")}

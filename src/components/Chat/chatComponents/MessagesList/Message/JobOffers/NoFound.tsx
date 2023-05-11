@@ -3,6 +3,7 @@ import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CHAT_ACTIONS } from "utils/types";
+import { colors } from "utils/colors";
 import * as S from "./styles";
 
 export const NotFoundOffer: FC = () => {
@@ -21,7 +22,10 @@ export const NotFoundOffer: FC = () => {
     <S.Wrapper>
       <S.Title>{t("messages:notFoundJob")}</S.Title>
 
-      <S.SetJobAlert onClick={setJobAlert}>
+      <S.SetJobAlert
+        style={{ backgroundColor: colors.white }}
+        onClick={setJobAlert}
+      >
         {t("buttons:set_job_alert")}
       </S.SetJobAlert>
 
