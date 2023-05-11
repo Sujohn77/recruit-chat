@@ -472,10 +472,6 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         case CHAT_ACTIONS.ASK_QUESTION: {
           if (payload?.question) {
             setIsChatLoading(true);
-            const hiringProcessMessage = getChatActionResponse({
-              type: CHAT_ACTIONS.HIRING_PROCESS,
-            });
-
             const questionMess: ILocalMessage = {
               content: {
                 subType: MessageType.TEXT,
@@ -485,12 +481,11 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
               localId: generateLocalId(),
               _id: generateLocalId(),
             };
-
-            // check if the button with popular questions or the text entered in the input
-            const isSelectedBtn = some(
-              questions,
-              (mess) => mess.text === payload.question
-            );
+            const hiringProcessMessage = getChatActionResponse({
+              type: CHAT_ACTIONS.HIRING_PROCESS,
+            });
+            const lastMessIsButton =
+              messages[0].content.subType === MessageType.BUTTON;
 
             try {
               const data = {
@@ -523,7 +518,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   })
                 );
 
-                updatedMessages = isSelectedBtn
+                updatedMessages = lastMessIsButton
                   ? [...hiringProcessMessage, ...answers, ...messages]
                   : [
                       ...hiringProcessMessage,
@@ -543,7 +538,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   _id: generateLocalId(),
                   dateCreated: { seconds: moment().unix() },
                 };
-                updatedMessages = isSelectedBtn
+                updatedMessages = lastMessIsButton
                   ? [...hiringProcessMessage, withoutAnswer, ...messages]
                   : [
                       ...hiringProcessMessage,
@@ -564,7 +559,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                 _id: generateLocalId(),
                 dateCreated: { seconds: moment().unix() },
               };
-              updatedMessages = isSelectedBtn
+              updatedMessages = lastMessIsButton
                 ? [...hiringProcessMessage, withoutAnswer, ...messages]
                 : [
                     ...hiringProcessMessage,
