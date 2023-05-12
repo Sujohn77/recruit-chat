@@ -13,11 +13,11 @@ interface IProps extends IMessageProps {
 
 export const TextWithOptions: FC<IProps> = (props) => {
   const { text, ...messageProps } = props;
-  const { triggerAction, currentMsgType } = useChatMessenger();
+  const { dispatch, currentMsgType } = useChatMessenger();
 
   const onClick = (opt: string) => {
     if (currentMsgType) {
-      triggerAction({
+      dispatch({
         type: currentMsgType,
         payload: { item: opt },
       });

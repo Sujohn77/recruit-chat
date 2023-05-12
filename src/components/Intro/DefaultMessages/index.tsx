@@ -26,24 +26,24 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
 }) => {
   const theme = useTheme() as ThemeType;
   const { isVerified } = useAuthContext();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const [initialOption, setInitialOption] = useState<IOption | null>(null);
 
   useEffect(() => {
     if (isVerified && initialOption) {
       const { message: item, type } = initialOption;
-      triggerAction({ type, payload: { item, isChatMessage: true } });
+      dispatch({ type, payload: { item, isChatMessage: true } });
 
       setInitialOption(null);
     }
-  }, [isVerified, triggerAction, initialOption]);
+  }, [isVerified, dispatch, initialOption]);
 
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
 
     setIsSelectedOption(true);
-    triggerAction({ type, payload: { item, isChatMessage: true } });
+    dispatch({ type, payload: { item, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
 
     // if (subscriberID) {

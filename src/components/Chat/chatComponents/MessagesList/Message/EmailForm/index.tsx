@@ -44,7 +44,7 @@ type PropsType = {};
 
 export const EmailForm: FC<PropsType> = () => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const [error, setError] = useState<string>("");
   const [touched, setTouched] = useState(false);
@@ -61,7 +61,7 @@ export const EmailForm: FC<PropsType> = () => {
     if (error) {
       error && setError(error);
     } else {
-      triggerAction({
+      dispatch({
         type: CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL,
         payload: { item: value },
       });

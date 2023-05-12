@@ -26,7 +26,7 @@ export const Chat: FC<IChatProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob, triggerAction } = useChatMessenger();
+  const { viewJob, setViewJob, dispatch } = useChatMessenger();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -34,7 +34,7 @@ export const Chat: FC<IChatProps> = ({
 
   const handleApplyJobClick = (viewJob: IRequisition | null) => {
     setViewJob(null);
-    triggerAction({
+    dispatch({
       type: CHAT_ACTIONS.APPLY_POSITION,
     });
   };

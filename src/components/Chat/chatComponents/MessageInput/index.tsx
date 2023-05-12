@@ -36,7 +36,7 @@ export const MessageInput: FC = () => {
   const { file, setNotification, showJobTitles } = useFileUploadContext();
   const {
     category,
-    triggerAction,
+    dispatch,
     searchLocations,
     status,
     locations,
@@ -114,12 +114,12 @@ export const MessageInput: FC = () => {
         };
 
         actionType &&
-          triggerAction({
+          dispatch({
             type: actionType,
             payload,
           });
       } else {
-        triggerAction({
+        dispatch({
           type:
             isNoMatches || !currentMsgType
               ? CHAT_ACTIONS.NO_MATCH
@@ -212,7 +212,7 @@ export const MessageInput: FC = () => {
     if (currentMsgType) {
       setInputValues(uniq(newValues));
       setDraftMessage(null);
-      triggerAction({
+      dispatch({
         type: currentMsgType,
         payload: { items: uniq(newValues) },
       });

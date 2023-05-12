@@ -14,10 +14,10 @@ interface IHiringHelpProps {
 
 export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
   const messagesProps = getMessageProps(message);
 
-  const onClick = () => triggerAction({ type: CHAT_ACTIONS.HELP });
+  const onClick = () => dispatch({ type: CHAT_ACTIONS.HELP });
 
   const handleFeedBackClick = () => {};
 

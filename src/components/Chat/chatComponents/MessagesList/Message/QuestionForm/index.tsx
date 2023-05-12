@@ -12,7 +12,7 @@ const rows = 3;
 
 export const QuestionForm: FC = () => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export const QuestionForm: FC = () => {
   const onSubmit = () => {
     const updatedErrors = validateFields(email, description);
     if (!updatedErrors.length) {
-      triggerAction({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
+      dispatch({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
     } else {
       setErrors(updatedErrors);
     }

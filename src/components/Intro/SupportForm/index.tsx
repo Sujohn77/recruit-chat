@@ -25,7 +25,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
   setIsSupportForm,
 }) => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const [errors, setErrors] = useState<{ name: string; text: string }[]>([]);
   const [email, setEmail] = useState("");
@@ -39,7 +39,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
       setIsQuestionSubmit(true);
       setEmail("");
       setDescription("");
-      triggerAction({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
+      dispatch({ type: CHAT_ACTIONS.QUESTION_RESPONSE });
     } else {
       setErrors(updatedErrors);
     }

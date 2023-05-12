@@ -44,7 +44,7 @@ const FileUploadContext = createContext<IFileUploadContext>(
 
 const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
   const {
-    triggerAction,
+    dispatch,
     messages,
     submitMessage,
     currentMsgType,
@@ -123,7 +123,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           messages[0].content.subType === MessageType.UPLOAD_CV;
 
         if (isLastMsgEqualToUploadType) {
-          triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+          dispatch({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
         }
       }
     } catch (error) {
@@ -160,7 +160,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           _setMessages([...responseMessages, ...updatedMessages]);
           setShowJobTitles(true);
 
-          triggerAction({
+          dispatch({
             type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
             payload: { items: response.data.requisitions },
           });

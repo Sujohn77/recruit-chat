@@ -8,14 +8,14 @@ import * as S from "./styles";
 
 export const NotFoundOffer: FC = () => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const setJobAlert = useCallback(() => {
-    triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT });
+    dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT });
   }, []);
 
   const refineJobSearch = useCallback(() => {
-    triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH });
+    dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
   }, []);
 
   return (

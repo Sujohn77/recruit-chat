@@ -33,13 +33,13 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     setIsShowResults,
   } = props;
 
-  const { triggerAction, currentMsgType, user, error } = useChatMessenger();
+  const { dispatch, currentMsgType, user, error } = useChatMessenger();
 
   const onClick = (e: MouseEvent<HTMLLIElement>) => {
     setInputValue(null);
 
     if (currentMsgType) {
-      triggerAction({
+      dispatch({
         type: currentMsgType,
         payload: { item: e.currentTarget.textContent },
       });

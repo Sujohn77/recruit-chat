@@ -27,7 +27,7 @@ export interface IChatMessengerContext {
   user: IUser | null;
   status: Status | null;
   chooseButtonOption: (text: string, param?: string) => void;
-  triggerAction: (action: ITriggerActionProps) => void;
+  dispatch: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
   setSnapshotMessages: (messageSnapshots: ISnapshot<IMessage>[]) => void;

@@ -14,7 +14,7 @@ type PropsType = { message: ILocalMessage };
 
 export const SalaryForm: FC<PropsType> = ({ message }) => {
   const { t } = useTranslation();
-  const { triggerAction, error } = useChatMessenger();
+  const { dispatch, error } = useChatMessenger();
   const messagesProps = getMessageProps(message);
 
   const [salary, setSalary] = useState("");
@@ -43,7 +43,7 @@ export const SalaryForm: FC<PropsType> = ({ message }) => {
         onClick={() =>
           Number(salary) > 400 &&
           Number(salary) < 15000 &&
-          triggerAction({
+          dispatch({
             type: CHAT_ACTIONS.SET_SALARY,
             payload: { item: `${salary} ${currency}` },
           })

@@ -115,7 +115,7 @@ interface IJobOffersProps {
 }
 
 export const JobOffers: FC<IJobOffersProps> = () => {
-  const { offerJobs, category, setViewJob, triggerAction } = useChatMessenger();
+  const { offerJobs, category, setViewJob, dispatch } = useChatMessenger();
 
   const [index, setIndex] = useState(0);
 
@@ -124,7 +124,7 @@ export const JobOffers: FC<IJobOffersProps> = () => {
   };
 
   const handleSubmitClick = (id: string | number) => {
-    triggerAction({
+    dispatch({
       type: CHAT_ACTIONS.INTERESTED_IN,
       payload: { item: `${id}` },
     });

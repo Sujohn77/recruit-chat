@@ -87,7 +87,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   isChatLoading: false,
   showJobAutocompleteBox: false,
   chooseButtonOption: () => {},
-  triggerAction: () => {},
+  dispatch: () => {},
   setSnapshotMessages: () => {},
   setCurrentMsgType: () => {},
   setError: () => {},

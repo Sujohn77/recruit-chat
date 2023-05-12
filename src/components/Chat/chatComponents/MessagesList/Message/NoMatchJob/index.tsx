@@ -12,14 +12,14 @@ interface INoMatchJobProps {
 
 export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
   const { t } = useTranslation();
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   if (isRefineOnly) {
     return (
       <S.Wrapper isRefineOnly>
         <S.Avatar />
         <S.RefineJobSearch
-          onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
+          onClick={() => dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH })}
         >
           {t("buttons:refine_search")}
         </S.RefineJobSearch>
@@ -34,13 +34,13 @@ export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
 
       <S.SetJobAlert
         style={{ backgroundColor: colors.white }}
-        onClick={() => triggerAction({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
+        onClick={() => dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
       >
         {t("buttons:set_job_alert")}
       </S.SetJobAlert>
 
       <S.RefineJobSearch
-        onClick={() => triggerAction({ type: CHAT_ACTIONS.REFINE_SEARCH })}
+        onClick={() => dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH })}
       >
         {t("buttons:refine_search")}
       </S.RefineJobSearch>

@@ -9,7 +9,7 @@ import { MenuItem } from "./MenuItem";
 import { IMenuItem } from "utils/types";
 
 export const BurgerMenu = () => {
-  const { triggerAction } = useChatMessenger();
+  const { dispatch } = useChatMessenger();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,7 +29,7 @@ export const BurgerMenu = () => {
   }, [isOpen]);
 
   const handleItemClick = (item: IMenuItem) => {
-    triggerAction({
+    dispatch({
       type: item.type,
       payload: { item: item.text, isChatMessage: true },
     });
