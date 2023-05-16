@@ -75,22 +75,30 @@ class Api {
         const originalRequest = error.config;
         if (error?.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-
+          sessionStorage.removeItem(SessionStorage.Token);
+          const message = {
+            event_id: "refresh_token",
+            callback: (token: string) => {
+              console.log("====================================");
+              console.log("NEW token", token);
+              console.log("====================================");
+              return this.client.setHeader(
+                "Authorization",
+                "chatbot-jwt-token " + token
+              );
+            },
+          };
+          console.log("====================================");
+          console.log("error?.response", error?.response);
+          console.log("originalRequest", originalRequest);
+          console.log("message", message);
+          console.log("====================================");
+          window.parent.postMessage(message, "*");
           const res: ApiResponse<string> = await apiInstance.refreshToken();
           if (res.ok && res.data) {
             apiInstance.setAuthHeader(res.data);
-            // this.client(originalRequest);
           }
         }
-
-        sessionStorage.removeItem(SessionStorage.Token);
-        window.parent.postMessage(
-          {
-            event_id: "refresh_token",
-            callback: this.lastRequest,
-          },
-          "*"
-        );
 
         return Promise.reject(error);
       }
@@ -134,7 +142,7 @@ class Api {
   setHeader = (key: string, value: string) => this.client.setHeader(key, value);
   removeHeader = (key: string) => this.client.deleteHeader(key);
   setAuthHeader = (token: string) => {
-    return this.client.setHeader("Authorization", `Bearer ${token}`);
+    return this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
   };
 
   // refreshToken = (guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6") => { // James's guid

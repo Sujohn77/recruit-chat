@@ -3,7 +3,6 @@ import map from "lodash/map";
 
 import * as S from "./styles";
 import { searchItemHeight } from "./styles";
-import { Close } from "screens/Intro/styles";
 import { colors } from "utils/colors";
 
 interface IGetOption {
@@ -21,7 +20,7 @@ interface ISearchResultsProps {
   getOptionProps?: (props: IGetOption) => React.HTMLAttributes<HTMLLIElement>;
 }
 
-export const maxSearchHeight = 186;
+const maxSearchHeight = 186;
 
 export const SearchResults: FC<ISearchResultsProps> = ({
   matchedItems,
@@ -61,7 +60,7 @@ export const SearchResults: FC<ISearchResultsProps> = ({
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
       <S.SearchHeader>
         {headerName}
-        <Close color={colors.gray} onClick={onClose} />
+        <S.Close color={colors.gray} onClick={onClose} />
       </S.SearchHeader>
 
       <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>

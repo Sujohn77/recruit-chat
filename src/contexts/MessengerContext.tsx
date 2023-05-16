@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import findIndex from "lodash/findIndex";
-import some from "lodash/some";
 import map from "lodash/map";
 import moment from "moment";
 import Autolinker from "autolinker";
@@ -29,7 +28,6 @@ import {
   isDevMode,
   isPushMessageType,
   LocalStorage,
-  questions,
   SessionStorage,
   Status,
 } from "utils/constants";
@@ -429,7 +427,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
           setIsChatLoading(true);
           try {
-            const response = await apiInstance.sendTranscript({
+            await apiInstance.sendTranscript({
               ChatID: chatId,
             });
           } catch (error) {
@@ -766,7 +764,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     prefferedJob,
     user,
     chooseButtonOption,
-    triggerAction,
+    dispatch: triggerAction,
     submitMessage,
     setSnapshotMessages,
     setCurrentMsgType,

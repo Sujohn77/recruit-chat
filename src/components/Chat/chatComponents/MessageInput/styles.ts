@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Box from "@mui/material/Box";
+import { colors } from "utils/colors";
 
 interface IPlaneIconProps {
   disabled: boolean;
@@ -9,7 +10,7 @@ export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
 export const inputOffset = "-30px";
 
-export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
+export const MessagesInput = styled(Box)<{ marginTop: string }>`
   min-height: 50px;
   z-index: 1;
   position: absolute;
@@ -22,7 +23,7 @@ export const MessagesInput = styled(Box)<{ offset: string | boolean }>`
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  margin-top: ${({ offset }) => !!offset && offset.toString()};
+  ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
 
   > button {
     padding: 0px;
@@ -99,4 +100,29 @@ export const PlaneIcon = styled.img<IPlaneIconProps>`
   margin-left: auto;
   cursor: pointer;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+`;
+
+export const Close = styled.div<{ color?: string }>`
+  position: relative;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+
+  &:before,
+  &:after {
+    content: "";
+    height: 17px;
+    width: 1.5px;
+    background: ${colors.gray};
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    left: 9px;
+  }
+  &:before {
+    transform: rotate(-45deg);
+  }
+  &:after {
+    transform: rotate(45deg);
+  }
 `;

@@ -236,10 +236,10 @@ export const MessageInput: FC = () => {
     getAccessWriteType(currentMsgType) &&
     (file || draftMessage || !!inputValues.length);
 
-  const offset =
+  const marginTop =
     status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
-      ? S.inputOffset
-      : "0";
+      ? "-30px"
+      : "0px";
 
   const inputProps = {
     type: inputType,
@@ -258,7 +258,7 @@ export const MessageInput: FC = () => {
   };
 
   return (
-    <S.MessagesInput offset={offset}>
+    <S.MessagesInput marginTop={marginTop}>
       <BurgerMenu />
 
       {inputType === TextFieldTypes.MultiSelect ? (
