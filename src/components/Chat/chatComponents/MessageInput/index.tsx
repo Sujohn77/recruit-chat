@@ -259,7 +259,7 @@ export const MessageInput: FC = () => {
 
   return (
     <S.MessagesInput marginTop={marginTop}>
-      <BurgerMenu />
+      <BurgerMenu setIsShowResults={setIsShowResults} />
 
       {inputType === TextFieldTypes.MultiSelect ? (
         <MultiSelectInput

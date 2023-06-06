@@ -1,14 +1,17 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { IconButton } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import map from "lodash/map";
 
 import * as S from "./styles";
+import { IBurgerMenuProps } from "./props";
 import { menuItems } from "./data";
 import { MenuItem } from "./MenuItem";
+import { BurgerIcon } from "./BurgerIcon";
 import { IMenuItem } from "utils/types";
 
-export const BurgerMenu = () => {
+export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
+  setIsShowResults,
+}) => {
   const { dispatch } = useChatMessenger();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +37,7 @@ export const BurgerMenu = () => {
       payload: { item: item.text, isChatMessage: true },
     });
     setIsOpen(true);
+    setIsShowResults(false);
   };
 
   const handleBurgerClick = useCallback(() => {
@@ -42,20 +46,7 @@ export const BurgerMenu = () => {
 
   return (
     <S.Wrapper onClick={handleBurgerClick}>
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 1 }}
-      >
-        {/*  TODO: check what the hell / refactor */}
-        <svg viewBox="0 0 100 80" width="16" height="16">
-          <rect y="0" width="100" height="14" rx="10"></rect>
-          <rect y="35" width="100" height="14" rx="10"></rect>
-          <rect y="70" width="100" height="14" rx="10"></rect>
-        </svg>
-      </IconButton>
+      <BurgerIcon />
 
       {isOpen && (
         <S.MenuItemsWrapper ref={menuRef}>

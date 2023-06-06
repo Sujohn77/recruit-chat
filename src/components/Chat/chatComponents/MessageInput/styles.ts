@@ -52,6 +52,7 @@ export const SearchHeader = styled.div`
   line-height: 17px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 export const SubHeader = styled.div`
