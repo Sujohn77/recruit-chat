@@ -1,5 +1,4 @@
 import { FC, memo } from "react";
-import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
 import { getMessageProps } from "utils/helpers";
@@ -25,69 +24,73 @@ import { UploadedFile } from "./UploadedFile";
 interface IMessageProps {
   message: ILocalMessage;
   isLastMessage: boolean;
+  withoutMargin?: boolean;
   // onClick: (content: IContent) => void;
   // handleOfferSubmit: ((id: string | number) => void) | undefined;
 }
 
 export const MS_1000 = 1000;
 
-export const Message: FC<IMessageProps> = memo(({ message, isLastMessage }) => {
-  const { t } = useTranslation();
-  const subType = message.content.subType;
-  const messageProps = { ...getMessageProps(message) };
+export const Message: FC<IMessageProps> = memo(
+  ({ message, isLastMessage, withoutMargin }) => {
+    const subType = message.content.subType;
+    const messageProps = { ...getMessageProps(message) };
 
-  // const triggerNextAction = () => {
-  //     const type = getNextActionType(currentMsgType);
-  //     type && triggerAction({ type, payload: { item: resumeName } });
-  // };
-
-  switch (subType) {
-    case MessageType.INITIAL_MESSAGE:
-      return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
-    case MessageType.UPLOAD_CV:
-      return <UploadCV isLastMessage={isLastMessage} />;
-    case MessageType.EMAIL_FORM: {
-      return <EmailForm />;
-    }
-    case MessageType.JOB_POSITIONS: {
-      return <JobOffers />;
-    }
-    case MessageType.TRANSCRIPT: {
-      return <TranscriptSent />;
-    }
-    case MessageType.TEXT:
-    case MessageType.FILE:
-    case MessageType.CHAT_CREATED:
-      return <TextMessage message={message} isLastMessage={isLastMessage} />;
-    case MessageType.BUTTON: {
-      return <ButtonMessage message={message} />;
-    }
-    case MessageType.INTERESTED_IN:
-      return <InterestedIn message={message} />;
-    case MessageType.TEXT_WITH_CHOICE: {
-      return <TextWithOptions text={message.content.text!} {...messageProps} />;
-    }
-    case MessageType.HIRING_PROCESS: {
-      return <HiringHelp message={message} />;
-    }
-    case MessageType.QUESTION_FORM: {
-      return <QuestionForm />;
-    }
-    case MessageType.SALARY_FORM: {
-      return <SalaryForm message={message} />;
-    }
-    case MessageType.NO_MATCH:
-    case MessageType.REFINE_SEARCH: {
-      return (
-        <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SEARCH} />
-      );
-    }
-    case MessageType.SUBMIT_FILE:
-      return <SearchJob message={message} isLastMessage={isLastMessage} />;
-    case MessageType.UPLOADED_CV:
-      return <UploadedFile message={message} />;
-    default: {
-      return null;
+    switch (subType) {
+      case MessageType.INITIAL_MESSAGE:
+        return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
+      case MessageType.UPLOAD_CV:
+        return (
+          <UploadCV
+            isLastMessage={isLastMessage}
+            withoutMargin={withoutMargin}
+          />
+        );
+      case MessageType.EMAIL_FORM: {
+        return <EmailForm />;
+      }
+      case MessageType.JOB_POSITIONS: {
+        return <JobOffers />;
+      }
+      case MessageType.TRANSCRIPT: {
+        return <TranscriptSent />;
+      }
+      case MessageType.TEXT:
+      case MessageType.FILE:
+      case MessageType.CHAT_CREATED:
+        return <TextMessage message={message} isLastMessage={isLastMessage} />;
+      case MessageType.BUTTON: {
+        return <ButtonMessage message={message} />;
+      }
+      case MessageType.INTERESTED_IN:
+        return <InterestedIn message={message} />;
+      case MessageType.TEXT_WITH_CHOICE: {
+        return (
+          <TextWithOptions text={message.content.text!} {...messageProps} />
+        );
+      }
+      case MessageType.HIRING_PROCESS: {
+        return <HiringHelp message={message} />;
+      }
+      case MessageType.QUESTION_FORM: {
+        return <QuestionForm />;
+      }
+      case MessageType.SALARY_FORM: {
+        return <SalaryForm message={message} />;
+      }
+      case MessageType.NO_MATCH:
+      case MessageType.REFINE_SEARCH: {
+        return (
+          <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SEARCH} />
+        );
+      }
+      case MessageType.SUBMIT_FILE:
+        return <SearchJob message={message} isLastMessage={isLastMessage} />;
+      case MessageType.UPLOADED_CV:
+        return <UploadedFile message={message} />;
+      default: {
+        return null;
+      }
     }
   }
-});
+);

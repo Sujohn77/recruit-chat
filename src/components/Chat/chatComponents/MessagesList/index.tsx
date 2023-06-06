@@ -9,6 +9,7 @@ import { InfiniteScrollView } from "components";
 import { infiniteScrollStyle } from "./styles";
 import { Message } from "./Message";
 import * as S from "./styles";
+import { MessageType } from "utils/types";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
@@ -58,13 +59,26 @@ export const MessagesList: FC<IMessagesListProps> = ({ resultsHeight }) => {
           style={infiniteScrollStyle}
           inverse
         >
-          {map(messages, (message, index) => (
-            <Message
-              key={`${message.localId}-${message.dateCreated}`}
-              message={message}
-              isLastMessage={index === 0}
-            />
-          ))}
+          {map(messages, (message, index) => {
+            let withoutMargin = undefined;
+            const isNextMessCVFile =
+              messages[index - 1] &&
+              messages[index - 1].content?.subType === MessageType.UPLOADED_CV;
+            if (
+              message.content.subType === MessageType.UPLOAD_CV &&
+              isNextMessCVFile
+            ) {
+              withoutMargin = true;
+            }
+            return (
+              <Message
+                key={`${message.localId}-${message.dateCreated}`}
+                message={message}
+                isLastMessage={index === 0}
+                withoutMargin={withoutMargin}
+              />
+            );
+          })}
         </InfiniteScrollView>
       </S.MessageListContainer>
 

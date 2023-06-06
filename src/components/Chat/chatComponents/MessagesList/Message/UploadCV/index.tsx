@@ -13,9 +13,13 @@ import * as ChatStyles from "../../../../styles";
 
 interface IUploadCVProps {
   isLastMessage?: boolean;
+  withoutMargin?: boolean;
 }
 
-export const UploadCV: FC<IUploadCVProps> = ({ isLastMessage }) => {
+export const UploadCV: FC<IUploadCVProps> = ({
+  isLastMessage,
+  withoutMargin,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
@@ -47,7 +51,7 @@ export const UploadCV: FC<IUploadCVProps> = ({ isLastMessage }) => {
   };
 
   return (
-    <S.Wrapper>
+    <S.Wrapper style={{ marginBottom: withoutMargin ? 0 : 32 }}>
       <DragAndDrop handleDrop={showFile}>
         <S.Circle>
           <S.UploadImg onClick={onHandleUpload} />
