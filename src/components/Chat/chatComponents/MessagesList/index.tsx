@@ -12,7 +12,11 @@ import * as S from "./styles";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
-export const MessagesList: FC = () => {
+interface IMessagesListProps {
+  resultsHeight: number;
+}
+
+export const MessagesList: FC<IMessagesListProps> = ({ resultsHeight }) => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
@@ -43,7 +47,11 @@ export const MessagesList: FC = () => {
 
   return (
     <S.MessagesArea>
-      <S.MessageListContainer id={MESSAGE_SCROLL_LIST_DIV_ID} ref={messagesRef}>
+      <S.MessageListContainer
+        resultsHeight={resultsHeight}
+        id={MESSAGE_SCROLL_LIST_DIV_ID}
+        ref={messagesRef}
+      >
         <InfiniteScrollView
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
           onLoadMore={onLoadMore}

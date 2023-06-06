@@ -17,6 +17,8 @@ export const Wrapper = styled.div`
       : `close ${animationDuration} ease-in`};
   animation-fill-mode: forwards;
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
 
   @keyframes open {
     0% {

@@ -1,8 +1,13 @@
-import React, { Dispatch, FC, SetStateAction, MouseEvent } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  MouseEvent,
+  useEffect,
+} from "react";
 import map from "lodash/map";
 
 import * as S from "./styles";
-import { searchItemHeight } from "./styles";
 import { colors } from "utils/colors";
 
 interface IGetOption {
@@ -15,6 +20,7 @@ interface ISearchResultsProps {
   matchedPart: string;
   headerName: string;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
+  setHeight: Dispatch<SetStateAction<number>>;
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
   getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
   getOptionProps?: (props: IGetOption) => React.HTMLAttributes<HTMLLIElement>;
@@ -29,8 +35,18 @@ export const SearchResults: FC<ISearchResultsProps> = ({
   getOptionProps,
   onClick,
   setIsShowResults,
+  setHeight,
   getListboxProps = () => ({}),
 }) => {
+  const searchOptionsHeight =
+    matchedItems.length < 6
+      ? S.searchItemHeight * matchedItems.length + 1
+      : maxSearchHeight;
+
+  useEffect(() => {
+    setHeight(searchOptionsHeight + 40); // 40px = header height
+  }, [searchOptionsHeight, setHeight]);
+
   const items = map(matchedItems, (option, index) => {
     const optionProps = getOptionProps && getOptionProps({ option, index });
 
@@ -50,11 +66,6 @@ export const SearchResults: FC<ISearchResultsProps> = ({
   });
 
   const onClose = () => setIsShowResults(false);
-
-  const searchOptionsHeight =
-    matchedItems.length < 6
-      ? searchItemHeight * matchedItems.length + 1
-      : maxSearchHeight;
 
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>

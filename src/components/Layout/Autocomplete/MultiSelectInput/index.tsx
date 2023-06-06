@@ -30,6 +30,7 @@ interface IMultiSelectInputProps {
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
+  setHeight: Dispatch<SetStateAction<number>>;
 }
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -56,6 +57,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   isShowResults,
   setInputValue,
   setIsShowResults,
+  setHeight,
 }) => {
   const { currentMsgType } = useChatMessenger();
   const {
@@ -76,6 +78,13 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   });
 
   const autocompleteInputProps = getInputProps();
+
+  const isResults =
+    isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+
+  useEffect(() => {
+    !isResults && setHeight(0);
+  }, [isResults]);
 
   useEffect(() => {
     onChange(null, []);
@@ -101,13 +110,11 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     setInputValue(e?.target.value);
   };
 
-  const isResults =
-    isShowResults && isResultsType({ type: currentMsgType, matchedItems });
-
   return (
     <S.Wrapper>
       {isResults && (
         <SearchResults
+          setHeight={setHeight}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}

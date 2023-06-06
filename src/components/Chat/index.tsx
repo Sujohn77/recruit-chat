@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { Dispatch, FC, SetStateAction } from "react";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 
@@ -28,6 +28,8 @@ export const Chat: FC<IChatProps> = ({
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, dispatch } = useChatMessenger();
 
+  const [height, setHeight] = useState(480);
+
   const title = viewJob
     ? t("chat_item_description:view_job_title")
     : theme.chatbotName || t("chat_item_description:title");
@@ -42,9 +44,9 @@ export const Chat: FC<IChatProps> = ({
   return (
     <S.Wrapper isOpened={!!isSelectedOption}>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
-      <MessagesList />
+      <MessagesList resultsHeight={height} />
       <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
-      <MessageInput />
+      <MessageInput setHeight={setHeight} />
     </S.Wrapper>
   );
 };

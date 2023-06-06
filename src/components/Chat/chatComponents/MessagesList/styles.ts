@@ -2,6 +2,10 @@ import { CSSProperties } from "react";
 import styled from "styled-components";
 import { colors } from "utils/colors";
 
+interface IMessageListContainerProps {
+  resultsHeight: number;
+}
+
 export const infiniteScrollStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column-reverse",
@@ -21,8 +25,8 @@ export const MessagesArea = styled.div`
   position: relative;
 `;
 
-export const MessageListContainer = styled.div`
-  height: 480px;
+export const MessageListContainer = styled.div<IMessageListContainerProps>`
+  height: ${({ resultsHeight }) => 480 - resultsHeight}px;
   box-sizing: border-box;
   overflow-y: auto;
   display: flex;

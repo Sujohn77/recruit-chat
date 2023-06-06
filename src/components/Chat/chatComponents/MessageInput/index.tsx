@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useFileUploadContext } from "contexts/FileUploadContext";
 import { useChatMessenger } from "contexts/MessengerContext";
-import {
+import React, {
   FC,
   useState,
   useEffect,
@@ -31,7 +31,11 @@ import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
-export const MessageInput: FC = () => {
+interface IMessageInputProps {
+  setHeight: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   const { t } = useTranslation();
   const { file, setNotification, showJobTitles } = useFileUploadContext();
   const {
@@ -251,6 +255,7 @@ export const MessageInput: FC = () => {
     placeHolder: placeHolder || t("placeHolders:bot_typing"),
     setIsShowResults,
     isShowResults,
+    setHeight,
     setInputValue: (value: string) => {
       setError(null);
       setDraftMessage(value);
@@ -264,8 +269,8 @@ export const MessageInput: FC = () => {
       {inputType === TextFieldTypes.MultiSelect ? (
         <MultiSelectInput
           {...inputProps}
-          onChange={onChangeAutocomplete}
           values={inputValues}
+          onChange={onChangeAutocomplete}
         />
       ) : (
         <Autocomplete {...inputProps} onChange={onChangeCategory} />
