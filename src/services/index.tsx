@@ -30,8 +30,11 @@ import {
 export const FORM_URLENCODED = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 };
-
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
+
+// James's guid
+// const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6";
+const GUID = "f466faec-ea83-4122-8c23-458ab21e96be";
 
 class Api {
   protected client: ApisauceInstance;
@@ -145,8 +148,7 @@ class Api {
     return this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
   };
 
-  // refreshToken = (guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6") => { // James's guid
-  refreshToken = (guid = "f466faec-ea83-4122-8c23-458ab21e96be") => {
+  refreshToken = (guid = GUID) => {
     return this.client.post<string>("api/chatbot/token", {
       ChatbotGuid: guid,
     });
