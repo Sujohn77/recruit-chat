@@ -1,5 +1,5 @@
 import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
-import { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 import { SessionStorage, isDevMode } from "../utils/constants";
 import { getStorageValue } from "../utils/helpers";
@@ -64,42 +64,38 @@ class Api {
           console.log("error?.response?.status", error?.response?.status);
         }
 
-        if (
-          error?.response?.status !== 401 &&
-          error?.response?.status !== 403
-        ) {
+        const status = error?.response?.status;
+
+        if (status !== 401 && status !== 403) {
           // TODO: add logic to display errors
-          // sessionStorage.setItem(
-          //   SessionStorage.ApiError,
-          //   JSON.stringify(error.message)
-          // );
         }
 
         const originalRequest = error.config;
-        if (error?.response?.status === 401 && !originalRequest._retry) {
+        if (status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          sessionStorage.removeItem(SessionStorage.Token);
-          const message = {
-            event_id: "refresh_token",
-            callback: (token: string) => {
-              console.log("====================================");
-              console.log("NEW token", token);
-              console.log("====================================");
-              return this.client.setHeader(
-                "Authorization",
-                "chatbot-jwt-token " + token
-              );
-            },
-          };
-          console.log("====================================");
-          console.log("error?.response", error?.response);
-          console.log("originalRequest", originalRequest);
-          console.log("message", message);
-          console.log("====================================");
-          window.parent.postMessage(message, "*");
+          // sessionStorage.removeItem(SessionStorage.Token);
+          // const message = {
+          //   event_id: "refresh_token",
+          //   callback: (token: string) => {
+          //     console.log("====================================");
+          //     console.log("NEW token", token);
+          //     console.log("====================================");
+          //     return this.client.setHeader(
+          //       "Authorization",
+          //       "chatbot-jwt-token " + token
+          //     );
+          //   },
+          // };
+          // console.log("====================================");
+          // console.log("error?.response", error?.response);
+          // console.log("originalRequest", originalRequest);
+          // console.log("message", message);
+          // console.log("====================================");
+          // window.parent.postMessage(message, "*");
           const res: ApiResponse<string> = await apiInstance.refreshToken();
-          if (res.ok && res.data) {
+          if (res.data) {
             apiInstance.setAuthHeader(res.data);
+            return axios(originalRequest);
           }
         }
 
@@ -112,7 +108,9 @@ class Api {
     const token = getStorageValue(SessionStorage.Token);
     // const basicAuthToken = Buffer.from(`${info.username}:${info.password}`).toString('base64');
     // const isExpired = token ? isTokenExpired(token) : true;
-
+    console.log("====================================");
+    console.log("T O K E N", token);
+    console.log("====================================");
     if (token) {
       if (isDevMode) {
         console.log("requestInterceptor - request.headers", request.headers);
