@@ -96,7 +96,7 @@ export const JobOffer = ({
 
   return (
     <JobOfferWrapper>
-      <Category>{"Engineering"}</Category>
+      <Category>{""}</Category>
       <OfferTitle>{title}</OfferTitle>
 
       <ReadMore onClick={handleReadMore}>
