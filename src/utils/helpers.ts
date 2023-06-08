@@ -61,6 +61,7 @@ interface IGetMatchedItems {
   message: string | null;
   searchItems: string[];
   searchLocations: string[];
+  alertCategories?: string[] | null;
 }
 
 interface IIsResultType {
@@ -276,6 +277,7 @@ export const getMatchedItems = ({
   message,
   searchItems,
   searchLocations,
+  alertCategories,
 }: IGetMatchedItems) => {
   const compareItem = message?.toLowerCase() || "";
   const matchedPositions = filter(searchItems, (item) =>
@@ -286,12 +288,22 @@ export const getMatchedItems = ({
     matchedPositions.length && message?.length
       ? matchedPositions[0].slice(0, message.length)
       : "";
-  const matchedItems = map(
+
+  let matchedItems = map(
     filter(matchedPositions, (p) => {
       return !searchLocations.includes(p);
     }),
     (item) => item.slice(message?.length, item.length)
   );
+
+  if (alertCategories?.length) {
+    matchedItems = map(
+      filter(matchedPositions, (p) => {
+        return !alertCategories.includes(p);
+      }),
+      (item) => item.slice(message?.length, item.length)
+    );
+  }
 
   return {
     matchedItems,

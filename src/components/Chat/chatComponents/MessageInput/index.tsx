@@ -50,6 +50,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     requisitions,
     chooseButtonOption,
     isChatLoading,
+    alertCategories,
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
@@ -90,8 +91,18 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         message: draftMessage,
         searchItems,
         searchLocations,
+        alertCategories:
+          currentMsgType === CHAT_ACTIONS.SET_ALERT_CATEGORIES
+            ? alertCategories
+            : undefined,
       }),
-    [searchItems, draftMessage, searchLocations]
+    [
+      searchItems,
+      draftMessage,
+      searchLocations,
+      currentMsgType,
+      alertCategories,
+    ]
   );
 
   // Callbacks
