@@ -2,9 +2,9 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CHAT_ACTIONS } from "utils/types";
-import { colors } from "utils/colors";
 import * as S from "./styles";
+import { colors } from "utils/colors";
+import { CHAT_ACTIONS } from "utils/types";
 
 export const NotFoundOffer: FC = () => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ export const NotFoundOffer: FC = () => {
   }, []);
 
   return (
-    <S.Wrapper>
+    <S.NoFound>
       <S.Title>{t("messages:notFoundJob")}</S.Title>
 
       <S.SetJobAlert
@@ -32,6 +32,6 @@ export const NotFoundOffer: FC = () => {
       <S.RefineJobSearch onClick={refineJobSearch}>
         {t("buttons:refine_search")}
       </S.RefineJobSearch>
-    </S.Wrapper>
+    </S.NoFound>
   );
 };

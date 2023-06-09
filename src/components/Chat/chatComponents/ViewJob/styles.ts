@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { colors } from "utils/colors";
 
-import { Slide } from "../MessagesList/Message/JobOffers";
+import { Slide } from "../MessagesList/Message/JobOffers/styles";
 import { DarkButton } from "components/Layout/styles";
 import { MenuItemWrapper } from "components/Layout/BurgerMenu/MenuItem/styles";
 
