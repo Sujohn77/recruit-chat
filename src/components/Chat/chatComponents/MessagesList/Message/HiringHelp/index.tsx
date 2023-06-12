@@ -19,7 +19,7 @@ export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
 
   const onClick = () => dispatch({ type: CHAT_ACTIONS.HELP });
 
-  const handleFeedBackClick = () => {};
+  // const handleFeedBackClick = () => {};
 
   return (
     <S.Wrapper {...messagesProps}>
@@ -30,11 +30,12 @@ export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
         </DarkButton>
       </S.Section>
 
-      <S.Text>{t("chat_item_description:hiring_helpful_text")}</S.Text>
+      {/* this for phase 2 */}
+      {/* <S.Text>{t("chat_item_description:hiring_helpful_text")}</S.Text>
       <S.FeedBackIcons>
         <FeedBackIcon isReversed onClick={handleFeedBackClick} />
         <FeedBackIcon onClick={handleFeedBackClick} />
-      </S.FeedBackIcons>
+      </S.FeedBackIcons> */}
     </S.Wrapper>
   );
 };

@@ -100,8 +100,7 @@ export const en = {
     categories_title: "Select a Job Title",
     locations_title: "Searched location",
     all_categories: "All Categories",
-    hiring_help_title:
-      "Great question. Check out our help section to learn more on how we hire.",
+    hiring_help_title: "Check out our help section to learn more .",
     hiring_help_text: "Help",
     hiring_helpful_text: "Has this reply has been helpful?",
     interested_in: "I’m interested",

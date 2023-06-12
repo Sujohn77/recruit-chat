@@ -9,7 +9,7 @@ export const Wrapper = styled(MessageBox)`
 `;
 
 export const Section = styled.div`
-  border-bottom: 1px solid ${colors.silverChalice};
+  /* border-bottom: 1px solid ${colors.silverChalice}; */
 
   > button {
     margin: 0 6px 16px !important;
