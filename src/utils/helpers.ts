@@ -440,15 +440,6 @@ export const getMessagesOnAction = ({
     });
   }
 
-  // if (isReversePush(type)) {
-  //     const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
-  //     const message = getParsedMessage({
-  //         text,
-  //         subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
-  //         isChatMessage: !!action.payload?.isChatMessage,
-  //     });
-  //     return [message, ...responseAction.newMessages, ...updatedMessages];
-  // }
   console.log(
     "%c   push   ",
     `color: ${colors.lightgreen}; background-color: ${colors.black};`,

@@ -48,7 +48,7 @@ export const initialChatMessage = {
   isOwn: false,
 };
 
-export const questions = [
+const questions = [
   {
     text: i18n.t("messages:whatHiring"),
     subType: MessageType.BUTTON,
