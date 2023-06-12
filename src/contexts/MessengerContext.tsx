@@ -499,7 +499,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
               const response: ApiResponse<IAskAQuestionResponse> =
                 await apiInstance.askAQuestion(data);
 
-              if (response.data?.answers) {
+              if (response.data?.answers.length) {
                 const answers: ILocalMessage[] = map(
                   response.data?.answers,
                   (answer) => ({
@@ -515,16 +515,21 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                     dateCreated: { seconds: moment().unix() },
                   })
                 );
-
-                updatedMessages = lastMessIsButton
-                  ? [...hiringProcessMessage, ...answers, ...messages]
-                  : [
-                      ...hiringProcessMessage,
-                      ...answers,
-                      questionMess,
-                      ...messages,
-                    ];
-              } else if (response.data?.answers) {
+                // updatedMessages = lastMessIsButton
+                //   ? [...hiringProcessMessage, ...answers, ...messages]
+                //   : [
+                //       ...hiringProcessMessage,
+                //       ...answers,
+                //       questionMess,
+                //       ...messages,
+                //     ];
+                updatedMessages = [
+                  ...hiringProcessMessage,
+                  ...answers,
+                  questionMess,
+                  ...messages,
+                ];
+              } else if (!response.data?.answers.length) {
                 const withoutAnswer: ILocalMessage = {
                   isOwn: false,
                   content: {
@@ -536,14 +541,21 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   _id: generateLocalId(),
                   dateCreated: { seconds: moment().unix() },
                 };
-                updatedMessages = lastMessIsButton
-                  ? [...hiringProcessMessage, withoutAnswer, ...messages]
-                  : [
-                      ...hiringProcessMessage,
-                      withoutAnswer,
-                      questionMess,
-                      ...messages,
-                    ];
+                // updatedMessages = lastMessIsButton
+                //   ? [...hiringProcessMessage, withoutAnswer, ...messages]
+                //   : [
+                //       ...hiringProcessMessage,
+                //       withoutAnswer,
+                //       questionMess,
+                //       ...messages,
+                //     ];
+
+                updatedMessages = [
+                  ...hiringProcessMessage,
+                  withoutAnswer,
+                  questionMess,
+                  ...messages,
+                ];
               }
             } catch (error) {
               const withoutAnswer: ILocalMessage = {
@@ -573,12 +585,18 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         }
       }
 
+      const isQuestion =
+        action.type === CHAT_ACTIONS.ASK_QUESTION &&
+        (!!action.payload?.question ||
+          (!!action.payload?.item && action.payload.item !== "Ask questions"));
+
       //  Update state with response
       const param = action.payload?.item || "";
       let responseMessages = getChatActionResponse({
         type,
         additionalCondition,
         param,
+        isQuestion,
       });
 
       const withPopularQuestions = updatedMessages.some(
@@ -614,6 +632,17 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         });
       }
 
+      // console.warn("-----------------------------------");
+      // console.log("messages", messages);
+      // console.log("responseMessages", responseMessages);
+      // console.log(
+      //   "responseMessWithPopularQuestions",
+      //   responseMessWithPopularQuestions
+      // );
+      // console.error("updatedMessages", updatedMessages);
+      // console.log("withPopularQuestions", withPopularQuestions);
+      // console.warn("-----------------------------------");
+
       updatedMessages = getMessagesOnAction({
         action,
         messages: updatedMessages,
@@ -624,12 +653,17 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
       // console.log("responseMessages", responseMessages);
       // console.log("updatedMessages", updatedMessages);
 
+      // console.log(
+      //   "%cupdatedMessages",
+      //   "color: green; font-size: 16px;",
+      //   updatedMessages
+      // );
       // Simulate chat bot reaction
       setTimeout(() => {
         updatedMessages?.length && setMessages(updatedMessages);
         setCurrentMsgType(getNextActionType(type));
         setStatus(Status.DONE);
-      }, 500);
+      }, 0);
 
       setError(null);
       setChatAction(null);

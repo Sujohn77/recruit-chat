@@ -69,7 +69,11 @@ const questions = [
   },
 ];
 
-export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
+export const getChatActionMessages = (
+  type: CHAT_ACTIONS,
+  param?: string,
+  withoutDefaultQuestions?: boolean
+) => {
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [
@@ -184,13 +188,17 @@ export const getChatActionMessages = (type: CHAT_ACTIONS, param?: string) => {
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
-      return [
-        ...questions,
-        {
-          text: i18n.t("messages:popularQuestions"),
-          subType: MessageType.TEXT,
-        },
-      ];
+      const messages = withoutDefaultQuestions
+        ? []
+        : [
+            ...questions,
+            {
+              text: i18n.t("messages:popularQuestions"),
+              subType: MessageType.TEXT,
+            },
+          ];
+
+      return messages;
     case CHAT_ACTIONS.GET_USER_NAME:
       return [
         {
@@ -346,8 +354,9 @@ export const getChatActionResponse = ({
   type,
   additionalCondition,
   param,
+  isQuestion = false,
 }: IGetChatResponseProps): ILocalMessage[] => {
-  const messages = getChatActionMessages(type, param);
+  const messages = getChatActionMessages(type, param, isQuestion);
 
   if (
     additionalCondition !== null &&

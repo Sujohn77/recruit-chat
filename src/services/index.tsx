@@ -108,9 +108,10 @@ class Api {
     const token = getStorageValue(SessionStorage.Token);
     // const basicAuthToken = Buffer.from(`${info.username}:${info.password}`).toString('base64');
     // const isExpired = token ? isTokenExpired(token) : true;
-    console.log("====================================");
-    console.log("T O K E N", token);
-    console.log("====================================");
+    // console.log("====================================");
+    // console.log("T O K E N", token);
+    // console.log("====================================");
+
     if (token) {
       if (isDevMode) {
         console.log("requestInterceptor - request.headers", request.headers);

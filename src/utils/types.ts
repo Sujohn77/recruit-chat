@@ -242,6 +242,7 @@ export interface IGetChatResponseProps {
   type: CHAT_ACTIONS;
   additionalCondition?: boolean | null;
   param?: string | undefined;
+  isQuestion?: boolean;
 }
 
 export interface IFilterItemsWithType {
