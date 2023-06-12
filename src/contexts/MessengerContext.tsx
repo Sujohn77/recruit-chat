@@ -599,38 +599,40 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         isQuestion,
       });
 
-      const withPopularQuestions = updatedMessages.some(
-        (msg) =>
-          msg.content.subType === MessageType.BUTTON &&
-          (msg.content.text === t("messages:whatHiring") ||
-            msg.content.text === t("messages:howSubmitCV") ||
-            msg.content.text === t("messages:howMuchExperience") ||
-            msg.content.text === t("messages:popularQuestions"))
-      );
+      // ----- for filtering messages (if the sample questions are only needed once)  ----- //
+      //
+      // const withPopularQuestions = updatedMessages.some(
+      //   (msg) =>
+      //     msg.content.subType === MessageType.BUTTON &&
+      //     (msg.content.text === t("messages:whatHiring") ||
+      //       msg.content.text === t("messages:howSubmitCV") ||
+      //       msg.content.text === t("messages:howMuchExperience") ||
+      //       msg.content.text === t("messages:popularQuestions"))
+      // );
 
-      const responseMessWithPopularQuestions = responseMessages.some(
-        (msg) =>
-          msg.content.subType === MessageType.BUTTON &&
-          (msg.content.text === t("messages:whatHiring") ||
-            msg.content.text === t("messages:howSubmitCV") ||
-            msg.content.text === t("messages:howMuchExperience") ||
-            msg.content.text === t("messages:popularQuestions"))
-      );
+      // const responseMessWithPopularQuestions = responseMessages.some(
+      //   (msg) =>
+      //     msg.content.subType === MessageType.BUTTON &&
+      //     (msg.content.text === t("messages:whatHiring") ||
+      //       msg.content.text === t("messages:howSubmitCV") ||
+      //       msg.content.text === t("messages:howMuchExperience") ||
+      //       msg.content.text === t("messages:popularQuestions"))
+      // );
 
-      if (withPopularQuestions && responseMessWithPopularQuestions) {
-        responseMessages = responseMessages.filter((msg) => {
-          if (
-            msg.content.text === t("messages:whatHiring") ||
-            msg.content.text === t("messages:howSubmitCV") ||
-            msg.content.text === t("messages:howMuchExperience") ||
-            msg.content.text === t("messages:popularQuestions")
-          ) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      }
+      // if (withPopularQuestions && responseMessWithPopularQuestions) {
+      //   responseMessages = responseMessages.filter((msg) => {
+      //     if (
+      //       msg.content.text === t("messages:whatHiring") ||
+      //       msg.content.text === t("messages:howSubmitCV") ||
+      //       msg.content.text === t("messages:howMuchExperience") ||
+      //       msg.content.text === t("messages:popularQuestions")
+      //     ) {
+      //       return false;
+      //     } else {
+      //       return true;
+      //     }
+      //   });
+      // }
 
       // console.warn("-----------------------------------");
       // console.log("messages", messages);
@@ -642,6 +644,8 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
       // console.error("updatedMessages", updatedMessages);
       // console.log("withPopularQuestions", withPopularQuestions);
       // console.warn("-----------------------------------");
+
+      // --------------------------------------------------------------------------- //
 
       updatedMessages = getMessagesOnAction({
         action,
