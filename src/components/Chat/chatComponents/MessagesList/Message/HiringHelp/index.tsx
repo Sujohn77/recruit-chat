@@ -1,10 +1,9 @@
-import { useChatMessenger } from "contexts/MessengerContext";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
-import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
+import { ILocalMessage } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
 import * as S from "./styles";
 
@@ -14,10 +13,12 @@ interface IHiringHelpProps {
 
 export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
   const { t } = useTranslation();
-  const { dispatch } = useChatMessenger();
   const messagesProps = getMessageProps(message);
 
-  const onClick = () => dispatch({ type: CHAT_ACTIONS.HELP });
+  const onClick = () => {
+    // TODO: add redirect link (from 'api/chatbot/style?ChatBotGuid=ID')
+    // dispatch({ type: CHAT_ACTIONS.HELP });
+  };
 
   // const handleFeedBackClick = () => {};
 

@@ -275,7 +275,8 @@ export const getChatActionMessages = (
       ];
     }
     case CHAT_ACTIONS.HELP: {
-      return [{ subType: MessageType.QUESTION_FORM }];
+      return [];
+      // return [{ subType: MessageType.QUESTION_FORM }]; // for phase 2
     }
     case CHAT_ACTIONS.NO_MATCH: {
       return [
