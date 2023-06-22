@@ -37,3 +37,35 @@ export const ReadMore = styled.p`
   width: fit-content;
   margin: ${MARGIN};
 `;
+
+export const Error = styled.div`
+  display: flex;
+`;
+
+export const ErrorText = styled.span`
+  color: #d32f2f;
+`;
+
+export const WarningImg = styled.img`
+  margin-top: 10px;
+  width: 12px;
+  height: 12px;
+`;
+
+export const LoaderWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SuccessInteresting = styled.div`
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 17px;
+  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+`;

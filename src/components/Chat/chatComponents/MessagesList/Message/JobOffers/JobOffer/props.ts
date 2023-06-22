@@ -1,6 +1,5 @@
+import { IRequisition } from "utils/types";
+
 export interface IJobOfferProps {
-  title: string;
-  handleReadMore: () => void;
-  handleButtonClick: () => void;
-  category?: string | null;
+  jobOffer: IRequisition;
 }

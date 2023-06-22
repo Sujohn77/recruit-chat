@@ -103,6 +103,7 @@ export const ua = {
     interested_in: "Я зацікавлений",
     read_more: "Дізнатись більше",
     wantContinue: "Бажаєте продовжити?",
+    success_interested_id: "Дякую, що виявили інтерес до цієї вакансії",
   },
 
   chat_menu: {

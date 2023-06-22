@@ -1,5 +1,6 @@
 import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
 import axios, { AxiosRequestConfig } from "axios";
+import { ISuccessResponse } from "services/types";
 
 import { SessionStorage, isDevMode } from "../utils/constants";
 import { getStorageValue } from "../utils/helpers";
@@ -35,6 +36,7 @@ const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 // James's guid
 // const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6";
 const GUID = "f466faec-ea83-4122-8c23-458ab21e96be";
+const CANDIDATE_ID = 55457050;
 
 class Api {
   protected client: ApisauceInstance;
@@ -190,6 +192,11 @@ class Api {
       data
     );
   };
+  addCandidateByJobId = (jobId: number) =>
+    this.client.post<ISuccessResponse>("api/pool/addcandidatebyjobid", {
+      candidateId: CANDIDATE_ID,
+      jobId,
+    });
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);
     delete this.client.headers.Authorization;

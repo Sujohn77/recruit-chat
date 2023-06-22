@@ -452,6 +452,15 @@ export interface IJobAlertResponse {
   message: string;
 }
 
+export interface ISuccessResponse {
+  errorOccurrenceId: null | number | string;
+  errors: string[];
+  message: null | string;
+  status: null | number;
+  statusCode: null | number;
+  success: boolean;
+}
+
 export interface IVerifyEmailResponse extends Partial<IVerifyErrorResponse> {
   isEmailExists: boolean;
   isOTPSent: boolean;

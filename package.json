@@ -31,6 +31,7 @@
         "otp-generator": "^4.0.0",
         "random-string": "^0.2.0",
         "react": "^18.1.0",
+        "react-animate-height": "^3.1.1",
         "react-dom": "^18.1.0",
         "react-error-overlay": "6.0.9",
         "react-i18next": "^11.18.3",

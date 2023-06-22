@@ -5,21 +5,13 @@ import Carousel from "react-material-ui-carousel";
 import * as S from "./styles";
 import { JobOffer } from "./JobOffer";
 import { NotFoundOffer } from "./NotFound";
-import { CHAT_ACTIONS } from "utils/types";
 
 export const JobOffers: React.FC = () => {
-  const { offerJobs, category, setViewJob, dispatch } = useChatMessenger();
+  const { offerJobs } = useChatMessenger();
   const [index, setIndex] = useState(0);
 
-  const handleChange = useCallback((current: number, prev: number) => {
+  const handleChange = useCallback((current: number) => {
     setIndex(current);
-  }, []);
-
-  const handleSubmitClick = useCallback((id: string | number) => {
-    dispatch({
-      type: CHAT_ACTIONS.INTERESTED_IN,
-      payload: { item: `${id}` },
-    });
   }, []);
 
   return (
@@ -35,13 +27,7 @@ export const JobOffers: React.FC = () => {
       >
         {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
           return index < offerJobs.length ? (
-            <JobOffer
-              key={offerJobs[index].id}
-              title={offerJobs[index].title}
-              category={category}
-              handleReadMore={() => setViewJob(offerJobs[index])}
-              handleButtonClick={() => handleSubmitClick(offerJobs[index].id)}
-            />
+            <JobOffer key={offerJobs[index].id} jobOffer={offerJobs[index]} />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />
           );

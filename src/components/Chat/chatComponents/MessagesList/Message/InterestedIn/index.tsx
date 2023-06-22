@@ -6,14 +6,11 @@ import { ILocalMessage } from "utils/types";
 import * as S from "./styles";
 import { MessageBox } from "../styles";
 
-interface IProps {
+interface IInterestedInProps {
   message: ILocalMessage;
 }
-export const InterestedIn: FC<IProps> = ({
-  message,
-}: {
-  message: ILocalMessage;
-}) => {
+
+export const InterestedIn: FC<IInterestedInProps> = ({ message }) => {
   const { prefferedJob } = useChatMessenger();
   const messageProps = { ...getMessageProps(message) };
 

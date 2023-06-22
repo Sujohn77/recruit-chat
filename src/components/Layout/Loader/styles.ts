@@ -1,12 +1,19 @@
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+interface IWrapperProps {
+  absolutePosition?: boolean;
+}
+
+export const Wrapper = styled.div<IWrapperProps>`
   display: flex;
   align-items: center;
   gap: 8px;
-  position: absolute;
-  bottom: 10px;
-  left: 16px;
+
+  ${({ absolutePosition = true }) =>
+    absolutePosition &&
+    `position: absolute;
+    bottom: 10px;
+    left: 16px;`}
 `;
 
 export const Dot = styled.span`

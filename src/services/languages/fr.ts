@@ -106,6 +106,8 @@ export const fr = {
     hiring_helpful_text: "Cette réponse vous a-t-elle été utile ?",
     interested_in: "Je suis intéressé",
     read_more: "Lire la suite",
+    success_interested_id:
+      "Nous vous remercions de l'intérêt que vous portez à ce travail,",
   },
   chat_menu: {
     save_transcript: "Enregistrer la transcription",
