@@ -6,12 +6,8 @@ import AnimateHeight, { Height } from "react-animate-height";
 import * as S from "./styles";
 import { getFormattedDate } from "utils/helpers";
 import { ApiResponse } from "apisauce";
-import {
-  IApplyJobResponse,
-  IFollowingRequest,
-  IFollowingResponse,
-} from "services/types";
-import { CANDIDATE_ID, apiInstance } from "services/api";
+import { IApplyJobResponse } from "services/types";
+import { apiInstance } from "services/api";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
 
@@ -55,18 +51,24 @@ export const ViewJob: FC = () => {
           res.data?.FlowID &&
           res.data?.SubscriberWorkflowID
         ) {
-          const payload: IFollowingRequest = {
-            FlowID: res.data.FlowID,
-            SubscriberWorkflowID: res.data.SubscriberWorkflowID,
-            candidateId: CANDIDATE_ID,
-            message: "yes",
-          };
-          const followingRes: ApiResponse<IFollowingResponse> =
-            await apiInstance.sendFollowing(payload);
+          setViewJob(null);
+          // for sending answer
+          // const payload: IFollowingRequest = {
+          //   FlowID: res.data.FlowID,
+          //   SubscriberWorkflowID: res.data.SubscriberWorkflowID,
+          //   candidateId: CANDIDATE_ID,
+          //   message: "yes", // answer example
+          // };
 
-          if (followingRes.data?.success) {
-            setViewJob(null);
-          }
+          // const followingRes: ApiResponse<IFollowingResponse> =
+          //   await apiInstance.sendFollowing(payload);
+
+          // if (followingRes.data?.success) {
+          //   setViewJob(null);
+          // }
+        } else {
+          res.data?.errors[0] &&
+            setApplyJobError(res.data?.errors[0] || "Something");
         }
 
         if (res.data?.statusCode === 105) {
