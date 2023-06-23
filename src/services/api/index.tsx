@@ -40,7 +40,8 @@ const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 
 // const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // James's guid
 const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
-export const CANDIDATE_ID = 55457050; // hardcoded for now
+export const CANDIDATE_ID = 49530690; // hardcoded for now
+// export const CANDIDATE_ID = 55457050; // hardcoded for now
 export const CHAT_ID = 2433044; // the current chatID - this is hardcoded for now
 export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 
@@ -206,7 +207,7 @@ class Api {
 
   // ---------------------------- Apply Job ---------------------------- //
   applyJob = (jobId: number) =>
-    this.client.post<IApplyJobResponse>("/api/chatbot/startprescree", {
+    this.client.post<IApplyJobResponse>("/api/chatbot/startprescreen", {
       jobId,
       candidateId: CANDIDATE_ID,
       chatID: CHAT_ID,
