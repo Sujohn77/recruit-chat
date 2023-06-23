@@ -10,9 +10,7 @@ import {
   ViewJob,
 } from "./chatComponents";
 import * as S from "./styles";
-import { CHAT_ACTIONS, IRequisition } from "utils/types";
 import { ThemeType } from "utils/theme/default";
-
 interface IChatProps {
   isSelectedOption: boolean;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -22,11 +20,10 @@ interface IChatProps {
 export const Chat: FC<IChatProps> = ({
   isSelectedOption,
   setIsSelectedOption,
-  children,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob, dispatch } = useChatMessenger();
+  const { viewJob } = useChatMessenger();
 
   const [height, setHeight] = useState(480);
 
@@ -34,18 +31,11 @@ export const Chat: FC<IChatProps> = ({
     ? t("chat_item_description:view_job_title")
     : theme.chatbotName || t("chat_item_description:title");
 
-  const handleApplyJobClick = (viewJob: IRequisition | null) => {
-    setViewJob(null);
-    dispatch({
-      type: CHAT_ACTIONS.APPLY_POSITION,
-    });
-  };
-
   return (
     <S.Wrapper isOpened={!!isSelectedOption}>
       <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
       <MessagesList resultsHeight={height} />
-      <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
+      <ViewJob />
       <MessageInput setHeight={setHeight} />
     </S.Wrapper>
   );

@@ -506,3 +506,17 @@ export interface IAskAQuestionRequest {
 export interface IAskAQuestionResponse {
   answers: string[];
 }
+
+export interface IApplyJobResponse extends ISuccessResponse {
+  FlowID: number | null;
+  SubscriberWorkflowID: number | null;
+}
+
+export interface IFollowingRequest {
+  FlowID: number; //from previous api call
+  SubscriberWorkflowID: number; //from previous api call
+  message: string; // ("yes")  the user's typed response/answer
+  candidateId: number;
+}
+
+export interface IFollowingResponse extends ISuccessResponse {}

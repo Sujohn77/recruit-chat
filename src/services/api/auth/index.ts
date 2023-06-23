@@ -1,8 +1,8 @@
 import { ApiResponse } from "apisauce";
-import { authInstance } from "services";
-import { handleSignInWithCustomToken } from "../../firebase/config";
+import { authInstance } from "services/api";
+import { handleSignInWithCustomToken } from "../../../firebase/config";
 
-import { GenerateGrantType } from "../types";
+import { GenerateGrantType } from "../../types";
 
 export const APP_VERSION = "1.0.3";
 

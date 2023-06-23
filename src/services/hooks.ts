@@ -7,10 +7,10 @@ import {
 } from "react";
 import map from "lodash/map";
 
-import { APP_VERSION } from "./auth";
+import { APP_VERSION } from "./api/auth";
 import { handleRefreshToken } from "./utils";
 import { IApiMessage, LocationType } from "./types";
-import Api, { apiInstance } from "services";
+import Api, { apiInstance } from "services/api";
 import { IRequisition } from "utils/types";
 import { isDevMode } from "utils/constants";
 

@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 import { IFileUploadContext } from "./types";
-import { apiInstance } from "services";
+import { apiInstance } from "services/api";
 import { replaceItemsWithType } from "utils/helpers";
 import { getChatActionResponse } from "utils/constants";
 import { CHAT_ACTIONS, MessageType } from "utils/types";

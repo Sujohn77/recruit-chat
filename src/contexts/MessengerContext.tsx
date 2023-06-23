@@ -59,7 +59,7 @@ import { useRequisitions } from "services/hooks";
 import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
 import { colors } from "utils/colors";
-import { apiInstance } from "services";
+import { apiInstance } from "services/api";
 
 interface IChatProviderProps {
   children: React.ReactNode;

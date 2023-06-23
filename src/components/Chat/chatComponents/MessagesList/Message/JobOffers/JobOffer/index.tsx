@@ -7,7 +7,7 @@ import AnimateHeight, { Height } from "react-animate-height";
 import * as S from "./styles";
 import { IJobOfferProps } from "./props";
 import { IMAGES } from "assets";
-import { apiInstance } from "services";
+import { apiInstance } from "services/api";
 import { ISuccessResponse } from "services/types";
 import { Loader } from "components/Layout";
 import { DarkButton } from "components/Layout/styles";

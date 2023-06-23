@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 import { IAuthContext } from "./types";
-import { authInstance } from "services";
+import { authInstance } from "services/api";
 import { LocalStorage } from "utils/constants";
 
 interface IAuthProviderProps {

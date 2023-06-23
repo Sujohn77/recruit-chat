@@ -1,9 +1,14 @@
 import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
 import axios, { AxiosRequestConfig } from "axios";
-import { ISuccessResponse } from "services/types";
+import {
+  IApplyJobResponse,
+  IFollowingRequest,
+  IFollowingResponse,
+  ISuccessResponse,
+} from "services/types";
 
-import { SessionStorage, isDevMode } from "../utils/constants";
-import { getStorageValue } from "../utils/helpers";
+import { SessionStorage, isDevMode } from "../../utils/constants";
+import { getStorageValue } from "../../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
@@ -26,17 +31,18 @@ import {
   IResumeDataPayload,
   IAskAQuestionRequest,
   IAskAQuestionResponse,
-} from "./types";
+} from "../types";
 
 export const FORM_URLENCODED = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 };
 const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 
-// James's guid
-// const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6";
-const GUID = "f466faec-ea83-4122-8c23-458ab21e96be";
-const CANDIDATE_ID = 55457050;
+// const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // James's guid
+const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
+export const CANDIDATE_ID = 55457050; // hardcoded for now
+export const CHAT_ID = 2433044; // the current chatID - this is hardcoded for now
+export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 
 class Api {
   protected client: ApisauceInstance;
@@ -197,6 +203,22 @@ class Api {
       candidateId: CANDIDATE_ID,
       jobId,
     });
+
+  // ---------------------------- Apply Job ---------------------------- //
+  applyJob = (jobId: number) =>
+    this.client.post<IApplyJobResponse>("/api/chatbot/startprescree", {
+      jobId,
+      candidateId: CANDIDATE_ID,
+      chatID: CHAT_ID,
+      locale: LOCALE,
+    });
+  sendFollowing = (data: IFollowingRequest) =>
+    this.client.post<IFollowingResponse>(
+      "/api/chatbot/sendprescreenmessage",
+      data
+    );
+  // -------------------------------------------------------------------- //
+
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);
     delete this.client.headers.Authorization;
