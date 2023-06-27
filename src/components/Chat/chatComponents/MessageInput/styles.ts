@@ -45,6 +45,7 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
 
 export const SearchHeader = styled.div`
   background: ${(props) => props.theme.headerColor};
+  color: ${(props) => props.theme.chatbotHeaderTextColor};
   padding: 7px 16px;
   height: ${searchHeaderHeight}px;
   box-sizing: border-box;
