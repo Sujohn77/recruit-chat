@@ -14,7 +14,7 @@ import { Loader } from "components/Layout";
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
 
 export const ViewJob: FC = () => {
-  const { viewJob, setViewJob } = useChatMessenger();
+  const { viewJob, setViewJob, candidateId } = useChatMessenger();
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
@@ -39,11 +39,12 @@ export const ViewJob: FC = () => {
   }, [height, applyJobError]);
 
   const handleApplyJobClick = async () => {
-    if (viewJob?.id) {
+    if (viewJob?.id && candidateId) {
       setApplyJobLoading(true);
       try {
         const res: ApiResponse<IApplyJobResponse> = await apiInstance.applyJob(
-          +viewJob.id
+          +viewJob.id,
+          candidateId
         );
 
         if (
