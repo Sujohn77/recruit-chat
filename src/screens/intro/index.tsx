@@ -32,8 +32,6 @@ export const Intro: FC<IIntroScreenProps> = ({
     setIsNeedSupport(true);
   };
 
-  // const isOtpMessages = isOTPpSent && !isNeedSupport;
-
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
       <DefaultMessages

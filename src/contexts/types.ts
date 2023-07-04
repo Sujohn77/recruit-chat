@@ -55,6 +55,9 @@ export interface IChatMessengerContext {
   _setMessages: (messages: ILocalMessage[]) => void;
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;
+  candidateId?: number;
+  chatId?: number;
+  isAnonym: boolean;
 }
 
 export interface IFileUploadContext {

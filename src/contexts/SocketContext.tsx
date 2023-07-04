@@ -11,7 +11,6 @@ import React, {
 import { FirebaseSocketReactivePagination } from "socket";
 import { SocketCollectionPreset } from "socket/socket.options";
 import { IMessage, ISnapshot } from "services/types";
-import { chatId } from "utils/constants";
 
 interface ISocketProviderProps {
   children: React.ReactNode;
@@ -21,7 +20,7 @@ const socketDefaultState = {};
 const SocketContext = createContext<any>({ socketDefaultState });
 
 const SocketProvider = ({ children }: ISocketProviderProps) => {
-  const { setSnapshotMessages, setIsInitialized } = useChatMessenger();
+  const { setSnapshotMessages, setIsInitialized, chatId } = useChatMessenger();
 
   const onUpdateMessages = useCallback(
     (messagesSnapshots: ISnapshot<IMessage>[]) => {

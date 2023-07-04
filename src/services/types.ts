@@ -327,6 +327,12 @@ export interface ISkill {
   proficiencyID: null;
 }
 
+export interface ICreateAnonymCandidateRequest {
+  firstName: string;
+  lastName: string;
+  typeId: number;
+}
+
 export interface ICreationCandidatePayload {
   title?: string;
   firstName: string;
@@ -520,3 +526,8 @@ export interface IFollowingRequest {
 }
 
 export interface IFollowingResponse extends ISuccessResponse {}
+
+export interface ICreateAnonymCandidateResponse extends ISuccessResponse {
+  redirectUri: null | string;
+  wdResponseResultModel: null | unknown;
+}

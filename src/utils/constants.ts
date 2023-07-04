@@ -10,6 +10,8 @@ import {
   MessageType,
 } from "./types";
 
+export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
+
 export const isDevMode = process.env.NODE_ENV === "development";
 
 export const currencies = ["$", "€"];
@@ -29,13 +31,6 @@ export const HTTP_STATUSES: Record<HTTPStatusCodes, number> = {
 export enum ChannelName {
   SMS = "SMS",
 }
-
-export const defaultServerMessage = {
-  channelName: ChannelName.SMS,
-  candidateId: 49530690,
-  contextId: null,
-  images: [],
-};
 
 export const initialChatMessage = {
   _id: null,

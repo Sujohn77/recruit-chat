@@ -7,7 +7,7 @@ import {
   ISuccessResponse,
 } from "services/types";
 
-import { SessionStorage, isDevMode } from "../../utils/constants";
+import { BASE_API_URL, SessionStorage, isDevMode } from "../../utils/constants";
 import { getStorageValue } from "../../utils/helpers";
 import {
   AppKeyType,
@@ -36,7 +36,6 @@ import {
 export const FORM_URLENCODED = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 };
-const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 
 // const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // James's guid
 const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
@@ -82,28 +81,10 @@ class Api {
         const originalRequest = error.config;
         if (status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          // sessionStorage.removeItem(SessionStorage.Token);
-          // const message = {
-          //   event_id: "refresh_token",
-          //   callback: (token: string) => {
-          //     console.log("====================================");
-          //     console.log("NEW token", token);
-          //     console.log("====================================");
-          //     return this.client.setHeader(
-          //       "Authorization",
-          //       "chatbot-jwt-token " + token
-          //     );
-          //   },
-          // };
-          // console.log("====================================");
-          // console.log("error?.response", error?.response);
-          // console.log("originalRequest", originalRequest);
-          // console.log("message", message);
-          // console.log("====================================");
-          // window.parent.postMessage(message, "*");
+
           const res: ApiResponse<string> = await apiInstance.refreshToken();
           if (res.data) {
-            apiInstance.setAuthHeader(res.data);
+            apiInstance.setChatAuthHeader(res.data);
             return axios(originalRequest);
           }
         }
@@ -115,11 +96,6 @@ class Api {
 
   requestInterceptor = (request: AxiosRequestConfig) => {
     const token = getStorageValue(SessionStorage.Token);
-    // const basicAuthToken = Buffer.from(`${info.username}:${info.password}`).toString('base64');
-    // const isExpired = token ? isTokenExpired(token) : true;
-    // console.log("====================================");
-    // console.log("T O K E N", token);
-    // console.log("====================================");
 
     if (token) {
       if (isDevMode) {
@@ -152,9 +128,11 @@ class Api {
 
   setHeader = (key: string, value: string) => this.client.setHeader(key, value);
   removeHeader = (key: string) => this.client.deleteHeader(key);
-  setAuthHeader = (token: string) => {
+  setChatAuthHeader = (token: string) => {
     return this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
   };
+
+  setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
 
   refreshToken = (guid = GUID) => {
     return this.client.post<string>("api/chatbot/token", {
@@ -199,18 +177,18 @@ class Api {
       data
     );
   };
-  addCandidateByJobId = (jobId: number) =>
+  addCandidateByJobId = (jobId: number, candidateId: number) =>
     this.client.post<ISuccessResponse>("api/pool/addcandidatebyjobid", {
-      candidateId: CANDIDATE_ID,
+      candidateId: candidateId || CANDIDATE_ID,
       jobId,
     });
 
   // ---------------------------- Apply Job ---------------------------- //
-  applyJob = (jobId: number) =>
+  applyJob = (jobId: number, candidateId: number, chatID?: number) =>
     this.client.post<IApplyJobResponse>("/api/chatbot/startprescreen", {
       jobId,
-      candidateId: CANDIDATE_ID,
-      chatID: CHAT_ID,
+      candidateId: candidateId || CANDIDATE_ID,
+      chatID: chatID || CHAT_ID,
       locale: LOCALE,
     });
   sendFollowing = (data: IFollowingRequest) =>
