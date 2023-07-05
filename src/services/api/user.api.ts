@@ -2,6 +2,7 @@ import apisauce, { ApisauceInstance } from "apisauce";
 import {
   ICreateAnonymCandidateRequest,
   ICreateCandidateResponse,
+  ICreateChatResponse,
 } from "services/types";
 import { BASE_API_URL } from "utils/constants";
 
@@ -31,7 +32,9 @@ class userInstance {
     this.client.post<ICreateCandidateResponse>("api/candidate/create", data);
 
   createChatByAnonymUser = (candidateId: number) =>
-    this.client.post("api/messenger/chat/create".trim(), { candidateId });
+    this.client.post<ICreateChatResponse>("api/messenger/chat/create", {
+      candidateId,
+    });
 }
 
 export const userAPI = new userInstance();

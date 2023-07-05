@@ -526,3 +526,75 @@ export interface IUpdateOrMergeCandidateResponse extends ISuccessResponse {
   updateChatBotCandidateId?: boolean;
   candidateId?: number;
 }
+
+export interface IChatParticipant {
+  id: number;
+  uniqueId: string;
+  type: string;
+  countOfUnread: number;
+  lastViewed: string;
+  firstName: string;
+  lastName: string;
+  companyId: null;
+  employer: null | string | unknown;
+  jobTitle: null | string | unknown;
+  photoUrl: null | string | unknown;
+  photoSasToken: null | string | unknown;
+}
+
+export interface INewChat {
+  chatId: number;
+  subscriberId: number;
+  subscriber: IChatParticipant;
+  participants: IChatParticipant[];
+  participantIds: string[];
+  bulkSends: [];
+  bulkSendIds: [];
+  pinned: [];
+  archived: [];
+  muted: {};
+  isViewed?: boolean;
+  isOptedOut?: boolean;
+  countOfUnread: number;
+  canChat: {
+    canChat: boolean;
+    isImageEnabled: boolean;
+    unavailableMessage: null | string | number | unknown;
+    errorCode: null | string | number | unknown;
+  };
+  ownerId: number;
+  queueId: null | string | number | unknown;
+  statusId: null | string | number | unknown;
+  dateCreated: string;
+  dateModified: string;
+  imageUrl: null | string | unknown;
+  imageUrlSasToken: null | string | unknown;
+  lastMessage: {
+    localId: null | string | number | unknown;
+    chatItemId: number;
+    content: {
+      typeId: number;
+      subType: string;
+      subTypeId: number;
+      text: string;
+      url: null | string | unknown;
+      detail: null | unknown;
+    };
+    sender: null | unknown;
+    dateCreated: string;
+    dateModified: string;
+    isEdited?: boolean;
+    isReceived?: boolean;
+    isRejected?: boolean;
+    optionList?: null | unknown;
+    bulkSendId?: number;
+  };
+  options: null | unknown;
+  filters: string[] | [];
+  customData: Object | unknown;
+}
+
+export interface ICreateChatResponse extends ISuccessResponse {
+  chatId?: number;
+  chat?: INewChat;
+}
