@@ -176,6 +176,7 @@ const ChatProvider = ({
   );
 
   LOG(candidateId, "candidateId");
+  LOG(chatId, "chatId");
 
   useEffect(() => {
     const createAnonymCandidateId = async () => {

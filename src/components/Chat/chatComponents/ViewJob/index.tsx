@@ -18,7 +18,8 @@ interface IViewJobProps {
 }
 
 export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
-  const { viewJob, setViewJob, candidateId, isAnonym } = useChatMessenger();
+  const { viewJob, setViewJob, candidateId, isAnonym, chatId } =
+    useChatMessenger();
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
@@ -44,11 +45,11 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   const handleApplyJobClick = async () => {
     if (!isAnonym) {
-      if (viewJob?.id && candidateId) {
+      if (viewJob?.id && candidateId && chatId) {
         setApplyJobLoading(true);
         try {
           const res: ApiResponse<IApplyJobResponse> =
-            await apiInstance.applyJob(+viewJob.id, candidateId);
+            await apiInstance.applyJob(+viewJob.id, candidateId, chatId);
 
           if (
             res.data?.success &&
