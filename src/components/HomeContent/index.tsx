@@ -1,4 +1,3 @@
-import { SocketProvider } from "contexts/SocketContext";
 import { FC, useState } from "react";
 
 import { Chat } from "components";
@@ -10,7 +9,7 @@ export const HomeContent: FC = () => {
   );
 
   return (
-    <SocketProvider>
+    <>
       {isSelectedOption && (
         <Chat
           setIsSelectedOption={setIsSelectedOption}
@@ -22,6 +21,6 @@ export const HomeContent: FC = () => {
         setIsSelectedOption={setIsSelectedOption}
         isSelectedOption={isSelectedOption}
       />
-    </SocketProvider>
+    </>
   );
 };

@@ -1,5 +1,4 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { useSocketContext } from "contexts/SocketContext";
 import { useFileUploadContext } from "contexts/FileUploadContext";
 import { FC, useEffect, useRef } from "react";
 import map from "lodash/map";
@@ -25,7 +24,6 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
-  const { onLoadNextMessagesPage } = useSocketContext();
   const { messages, currentMsgType, status, nextMessages, isChatLoading } =
     useChatMessenger();
 
@@ -45,8 +43,6 @@ export const MessagesList: FC<IMessagesListProps> = ({
     }
   };
 
-  const onLoadMore = () => onLoadNextMessagesPage?.();
-
   const showLoader =
     isFileDownloading || isJobSearchingLoading || isChatLoading;
 
@@ -59,7 +55,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
       >
         <InfiniteScrollView
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
-          onLoadMore={onLoadMore}
+          onLoadMore={() => {}}
           style={infiniteScrollStyle}
           inverse
         >
