@@ -57,10 +57,9 @@ export const TextTitle = styled.h3`
 
 export const CloseLogin = styled(Close)`
   position: absolute;
-  top: -10px;
-  right: -15px;
+  top: -21px;
+  right: -17px;
   height: 18px;
   width: 18px;
-  right: 10px;
   cursor: pointer;
 `;

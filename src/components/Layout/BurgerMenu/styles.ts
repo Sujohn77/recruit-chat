@@ -17,11 +17,11 @@ export const MenuItemsWrapper = styled.div`
   position: absolute;
   bottom: 50px;
   left: 20px;
-  animation: fade-in 0.1s ease-in forwards;
+  animation: burger-fade-in 0.1s ease-in forwards;
   opacity: 0;
-  z-index: 2;
+  z-index: 3;
 
-  @keyframes fade-in {
+  @keyframes burger-fade-in {
     0% {
       opacity: 0;
       transform: scale(0.9);
