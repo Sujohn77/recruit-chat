@@ -142,19 +142,6 @@ export interface IMessage extends I_id, IMessageContent {
   isReceived?: boolean;
 }
 
-export interface ISendMessageResponse {
-  chatId: number;
-  chatItems: IMessage[];
-  errorOccurrenceId: null;
-  errors: [];
-  limits: { limits: [] };
-  message: null;
-  redirectUri: null;
-  status: null;
-  statusCode: null;
-  success: boolean;
-}
-
 export interface ISnapshot<T = Object> {
   type: DocumentChangeType;
   data: T;

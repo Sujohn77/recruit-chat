@@ -85,6 +85,7 @@ export const Login: FC<ILoginProps> = ({
     <S.ViewBody>
       <S.Wrapper>
         <S.CloseLogin
+          height="25px"
           onClick={() => setShowLoginScreen(false)}
           color={colors.black}
         />
