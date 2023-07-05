@@ -29,6 +29,9 @@ class userInstance {
 
   createAnonymCandidate = (data: ICreateAnonymCandidateRequest) =>
     this.client.post<ICreateCandidateResponse>("api/candidate/create", data);
+
+  createChatByAnonymUser = (candidateId: number) =>
+    this.client.post("api/messenger/chat/create".trim(), { candidateId });
 }
 
 export const userAPI = new userInstance();
