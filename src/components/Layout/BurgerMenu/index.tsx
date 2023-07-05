@@ -35,7 +35,7 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   }, [isOpen]);
 
   const handleItemClick = async (item: IMenuItem) => {
-    if (item.type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym) {
+    if (item.type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
       try {
         const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
           await apiInstance.sendTranscript({

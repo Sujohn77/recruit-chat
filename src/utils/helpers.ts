@@ -10,7 +10,6 @@ import find from "lodash/find";
 import map from "lodash/map";
 import { Buffer } from "buffer";
 import jwt_decode from "jwt-decode";
-import { Match } from "autolinker";
 
 import {
   MessageType,
@@ -36,7 +35,6 @@ import {
   LocalStorage,
   TextFieldTypes,
   SessionStorage,
-  autolinkerClassName,
 } from "./constants";
 import { IApiThemeResponse } from "./api";
 import {
@@ -662,6 +660,17 @@ export const getFormattedDate = (date: string) => {
   return moment(date).format("MM/DD/YYYY");
 };
 
+export const getUniqueItems = (items: string[]) => {
+  const uniqueItems: string[] = [];
+  items.forEach((item) => {
+    if (uniqueItems?.indexOf(item) === -1) {
+      uniqueItems.push(item);
+    }
+  });
+
+  return uniqueItems;
+};
+
 export const getFormattedLocations = (locations: LocationType[]) => {
   const items = map(
     filter(locations, (location) => !!location?.city),
@@ -677,17 +686,6 @@ export const getFormattedLocations = (locations: LocationType[]) => {
   );
 
   return getUniqueItems(items);
-};
-
-export const getUniqueItems = (items: string[]) => {
-  const uniqueItems: string[] = [];
-  items.forEach((item) => {
-    if (uniqueItems.indexOf(item) === -1) {
-      uniqueItems.push(item);
-    }
-  });
-
-  return uniqueItems;
 };
 
 export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
@@ -811,14 +809,6 @@ export const regExpUuid =
 export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 
 // ---------------------------------------------------------------------------- //
-
-export const autolinkerReplaceFn = (match: Match) => {
-  if (match.getType() === "url") {
-    return `<span class=${autolinkerClassName} style="text-decoration: underline; color: #618AED; cursor: pointer;">${match.getAnchorText()}</span>`;
-  } else {
-    return match.getAnchorText();
-  }
-};
 
 export const LOG = (logObj: any, description?: string) => {
   console.log("====================================");

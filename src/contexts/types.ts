@@ -56,7 +56,7 @@ export interface IChatMessengerContext {
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;
   candidateId?: number;
-  chatId: number;
+  chatId?: number;
   isAnonym: boolean;
 }
 

@@ -7,11 +7,9 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { useTranslation } from "react-i18next";
 import findIndex from "lodash/findIndex";
 import map from "lodash/map";
 import moment from "moment";
-import Autolinker from "autolinker";
 import { ApiResponse } from "apisauce";
 
 import {
@@ -21,9 +19,17 @@ import {
   USER_INPUTS,
   IRequisition,
 } from "utils/types";
-import { IAskAQuestionResponse, IMessage, ISnapshot } from "services/types";
 import {
-  chatId,
+  IAskAQuestionResponse,
+  ICreateCandidateResponse,
+  ICreateChatResponse,
+  IMessage,
+  ISendTranscriptResponse,
+  ISnapshot,
+  IUpdateOrMergeCandidateRequest,
+  IUpdateOrMergeCandidateResponse,
+} from "services/types";
+import {
   getChatActionResponse,
   isDevMode,
   isPushMessageType,
@@ -46,7 +52,7 @@ import {
   getFormattedLocations,
   getStorageValue,
   generateLocalId,
-  autolinkerReplaceFn,
+  LOG,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -58,8 +64,8 @@ import {
 import { useRequisitions } from "services/hooks";
 import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
-import { colors } from "utils/colors";
 import { apiInstance } from "services/api";
+import { userAPI } from "services/api/user.api";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -95,6 +101,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setJobPositions: () => {},
   setShowJobAutocompleteBox: () => {},
   _setMessages: () => {},
+  isAnonym: true,
+  chatId: 0,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -125,8 +133,10 @@ export const validationUserContacts = ({
   return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
 
-const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
-  const { t } = useTranslation();
+const ChatProvider = ({
+  chatBotID: chatBotId = "17",
+  children,
+}: IChatProviderProps) => {
   // -------------------------------- State -------------------------------- //
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
@@ -155,11 +165,63 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
 
+  const [isAnonym, setIsAnonym] = useState<boolean>(true);
+  const [candidateId, setCandidateId] = useState<number | undefined>();
+  const [chatId, setChatID] = useState<number | undefined>();
+
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
     searchRequisitionsTrigger,
     setIsChatLoading
   );
+
+  LOG(candidateId, "candidateId");
+
+  useEffect(() => {
+    const createAnonymCandidateId = async () => {
+      setIsLoadedMessages(true);
+      try {
+        const token: string | null = getStorageValue(SessionStorage.Token);
+        if (token) {
+          userAPI.setAuthHeader(token);
+        }
+
+        const res: ApiResponse<ICreateCandidateResponse> =
+          await userAPI.createAnonymCandidate({
+            firstName: "Anonymous",
+            lastName: "ChatbotUser",
+            typeId: 17,
+          });
+
+        if (res.data?.id) {
+          setCandidateId(res.data.id);
+
+          const chatRes: ApiResponse<ICreateChatResponse> =
+            await userAPI.createChatByAnonymUser(res.data.id);
+
+          if (chatRes.data?.chatId) {
+            setChatID(chatRes.data?.chatId);
+          }
+
+          console.log("====================================");
+          console.log("chatRes", chatRes);
+          console.log("====================================");
+        }
+
+        console.log("====================================");
+        console.log("res", res);
+        console.log("====================================");
+      } catch (error) {
+        console.log("====================================");
+        console.log("error", error);
+        console.log("====================================");
+      } finally {
+        setIsLoadedMessages(false);
+      }
+    };
+
+    createAnonymCandidateId();
+  }, []);
 
   useEffect(() => {
     let timeout: undefined | NodeJS.Timeout;
@@ -219,14 +281,15 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
   }, [serverMessages.length, isInitialized]);
 
   const createJobAlert = async ({ email, type }: IJobAlertData) => {
-    if (type === CHAT_ACTIONS.SET_ALERT_EMAIL) {
+    if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
       setIsChatLoading(true);
       try {
         await apiInstance.createJobAlert({
           email: email,
           location: getFormattedLocations(locations)[0],
           jobCategory: alertCategories?.length ? alertCategories[0] : "",
-          candidateId: 50994334,
+          candidateId: candidateId,
+          // candidateId: 50994334,
           // candidateId: 49530690,
         });
       } catch (err) {
@@ -427,13 +490,86 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
           setIsChatLoading(true);
           try {
-            await apiInstance.sendTranscript({
-              ChatID: chatId,
-            });
+            if (chatId) {
+              if (candidateId && payload?.candidateData) {
+                const candidateData: IUpdateOrMergeCandidateRequest = {
+                  ...payload.candidateData,
+                  candidateId: candidateId,
+                  chatId: chatId,
+                };
+
+                const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+                  await apiInstance.updateOrMargeCandidate(candidateData);
+
+                const response = candidateRes?.data;
+
+                if (
+                  response?.updateChatBotCandidateId &&
+                  response?.candidateId
+                ) {
+                  setCandidateId(response.candidateId);
+                  setIsAnonym(false);
+                }
+
+                if (response?.updateChatBotCandidateId === false) {
+                  setIsAnonym(false);
+                }
+
+                payload.candidateData.callback?.();
+
+                LOG(candidateRes, "Candidate Response");
+              }
+
+              const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+                await apiInstance.sendTranscript({
+                  ChatID: chatId,
+                });
+
+              LOG(sendTranscriptRes, "Send Transcript Response");
+            }
           } catch (error) {
           } finally {
             setIsChatLoading(false);
           }
+          break;
+        }
+
+        case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE: {
+          if (chatId) {
+            setIsChatLoading(true);
+            try {
+              if (candidateId && payload?.candidateData) {
+                const candidateData: IUpdateOrMergeCandidateRequest = {
+                  ...payload.candidateData,
+                  candidateId: candidateId,
+                  chatId: chatId,
+                };
+
+                const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+                  await apiInstance.updateOrMargeCandidate(candidateData);
+
+                const response = candidateRes?.data;
+
+                if (
+                  response?.updateChatBotCandidateId &&
+                  response?.candidateId
+                ) {
+                  setCandidateId(response.candidateId);
+                  setIsAnonym(false);
+                }
+
+                if (response?.updateChatBotCandidateId === false) {
+                  setIsAnonym(false);
+                }
+
+                LOG(candidateRes, "Candidate Response");
+              }
+            } catch (error) {
+            } finally {
+              setIsChatLoading(false);
+            }
+          }
+
           break;
         }
         case CHAT_ACTIONS.SET_WORK_PERMIT: {
@@ -505,9 +641,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
                   (answer) => ({
                     content: {
                       subType: MessageType.TEXT,
-                      text: Autolinker.link(answer, {
-                        replaceFn: autolinkerReplaceFn,
-                      }),
+                      text: answer,
                     },
                     isOwn: false,
                     localId: generateLocalId(),
@@ -679,7 +813,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
       user,
       isInitialized,
       requisitions.length,
-      chatBotID,
+      chatBotId,
     ]
   );
 
@@ -787,7 +921,7 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     }
   };
 
-  const chatState = {
+  const chatState: IChatMessengerContext = {
     status,
     messages,
     category,
@@ -816,13 +950,16 @@ const ChatProvider = ({ chatBotID = "17", children }: IChatProviderProps) => {
     _setMessages: setMessages,
     setShowJobAutocompleteBox,
     showJobAutocompleteBox,
+    isAnonym,
+    candidateId,
+    chatId: chatId,
   };
 
-  console.log(
-    "%c   chat state   ",
-    `color: ${colors.shamrock}; font-size: 14px; background-color: ${colors.black};`,
-    chatState
-  );
+  // console.log(
+  //   "%c   chat state   ",
+  //   `color: ${colors.shamrock}; font-size: 14px; background-color: ${colors.black};`,
+  //   chatState
+  // );
 
   return (
     <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>

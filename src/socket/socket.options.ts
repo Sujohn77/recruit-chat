@@ -35,7 +35,7 @@ export const SOCKET_PRESET_OPTIONS: Record<
     pageSize: 10,
     sortField: "dateCreated",
     onGetCollectionRef: (chatId: number) => {
-      return collection(db, "chats", chatId.toString(), "messages");
+      return collection(db, "chats", chatId?.toString(), "messages");
     },
   },
 };
