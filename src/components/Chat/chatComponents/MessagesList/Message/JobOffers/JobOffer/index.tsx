@@ -11,11 +11,15 @@ import { apiInstance } from "services/api";
 import { ISuccessResponse } from "services/types";
 import { Loader } from "components/Layout";
 import { DarkButton } from "components/Layout/styles";
+import { LOG } from "utils/helpers";
 
 const ANIMATION_ID = "ANIMATION_ID";
 
-export const JobOffer: React.FC<IJobOfferProps> = ({ jobOffer }) => {
-  const { setViewJob } = useChatMessenger();
+export const JobOffer: React.FC<IJobOfferProps> = ({
+  jobOffer,
+  setShowLoginScreen,
+}) => {
+  const { setViewJob, candidateId, isAnonym } = useChatMessenger();
   const { t } = useTranslation();
 
   const [isSuccessInterested, setIsSuccessInterested] = useState(false);
@@ -37,35 +41,39 @@ export const JobOffer: React.FC<IJobOfferProps> = ({ jobOffer }) => {
     };
   }, [height]);
 
-  const handleSubmitClick = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response: ApiResponse<ISuccessResponse> =
-        await apiInstance.addCandidateByJobId(+jobOffer.id);
+  const interestedIn = useCallback(async () => {
+    if (!isAnonym) {
+      if (candidateId) {
+        setIsLoading(true);
+        try {
+          const response: ApiResponse<ISuccessResponse> =
+            await apiInstance.addCandidateByJobId(+jobOffer.id, candidateId);
 
-      if (response?.data?.success) {
-        setIsSuccessInterested(true);
-      } else if (response.data?.statusCode === 303) {
-        // if 303 === the user has already registered themselves for this job
+          if (response?.data?.success) {
+            setIsSuccessInterested(true);
+          } else if (response.data?.statusCode === 303) {
+            // if 303 === the user has already registered themselves for this job
 
-        setErrorText("Already registered themselves for this job");
-        setHeight("auto");
-        setIsSuccessInterested(true);
-      } else if (response.data?.statusCode === 105) {
-        // general error, show error msg
-        if (response.data.errors[0]) {
-          setErrorText(response.data.errors[0]);
-          setHeight("auto");
+            setErrorText("Already registered themselves for this job");
+            setHeight("auto");
+            setIsSuccessInterested(true);
+          } else if (response.data?.statusCode === 105) {
+            // general error, show error msg
+            if (response.data.errors[0]) {
+              setErrorText(response.data.errors[0]);
+              setHeight("auto");
+            }
+          }
+        } catch (error) {
+          LOG(error, "ERROR");
+        } finally {
+          setIsLoading(false);
         }
       }
-    } catch (error) {
-      console.log("====================================");
-      console.log("ERROR", error);
-      console.log("====================================");
-    } finally {
-      setIsLoading(false);
+    } else {
+      setShowLoginScreen(true);
     }
-  }, []);
+  }, [isAnonym, candidateId]);
 
   const handleReadMore = useCallback(() => {
     setViewJob(jobOffer);
@@ -91,7 +99,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({ jobOffer }) => {
           {t("chat_item_description:success_interested_id")}
         </S.SuccessInteresting>
       ) : (
-        <DarkButton onClick={handleSubmitClick}>
+        <DarkButton onClick={interestedIn}>
           {t("chat_item_description:interested_in")}
         </DarkButton>
       )}

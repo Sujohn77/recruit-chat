@@ -11,6 +11,7 @@ import {
 } from "./chatComponents";
 import * as S from "./styles";
 import { ThemeType } from "utils/theme/default";
+import { Login } from "./chatComponents/Login";
 interface IChatProps {
   isSelectedOption: boolean;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -26,6 +27,7 @@ export const Chat: FC<IChatProps> = ({
   const { viewJob } = useChatMessenger();
 
   const [height, setHeight] = useState(480);
+  const [showLoginScreen, setShowLoginScreen] = useState(false);
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -33,9 +35,23 @@ export const Chat: FC<IChatProps> = ({
 
   return (
     <S.Wrapper isOpened={!!isSelectedOption}>
-      <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
-      <MessagesList resultsHeight={height} />
-      <ViewJob />
+      <ChatHeader
+        showLoginScreen={showLoginScreen}
+        title={title}
+        setIsSelectedOption={setIsSelectedOption}
+        setShowLoginScreen={setShowLoginScreen}
+      />
+      <MessagesList
+        setShowLoginScreen={setShowLoginScreen}
+        resultsHeight={height}
+      />
+
+      <Login
+        showLoginScreen={showLoginScreen}
+        setShowLoginScreen={setShowLoginScreen}
+      />
+
+      <ViewJob setShowLoginScreen={setShowLoginScreen} />
       <MessageInput setHeight={setHeight} />
     </S.Wrapper>
   );

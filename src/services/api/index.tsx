@@ -5,6 +5,8 @@ import {
   IFollowingRequest,
   IFollowingResponse,
   ISuccessResponse,
+  IUpdateOrMergeCandidateRequest,
+  IUpdateOrMergeCandidateResponse,
 } from "services/types";
 
 import { BASE_API_URL, SessionStorage, isDevMode } from "../../utils/constants";
@@ -197,6 +199,12 @@ class Api {
       data
     );
   // -------------------------------------------------------------------- //
+  updateOrMargeCandidate = (data: IUpdateOrMergeCandidateRequest) =>
+    this.client.post<IUpdateOrMergeCandidateResponse>(
+      "api/chatbot/update-or-merge-candidate".trim(),
+      data
+    );
+  //
 
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);

@@ -13,8 +13,12 @@ import { Loader } from "components/Layout";
 
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
 
-export const ViewJob: FC = () => {
-  const { viewJob, setViewJob, candidateId } = useChatMessenger();
+interface IViewJobProps {
+  setShowLoginScreen: (show: boolean) => void;
+}
+
+export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
+  const { viewJob, setViewJob, candidateId, isAnonym } = useChatMessenger();
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
@@ -39,47 +43,49 @@ export const ViewJob: FC = () => {
   }, [height, applyJobError]);
 
   const handleApplyJobClick = async () => {
-    if (viewJob?.id && candidateId) {
-      setApplyJobLoading(true);
-      try {
-        const res: ApiResponse<IApplyJobResponse> = await apiInstance.applyJob(
-          +viewJob.id,
-          candidateId
-        );
+    if (!isAnonym) {
+      if (viewJob?.id && candidateId) {
+        setApplyJobLoading(true);
+        try {
+          const res: ApiResponse<IApplyJobResponse> =
+            await apiInstance.applyJob(+viewJob.id, candidateId);
 
-        if (
-          res.data?.success &&
-          res.data?.FlowID &&
-          res.data?.SubscriberWorkflowID
-        ) {
-          setViewJob(null);
-          // for sending answer
-          // const payload: IFollowingRequest = {
-          //   FlowID: res.data.FlowID,
-          //   SubscriberWorkflowID: res.data.SubscriberWorkflowID,
-          //   candidateId: CANDIDATE_ID,
-          //   message: "yes", // answer example
-          // };
+          if (
+            res.data?.success &&
+            res.data?.FlowID &&
+            res.data?.SubscriberWorkflowID
+          ) {
+            setViewJob(null);
+            // for sending answer
+            // const payload: IFollowingRequest = {
+            //   FlowID: res.data.FlowID,
+            //   SubscriberWorkflowID: res.data.SubscriberWorkflowID,
+            //   candidateId: CANDIDATE_ID,
+            //   message: "yes", // answer example
+            // };
 
-          // const followingRes: ApiResponse<IFollowingResponse> =
-          //   await apiInstance.sendFollowing(payload);
+            // const followingRes: ApiResponse<IFollowingResponse> =
+            //   await apiInstance.sendFollowing(payload);
 
-          // if (followingRes.data?.success) {
-          //   setViewJob(null);
-          // }
-        } else {
-          res.data?.errors[0] &&
-            setApplyJobError(res.data?.errors[0] || "Something");
+            // if (followingRes.data?.success) {
+            //   setViewJob(null);
+            // }
+          } else {
+            res.data?.errors[0] &&
+              setApplyJobError(res.data?.errors[0] || "Something");
+          }
+
+          if (res.data?.statusCode === 105) {
+            res.data?.errors[0] && setApplyJobError(res.data?.errors[0]);
+          }
+        } catch (error) {
+          error.message && setApplyJobError(error.message);
+        } finally {
+          setApplyJobLoading(false);
         }
-
-        if (res.data?.statusCode === 105) {
-          res.data?.errors[0] && setApplyJobError(res.data?.errors[0]);
-        }
-      } catch (error) {
-        error.message && setApplyJobError(error.message);
-      } finally {
-        setApplyJobLoading(false);
       }
+    } else {
+      setShowLoginScreen(true);
     }
   };
 

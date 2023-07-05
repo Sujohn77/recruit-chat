@@ -16,7 +16,6 @@ import { TextMessage } from "./TextMessage";
 import { InterestedIn } from "./InterestedIn";
 import { HiringHelp } from "./HiringHelp";
 import { SalaryForm } from "./SalaryForm";
-import { QuestionForm } from "./QuestionForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
@@ -25,6 +24,7 @@ interface IMessageProps {
   message: ILocalMessage;
   isLastMessage: boolean;
   withoutMargin?: boolean;
+  setShowLoginScreen: (show: boolean) => void;
   // onClick: (content: IContent) => void;
   // handleOfferSubmit: ((id: string | number) => void) | undefined;
 }
@@ -32,7 +32,7 @@ interface IMessageProps {
 export const MS_1000 = 1000;
 
 export const Message: FC<IMessageProps> = memo(
-  ({ message, isLastMessage, withoutMargin }) => {
+  ({ message, isLastMessage, withoutMargin, setShowLoginScreen }) => {
     const subType = message.content.subType;
     const messageProps = { ...getMessageProps(message) };
 
@@ -50,7 +50,7 @@ export const Message: FC<IMessageProps> = memo(
         return <EmailForm />;
       }
       case MessageType.JOB_POSITIONS: {
-        return <JobOffers />;
+        return <JobOffers setShowLoginScreen={setShowLoginScreen} />;
       }
       case MessageType.TRANSCRIPT: {
         return <TranscriptSent />;

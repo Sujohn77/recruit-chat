@@ -24,7 +24,7 @@ class userInstance {
   }
 
   setAuthHeader = (token: string) =>
-    this.client.setHeader("Authorization", `Bearer ${token}`);
+    this.client.setHeader("Authorization", `chatbot-jwt-token ${token}`);
   setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
 
   createAnonymCandidate = (data: ICreateAnonymCandidateRequest) =>

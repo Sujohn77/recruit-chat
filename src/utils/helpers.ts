@@ -819,3 +819,15 @@ export const autolinkerReplaceFn = (match: Match) => {
     return match.getAnchorText();
   }
 };
+
+export const LOG = (logObj: any, description?: string) => {
+  console.log("====================================");
+  console.log(
+    `%c   ${description}   `,
+    `color: ${
+      description === "ERROR" ? colors.torchRed : colors.purple
+    }; font-size: 14px; background-color: ${colors.black};`,
+    logObj
+  );
+  console.log("====================================");
+};

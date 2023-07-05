@@ -7,16 +7,19 @@ import { IBurgerMenuProps } from "./props";
 import { menuItems } from "./data";
 import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
-import { IMenuItem } from "utils/types";
+import { CHAT_ACTIONS, IMenuItem } from "utils/types";
+import { ApiResponse } from "apisauce";
+import { ISendTranscriptResponse } from "services/types";
+import { LOG } from "utils/helpers";
+import { apiInstance } from "services/api";
 
 export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   setIsShowResults,
 }) => {
-  const { dispatch } = useChatMessenger();
+  const { dispatch, chatId, isAnonym } = useChatMessenger();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const closeMenu = (e: any) => {
@@ -31,13 +34,26 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     };
   }, [isOpen]);
 
-  const handleItemClick = (item: IMenuItem) => {
-    dispatch({
-      type: item.type,
-      payload: { item: item.text, isChatMessage: true },
-    });
-    setIsOpen(true);
-    setIsShowResults(false);
+  const handleItemClick = async (item: IMenuItem) => {
+    if (item.type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym) {
+      try {
+        const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+          await apiInstance.sendTranscript({
+            ChatID: chatId,
+          });
+
+        LOG(sendTranscriptRes, "Send Transcript Response");
+      } catch (error) {
+        LOG(error, "ERROR");
+      }
+    } else {
+      dispatch({
+        type: item.type,
+        payload: { item: item.text, isChatMessage: true },
+      });
+      setIsOpen(true);
+      setIsShowResults(false);
+    }
   };
 
   const handleBurgerClick = useCallback(() => {

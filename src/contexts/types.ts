@@ -56,7 +56,7 @@ export interface IChatMessengerContext {
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;
   candidateId?: number;
-  chatId?: number;
+  chatId: number;
   isAnonym: boolean;
 }
 
@@ -117,6 +117,16 @@ export type PayloadType = {
   question?: string;
   languageCode?: string | null;
   options?: null | IQuestionOptions;
+  // ----------------------------- //
+
+  // - update or merge candidate - //
+  candidateData?: {
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    callback?: () => void;
+  };
+
   // ----------------------------- //
 };
 

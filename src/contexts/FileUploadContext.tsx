@@ -50,6 +50,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     currentMsgType,
     setJobPositions,
     _setMessages,
+    candidateId,
   } = useChatMessenger();
 
   // ----------------------------- STATE ----------------------------- //
@@ -78,11 +79,11 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     let reader = new FileReader();
 
     reader.onloadend = () => {
-      if (file && reader.result) {
+      if (file && reader.result && candidateId) {
         const result = reader.result as string;
 
         const resumeData = {
-          candidateId: 50994334,
+          candidateId: candidateId,
           fileName: file.name,
           lastModified: `${new Date(file.lastModified).toISOString()}`,
           blob: result.replace(`data:${file.type};base64,`, ""),

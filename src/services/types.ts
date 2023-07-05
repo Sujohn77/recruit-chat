@@ -42,11 +42,7 @@ export interface IUpdateMessagesResponse {
   unreadMsgCount: number;
 }
 
-export interface ISendTranscriptResponse {
-  success: boolean;
-  statusCode: string | null;
-  status: string | null;
-}
+export interface ISendTranscriptResponse extends ISuccessResponse {}
 
 export interface ISendTranscript {
   ChatID: number;
@@ -465,6 +461,8 @@ export interface ISuccessResponse {
   status: null | number;
   statusCode: null | number;
   success: boolean;
+  redirectUri?: null | string;
+  wdResponseResultModel?: null | unknown;
 }
 
 export interface IVerifyEmailResponse extends Partial<IVerifyErrorResponse> {
@@ -527,7 +525,17 @@ export interface IFollowingRequest {
 
 export interface IFollowingResponse extends ISuccessResponse {}
 
-export interface ICreateAnonymCandidateResponse extends ISuccessResponse {
-  redirectUri: null | string;
-  wdResponseResultModel: null | unknown;
+export interface ICreateAnonymCandidateResponse extends ISuccessResponse {}
+
+export interface IUpdateOrMergeCandidateRequest {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  candidateId: number;
+  chatId: number;
+}
+
+export interface IUpdateOrMergeCandidateResponse extends ISuccessResponse {
+  updateChatBotCandidateId?: boolean;
+  candidateId?: number;
 }

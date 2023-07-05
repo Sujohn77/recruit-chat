@@ -10,8 +10,10 @@ import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
 
 interface IChatHeaderProps {
-  title?: string;
+  showLoginScreen: boolean;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  setShowLoginScreen: (show: boolean) => void;
+  title?: string;
 }
 
 const defaultTitle = "Recruit bot";
@@ -19,15 +21,18 @@ const defaultTitle = "Recruit bot";
 export const ChatHeader: FC<IChatHeaderProps> = ({
   title = defaultTitle,
   setIsSelectedOption,
+  showLoginScreen,
+  setShowLoginScreen,
 }) => {
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob } = useChatMessenger();
 
   const handleBackButton = () => {
-    setViewJob(null);
-    // if (window.parent) {
-    //   window.parent.postMessage({ height: '110px' }, '*');
-    // }
+    if (showLoginScreen) {
+      setShowLoginScreen(false);
+    } else {
+      setViewJob(null);
+    }
   };
 
   const onCloseChat = () => setIsSelectedOption(false);

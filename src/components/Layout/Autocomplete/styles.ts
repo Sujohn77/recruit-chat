@@ -14,6 +14,7 @@ export const FormInput = styled(TextField)`
     line-height: 17px;
     min-height: 38px;
     box-sizing: border-box;
+    margin: 5px 0;
   }
   textarea {
     min-height: 17px;
