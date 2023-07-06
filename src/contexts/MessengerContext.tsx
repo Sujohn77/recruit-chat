@@ -165,7 +165,7 @@ const ChatProvider = ({
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
 
-  const [isAnonym, setIsAnonym] = useState<boolean>(true);
+  const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
   const [chatId, setChatID] = useState<number | undefined>();
 
@@ -175,8 +175,15 @@ const ChatProvider = ({
     setIsChatLoading
   );
 
-  LOG(candidateId, "candidateId");
-  LOG(chatId, "chatId");
+  useEffect(() => {
+    LOG(candidateId, "candidateId");
+  }, [candidateId]);
+  useEffect(() => {
+    LOG(chatId, "chatId");
+  }, [chatId]);
+  useEffect(() => {
+    LOG(isCandidateAnonym, "isCandidateAnonym");
+  }, [isCandidateAnonym]);
 
   useEffect(() => {
     const createAnonymCandidateId = async () => {
@@ -502,18 +509,15 @@ const ChatProvider = ({
                 const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
                   await apiInstance.updateOrMargeCandidate(candidateData);
 
-                const response = candidateRes?.data;
+                const res = candidateRes?.data;
 
                 if (
-                  response?.updateChatBotCandidateId &&
-                  response?.candidateId
+                  res?.success &&
+                  res?.updateChatBotCandidateId &&
+                  res?.candidateId
                 ) {
-                  setCandidateId(response.candidateId);
-                  setIsAnonym(false);
-                }
-
-                if (response?.updateChatBotCandidateId === false) {
-                  setIsAnonym(false);
+                  setCandidateId(res.candidateId);
+                  setIsCandidateAnonym(false);
                 }
 
                 payload.candidateData.callback?.();
@@ -549,18 +553,15 @@ const ChatProvider = ({
                 const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
                   await apiInstance.updateOrMargeCandidate(candidateData);
 
-                const response = candidateRes?.data;
+                const res = candidateRes?.data;
 
                 if (
-                  response?.updateChatBotCandidateId &&
-                  response?.candidateId
+                  res?.success &&
+                  res?.updateChatBotCandidateId &&
+                  res?.candidateId
                 ) {
-                  setCandidateId(response.candidateId);
-                  setIsAnonym(false);
-                }
-
-                if (response?.updateChatBotCandidateId === false) {
-                  setIsAnonym(false);
+                  setCandidateId(res.candidateId);
+                  setIsCandidateAnonym(false);
                 }
 
                 LOG(candidateRes, "Candidate Response");
@@ -951,7 +952,7 @@ const ChatProvider = ({
     _setMessages: setMessages,
     setShowJobAutocompleteBox,
     showJobAutocompleteBox,
-    isAnonym,
+    isAnonym: isCandidateAnonym,
     candidateId,
     chatId: chatId,
   };
