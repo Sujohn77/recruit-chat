@@ -50,7 +50,12 @@ export const Message: FC<IMessageProps> = memo(
         return <EmailForm />;
       }
       case MessageType.JOB_POSITIONS: {
-        return <JobOffers setShowLoginScreen={setShowLoginScreen} />;
+        return (
+          <JobOffers
+            isLastMessage={isLastMessage}
+            setShowLoginScreen={setShowLoginScreen}
+          />
+        );
       }
       case MessageType.TRANSCRIPT: {
         return <TranscriptSent />;

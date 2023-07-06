@@ -18,14 +18,25 @@ const ANIMATION_ID = "ANIMATION_ID";
 export const JobOffer: React.FC<IJobOfferProps> = ({
   jobOffer,
   setShowLoginScreen,
+  isLastMessage,
+  isActive,
 }) => {
-  const { setViewJob, candidateId, isAnonym } = useChatMessenger();
+  const {
+    setViewJob,
+    candidateId,
+    isAnonym,
+    shouldCallAgain,
+    isAlreadyPassEmail,
+  } = useChatMessenger();
   const { t } = useTranslation();
 
   const [isSuccessInterested, setIsSuccessInterested] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [height, setHeight] = useState<Height>(0);
+  const [isClicked, setIsClicked] = useState(0);
+
+  const [initVal] = useState(isAnonym);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -41,8 +52,9 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     };
   }, [height]);
 
-  const interestedIn = useCallback(async () => {
-    if (!isAnonym) {
+  const interestedIn = async () => {
+    setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
+    if ((!isAnonym || isAlreadyPassEmail) && !isLoading) {
       if (candidateId) {
         setIsLoading(true);
         try {
@@ -73,7 +85,14 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     } else {
       setShowLoginScreen(true);
     }
-  }, [isAnonym, candidateId]);
+  };
+
+  useEffect(() => {
+    // if the user has not yet entered an email then the login is displayed and that after login the callback is recalled
+    if (initVal && !isAnonym && isClicked === 1 && shouldCallAgain) {
+      interestedIn();
+    }
+  }, [isClicked, shouldCallAgain, isAnonym]);
 
   const handleReadMore = useCallback(() => {
     setViewJob(jobOffer);

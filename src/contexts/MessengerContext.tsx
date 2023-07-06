@@ -103,6 +103,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   _setMessages: () => {},
   isAnonym: true,
   chatId: 0,
+  shouldCallAgain: false,
+  isAlreadyPassEmail: false,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -168,6 +170,9 @@ const ChatProvider = ({
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
   const [chatId, setChatID] = useState<number | undefined>();
+
+  const [shouldCallAgain, setShouldCallAgain] = useState(false);
+  const [isAlreadyPassEmail, setIsAlreadyPassEmail] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
@@ -518,9 +523,10 @@ const ChatProvider = ({
                 ) {
                   setCandidateId(res.candidateId);
                   setIsCandidateAnonym(false);
-                  payload.candidateData.callback?.();
                 }
 
+                setIsAlreadyPassEmail(true);
+                payload.candidateData.callback?.();
                 LOG(
                   payload.candidateData,
                   "SEND_TRANSCRIPT_EMAIL  payload.candidateData"
@@ -565,8 +571,11 @@ const ChatProvider = ({
                 ) {
                   setCandidateId(res.candidateId);
                   setIsCandidateAnonym(false);
-                  payload.candidateData.callback?.();
+                  setShouldCallAgain(true);
                 }
+
+                setIsAlreadyPassEmail(true);
+                payload.candidateData.callback?.();
 
                 LOG(payload.candidateData, "payload.candidateData");
                 LOG(
@@ -963,6 +972,8 @@ const ChatProvider = ({
     isAnonym: isCandidateAnonym,
     candidateId,
     chatId: chatId,
+    shouldCallAgain,
+    isAlreadyPassEmail,
   };
 
   // console.log(

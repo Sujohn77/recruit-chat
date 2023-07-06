@@ -8,22 +8,24 @@ import { NotFoundOffer } from "./NotFound";
 
 interface IJobOffersProps {
   setShowLoginScreen: (show: boolean) => void;
+  isLastMessage: boolean;
 }
 
 export const JobOffers: React.FC<IJobOffersProps> = ({
   setShowLoginScreen,
+  isLastMessage,
 }) => {
   const { offerJobs } = useChatMessenger();
-  const [index, setIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleChange = useCallback((current: number) => {
-    setIndex(current);
+    setActiveIndex(current);
   }, []);
 
   return (
     <S.Wrapper>
       <Carousel
-        index={index}
+        index={activeIndex}
         onChange={handleChange}
         animation={undefined}
         indicators={false}
@@ -34,8 +36,10 @@ export const JobOffers: React.FC<IJobOffersProps> = ({
         {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
           return index < offerJobs.length ? (
             <JobOffer
-              setShowLoginScreen={setShowLoginScreen}
               key={offerJobs[index].id}
+              isActive={activeIndex === index}
+              isLastMessage={isLastMessage}
+              setShowLoginScreen={setShowLoginScreen}
               jobOffer={offerJobs[index]}
             />
           ) : (
@@ -44,14 +48,14 @@ export const JobOffers: React.FC<IJobOffersProps> = ({
         })}
       </Carousel>
 
-      {index !== 0 && (
-        <S.PrevSlide onClick={() => setIndex(index - 1)}>
+      {activeIndex !== 0 && (
+        <S.PrevSlide onClick={() => setActiveIndex(activeIndex - 1)}>
           <S.Slide />
         </S.PrevSlide>
       )}
 
-      {index !== offerJobs.length && (
-        <S.NextSide onClick={() => setIndex(index + 1)}>
+      {activeIndex !== offerJobs.length && (
+        <S.NextSide onClick={() => setActiveIndex(activeIndex + 1)}>
           <S.Slide />
         </S.NextSide>
       )}

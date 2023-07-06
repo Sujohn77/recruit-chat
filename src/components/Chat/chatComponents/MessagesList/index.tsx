@@ -24,7 +24,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
-  const { messages, currentMsgType, status, nextMessages, isChatLoading } =
+  const { messages, currentMsgType, nextMessages, isChatLoading } =
     useChatMessenger();
 
   useEffect(() => {
@@ -72,8 +72,8 @@ export const MessagesList: FC<IMessagesListProps> = ({
             }
             return (
               <Message
-                setShowLoginScreen={setShowLoginScreen}
                 key={`${message.localId}-${message.dateCreated}`}
+                setShowLoginScreen={setShowLoginScreen}
                 message={message}
                 isLastMessage={index === 0}
                 withoutMargin={withoutMargin}

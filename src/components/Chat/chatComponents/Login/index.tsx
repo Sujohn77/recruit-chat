@@ -74,7 +74,7 @@ export const Login: FC<ILoginProps> = ({
             emailAddress: email,
             firstName,
             lastName,
-            // callback: () => setShowLoginScreen(false),
+            callback: () => setShowLoginScreen(false),
           },
         },
       });

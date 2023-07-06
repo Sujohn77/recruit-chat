@@ -22,12 +22,21 @@ interface IViewJobProps {
 }
 
 export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
-  const { viewJob, setViewJob, candidateId, isAnonym, chatId } =
-    useChatMessenger();
+  const {
+    viewJob,
+    setViewJob,
+    candidateId,
+    isAnonym,
+    chatId,
+    shouldCallAgain,
+    isAlreadyPassEmail,
+  } = useChatMessenger();
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
+  const [isClicked, setIsClicked] = useState(0);
+  const [initVal] = useState(isAnonym);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -48,7 +57,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   }, [height, applyJobError]);
 
   const handleApplyJobClick = async () => {
-    if (!isAnonym) {
+    setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
+    if (!isAnonym || isAlreadyPassEmail) {
       if (viewJob?.id && candidateId && chatId) {
         setApplyJobLoading(true);
         try {
@@ -73,7 +83,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               await apiInstance.sendFollowing(payload);
 
             if (followingRes.data?.success) {
-              setViewJob(null);
+              setTimeout(() => setViewJob(null), 1000);
             }
           } else {
             res.data?.errors[0] &&
@@ -93,6 +103,13 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       setShowLoginScreen(true);
     }
   };
+
+  useEffect(() => {
+    // if the user has not yet entered an email then the login is displayed and that after login the callback is recalled
+    if (initVal && !isAnonym && isClicked === 1 && shouldCallAgain) {
+      handleApplyJobClick();
+    }
+  }, [isClicked, shouldCallAgain, isAnonym]);
 
   return !viewJob ? null : (
     <S.ViewBody>

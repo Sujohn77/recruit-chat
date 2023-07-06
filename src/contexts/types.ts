@@ -58,6 +58,8 @@ export interface IChatMessengerContext {
   candidateId?: number;
   chatId?: number;
   isAnonym: boolean;
+  shouldCallAgain: boolean;
+  isAlreadyPassEmail: boolean;
 }
 
 export interface IFileUploadContext {
