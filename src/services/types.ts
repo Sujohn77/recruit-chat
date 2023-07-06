@@ -223,7 +223,7 @@ export interface IApiSignedRequest {
 
 export interface ISearchJobsPayload {
   pageSize: number;
-  page: number;
+  page?: number;
   keyword: string;
   companyId?: string;
   minDatePosted?: string;

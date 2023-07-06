@@ -157,7 +157,12 @@ class Api {
   uploadCV = (data: IUploadCVPayload) =>
     this.client.post<IUploadResponse>("api/candidate/resume/upload", data);
   searchRequisitions = (data: ISearchJobsPayload) =>
-    this.client.post<IRequisitionsResponse>("api/requisition/search", data);
+    this.client.post<IRequisitionsResponse>("api/requisition/search", {
+      ...data,
+      keyword: "*",
+      appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
+      codeVersion: "1.0.3",
+    });
   searchWithResume = (data: IResumeDataPayload) =>
     this.client.post<IRequisitionsResponse>(
       "api/requisition/searchbyresume/",

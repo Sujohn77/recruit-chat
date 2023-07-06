@@ -601,8 +601,8 @@ export const getSearchJobsData = (
   city: string
 ): ISearchJobsPayload => {
   return {
-    pageSize: 10,
-    page: 0,
+    pageSize: 20,
+    // page: 0,
     keyword: "*",
     // companyId: '6591',
     minDatePosted: "2016-11-13T00:00:00",
