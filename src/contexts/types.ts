@@ -124,7 +124,7 @@ export type PayloadType = {
     firstName: string;
     lastName: string;
     emailAddress: string;
-    callback?: () => void;
+    callback?: Function;
   };
 
   // ----------------------------- //

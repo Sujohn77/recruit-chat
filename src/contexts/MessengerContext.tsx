@@ -518,10 +518,13 @@ const ChatProvider = ({
                 ) {
                   setCandidateId(res.candidateId);
                   setIsCandidateAnonym(false);
+                  payload.candidateData.callback?.();
                 }
 
-                payload.candidateData.callback?.();
-
+                LOG(
+                  payload.candidateData,
+                  "SEND_TRANSCRIPT_EMAIL  payload.candidateData"
+                );
                 LOG(candidateRes, "Candidate Response");
               }
 
@@ -562,9 +565,14 @@ const ChatProvider = ({
                 ) {
                   setCandidateId(res.candidateId);
                   setIsCandidateAnonym(false);
+                  payload.candidateData.callback?.();
                 }
 
-                LOG(candidateRes, "Candidate Response");
+                LOG(payload.candidateData, "payload.candidateData");
+                LOG(
+                  candidateRes,
+                  "UPDATE_OR_MERGE_CANDIDATE Candidate Response"
+                );
               }
             } catch (error) {
             } finally {
