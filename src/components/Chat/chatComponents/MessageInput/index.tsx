@@ -30,6 +30,7 @@ import {
 import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
+import { reinitializeAppWithoutLongPolling } from "services/firebase/config";
 
 interface IMessageInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -51,7 +52,14 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     chooseButtonOption,
     isChatLoading,
     alertCategories,
+    isAlreadyPassEmail,
   } = useChatMessenger();
+
+  useEffect(() => {
+    if (isAlreadyPassEmail) {
+      reinitializeAppWithoutLongPolling();
+    }
+  }, [isAlreadyPassEmail]);
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);

@@ -2,6 +2,7 @@ import { DocumentChangeType } from "@firebase/firestore-types";
 import { IUserLoginDataKeys } from "utils/constants";
 import { IRequisition, MessageType } from "utils/types";
 
+export type DateType = { seconds: number } | string;
 export interface IUpdateMessagesResponse {
   errorOccurrenceId: null;
   errors: [];
@@ -156,6 +157,7 @@ export interface IMutedUntil {
 export interface IMuteStatus {
   [key: string]: IMutedUntil;
 }
+
 export interface IChatRoom extends IChatRoomID {
   canChat: {
     canChat: boolean;
@@ -164,10 +166,10 @@ export interface IChatRoom extends IChatRoomID {
     unavailableMessage: null;
   };
   countOfUnread: number;
-  dateCreated: { seconds: string };
+  dateCreated: DateType;
   dateModified: { seconds: string } | string | false;
   imageUrl: null;
-  imageUrlSasToken: string;
+  imageUrlSasToken: string | null;
   isOptedOut: boolean;
   isViewed: boolean;
   lastMessage: IMessage;

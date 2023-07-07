@@ -1,16 +1,19 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
+import sortBy from "lodash/sortBy";
+import moment from "moment";
 
 import * as S from "./styles";
-import { getFormattedDate } from "utils/helpers";
+import { LOG, getFormattedDate } from "utils/helpers";
 import { ApiResponse } from "apisauce";
 import { IApplyJobResponse, IMessage } from "services/types";
 import { apiInstance } from "services/api";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
-import { ISnapshot } from "utils/types";
+import { IMessageID, ISnapshot } from "utils/types";
+import { getProcessedSnapshots } from "firebase/config";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 
@@ -35,13 +38,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-
-  const messagesSocketConnection = useRef(
-    new FirebaseSocketReactivePagination<IMessage>(
-      SocketCollectionPreset.Messages,
-      chatId
-    )
-  );
+  const [firebaseMessages, setFirebaseMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -61,6 +58,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     };
   }, [height, applyJobError]);
 
+  LOG(firebaseMessages, "firebaseMessages");
+
   const handleApplyJobClick = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if (!isAnonym || isAlreadyPassEmail) {
@@ -76,9 +75,34 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             res.data?.SubscriberWorkflowID
           ) {
             setViewJob(null);
-            const savedSocketConnection = messagesSocketConnection.current;
+
+            const savedSocketConnection =
+              new FirebaseSocketReactivePagination<IMessage>(
+                SocketCollectionPreset.Messages,
+                chatId
+              );
+
             savedSocketConnection.subscribe(
-              (messagesSnapshots: ISnapshot<IMessage>[]) => {}
+              (messagesSnapshots: ISnapshot<IMessage>[]) => {
+                const processedSnapshots = sortBy(
+                  getProcessedSnapshots<IMessageID, IMessage>(
+                    firebaseMessages,
+                    messagesSnapshots,
+                    "chatItemId",
+                    [],
+                    "localId"
+                  ),
+                  (message: IMessage) => {
+                    if (typeof message.dateCreated === "string") {
+                      return -moment(message.dateCreated).unix();
+                    } else if (message.dateCreated.seconds) {
+                      return -message.dateCreated.seconds;
+                    }
+                  }
+                );
+
+                setFirebaseMessages(processedSnapshots);
+              }
             );
 
             // for sending answer

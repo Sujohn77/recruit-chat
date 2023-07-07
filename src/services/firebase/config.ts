@@ -14,7 +14,7 @@ const FIREBASE_CONFIG = {
 let app: firebaseApp.app.App = firebaseApp.initializeApp(FIREBASE_CONFIG);
 app.firestore().settings({ experimentalForceLongPolling: true });
 
-export const reinitializeAppWithoutLongPolling = () => {
+export const reinitializeAppWithoutLongPolling = async () => {
   if (firebaseApp.app()) {
     firebaseApp
       .app()
