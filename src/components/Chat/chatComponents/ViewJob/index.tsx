@@ -72,19 +72,19 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           ) {
             setViewJob(null);
             // for sending answer
-            const payload: IFollowingRequest = {
-              FlowID: res.data.FlowID,
-              SubscriberWorkflowID: res.data.SubscriberWorkflowID,
-              candidateId: candidateId,
-              message: "Apply", // answer example
-            };
+            // const payload: IFollowingRequest = {
+            //   FlowID: res.data.FlowID,
+            //   SubscriberWorkflowID: res.data.SubscriberWorkflowID,
+            //   candidateId: candidateId,
+            //   message: "Yes", // answer example
+            // };
 
-            const followingRes: ApiResponse<IFollowingResponse> =
-              await apiInstance.sendFollowing(payload);
+            // const followingRes: ApiResponse<IFollowingResponse> =
+            //   await apiInstance.sendFollowing(payload);
 
-            if (followingRes.data?.success) {
-              setTimeout(() => setViewJob(null), 1000);
-            }
+            // if (followingRes.data?.success) {
+            //   setTimeout(() => setViewJob(null), 1000);
+            // }
           } else {
             res.data?.errors[0] &&
               setApplyJobError(res.data?.errors[0] || "Something");

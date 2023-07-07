@@ -27,7 +27,7 @@ export const sendMessage = (message: IApiMessage) => {
 
 const requisitionParams = {
   pageSize: 20,
-  page: 1,
+  // page: 1,
   keyword: "*",
   appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
   codeVersion: APP_VERSION,

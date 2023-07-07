@@ -193,16 +193,6 @@ export enum SnapshotType {
   Removed = "removed",
 }
 
-export type Handler<A> = (state: ChatsState, action: A) => ChatsState;
-export interface IGetAllRequisitions {
-  pageSize: number | null;
-  page: number | null;
-  keyword: string | undefined;
-  minDatePosted?: string | null;
-  location?: ILocationRequisition | null;
-  externalSystemId?: number | null;
-}
-
 export interface ILocationRequisition {
   city: string | null;
   state: string | null;
@@ -223,7 +213,7 @@ export interface IApiSignedRequest {
 
 export interface ISearchJobsPayload {
   pageSize: number;
-  page?: number;
+  // page?: number;
   keyword: string;
   companyId?: string;
   minDatePosted?: string;

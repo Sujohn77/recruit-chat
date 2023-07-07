@@ -679,9 +679,9 @@ export const getFormattedLocations = (locations: LocationType[]) => {
         return item.city;
       }
       if (item.state) {
-        return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
+        return `${item.city}, ${item.state}, ${item.country}`;
       }
-      return `${item.city}, ${item.country.slice(0, 13)}`;
+      return `${item.city}, ${item.country}`;
     }
   );
 
