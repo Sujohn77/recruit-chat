@@ -7,7 +7,6 @@ import {
 } from "react";
 import map from "lodash/map";
 
-import { APP_VERSION } from "./api/auth";
 import { handleRefreshToken } from "./utils";
 import { IApiMessage, LocationType } from "./types";
 import Api, { apiInstance } from "services/api";
@@ -30,7 +29,7 @@ const requisitionParams = {
   // page: 1,
   keyword: "*",
   appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
-  codeVersion: APP_VERSION,
+  codeVersion: "1.0.3",
 };
 
 export const useRequisitions = (

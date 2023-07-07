@@ -89,10 +89,10 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
 
   useEffect(() => {
     // if the user has not yet entered an email then the login is displayed and that after login the callback is recalled
-    if (initVal && !isAnonym && isClicked === 1 && shouldCallAgain) {
+    if (isClicked === 1 && shouldCallAgain) {
       interestedIn();
     }
-  }, [isClicked, shouldCallAgain, isAnonym]);
+  }, [isClicked, shouldCallAgain]);
 
   const handleReadMore = useCallback(() => {
     setViewJob(jobOffer);

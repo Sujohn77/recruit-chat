@@ -22,7 +22,7 @@
     "autolinker": "^4.0.0",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
-    "firebase": "^9.9.3",
+    "firebase": "^8.3.0",
     "html-react-parser": "^3.0.2",
     "i18n": "^0.15.0",
     "i18next": "^21.8.16",

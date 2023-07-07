@@ -1,19 +1,18 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
 
 import * as S from "./styles";
 import { getFormattedDate } from "utils/helpers";
 import { ApiResponse } from "apisauce";
-import {
-  IApplyJobResponse,
-  IFollowingRequest,
-  IFollowingResponse,
-} from "services/types";
+import { IApplyJobResponse, IMessage } from "services/types";
 import { apiInstance } from "services/api";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
+import { ISnapshot } from "utils/types";
+import { FirebaseSocketReactivePagination } from "services/firebase/socket";
+import { SocketCollectionPreset } from "services/firebase/socket.options";
 
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
 
@@ -36,7 +35,13 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-  const [initVal] = useState(isAnonym);
+
+  const messagesSocketConnection = useRef(
+    new FirebaseSocketReactivePagination<IMessage>(
+      SocketCollectionPreset.Messages,
+      chatId
+    )
+  );
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -71,6 +76,11 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             res.data?.SubscriberWorkflowID
           ) {
             setViewJob(null);
+            const savedSocketConnection = messagesSocketConnection.current;
+            savedSocketConnection.subscribe(
+              (messagesSnapshots: ISnapshot<IMessage>[]) => {}
+            );
+
             // for sending answer
             // const payload: IFollowingRequest = {
             //   FlowID: res.data.FlowID,
@@ -106,10 +116,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   useEffect(() => {
     // if the user has not yet entered an email then the login is displayed and that after login the callback is recalled
-    if (initVal && !isAnonym && isClicked === 1 && shouldCallAgain) {
+    if (isClicked === 1 && shouldCallAgain) {
       handleApplyJobClick();
     }
-  }, [isClicked, shouldCallAgain, isAnonym]);
+  }, [isClicked, shouldCallAgain]);
 
   return !viewJob ? null : (
     <S.ViewBody>

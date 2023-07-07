@@ -8,8 +8,8 @@ import React, {
   useEffect,
 } from "react";
 
-import { FirebaseSocketReactivePagination } from "socket";
-import { SocketCollectionPreset } from "socket/socket.options";
+import { FirebaseSocketReactivePagination } from "services/firebase/socket";
+import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { IMessage, ISnapshot } from "services/types";
 
 interface ISocketProviderProps {

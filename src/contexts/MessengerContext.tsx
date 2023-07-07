@@ -571,9 +571,9 @@ const ChatProvider = ({
                 ) {
                   setCandidateId(res.candidateId);
                   setIsCandidateAnonym(false);
-                  setShouldCallAgain(true);
                 }
 
+                setShouldCallAgain(true);
                 setIsAlreadyPassEmail(true);
                 payload.candidateData.callback?.();
 
