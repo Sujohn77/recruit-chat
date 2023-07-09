@@ -179,6 +179,9 @@ const ChatProvider = ({
     searchRequisitionsTrigger,
     setIsChatLoading
   );
+  const [chatBotToken, setToken] = useState(
+    getStorageValue(SessionStorage.Token)
+  );
 
   useEffect(() => {
     LOG(candidateId, "candidateId");
@@ -974,6 +977,7 @@ const ChatProvider = ({
     chatId: chatId,
     shouldCallAgain,
     isAlreadyPassEmail,
+    chatBotToken,
   };
 
   // console.log(

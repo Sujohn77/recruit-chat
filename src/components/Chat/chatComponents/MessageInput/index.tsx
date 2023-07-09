@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
+import "../../../../services/firebase/config";
 
 import * as S from "./styles";
 import { ICONS } from "assets";
@@ -30,7 +31,8 @@ import {
 import { CHAT_ACTIONS } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
-import { reinitializeAppWithoutLongPolling } from "services/firebase/config";
+import firebase from "firebase";
+import "firebase/auth";
 
 interface IMessageInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -53,13 +55,33 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     isChatLoading,
     alertCategories,
     isAlreadyPassEmail,
+    chatBotToken,
   } = useChatMessenger();
 
   useEffect(() => {
-    if (isAlreadyPassEmail) {
-      reinitializeAppWithoutLongPolling();
+    if (chatBotToken) {
+      console.log("====================================");
+      console.log("chatBotToken", chatBotToken);
+      console.log("====================================");
+      // reinitializeAppWithoutLongPolling().then(() => {
+      firebase
+        .auth()
+        .signInWithCustomToken(chatBotToken)
+        .then((response) => {
+          console.log("====================================");
+          console.log("SUCCESS SIGN IN", response);
+          console.log("====================================");
+          return { response };
+        })
+        .catch((error) => {
+          console.log("====================================");
+          console.log("Error --->", error?.message, error);
+          console.log("====================================");
+          return { error };
+        });
+      // });
     }
-  }, [isAlreadyPassEmail]);
+  }, [isAlreadyPassEmail, chatBotToken]);
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);

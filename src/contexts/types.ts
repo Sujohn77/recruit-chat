@@ -60,6 +60,7 @@ export interface IChatMessengerContext {
   isAnonym: boolean;
   shouldCallAgain: boolean;
   isAlreadyPassEmail: boolean;
+  chatBotToken?: string;
 }
 
 export interface IFileUploadContext {
