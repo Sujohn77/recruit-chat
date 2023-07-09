@@ -200,20 +200,22 @@ export const MessageSubtypeId: Record<ServerMessageType, number | null> = {
 };
 
 export const getLocalMessage = (
-  requestMessage: IApiMessage,
-  sender: IUserSelf
+  sender: IUserSelf,
+  requestMessage?: IApiMessage,
+  chatBotMessage?: IMessage
 ): IMessage => {
   const currentUnixTime = moment().unix();
 
   return {
     chatItemId: -1,
-    localId: requestMessage.localId,
+    localId: requestMessage?.localId || chatBotMessage?.localId,
     content: {
       typeId: MessageTypeId.text,
-      // subType: requestMessage.subType,
+      subTypeId: null,
+      contextId:
+        requestMessage?.contextId || chatBotMessage?.content.contextId || null,
+      text: requestMessage?.msg || chatBotMessage?.text,
       subType: MessageType.TEXT,
-      contextId: requestMessage.contextId || null,
-      text: requestMessage.msg,
       url: null,
     },
     dateCreated: {
@@ -223,9 +225,10 @@ export const getLocalMessage = (
       seconds: currentUnixTime,
     },
     isEdited: false,
-    isOwn: false,
+    isReceived: false,
     sender,
     searchValue: "",
+    isOwn: false,
   };
 };
 

@@ -69,20 +69,20 @@ export type AppKeyType = {
 export interface IUserSelf {
   id: number;
   userLicenseType: UserLicenseTypes.Standard;
-  photoURL: null | boolean | string;
-  photoUrl: null | boolean | string;
-  photoSasToken?: null | boolean | string;
-  companies: [];
-  messengerNumber: string;
-  clientId: number;
-  client: string;
   userLicenseTypeId: 1;
-  username: string;
-  externalId: null | boolean | string;
-  location: null | boolean | string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  photoURL?: null | boolean | string;
+  photoUrl?: null | boolean | string;
+  photoSasToken?: null | boolean | string;
+  companies?: [];
+  messengerNumber?: string;
+  clientId?: number;
+  client?: string;
+  username?: string;
+  externalId?: null | boolean | string;
+  location?: null | boolean | string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   countryCode?: null | boolean | string;
   mobile?: string;
   roles?: [];
@@ -109,7 +109,8 @@ export interface IMessageContentInnerInfo {
   contextId: string | null;
   subType: MessageType;
   text: string | undefined;
-  url: null | string;
+  url?: null | string;
+  subTypeId?: string | null;
 }
 
 export enum ServerMessageType {
@@ -135,18 +136,21 @@ export interface IMessage extends I_id, IMessageContent {
   dateCreated: {
     seconds: number;
   };
+  isOwn?: boolean;
+  localId?: string;
+  subType?: MessageType;
+  text?: string;
+  isChatMessage?: boolean;
   optionList?: {
     isActive: boolean;
     options: IMessageOption[];
   };
-  dateModified: {
+  dateModified?: {
     seconds: number;
   };
-  isEdited: boolean;
-  localId?: string;
-  isOwn: boolean;
+  isEdited?: boolean;
   sender: IUserSelf;
-  searchValue: string;
+  searchValue?: string;
   isReceived?: boolean;
 }
 
