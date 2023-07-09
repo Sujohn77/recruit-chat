@@ -13,14 +13,10 @@ export enum CHAT_OPTIONS {
 }
 
 interface IIntroScreenProps {
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   isSelectedOption: boolean | boolean | null;
 }
 
-export const Intro: FC<IIntroScreenProps> = ({
-  setIsSelectedOption,
-  isSelectedOption,
-}) => {
+export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => {
   const { t } = useTranslation();
   const { isVerified } = useAuthContext();
 
@@ -35,15 +31,9 @@ export const Intro: FC<IIntroScreenProps> = ({
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
       <DefaultMessages
-        setIsEmailForm={setIsEmailForm}
         text={t("messages:initialMessage")}
         isOptions={!isQuestionSubmit}
-        setIsSelectedOption={setIsSelectedOption}
       />
-
-      {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
-
-            {isOtpMessages && !isVerified && <TrialPassword />} */}
 
       {!isNeedSupport && isEmailForm && !isVerified && (
         <DefaultButton
@@ -64,11 +54,7 @@ export const Intro: FC<IIntroScreenProps> = ({
       )}
 
       {isQuestionSubmit && (
-        <DefaultMessages
-          setIsEmailForm={setIsEmailForm}
-          text={t("messages:wantContinue")}
-          setIsSelectedOption={setIsSelectedOption}
-        />
+        <DefaultMessages text={t("messages:wantContinue")} />
       )}
     </S.Wrapper>
   );

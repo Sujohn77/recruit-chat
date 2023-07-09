@@ -173,3 +173,20 @@ export const ActionButton = styled(Button)`
     opacity: 0.5;
   }
 `;
+
+export const MessageAnimation = styled.div`
+  margin: 10px;
+  animation: fade-in 0.25s ease-in;
+  overflow: hidden;
+
+  @keyframes fade-in {
+    0% {
+      height: 0px;
+      margin-top: -16px;
+    }
+    100% {
+      height: auto;
+      margin-bottom: 0px;
+    }
+  }
+`;

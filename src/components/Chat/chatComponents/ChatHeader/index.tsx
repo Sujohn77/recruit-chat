@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import { useTheme } from "styled-components";
 
 import * as S from "./styles";
@@ -8,10 +8,10 @@ import { ICONS } from "assets";
 import { colors } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
+import { ChatStatuses, useAppStore } from "store/app.store";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   setShowLoginScreen: (show: boolean) => void;
   title?: string;
 }
@@ -20,12 +20,12 @@ const defaultTitle = "Recruit bot";
 
 export const ChatHeader: FC<IChatHeaderProps> = ({
   title = defaultTitle,
-  setIsSelectedOption,
   showLoginScreen,
   setShowLoginScreen,
 }) => {
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob } = useChatMessenger();
+  const { setChatStatus } = useAppStore();
 
   const handleBackButton = () => {
     if (showLoginScreen) {
@@ -35,7 +35,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     }
   };
 
-  const onCloseChat = () => setIsSelectedOption(false);
+  const onCloseChat = () => setChatStatus(ChatStatuses.Default);
 
   return (
     <S.ChatHeaderWrapper>

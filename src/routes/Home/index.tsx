@@ -5,7 +5,7 @@ import { FileUploadProvider } from "contexts/FileUploadContext";
 import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
-import { HomeContent } from "components";
+import { ChatContent } from "components";
 import { IApiThemeResponse } from "utils/api";
 import { SessionStorage, isDevMode } from "utils/constants";
 import { regExpJWT, regExpUuid } from "utils/helpers";
@@ -46,7 +46,7 @@ export const Home: FC = () => {
           <ChatProvider chatBotID={chatBotID}>
             <ThemeContextProvider value={theme}>
               <FileUploadProvider>
-                <HomeContent />
+                <ChatContent />
               </FileUploadProvider>
             </ThemeContextProvider>
           </ChatProvider>

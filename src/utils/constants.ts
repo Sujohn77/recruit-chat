@@ -32,17 +32,6 @@ export enum ChannelName {
   SMS = "SMS",
 }
 
-export const initialChatMessage = {
-  _id: null,
-  localId: generateLocalId(),
-  content: {
-    subType: MessageType.INITIAL_MESSAGE,
-    text: "Please choose one of the following options to begin your job search",
-  },
-  dateCreated: { seconds: moment().unix() },
-  isOwn: false,
-};
-
 const questions = [
   {
     text: i18n.t("messages:whatHiring"),

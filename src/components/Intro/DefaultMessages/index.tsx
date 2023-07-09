@@ -1,6 +1,6 @@
 import { useAuthContext } from "contexts/AuthContext";
 import { useChatMessenger } from "contexts/MessengerContext";
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import map from "lodash/map";
 
@@ -10,23 +10,22 @@ import { IOption } from "./types";
 import { ICONS } from "assets";
 import { LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
+import { ChatStatuses, useAppStore } from "store/app.store";
+import { CHAT_ACTIONS } from "utils/types";
 
 interface IDefaultMessagesProps {
   text: string;
-  setIsEmailForm: Dispatch<SetStateAction<boolean>>;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   isOptions?: boolean;
 }
 
 export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   text,
-  setIsEmailForm,
-  setIsSelectedOption,
   isOptions = true,
 }) => {
   const theme = useTheme() as ThemeType;
   const { isVerified } = useAuthContext();
   const { dispatch } = useChatMessenger();
+  const { setChatStatus } = useAppStore();
 
   const [initialOption, setInitialOption] = useState<IOption | null>(null);
 
@@ -42,19 +41,11 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
 
-    setIsSelectedOption(true);
+    setChatStatus(
+      ChatStatuses[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
+    );
     dispatch({ type, payload: { item, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
-
-    // if (subscriberID) {
-    //     setIsSelectedOption(true);
-    //     triggerAction({ type, payload: { item, isChatMessage: true } });
-    //     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
-    // } else {
-    //     setInitialOption(option);
-    // }
-
-    // setIsEmailForm(!subscriberID);
   };
 
   const chooseOptions = map(messages.options, (opt, index) => (

@@ -83,14 +83,14 @@ export interface IUserSelf {
   firstName: string;
   lastName: string;
   email: string;
-  countryCode: null | boolean | string;
-  mobile: string;
-  roles: [];
-  allUnrestrictedCompanies: boolean;
-  hasSingleSignOn: boolean;
-  idpUserId: null | boolean | string;
-  idpTenantId: null | boolean | string;
-  idpGlobalUserId: null | boolean | string;
+  countryCode?: null | boolean | string;
+  mobile?: string;
+  roles?: [];
+  allUnrestrictedCompanies?: boolean;
+  hasSingleSignOn?: boolean;
+  idpUserId?: null | boolean | string;
+  idpTenantId?: null | boolean | string;
+  idpGlobalUserId?: null | boolean | string;
   jobTitle?: string | null;
   employer?: string | null;
   type?: string;
@@ -132,9 +132,16 @@ export interface IMessageOption {
 }
 
 export interface IMessage extends I_id, IMessageContent {
-  dateCreated: { seconds: number };
-  optionList?: { isActive: boolean; options: IMessageOption[] };
-  dateModified: { seconds: number };
+  dateCreated: {
+    seconds: number;
+  };
+  optionList?: {
+    isActive: boolean;
+    options: IMessageOption[];
+  };
+  dateModified: {
+    seconds: number;
+  };
   isEdited: boolean;
   localId?: string;
   isOwn: boolean;

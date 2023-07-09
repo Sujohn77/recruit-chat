@@ -13,15 +13,11 @@ import * as S from "./styles";
 import { ThemeType } from "utils/theme/default";
 import { Login } from "./chatComponents/Login";
 interface IChatProps {
-  isSelectedOption: boolean;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  isShowChat: boolean;
   children?: React.ReactNode | React.ReactNode[];
 }
 
-export const Chat: FC<IChatProps> = ({
-  isSelectedOption,
-  setIsSelectedOption,
-}) => {
+export const Chat: FC<IChatProps> = ({ isShowChat }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const { viewJob } = useChatMessenger();
@@ -34,11 +30,10 @@ export const Chat: FC<IChatProps> = ({
     : theme.chatbotName || t("chat_item_description:title");
 
   return (
-    <S.Wrapper isOpened={!!isSelectedOption}>
+    <S.Wrapper isOpened={!!isShowChat}>
       <ChatHeader
         showLoginScreen={showLoginScreen}
         title={title}
-        setIsSelectedOption={setIsSelectedOption}
         setShowLoginScreen={setShowLoginScreen}
       />
       <MessagesList
