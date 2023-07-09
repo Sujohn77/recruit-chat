@@ -21,7 +21,7 @@ export const useChatStore = create<IChatState>((set, get) => ({
         get().messages,
         messagesSnapshots,
         "chatItemId",
-        [],
+        ["subType"],
         "localId"
       ),
       (message) => {

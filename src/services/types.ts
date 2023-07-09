@@ -105,10 +105,10 @@ export interface IMessageContent {
 }
 
 export interface IMessageContentInnerInfo {
-  typeId: number;
-  contextId: string | null;
   subType: MessageType;
-  text: string | undefined;
+  typeId?: number;
+  contextId?: string | null;
+  text?: string;
   url?: null | string;
   subTypeId?: string | null;
 }
@@ -152,6 +152,7 @@ export interface IMessage extends I_id, IMessageContent {
   sender: IUserSelf;
   searchValue?: string;
   isReceived?: boolean;
+  _id?: string | null;
 }
 
 export interface ISnapshot<T = Object> {

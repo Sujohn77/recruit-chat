@@ -28,7 +28,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 1650294333,
     },
     {
       text: i18n.t("messages:howSubmitCV"),
@@ -45,7 +45,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 62135596800,
     },
     {
       text: i18n.t("messages:howMuchExperience"),
@@ -62,7 +62,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 49530690,
     },
   ];
 
@@ -91,7 +91,7 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 763293000,
     },
     {
       subType: MessageType.BUTTON,
@@ -108,7 +108,7 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 1659342828,
     },
     {
       subType: MessageType.TEXT,
@@ -123,7 +123,7 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
         typeId: MessageTypeId.text,
       },
       sender: chatBotSender,
-      chatItemId: -1,
+      chatItemId: 1650294121,
     },
   ];
 

@@ -207,7 +207,7 @@ export const getLocalMessage = (
   const currentUnixTime = moment().unix();
 
   return {
-    chatItemId: -1,
+    chatItemId: chatBotMessage?.chatItemId || -1,
     localId: requestMessage?.localId || chatBotMessage?.localId,
     content: {
       typeId: MessageTypeId.text,
@@ -229,6 +229,7 @@ export const getLocalMessage = (
     sender,
     searchValue: "",
     isOwn: false,
+    subType: chatBotMessage?.subType || chatBotMessage?.content.subType,
   };
 };
 
