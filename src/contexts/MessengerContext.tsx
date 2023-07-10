@@ -694,7 +694,7 @@ const ChatProvider = ({
                     text: "Sorry, I don't have an answer to that question yet...",
                   },
                   localId: generateLocalId(),
-                  _id: generateLocalId(),
+                  _id: null,
                   dateCreated: { seconds: moment().unix() },
                 };
                 // updatedMessages = lastMessIsButton
@@ -722,7 +722,7 @@ const ChatProvider = ({
                   text: "Sorry, I don't have an answer to that question yet...",
                 },
                 localId: generateLocalId(),
-                _id: generateLocalId(),
+                _id: null,
                 dateCreated: { seconds: moment().unix() },
               };
               updatedMessages = lastMessIsButton

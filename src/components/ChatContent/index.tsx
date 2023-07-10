@@ -4,11 +4,12 @@ import { ChatStatuses, useAppStore } from "store/app.store";
 
 import { Intro } from "screens";
 import { Chat } from "components";
-import { getFindJobMessages, getQnAMessages } from "./data";
+import { findJobMessages, questions } from "./data";
+import { getParsedMessages } from "utils/helpers";
 
 export const ChatContent: FC = () => {
   const { chatStatus } = useAppStore();
-  const { updateMessages } = useChatStore();
+  const { addNewMessages } = useChatStore();
 
   const showChat =
     chatStatus === ChatStatuses.FindAJob || chatStatus === ChatStatuses.QnA;
@@ -16,11 +17,11 @@ export const ChatContent: FC = () => {
   useEffect(() => {
     switch (chatStatus) {
       case ChatStatuses.FindAJob:
-        updateMessages(getFindJobMessages());
+        addNewMessages(getParsedMessages(findJobMessages));
         break;
 
       case ChatStatuses.QnA:
-        updateMessages(getQnAMessages());
+        addNewMessages(getParsedMessages(questions));
         break;
 
       default:

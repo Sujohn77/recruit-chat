@@ -38,7 +38,7 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
     }
   }, [isVerified, dispatch, initialOption]);
 
-  const onClick = (option: IOption) => {
+  const onSelectOption = (option: IOption) => {
     const { message: item, type } = option;
 
     setChatStatus(
@@ -49,7 +49,7 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   };
 
   const chooseOptions = map(messages.options, (opt, index) => (
-    <S.Message key={`chat-option-${index}`} onClick={() => onClick(opt)}>
+    <S.Message key={`chat-option-${index}`} onClick={() => onSelectOption(opt)}>
       {opt.icon && <S.Image src={opt.icon} size={opt.size} alt={""} />}
       <S.Text>{opt.message}</S.Text>
     </S.Message>

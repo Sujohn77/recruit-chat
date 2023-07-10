@@ -134,3 +134,43 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
       type: "added",
     }));
 };
+
+export const questions = [
+  {
+    text: i18n.t("messages:whatHiring"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
+    text: i18n.t("messages:howSubmitCV"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
+    text: i18n.t("messages:howMuchExperience"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+];
+
+export const findJobMessages = [
+  {
+    subType: MessageType.BUTTON,
+    text: i18n.t("messages:answerQuestions"),
+    isOwn: true,
+    isChatMessage: true,
+  },
+  {
+    subType: MessageType.BUTTON,
+    text: i18n.t("messages:uploadCV"),
+    isOwn: true,
+    isChatMessage: true,
+  },
+  {
+    subType: MessageType.TEXT,
+    text: "Please choose one of the following options to begin your job search",
+  },
+];

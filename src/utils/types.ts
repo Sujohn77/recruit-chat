@@ -64,6 +64,10 @@ export interface IContent {
   text?: string;
 }
 
+export interface ILocalId {
+  localId?: string | number;
+}
+
 export interface ILocalMessage {
   _id: number | string | null;
   localId?: string | number;
