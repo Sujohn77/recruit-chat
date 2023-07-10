@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { useChatStore } from "store/chat.store";
-import { ChatStatuses, useAppStore } from "store/app.store";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 import { Intro } from "screens";
 import { Chat } from "components";
@@ -8,26 +8,26 @@ import { findJobMessages, questions } from "./data";
 import { getParsedMessages } from "utils/helpers";
 
 export const ChatContent: FC = () => {
-  const { chatStatus } = useAppStore();
+  const { chatScreen } = useAppStore();
   const { addNewMessages } = useChatStore();
 
   const showChat =
-    chatStatus === ChatStatuses.FindAJob || chatStatus === ChatStatuses.QnA;
+    chatScreen === ChatScreens.FindAJob || chatScreen === ChatScreens.QnA;
 
   useEffect(() => {
-    switch (chatStatus) {
-      case ChatStatuses.FindAJob:
+    switch (chatScreen) {
+      case ChatScreens.FindAJob:
         addNewMessages(getParsedMessages(findJobMessages));
         break;
 
-      case ChatStatuses.QnA:
+      case ChatScreens.QnA:
         addNewMessages(getParsedMessages(questions));
         break;
 
       default:
         break;
     }
-  }, [chatStatus]);
+  }, [chatScreen]);
 
   return (
     <>

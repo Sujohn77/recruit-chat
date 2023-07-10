@@ -10,7 +10,7 @@ import { IOption } from "./types";
 import { ICONS } from "assets";
 import { LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
-import { ChatStatuses, useAppStore } from "store/app.store";
+import { ChatScreens, useAppStore } from "store/app.store";
 import { CHAT_ACTIONS } from "utils/types";
 
 interface IDefaultMessagesProps {
@@ -25,7 +25,7 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   const theme = useTheme() as ThemeType;
   const { isVerified } = useAuthContext();
   const { dispatch } = useChatMessenger();
-  const { setChatStatus } = useAppStore();
+  const { setChatScreen } = useAppStore();
 
   const [initialOption, setInitialOption] = useState<IOption | null>(null);
 
@@ -41,8 +41,8 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   const onSelectOption = (option: IOption) => {
     const { message: item, type } = option;
 
-    setChatStatus(
-      ChatStatuses[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
+    setChatScreen(
+      ChatScreens[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
     );
     dispatch({ type, payload: { item, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));

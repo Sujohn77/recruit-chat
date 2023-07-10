@@ -9,6 +9,7 @@ import { infiniteScrollStyle } from "./styles";
 import { Message } from "./Message";
 import * as S from "./styles";
 import { MessageType } from "utils/types";
+import { useChatStore } from "store/chat.store";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
@@ -24,8 +25,9 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
-  const { messages, currentMsgType, nextMessages, isChatLoading } =
-    useChatMessenger();
+  const { currentMsgType, nextMessages, isChatLoading } = useChatMessenger();
+
+  const { messages } = useChatStore();
 
   useEffect(() => {
     if (currentMsgType !== null && !nextMessages.length) {

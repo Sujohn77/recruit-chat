@@ -12,13 +12,13 @@ import { ApiResponse } from "apisauce";
 import { ISendTranscriptResponse } from "services/types";
 import { LOG } from "utils/helpers";
 import { apiInstance } from "services/api";
-import { ChatStatuses, useAppStore } from "store/app.store";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   setIsShowResults,
 }) => {
   const { dispatch, chatId, isAnonym } = useChatMessenger();
-  const { setChatStatus } = useAppStore();
+  const { setChatScreen } = useAppStore();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -50,8 +50,8 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
       }
     } else {
       if (item.type !== CHAT_ACTIONS.CHANGE_LANG) {
-        setChatStatus(
-          ChatStatuses[item.type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
+        setChatScreen(
+          ChatScreens[item.type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
         );
       }
 

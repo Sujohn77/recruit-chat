@@ -33,6 +33,8 @@ import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import firebase from "firebase";
 import "firebase/auth";
+import { ChatScreens, useAppStore } from "store/app.store";
+import { useChatStore } from "store/chat.store";
 
 interface IMessageInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -57,6 +59,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     isAlreadyPassEmail,
     chatBotToken,
   } = useChatMessenger();
+  const { chatScreen } = useAppStore();
+  const { askAQuestion } = useChatStore();
 
   useEffect(() => {
     if (chatBotToken) {
@@ -273,6 +277,10 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
       if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION) {
         draftMessage && chooseButtonOption(draftMessage);
+      }
+
+      if (draftMessage && chatScreen === ChatScreens.QnA) {
+        askAQuestion(draftMessage);
       }
     }
   };

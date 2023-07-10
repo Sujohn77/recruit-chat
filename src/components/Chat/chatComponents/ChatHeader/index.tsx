@@ -8,7 +8,7 @@ import { ICONS } from "assets";
 import { colors } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
-import { ChatStatuses, useAppStore } from "store/app.store";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
@@ -25,7 +25,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 }) => {
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob } = useChatMessenger();
-  const { setChatStatus } = useAppStore();
+  const { setChatScreen } = useAppStore();
 
   const handleBackButton = () => {
     if (showLoginScreen) {
@@ -35,7 +35,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     }
   };
 
-  const onCloseChat = () => setChatStatus(ChatStatuses.Default);
+  const onCloseChat = () => setChatScreen(ChatScreens.Default);
 
   return (
     <S.ChatHeaderWrapper>

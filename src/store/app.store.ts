@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export enum ChatStatuses {
+export enum ChatScreens {
   Default = "Default",
   QnA = "AskAQuestion",
   FindAJob = "FindAJob",
@@ -8,20 +8,20 @@ export enum ChatStatuses {
 
 export interface AppStore {
   isLoading: boolean;
-  chatStatus: ChatStatuses;
+  chatScreen: ChatScreens;
 
   setIsLoading: (isLoading: boolean) => void;
-  setChatStatus: (status: ChatStatuses) => void;
+  setChatScreen: (status: ChatScreens) => void;
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
   isLoading: false,
-  chatStatus: ChatStatuses.Default,
+  chatScreen: ChatScreens.Default,
 
   setIsLoading(isLoading: boolean) {
     set(() => ({ isLoading }));
   },
-  setChatStatus(status: ChatStatuses) {
-    set(() => ({ chatStatus: status }));
+  setChatScreen(status: ChatScreens) {
+    set(() => ({ chatScreen: status }));
   },
 }));
