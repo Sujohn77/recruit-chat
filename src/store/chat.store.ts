@@ -11,6 +11,6 @@ export const useChatStore = create<IChatState>((set, get) => ({
   messages: [],
 
   addNewMessages(messages: ILocalMessage[]) {
-    set(() => ({ messages: [...get().messages, ...messages] }));
+    set(() => ({ messages: [...messages, ...get().messages] }));
   },
 }));

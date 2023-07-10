@@ -58,7 +58,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     };
   }, [height, applyJobError]);
 
-  LOG(firebaseMessages, "firebaseMessages");
+  // LOG(firebaseMessages, "firebaseMessages");
 
   const handleApplyJobClick = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
