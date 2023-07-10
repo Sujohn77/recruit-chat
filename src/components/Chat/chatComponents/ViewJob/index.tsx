@@ -2,20 +2,14 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useEffect, useState } from "react";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
-import sortBy from "lodash/sortBy";
-import moment from "moment";
 
 import * as S from "./styles";
-import { LOG, getFormattedDate } from "utils/helpers";
+import { getFormattedDate } from "utils/helpers";
 import { ApiResponse } from "apisauce";
 import { IApplyJobResponse, IMessage } from "services/types";
 import { apiInstance } from "services/api";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
-import { IMessageID, ISnapshot } from "utils/types";
-import { getProcessedSnapshots } from "firebase/config";
-import { FirebaseSocketReactivePagination } from "services/firebase/socket";
-import { SocketCollectionPreset } from "services/firebase/socket.options";
 
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
 
@@ -38,7 +32,6 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-  const [firebaseMessages, setFirebaseMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -58,8 +51,6 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     };
   }, [height, applyJobError]);
 
-  LOG(firebaseMessages, "firebaseMessages");
-
   const handleApplyJobClick = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if (!isAnonym || isAlreadyPassEmail) {
@@ -75,35 +66,6 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             res.data?.SubscriberWorkflowID
           ) {
             setViewJob(null);
-
-            const savedSocketConnection =
-              new FirebaseSocketReactivePagination<IMessage>(
-                SocketCollectionPreset.Messages,
-                chatId
-              );
-
-            savedSocketConnection.subscribe(
-              (messagesSnapshots: ISnapshot<IMessage>[]) => {
-                const processedSnapshots = sortBy(
-                  getProcessedSnapshots<IMessageID, IMessage>(
-                    firebaseMessages,
-                    messagesSnapshots,
-                    "chatItemId",
-                    [],
-                    "localId"
-                  ),
-                  (message: IMessage) => {
-                    if (typeof message.dateCreated === "string") {
-                      return -moment(message.dateCreated).unix();
-                    } else if (message.dateCreated.seconds) {
-                      return -message.dateCreated.seconds;
-                    }
-                  }
-                );
-
-                setFirebaseMessages(processedSnapshots);
-              }
-            );
 
             // for sending answer
             // const payload: IFollowingRequest = {
@@ -121,7 +83,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             // }
           } else {
             res.data?.errors[0] &&
-              setApplyJobError(res.data?.errors[0] || "Something");
+              setApplyJobError(res.data?.errors[0] || "Something went wrong");
           }
 
           if (res.data?.statusCode === 105) {
