@@ -76,7 +76,7 @@ export interface ILocalMessage {
   isOwn?: boolean;
 }
 
-export enum USER_INPUTS {
+export enum ButtonsOptions {
   FIND_JOB = "Find a job",
   ASK_QUESTION = "Ask a question",
   UPLOAD_CV = "Upload CV",

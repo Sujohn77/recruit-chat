@@ -10,7 +10,7 @@ import {
   CHAT_ACTIONS,
   MessageType,
   ILocalMessage,
-  USER_INPUTS,
+  ButtonsOptions,
   IRequisition,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
@@ -145,7 +145,7 @@ export type IResponseAction = {
   };
 };
 export type IResponseInput = {
-  [key in USER_INPUTS]?: {
+  [key in ButtonsOptions]?: {
     replaceLatest?: boolean;
     messages: ILocalMessage[];
   };

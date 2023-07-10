@@ -16,7 +16,7 @@ import {
   MessageType,
   ILocalMessage,
   CHAT_ACTIONS,
-  USER_INPUTS,
+  ButtonsOptions,
   IRequisition,
 } from "utils/types";
 import {
@@ -863,7 +863,7 @@ const ChatProvider = ({
     }
   };
 
-  const chooseButtonOption = (excludeItem: USER_INPUTS, param?: string) => {
+  const chooseButtonOption = (excludeItem: ButtonsOptions, param?: string) => {
     const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,

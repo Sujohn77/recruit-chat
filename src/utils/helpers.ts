@@ -15,7 +15,7 @@ import {
   MessageType,
   ILocalMessage,
   CHAT_ACTIONS,
-  USER_INPUTS,
+  ButtonsOptions,
   IContent,
   QueuesState,
   UpdateQueueChatRoomMessagesAction,
@@ -114,21 +114,21 @@ export const isTokenExpired = (token: string) => {
   return decodedToken.exp * 1000 < currentDate.getTime();
 };
 
-export const getActionTypeByOption = (option: USER_INPUTS) => {
-  switch (option.toLowerCase()) {
-    case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
+export const getActionTypeByOption = (option?: string): CHAT_ACTIONS | null => {
+  switch (option?.toLowerCase()) {
+    case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
     }
     // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
     //   return CHAT_ACTIONS.HIRING_PROCESS;
     // }
-    case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
+    case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
-    case USER_INPUTS.UPLOADED_CV: {
+    case ButtonsOptions.UPLOADED_CV: {
       return CHAT_ACTIONS.UPLOADED_CV;
     }
-    case USER_INPUTS.CANCEL_JOB_SEARCH_WITH_RESUME:
+    case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
 
     default: {

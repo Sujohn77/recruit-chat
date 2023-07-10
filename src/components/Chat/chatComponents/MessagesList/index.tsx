@@ -10,6 +10,7 @@ import { Message } from "./Message";
 import * as S from "./styles";
 import { MessageType } from "utils/types";
 import { useChatStore } from "store/chat.store";
+import { LOG } from "utils/helpers";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
@@ -28,6 +29,8 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const { currentMsgType, nextMessages, isChatLoading } = useChatMessenger();
 
   const { messages } = useChatStore();
+
+  LOG(messages, "messages");
 
   useEffect(() => {
     if (currentMsgType !== null && !nextMessages.length) {
