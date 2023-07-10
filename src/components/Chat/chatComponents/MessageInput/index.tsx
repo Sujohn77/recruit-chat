@@ -33,6 +33,7 @@ import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import firebase from "firebase";
 import "firebase/auth";
+import { reinitializeAppWithoutLongPolling } from "../../../../services/firebase/config";
 
 interface IMessageInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -56,32 +57,34 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     alertCategories,
     isAlreadyPassEmail,
     chatBotToken,
+    chatId,
   } = useChatMessenger();
 
   useEffect(() => {
-    if (chatBotToken) {
-      console.log("====================================");
-      console.log("chatBotToken", chatBotToken);
-      console.log("====================================");
-      // reinitializeAppWithoutLongPolling().then(() => {
-      firebase
-        .auth()
-        .signInWithCustomToken(chatBotToken)
-        .then((response) => {
-          console.log("====================================");
-          console.log("SUCCESS SIGN IN", response);
-          console.log("====================================");
-          return { response };
-        })
-        .catch((error) => {
-          console.log("====================================");
-          console.log("Error --->", error?.message, error);
-          console.log("====================================");
-          return { error };
-        });
-      // });
+    console.log("====================================");
+    console.log("chatBotToken", chatBotToken);
+    console.log("chatId", chatId);
+    console.log("====================================");
+    if (chatBotToken && chatId) {
+      reinitializeAppWithoutLongPolling().then(() => {
+        firebase
+          .auth()
+          .signInWithCustomToken(chatBotToken)
+          .then((response) => {
+            console.log("====================================");
+            console.log("SUCCESS SIGN IN", response);
+            console.log("====================================");
+            return { response };
+          })
+          .catch((error) => {
+            console.log("====================================");
+            console.log("Error --->", error?.message, error);
+            console.log("====================================");
+            return { error };
+          });
+      });
     }
-  }, [isAlreadyPassEmail, chatBotToken]);
+  }, [isAlreadyPassEmail, chatBotToken, chatId]);
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);

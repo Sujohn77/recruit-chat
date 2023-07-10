@@ -15,22 +15,24 @@ let app: firebaseApp.app.App = firebaseApp.initializeApp(FIREBASE_CONFIG);
 app.firestore().settings({ experimentalForceLongPolling: true });
 
 export const reinitializeAppWithoutLongPolling = async () => {
-  if (firebaseApp.app()) {
-    firebaseApp
-      .app()
-      .delete()
-      .then(() => {
-        app = !firebaseApp.apps.length
-          ? firebaseApp.initializeApp(FIREBASE_CONFIG)
-          : firebaseApp.app();
-        app.firestore().settings({
-          experimentalForceLongPolling: false,
+  try {
+    if (firebaseApp.app()) {
+      firebaseApp
+        .app()
+        .delete()
+        .then(() => {
+          app = !firebaseApp.apps.length
+            ? firebaseApp.initializeApp(FIREBASE_CONFIG)
+            : firebaseApp.app();
+          app.firestore().settings({
+            experimentalForceLongPolling: false,
+          });
         });
+    } else {
+      app = firebaseApp.initializeApp(FIREBASE_CONFIG);
+      app.firestore().settings({
+        experimentalForceLongPolling: false,
       });
-  } else {
-    app = firebaseApp.initializeApp(FIREBASE_CONFIG);
-    app.firestore().settings({
-      experimentalForceLongPolling: false,
-    });
-  }
+    }
+  } catch (error) {}
 };
