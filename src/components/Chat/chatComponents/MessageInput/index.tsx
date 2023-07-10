@@ -54,26 +54,21 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     chooseButtonOption,
     isChatLoading,
     alertCategories,
-    isAlreadyPassEmail,
-    chatBotToken,
-    chatId,
+    firebaseToken,
+    setIsAuthInFirebase,
   } = useChatMessenger();
 
   useEffect(() => {
-    console.log("====================================");
-    console.log("chatBotToken", chatBotToken);
-    console.log("chatId", chatId);
-    console.log("====================================");
-
-    if (chatBotToken && chatId) {
+    if (firebaseToken) {
       // reinitializeAppWithoutLongPolling().then(() => {
       firebase
         .auth()
-        .signInWithCustomToken(chatBotToken)
+        .signInWithCustomToken(firebaseToken)
         .then((response) => {
           console.log("====================================");
-          console.log("SUCCESS SIGN IN", response);
+          console.log("(Firebase) SUCCESS SIGN IN", response);
           console.log("====================================");
+          setIsAuthInFirebase(true);
           return { response };
         })
         .catch((error) => {
@@ -84,7 +79,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         });
       // });
     }
-  }, [isAlreadyPassEmail, chatBotToken, chatId]);
+  }, [firebaseToken]);
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);

@@ -35,6 +35,11 @@ class userInstance {
     this.client.post<ICreateChatResponse>("api/messenger/chat/create", {
       candidateId,
     });
+
+  getFirebaseAccessToken = (candidateId: number) =>
+    this.client.post<string>(
+      `api/chatbot/custom-access-token?candidateId=${candidateId}`
+    );
 }
 
 export const userAPI = new userInstance();

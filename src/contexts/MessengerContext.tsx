@@ -105,6 +105,9 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   chatId: 0,
   shouldCallAgain: false,
   isAlreadyPassEmail: false,
+  firebaseToken: null,
+  isAuthInFirebase: false,
+  setIsAuthInFirebase: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -179,9 +182,12 @@ const ChatProvider = ({
     searchRequisitionsTrigger,
     setIsChatLoading
   );
+  //
   const [chatBotToken, setToken] = useState(
     getStorageValue(SessionStorage.Token)
   );
+  const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
+  const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
 
   useEffect(() => {
     LOG(candidateId, "candidateId");
@@ -212,21 +218,20 @@ const ChatProvider = ({
         if (res.data?.id) {
           setCandidateId(res.data.id);
 
+          const firebaseTokenResponse: ApiResponse<string> =
+            await userAPI.getFirebaseAccessToken(res.data?.id);
+
+          if (firebaseTokenResponse.data) {
+            setFirebaseToken(firebaseTokenResponse.data);
+          }
+
           const chatRes: ApiResponse<ICreateChatResponse> =
             await userAPI.createChatByAnonymUser(res.data.id);
 
           if (chatRes.data?.chatId) {
             setChatID(chatRes.data?.chatId);
           }
-
-          console.log("====================================");
-          console.log("chatRes", chatRes);
-          console.log("====================================");
         }
-
-        console.log("====================================");
-        console.log("res", res);
-        console.log("====================================");
       } catch (error) {
         console.log("====================================");
         console.log("error", error);
@@ -978,6 +983,9 @@ const ChatProvider = ({
     shouldCallAgain,
     isAlreadyPassEmail,
     chatBotToken,
+    firebaseToken,
+    isAuthInFirebase,
+    setIsAuthInFirebase,
   };
 
   // console.log(

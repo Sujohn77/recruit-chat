@@ -61,6 +61,9 @@ export interface IChatMessengerContext {
   shouldCallAgain: boolean;
   isAlreadyPassEmail: boolean;
   chatBotToken?: string;
+  firebaseToken: string | null;
+  isAuthInFirebase: boolean;
+  setIsAuthInFirebase: (isAuth: boolean) => void;
 }
 
 export interface IFileUploadContext {
