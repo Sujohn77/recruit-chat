@@ -3,6 +3,8 @@ import {
   ICreateAnonymCandidateRequest,
   ICreateCandidateResponse,
   ICreateChatResponse,
+  ISendTranscript,
+  ISendTranscriptResponse,
 } from "services/types";
 import { BASE_API_URL } from "utils/constants";
 
@@ -27,6 +29,8 @@ class userInstance {
   setAuthHeader = (token: string) =>
     this.client.setHeader("Authorization", `chatbot-jwt-token ${token}`);
   setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
+  setAuthBearerHeader = (token: string) =>
+    this.client.setHeader("Authorization", `Bearer ${token}`);
 
   createAnonymCandidate = (data: ICreateAnonymCandidateRequest) =>
     this.client.post<ICreateCandidateResponse>("api/candidate/create", data);
@@ -39,6 +43,12 @@ class userInstance {
   getFirebaseAccessToken = (candidateId: number) =>
     this.client.post<string>(
       `api/chatbot/custom-access-token?candidateId=${candidateId}`
+    );
+
+  sendTranscript = (data: ISendTranscript) =>
+    this.client.post<ISendTranscriptResponse>(
+      "api/messenger/chat/transcript/send",
+      data
     );
 }
 

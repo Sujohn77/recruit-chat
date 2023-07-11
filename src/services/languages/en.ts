@@ -12,7 +12,8 @@ export const en = {
     searchJobs: "Search jobs with resume",
   },
   placeHolders: {
-    message: "Type a message",
+    default: "Type a message",
+    message: "Select or Type a Job Title",
     bot_typing: "Bot is typing...",
     chooseLocation: "Select or Type a Job Location",
     email: "Email",
@@ -97,7 +98,7 @@ export const en = {
     no_match: "Sorry, No match yet",
     enter_email_title: "Please enter your email and we will send you an email",
     transcript_sent: "Your transcript has been sent to your email",
-    categories_title: "Select a Job Title",
+    categories_title: "Select or Type a Job Title",
     locations_title: "Searched location",
     all_categories: "All Categories",
     hiring_help_title: "Check out our help section to learn more .",

@@ -12,6 +12,7 @@ export const fr = {
     searchJobs: "Search jobs with resume",
   },
   placeHolders: {
+    default: "Taper un message",
     message: "Taper un message",
     bot_typing: "Le bot est en train de taper...",
     chooseLocation: "Sélectionnez ou tapez un lieu de travail",

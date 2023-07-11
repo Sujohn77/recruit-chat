@@ -12,6 +12,7 @@ export const ua = {
     searchJobs: "Пошук пропозицій по резюме",
   },
   placeHolders: {
+    default: "Повідомелння",
     message: "Повідомелння",
     bot_typing: "Бот друкує...",
     chooseLocation: "Оберіть або введіть місце роботи",

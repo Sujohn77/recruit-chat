@@ -495,11 +495,12 @@ export interface IApplyJobResponse extends ISuccessResponse {
   SubscriberWorkflowID: number | null;
 }
 
-export interface IFollowingRequest {
+export interface ISendAnswerRequest {
   FlowID: number; //from previous api call
   SubscriberWorkflowID: number; //from previous api call
   message: string; // ("yes")  the user's typed response/answer
   candidateId: number;
+  localId: string;
 }
 
 export interface IFollowingResponse extends ISuccessResponse {}

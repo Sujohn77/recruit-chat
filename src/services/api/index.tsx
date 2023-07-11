@@ -2,7 +2,7 @@ import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
 import axios, { AxiosRequestConfig } from "axios";
 import {
   IApplyJobResponse,
-  IFollowingRequest,
+  ISendAnswerRequest,
   IFollowingResponse,
   ISuccessResponse,
   IUpdateOrMergeCandidateRequest,
@@ -195,7 +195,7 @@ class Api {
       chatID: chatID,
       locale: LOCALE,
     });
-  sendAnswer = (data: IFollowingRequest) =>
+  sendAnswer = (data: ISendAnswerRequest) =>
     this.client.post<IFollowingResponse>(
       "/api/chatbot/sendprescreenmessage",
       data

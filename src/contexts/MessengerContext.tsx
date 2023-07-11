@@ -26,7 +26,7 @@ import {
   IAskAQuestionResponse,
   ICreateCandidateResponse,
   ICreateChatResponse,
-  IFollowingRequest,
+  ISendAnswerRequest,
   IFollowingResponse,
   IMessage,
   ISendTranscriptResponse,
@@ -916,23 +916,34 @@ const ChatProvider = ({
   // for sending answer (after "Apply job")
   const sendPreScreenMessage = async (message: string) => {
     if (flowId && subscriberWorkflowId && candidateId) {
+      const localMess: ILocalMessage = {
+        localId: generateLocalId(),
+        isOwn: true,
+        content: {
+          subType: MessageType.TEXT,
+          text: message,
+        },
+        _id: generateLocalId(),
+      };
+
       try {
         setIsChatLoading(true);
-        const payload: IFollowingRequest = {
+        const payload: ISendAnswerRequest = {
           FlowID: flowId,
           SubscriberWorkflowID: subscriberWorkflowId,
           candidateId,
           message,
+          localId: localMess.localId?.toString()!,
         };
 
-        const followingRes: ApiResponse<IFollowingResponse> =
+        const answerResponse: ApiResponse<IFollowingResponse> =
           await apiInstance.sendAnswer(payload);
 
-        LOG(followingRes, "followingRes");
-        if (followingRes.data?.success) {
-          return Promise.resolve(followingRes.data);
+        LOG(answerResponse, "answerResponse");
+        if (answerResponse.data?.success) {
+          return Promise.resolve(answerResponse.data);
         } else {
-          return Promise.reject(followingRes);
+          return Promise.reject(answerResponse);
         }
       } catch (error) {
         return Promise.reject(error?.message);

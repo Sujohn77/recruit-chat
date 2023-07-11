@@ -46,9 +46,11 @@ export const useTextField = ({
         searchItems: map(requisitions, (r) => r.title),
         headerName: t("chat_item_description:categories_title"),
         placeHolder:
-          lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS // TODO: test
+          lastActionType === CHAT_ACTIONS.SET_CATEGORY
+            ? t("placeHolders:message")
+            : lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
             ? t("placeHolders:startTyping")
-            : t("placeHolders:message"),
+            : t("placeHolders:default"),
         // TODO: add translation =)
         subHeaderName:
           "We have processed your resume and found the following jobs",

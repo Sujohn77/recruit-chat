@@ -303,7 +303,9 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     matchedItems,
     matchedPart,
     value: draftMessage || "",
-    placeHolder: placeHolder || t("placeHolders:bot_typing"),
+    placeHolder: isApplyJobFlow
+      ? t("placeHolders:default")
+      : placeHolder || t("placeHolders:bot_typing"),
     setIsShowResults,
     isShowResults,
     setHeight,
