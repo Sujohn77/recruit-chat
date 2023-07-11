@@ -26,7 +26,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     candidateId,
     isAnonym,
     shouldCallAgain,
-    isAlreadyPassEmail,
+    isCandidateWithEmail,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -35,8 +35,6 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   const [errorText, setErrorText] = useState("");
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-
-  const [initVal] = useState(isAnonym);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -54,7 +52,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
 
   const interestedIn = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
-    if ((!isAnonym || isAlreadyPassEmail) && !isLoading) {
+    if ((!isAnonym || isCandidateWithEmail) && !isLoading) {
       if (candidateId) {
         setIsLoading(true);
         try {

@@ -25,7 +25,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     isAnonym,
     chatId,
     shouldCallAgain,
-    isAlreadyPassEmail,
+    isCandidateWithEmail,
     setIsApplyJobSuccessfully,
     setFlowId,
     setSubscriberWorkflowId,
@@ -56,7 +56,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   const handleApplyJobClick = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
-    if (!isAnonym || isAlreadyPassEmail) {
+    if (!isAnonym || isCandidateWithEmail) {
       if (viewJob?.id && candidateId && chatId) {
         setApplyJobLoading(true);
         try {

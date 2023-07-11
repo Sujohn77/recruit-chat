@@ -112,7 +112,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   isAnonym: true,
   chatId: 0,
   shouldCallAgain: false,
-  isAlreadyPassEmail: false,
+  isCandidateWithEmail: false,
   firebaseToken: null,
   isAuthInFirebase: false,
   setIsAuthInFirebase: () => {},
@@ -171,7 +171,7 @@ const ChatProvider = ({
   const [chatId, setChatID] = useState<number | undefined>();
 
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
-  const [isAlreadyPassEmail, setIsAlreadyPassEmail] = useState(false);
+  const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
@@ -234,8 +234,8 @@ const ChatProvider = ({
           setIsApplyJobFlow(true);
           _setFirebaseMessages(processedSnapshots);
 
-          LOG(messagesSnapshots, "messagesSnapshots");
-          LOG(processedSnapshots, "processedSnapshots");
+          // LOG(messagesSnapshots, "messagesSnapshots");
+          // LOG(processedSnapshots, "processedSnapshots");
         }
       );
     }
@@ -571,7 +571,7 @@ const ChatProvider = ({
                   setIsCandidateAnonym(false);
                 }
 
-                setIsAlreadyPassEmail(true);
+                setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
                 LOG(
                   payload.candidateData,
@@ -620,7 +620,7 @@ const ChatProvider = ({
                 }
 
                 setShouldCallAgain(true);
-                setIsAlreadyPassEmail(true);
+                setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
 
                 LOG(
@@ -1047,7 +1047,7 @@ const ChatProvider = ({
     candidateId,
     chatId: chatId,
     shouldCallAgain,
-    isAlreadyPassEmail,
+    isCandidateWithEmail,
     chatBotToken,
     firebaseToken,
     isAuthInFirebase,

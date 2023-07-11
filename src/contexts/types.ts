@@ -59,7 +59,7 @@ export interface IChatMessengerContext {
   chatId?: number;
   isAnonym: boolean;
   shouldCallAgain: boolean;
-  isAlreadyPassEmail: boolean;
+  isCandidateWithEmail: boolean;
   chatBotToken?: string;
   firebaseToken: string | null;
   isAuthInFirebase: boolean;

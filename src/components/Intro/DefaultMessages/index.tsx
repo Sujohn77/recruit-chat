@@ -13,14 +13,12 @@ import { ThemeType } from "utils/theme/default";
 
 interface IDefaultMessagesProps {
   text: string;
-  setIsEmailForm: Dispatch<SetStateAction<boolean>>;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   isOptions?: boolean;
 }
 
 export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   text,
-  setIsEmailForm,
   setIsSelectedOption,
   isOptions = true,
 }) => {
@@ -45,16 +43,6 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
     setIsSelectedOption(true);
     dispatch({ type, payload: { item, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
-
-    // if (subscriberID) {
-    //     setIsSelectedOption(true);
-    //     triggerAction({ type, payload: { item, isChatMessage: true } });
-    //     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
-    // } else {
-    //     setInitialOption(option);
-    // }
-
-    // setIsEmailForm(!subscriberID);
   };
 
   const chooseOptions = map(messages.options, (opt, index) => (

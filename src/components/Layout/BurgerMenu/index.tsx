@@ -1,22 +1,28 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
 import * as S from "./styles";
 import { IBurgerMenuProps } from "./props";
-import { menuItems } from "./data";
+import { menuForCandidateWithEmail, menuItems } from "./data";
 import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
-import { CHAT_ACTIONS, IMenuItem } from "utils/types";
-import { ApiResponse } from "apisauce";
-import { ISendTranscriptResponse } from "services/types";
 import { LOG } from "utils/helpers";
 import { apiInstance } from "services/api";
+import { CHAT_ACTIONS, IMenuItem } from "utils/types";
+import { ISendTranscriptResponse } from "services/types";
 
 export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   setIsShowResults,
 }) => {
-  const { dispatch, chatId, isAnonym, setIsApplyJobFlow } = useChatMessenger();
+  const {
+    dispatch,
+    chatId,
+    isAnonym,
+    setIsApplyJobFlow,
+    isCandidateWithEmail,
+  } = useChatMessenger();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -35,11 +41,14 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   }, [isOpen]);
 
   const handleItemClick = async (item: IMenuItem) => {
-    if (item.type === CHAT_ACTIONS.ASK_QUESTION) {
+    const { type, text } = item;
+
+    // cancels sending messages related to Apply Job
+    if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
     }
 
-    if (item.type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
+    if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
       try {
         const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
           await apiInstance.sendTranscript({
@@ -52,8 +61,8 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
       }
     } else {
       dispatch({
-        type: item.type,
-        payload: { item: item.text, isChatMessage: true },
+        type,
+        payload: { item: text, isChatMessage: true },
       });
       setIsOpen(true);
       setIsShowResults(false);
@@ -70,13 +79,16 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
 
       {isOpen && (
         <S.MenuItemsWrapper ref={menuRef}>
-          {map(menuItems, (item, index) => (
-            <MenuItem
-              key={`menu-item-${index}`}
-              item={item}
-              onClick={handleItemClick}
-            />
-          ))}
+          {map(
+            isCandidateWithEmail ? menuForCandidateWithEmail : menuItems,
+            (item, index) => (
+              <MenuItem
+                key={`menu-item-${index}`}
+                item={item}
+                onClick={handleItemClick}
+              />
+            )
+          )}
         </S.MenuItemsWrapper>
       )}
     </S.Wrapper>

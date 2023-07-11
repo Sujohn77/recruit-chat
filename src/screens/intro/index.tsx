@@ -2,10 +2,10 @@ import { useAuthContext } from "contexts/AuthContext";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ButtonsTheme } from "utils/types";
-import { DefaultMessages, SupportForm } from "components";
-import { DefaultButton } from "components/Layout";
 import * as S from "./styles";
+import { DefaultMessages, SupportForm } from "components";
+import { ButtonsTheme } from "utils/types";
+import { DefaultButton } from "components/Layout";
 
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",
@@ -35,15 +35,10 @@ export const Intro: FC<IIntroScreenProps> = ({
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
       <DefaultMessages
-        setIsEmailForm={setIsEmailForm}
         text={t("messages:initialMessage")}
         isOptions={!isQuestionSubmit}
         setIsSelectedOption={setIsSelectedOption}
       />
-
-      {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
-
-            {isOtpMessages && !isVerified && <TrialPassword />} */}
 
       {!isNeedSupport && isEmailForm && !isVerified && (
         <DefaultButton
@@ -65,7 +60,6 @@ export const Intro: FC<IIntroScreenProps> = ({
 
       {isQuestionSubmit && (
         <DefaultMessages
-          setIsEmailForm={setIsEmailForm}
           text={t("messages:wantContinue")}
           setIsSelectedOption={setIsSelectedOption}
         />
