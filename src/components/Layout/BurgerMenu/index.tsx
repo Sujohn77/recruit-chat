@@ -16,7 +16,7 @@ import { apiInstance } from "services/api";
 export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   setIsShowResults,
 }) => {
-  const { dispatch, chatId, isAnonym } = useChatMessenger();
+  const { dispatch, chatId, isAnonym, setIsApplyJobFlow } = useChatMessenger();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +35,10 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   }, [isOpen]);
 
   const handleItemClick = async (item: IMenuItem) => {
+    if (item.type === CHAT_ACTIONS.ASK_QUESTION) {
+      setIsApplyJobFlow(false);
+    }
+
     if (item.type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
       try {
         const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =

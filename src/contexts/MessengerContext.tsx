@@ -120,6 +120,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   isApplyJobFlow: false,
   setFlowId: () => {},
   setSubscriberWorkflowId: () => {},
+  setIsApplyJobFlow: () => {},
   sendPreScreenMessage: () => Promise.resolve(),
 };
 
@@ -1056,6 +1057,7 @@ const ChatProvider = ({
     setFlowId,
     setSubscriberWorkflowId,
     sendPreScreenMessage,
+    setIsApplyJobFlow,
   };
 
   // console.log(
