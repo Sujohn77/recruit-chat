@@ -825,13 +825,18 @@ export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 
 // ---------------------------------------------------------------------------- //
 
-export const LOG = (logObj: any, description?: string) => {
+export const LOG = (
+  logObj: any,
+  description?: string,
+  color = colors.purple,
+  background = colors.black
+) => {
   console.log("====================================");
   console.log(
     `%c   ${description}   `,
     `color: ${
-      description === "ERROR" ? colors.torchRed : colors.purple
-    }; font-size: 14px; background-color: ${colors.black};`,
+      description === "ERROR" ? colors.torchRed : color
+    }; font-size: 14px; background-color: ${background};`,
     logObj
   );
   console.log("====================================");

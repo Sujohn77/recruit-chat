@@ -74,6 +74,7 @@ import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { getProcessedSnapshots } from "firebase/config";
+import { colors } from "utils/colors";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -194,8 +195,6 @@ const ChatProvider = ({
   // ----------------------------------------------------------------------------- //
 
   useEffect(() => {
-    LOG(parseFirebaseMessages(_firebaseMessages), "PARSED MESSAGES");
-
     setMessages((prevMessages) => [
       ...parseFirebaseMessages(_firebaseMessages),
       ...prevMessages,
@@ -243,16 +242,16 @@ const ChatProvider = ({
   }, [isApplyJobSuccessfully]);
 
   useEffect(() => {
-    LOG(_firebaseMessages, "_firebaseMessages");
+    LOG(_firebaseMessages, "_firebaseMessages", colors.white);
   }, [_firebaseMessages]);
   useEffect(() => {
-    LOG(candidateId, "candidateId");
+    LOG(candidateId, "candidateId", colors.white);
   }, [candidateId]);
   useEffect(() => {
-    LOG(chatId, "chatId");
+    LOG(chatId, "chatId", colors.white);
   }, [chatId]);
   useEffect(() => {
-    LOG(isCandidateAnonym, "isCandidateAnonym");
+    LOG(isCandidateAnonym, "isCandidateAnonym", colors.white);
   }, [isCandidateAnonym]);
 
   useEffect(() => {
@@ -573,11 +572,7 @@ const ChatProvider = ({
 
                 setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
-                LOG(
-                  payload.candidateData,
-                  "SEND_TRANSCRIPT_EMAIL  payload.candidateData"
-                );
-                LOG(candidateRes, "Candidate Response");
+                LOG(candidateRes, "UpdateOrMargeCandidate Response");
               }
 
               const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
