@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useCallback } from "react";
 import { useTheme } from "styled-components";
 
 import * as S from "./styles";
@@ -27,15 +27,15 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob } = useChatMessenger();
 
-  const handleBackButton = () => {
+  const handleBackButton = useCallback(() => {
     if (showLoginScreen) {
       setShowLoginScreen(false);
     } else {
       setViewJob(null);
     }
-  };
+  }, [showLoginScreen]);
 
-  const onCloseChat = () => setIsSelectedOption(false);
+  const onCloseChat = useCallback(() => setIsSelectedOption(false), []);
 
   return (
     <S.ChatHeaderWrapper>

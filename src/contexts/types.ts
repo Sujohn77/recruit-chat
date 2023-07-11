@@ -52,7 +52,8 @@ export interface IChatMessengerContext {
   setIsInitialized: Dispatch<SetStateAction<boolean>>;
   resumeName: string;
   isChatLoading: boolean;
-  _setMessages: (messages: ILocalMessage[]) => void;
+  // _setMessages: (messages: ILocalMessage[]) => void;
+  _setMessages: React.Dispatch<React.SetStateAction<ILocalMessage[]>>;
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;
   candidateId?: number;
@@ -70,6 +71,12 @@ export interface IChatMessengerContext {
   setSubscriberWorkflowId: (id: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
   sendPreScreenMessage: (message: string) => Promise<any>;
+  emailAddress: string;
+  firstName: string;
+  lastName: string;
+  setEmailAddress: (email: string) => void;
+  setFirstName: (name: string) => void;
+  setLastName: (name: string) => void;
 }
 
 export interface IFileUploadContext {

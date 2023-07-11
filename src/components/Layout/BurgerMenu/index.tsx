@@ -23,6 +23,9 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     isAnonym,
     setIsApplyJobFlow,
     isCandidateWithEmail,
+    emailAddress,
+    firstName,
+    lastName,
   } = useChatMessenger();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +54,19 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
 
     if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
       try {
+        if (emailAddress) {
+          dispatch({
+            type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+            payload: {
+              candidateData: {
+                emailAddress,
+                firstName,
+                lastName,
+              },
+            },
+          });
+        }
+
         const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
           await apiInstance.sendTranscript({
             ChatID: chatId,

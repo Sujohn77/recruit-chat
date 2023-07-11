@@ -14,7 +14,7 @@ export const fr = {
   placeHolders: {
     message: "Taper un message",
     bot_typing: "Le bot est en train de taper...",
-    chooseLocation: "Répondre pour choisir l'emplacement...",
+    chooseLocation: "Sélectionnez ou tapez un lieu de travail",
     email: "E-mail",
     alert_category: "Reply to choose category...",
     startTyping: "Start typing to select a job title...",

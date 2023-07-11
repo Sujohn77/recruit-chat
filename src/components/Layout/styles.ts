@@ -13,17 +13,22 @@ export const DefaultButton = styled(ButtonBase)`
 `;
 
 export const DarkButton = styled(DefaultButton)`
+  height: 40px;
+  width: 100%;
   display: flex;
   align-items: center;
-  height: 40px;
   justify-content: center;
-  width: 100%;
+  background: ${(props) => props.theme.primaryColor}!important;
+  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+  border-radius: 100px !important;
   font-size: 14px;
   line-height: 17px;
   font-family: Inter-SemiBold;
-  background-color: ${(props) => props.theme.primaryColor}!important;
-  border-radius: 100px !important;
-  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 `;
 
 export const PrimaryButton = styled(DefaultButton)`

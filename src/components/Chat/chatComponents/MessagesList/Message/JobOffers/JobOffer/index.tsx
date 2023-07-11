@@ -2,18 +2,15 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
-import AnimateHeight, { Height } from "react-animate-height";
 
 import * as S from "./styles";
 import { IJobOfferProps } from "./props";
-import { IMAGES } from "assets";
 import { apiInstance } from "services/api";
 import { ISuccessResponse } from "services/types";
 import { Loader } from "components/Layout";
 import { DarkButton } from "components/Layout/styles";
-import { LOG } from "utils/helpers";
-
-const ANIMATION_ID = "ANIMATION_ID";
+import { LOG, generateLocalId } from "utils/helpers";
+import { ILocalMessage, MessageType } from "utils/types";
 
 export const JobOffer: React.FC<IJobOfferProps> = ({
   jobOffer,
@@ -27,53 +24,65 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     isAnonym,
     shouldCallAgain,
     isCandidateWithEmail,
+    _setMessages,
   } = useChatMessenger();
   const { t } = useTranslation();
 
-  const [isSuccessInterested, setIsSuccessInterested] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-
-  useEffect(() => {
-    let timeout: NodeJS.Timeout | undefined;
-    if (height === "auto") {
-      timeout = setTimeout(() => {
-        setHeight(0);
-        setErrorText("");
-      }, 5000);
-    }
-
-    return () => {
-      timeout && clearTimeout(timeout);
-    };
-  }, [height]);
 
   const interestedIn = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if ((!isAnonym || isCandidateWithEmail) && !isLoading) {
       if (candidateId) {
-        setIsLoading(true);
+        let interestedInResMess: ILocalMessage;
+
         try {
+          setIsLoading(true);
           const response: ApiResponse<ISuccessResponse> =
             await apiInstance.addCandidateByJobId(+jobOffer.id, candidateId);
 
           if (response?.data?.success) {
-            setIsSuccessInterested(true);
+            interestedInResMess = {
+              isOwn: false,
+              _id: null,
+              localId: generateLocalId(),
+              content: {
+                subType: MessageType.TEXT,
+                text: t("chat_item_description:success_interested_id"),
+              },
+            };
           } else if (response.data?.statusCode === 303) {
             // if 303 === the user has already registered themselves for this job
-
-            setErrorText("Already registered themselves for this job");
-            setHeight("auto");
-            setIsSuccessInterested(true);
+            interestedInResMess = {
+              _id: null,
+              localId: generateLocalId(),
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                // TODO: add translation
+                text: "Already registered themselves for this job",
+              },
+            };
           } else if (response.data?.statusCode === 105) {
             // general error, show error msg
             if (response.data.errors[0]) {
-              setErrorText(response.data.errors[0]);
-              setHeight("auto");
+              interestedInResMess = {
+                _id: null,
+                localId: generateLocalId(),
+                isOwn: false,
+                content: {
+                  subType: MessageType.TEXT,
+                  text: response.data.errors[0],
+                },
+              };
             }
           }
+
+          _setMessages((prevMessages) => [
+            interestedInResMess,
+            ...prevMessages,
+          ]);
         } catch (error) {
           LOG(error, "ERROR");
         } finally {
@@ -92,41 +101,28 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     }
   }, [isClicked, shouldCallAgain]);
 
-  const handleReadMore = useCallback(() => {
-    setViewJob(jobOffer);
-  }, []);
+  const handleReadMore = useCallback(() => setViewJob(jobOffer), []);
 
   return (
-    <S.JobOfferWrapper
-      aria-expanded={height !== 0}
-      aria-controls={ANIMATION_ID}
-    >
+    <S.JobOfferWrapper>
       <S.OfferTitle>{jobOffer.title}</S.OfferTitle>
 
-      <S.ReadMore onClick={handleReadMore}>
+      <DarkButton onClick={handleReadMore}>
         {t("chat_item_description:read_more")}
-      </S.ReadMore>
+      </DarkButton>
 
       {isLoading ? (
         <S.LoaderWrapper>
           <Loader showLoader absolutePosition={false} />
         </S.LoaderWrapper>
-      ) : isSuccessInterested ? (
-        <S.SuccessInteresting>
-          {t("chat_item_description:success_interested_id")}
-        </S.SuccessInteresting>
       ) : (
-        <DarkButton onClick={interestedIn}>
+        <DarkButton
+          disabled={isLoading || !isLastMessage}
+          onClick={interestedIn}
+        >
           {t("chat_item_description:interested_in")}
         </DarkButton>
       )}
-
-      <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
-        <S.Error>
-          <S.WarningImg src={IMAGES.WARN} alt="" />
-          <S.ErrorText>{errorText}</S.ErrorText>
-        </S.Error>
-      </AnimateHeight>
     </S.JobOfferWrapper>
   );
 };

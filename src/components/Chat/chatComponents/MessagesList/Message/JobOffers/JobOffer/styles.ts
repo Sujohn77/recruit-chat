@@ -1,3 +1,4 @@
+import { DefaultButton } from "components/Layout";
 import styled from "styled-components";
 
 const MARGIN = "0 12px";
@@ -27,14 +28,6 @@ export const Category = styled.h3`
 
 export const OfferTitle = styled.p`
   height: 34px;
-  margin: ${MARGIN};
-`;
-
-export const ReadMore = styled.p`
-  text-transform: uppercase;
-  color: ${({ theme: { message } }) => message.jobOffer.color};
-  border-bottom: 1px solid ${({ theme: { message } }) => message.jobOffer.color};
-  width: fit-content;
   margin: ${MARGIN};
 `;
 

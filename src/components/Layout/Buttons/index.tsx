@@ -4,7 +4,7 @@ import { ButtonsTheme } from "utils/types";
 import { ButtonWrapper } from "./styled";
 
 interface IDefaultButtonProps {
-  value: string;
+  value?: string;
   onClick: () => void;
   theme?: ButtonsTheme;
   style?: CSSProperties;

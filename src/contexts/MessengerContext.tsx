@@ -123,6 +123,12 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setSubscriberWorkflowId: () => {},
   setIsApplyJobFlow: () => {},
   sendPreScreenMessage: () => Promise.resolve(),
+  emailAddress: "",
+  firstName: "",
+  lastName: "",
+  setEmailAddress: () => {},
+  setFirstName: () => {},
+  setLastName: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -191,6 +197,9 @@ const ChatProvider = ({
   const [isApplyJobFlow, setIsApplyJobFlow] = useState(false);
   const [flowId, setFlowId] = useState<number>();
   const [subscriberWorkflowId, setSubscriberWorkflowId] = useState<number>();
+  const [emailAddress, setEmailAddress] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   // ----------------------------------------------------------------------------- //
 
@@ -546,6 +555,7 @@ const ChatProvider = ({
           break;
         }
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
+          // Currently unused
           setIsChatLoading(true);
           try {
             if (chatId) {
@@ -573,14 +583,14 @@ const ChatProvider = ({
                 setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
                 LOG(candidateRes, "UpdateOrMargeCandidate Response");
+
+                const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+                  await apiInstance.sendTranscript({
+                    ChatID: chatId,
+                  });
+
+                LOG(sendTranscriptRes, "Send Transcript Response");
               }
-
-              const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-                await apiInstance.sendTranscript({
-                  ChatID: chatId,
-                });
-
-              LOG(sendTranscriptRes, "Send Transcript Response");
             }
           } catch (error) {
           } finally {
@@ -599,6 +609,9 @@ const ChatProvider = ({
                   candidateId: candidateId,
                   chatId: chatId,
                 };
+                setEmailAddress(candidateData.emailAddress);
+                setFirstName(candidateData.firstName);
+                setLastName(candidateData.lastName);
 
                 const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
                   await apiInstance.updateOrMargeCandidate(candidateData);
@@ -1053,6 +1066,12 @@ const ChatProvider = ({
     setSubscriberWorkflowId,
     sendPreScreenMessage,
     setIsApplyJobFlow,
+    emailAddress,
+    firstName,
+    lastName,
+    setEmailAddress,
+    setFirstName,
+    setLastName,
   };
 
   // console.log(

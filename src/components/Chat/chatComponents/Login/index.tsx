@@ -7,7 +7,7 @@ import { CHAT_ACTIONS } from "utils/types";
 import { useTranslation } from "react-i18next";
 import { FormControl } from "@mui/material";
 import { FormInput } from "components/Layout/Autocomplete/styles";
-import { FormButton } from "../MessagesList/Message/EmailForm";
+import { FormButton } from "../MessagesList/Message/EmailForm/styles";
 import { colors } from "utils/colors";
 
 interface ILoginProps {

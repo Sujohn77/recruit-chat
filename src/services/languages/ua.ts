@@ -14,7 +14,7 @@ export const ua = {
   placeHolders: {
     message: "Повідомелння",
     bot_typing: "Бот друкує...",
-    chooseLocation: "Відповісти для вибору місця...",
+    chooseLocation: "Оберіть або введіть місце роботи",
     email: "Пошта",
     alert_category: "Відповісти для вибору категорії...",
     startTyping: "Start typing to select a job title...",
@@ -94,7 +94,7 @@ export const ua = {
     enter_email_title:
       "Будь ласка, введіть свою електронну адресу, і ми надішлемо вам електронний лист",
     categories_title: "Виберіть назву робочої позиції",
-    locations_title: "Місце пошуку",
+    locations_title: "Локація пошуку роботи",
     all_categories: "Усі категорії",
     hiring_help_title:
       "Great question. Check out our help section to learn more on how we hire.",
