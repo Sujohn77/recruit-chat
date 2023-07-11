@@ -4,6 +4,7 @@ import { IUser } from "contexts/types";
 import randomString from "random-string";
 import capitalize from "lodash/capitalize";
 import findIndex from "lodash/findIndex";
+import unionBy from "lodash/unionBy";
 import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
 import find from "lodash/find";
@@ -75,6 +76,11 @@ export interface IMessageProps {
   padding?: string;
   cursor?: string;
   isLastMessage?: boolean;
+}
+
+interface IUserContact {
+  isPhoneType: boolean;
+  contact: string | undefined | null;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
@@ -802,6 +808,15 @@ export const validateFields = (email: string, text: string) => {
   return errors;
 };
 
+export const validationUserContacts = ({
+  isPhoneType,
+  contact,
+}: IUserContact) => {
+  if (!contact) return "";
+
+  return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
+};
+
 // ----------------------------------- regex ----------------------------------- //
 export const regExpUuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -820,4 +835,22 @@ export const LOG = (logObj: any, description?: string) => {
     logObj
   );
   console.log("====================================");
+};
+
+export const parseFirebaseMessages = (
+  fMessages: IMessage[]
+): ILocalMessage[] => {
+  return unionBy(
+    map(
+      filter(fMessages, (mess) => mess.content.subType !== "chat_created"),
+      (mess) => ({
+        dateCreated: mess.dateCreated,
+        content: mess.content,
+        isOwn: mess.sender.id === -2 ? false : true,
+        _id: mess.chatItemId,
+        localId: mess.localId,
+      })
+    ),
+    "chatItemId"
+  );
 };

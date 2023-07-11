@@ -64,6 +64,11 @@ export interface IChatMessengerContext {
   firebaseToken: string | null;
   isAuthInFirebase: boolean;
   setIsAuthInFirebase: (isAuth: boolean) => void;
+  setIsApplyJobSuccessfully: (isSuccessful: boolean) => void;
+  isApplyJobFlow: boolean;
+  setFlowId: (flowId: number) => void;
+  setSubscriberWorkflowId: (id: number) => void;
+  sendPreScreenMessage: (message: string) => Promise<any>;
 }
 
 export interface IFileUploadContext {

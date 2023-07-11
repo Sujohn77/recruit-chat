@@ -195,7 +195,7 @@ class Api {
       chatID: chatID,
       locale: LOCALE,
     });
-  sendFollowing = (data: IFollowingRequest) =>
+  sendAnswer = (data: IFollowingRequest) =>
     this.client.post<IFollowingResponse>(
       "/api/chatbot/sendprescreenmessage",
       data

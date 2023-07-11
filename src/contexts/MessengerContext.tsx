@@ -6,10 +6,12 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import findIndex from "lodash/findIndex";
 import map from "lodash/map";
 import moment from "moment";
+import sortBy from "lodash/sortBy";
 import { ApiResponse } from "apisauce";
 
 import {
@@ -18,11 +20,14 @@ import {
   CHAT_ACTIONS,
   USER_INPUTS,
   IRequisition,
+  IMessageID,
 } from "utils/types";
 import {
   IAskAQuestionResponse,
   ICreateCandidateResponse,
   ICreateChatResponse,
+  IFollowingRequest,
+  IFollowingResponse,
   IMessage,
   ISendTranscriptResponse,
   ISnapshot,
@@ -42,8 +47,6 @@ import {
   getItemById,
   getServerParsedMessages,
   getMessagesOnAction,
-  validateEmail,
-  validateEmailOrPhone,
   getActionTypeByOption,
   getNextActionType,
   getSearchJobsData,
@@ -53,6 +56,8 @@ import {
   getStorageValue,
   generateLocalId,
   LOG,
+  parseFirebaseMessages,
+  validationUserContacts,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -66,6 +71,9 @@ import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { userAPI } from "services/api/user.api";
+import { FirebaseSocketReactivePagination } from "services/firebase/socket";
+import { SocketCollectionPreset } from "services/firebase/socket.options";
+import { getProcessedSnapshots } from "firebase/config";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -108,40 +116,27 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   firebaseToken: null,
   isAuthInFirebase: false,
   setIsAuthInFirebase: () => {},
+  setIsApplyJobSuccessfully: () => {},
+  isApplyJobFlow: false,
+  setFlowId: () => {},
+  setSubscriberWorkflowId: () => {},
+  sendPreScreenMessage: () => Promise.resolve(),
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
   chatMessengerDefaultState
 );
 
-export const info = {
-  username: "RomanAndreevUpworkPlaypen",
-  password: "SomeStrongPassword1234",
-};
-
-interface IUserContact {
-  isPhoneType: boolean;
-  contact: string | undefined | null;
-}
-
 interface IJobAlertData {
   email: string;
   type: CHAT_ACTIONS;
 }
 
-export const validationUserContacts = ({
-  isPhoneType,
-  contact,
-}: IUserContact) => {
-  if (!contact) return "";
-
-  return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
-};
-
 const ChatProvider = ({
   chatBotID: chatBotId = "17",
   children,
 }: IChatProviderProps) => {
+  const messagesSocketConnection = useRef<any>(null);
   // -------------------------------- State -------------------------------- //
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
@@ -182,13 +177,73 @@ const ChatProvider = ({
     searchRequisitionsTrigger,
     setIsChatLoading
   );
-  //
+  // ----------------------------------------------------------------------------- //
+
+  const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
+  const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
   const [chatBotToken, setToken] = useState(
     getStorageValue(SessionStorage.Token)
   );
-  const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
+  const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
   const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
+  const [isApplyJobFlow, setIsApplyJobFlow] = useState(false);
+  const [flowId, setFlowId] = useState<number>();
+  const [subscriberWorkflowId, setSubscriberWorkflowId] = useState<number>();
 
+  // ----------------------------------------------------------------------------- //
+
+  useEffect(() => {
+    LOG(parseFirebaseMessages(_firebaseMessages), "PARSED MESSAGES");
+
+    setMessages((prevMessages) => [
+      ...parseFirebaseMessages(_firebaseMessages),
+      ...prevMessages,
+    ]);
+  }, [_firebaseMessages]);
+
+  useEffect(() => {
+    let savedSocketConnection: any;
+    if (isApplyJobSuccessfully) {
+      messagesSocketConnection.current =
+        new FirebaseSocketReactivePagination<IMessage>(
+          SocketCollectionPreset.Messages,
+          chatId
+        );
+
+      savedSocketConnection = messagesSocketConnection.current;
+      savedSocketConnection.subscribe(
+        (messagesSnapshots: ISnapshot<IMessage>[]) => {
+          const processedSnapshots = sortBy(
+            getProcessedSnapshots<IMessageID, IMessage>(
+              _firebaseMessages,
+              messagesSnapshots,
+              "chatItemId",
+              [],
+              "localId"
+            ),
+            (message: IMessage) => {
+              if (typeof message.dateCreated === "string") {
+                return -moment(message.dateCreated).unix();
+              } else if (message.dateCreated.seconds) {
+                return -message.dateCreated.seconds;
+              }
+            }
+          );
+
+          setIsApplyJobFlow(true);
+          _setFirebaseMessages(processedSnapshots);
+
+          LOG(messagesSnapshots, "messagesSnapshots");
+          LOG(processedSnapshots, "processedSnapshots");
+        }
+      );
+    }
+    return () => savedSocketConnection?.unsubscribe();
+  }, [isApplyJobSuccessfully]);
+
+  useEffect(() => {
+    LOG(_firebaseMessages, "_firebaseMessages");
+  }, [_firebaseMessages]);
   useEffect(() => {
     LOG(candidateId, "candidateId");
   }, [candidateId]);
@@ -222,7 +277,7 @@ const ChatProvider = ({
             await userAPI.getFirebaseAccessToken(res.data?.id);
 
           if (firebaseTokenResponse.data) {
-            setFirebaseToken(firebaseTokenResponse.data);
+            _setFirebaseToken(firebaseTokenResponse.data);
           }
 
           const chatRes: ApiResponse<ICreateChatResponse> =
@@ -257,22 +312,6 @@ const ChatProvider = ({
   }, [showJobAutocompleteBox]);
 
   // -------------------------------------------------------------------------- //
-
-  // isDevMode && console.log("searchLocations", searchLocations);
-  // Test
-  // useEffect(() => {
-  //     console.log('trigger', currentMsgType);
-  //     if (
-  //         currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
-  //         !messages.some((m) => m.content.subType === MessageType.SUBMIT_FILE)
-  //     ) {
-  //         triggerAction({ type: CHAT_ACTIONS.UPLOAD_CV });
-  //     } else if (currentMsgType === CHAT_ACTIONS.UPLOAD_CV) {
-  //         triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-  //     } else if (currentMsgType === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
-  //         triggerAction({ type: CHAT_ACTIONS.SEARCH_WITH_RESUME, payload: { items: mockCategories } });
-  //     }
-  // }, [currentMsgType]);
 
   useEffect(() => {
     if (isDevMode) {
@@ -310,8 +349,6 @@ const ChatProvider = ({
           location: getFormattedLocations(locations)[0],
           jobCategory: alertCategories?.length ? alertCategories[0] : "",
           candidateId: candidateId,
-          // candidateId: 50994334,
-          // candidateId: 49530690,
         });
       } catch (err) {
         clearAuthConfig();
@@ -585,7 +622,6 @@ const ChatProvider = ({
                 setIsAlreadyPassEmail(true);
                 payload.candidateData.callback?.();
 
-                LOG(payload.candidateData, "payload.candidateData");
                 LOG(
                   candidateRes,
                   "UPDATE_OR_MERGE_CANDIDATE Candidate Response"
@@ -868,6 +904,35 @@ const ChatProvider = ({
     }
   };
 
+  // for sending answer (after "Apply job")
+  const sendPreScreenMessage = async (message: string) => {
+    if (flowId && subscriberWorkflowId && candidateId) {
+      try {
+        setIsChatLoading(true);
+        const payload: IFollowingRequest = {
+          FlowID: flowId,
+          SubscriberWorkflowID: subscriberWorkflowId,
+          candidateId,
+          message,
+        };
+
+        const followingRes: ApiResponse<IFollowingResponse> =
+          await apiInstance.sendAnswer(payload);
+
+        LOG(followingRes, "followingRes");
+        if (followingRes.data?.success) {
+          return Promise.resolve(followingRes.data);
+        } else {
+          return Promise.reject(followingRes);
+        }
+      } catch (error) {
+        return Promise.reject(error?.message);
+      } finally {
+        setIsChatLoading(false);
+      }
+    }
+  };
+
   const chooseButtonOption = (excludeItem: USER_INPUTS, param?: string) => {
     const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
@@ -986,6 +1051,11 @@ const ChatProvider = ({
     firebaseToken,
     isAuthInFirebase,
     setIsAuthInFirebase,
+    setIsApplyJobSuccessfully,
+    isApplyJobFlow,
+    setFlowId,
+    setSubscriberWorkflowId,
+    sendPreScreenMessage,
   };
 
   // console.log(

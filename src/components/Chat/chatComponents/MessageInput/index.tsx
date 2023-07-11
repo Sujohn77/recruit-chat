@@ -56,6 +56,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     alertCategories,
     firebaseToken,
     setIsAuthInFirebase,
+    isApplyJobFlow,
+    sendPreScreenMessage,
   } = useChatMessenger();
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         })
         .catch((error) => {
           console.log("====================================");
-          console.log("Error --->", error?.message, error);
+          console.log("(Firebase) SIGN IN Error --->", error?.message, error);
           console.log("====================================");
           return { error };
         });
@@ -264,14 +266,24 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
   const onSendMessage = async () => {
     if (!isChatLoading) {
-      if (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length) {
-        sendMessage(draftMessage);
-        setIsShowResults(false);
-      }
+      try {
+        if (isApplyJobFlow && draftMessage) {
+          await sendPreScreenMessage(draftMessage);
+          setDraftMessage("");
+        } else {
+          if (
+            currentMsgType !== CHAT_ACTIONS.SET_CATEGORY ||
+            requisitions.length
+          ) {
+            sendMessage(draftMessage);
+            setIsShowResults(false);
+          }
 
-      if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION) {
-        draftMessage && chooseButtonOption(draftMessage);
-      }
+          if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION) {
+            draftMessage && chooseButtonOption(draftMessage);
+          }
+        }
+      } catch (error) {}
     }
   };
 

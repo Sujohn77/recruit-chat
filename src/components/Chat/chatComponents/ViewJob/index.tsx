@@ -1,15 +1,15 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useEffect, useState } from "react";
+import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
 
 import * as S from "./styles";
-import { getFormattedDate } from "utils/helpers";
-import { ApiResponse } from "apisauce";
-import { IApplyJobResponse, IMessage } from "services/types";
-import { apiInstance } from "services/api";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
+import { getFormattedDate } from "utils/helpers";
+import { IApplyJobResponse } from "services/types";
+import { apiInstance } from "services/api";
 
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
 
@@ -26,6 +26,9 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     chatId,
     shouldCallAgain,
     isAlreadyPassEmail,
+    setIsApplyJobSuccessfully,
+    setFlowId,
+    setSubscriberWorkflowId,
   } = useChatMessenger();
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
@@ -65,22 +68,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             res.data?.FlowID &&
             res.data?.SubscriberWorkflowID
           ) {
+            setIsApplyJobSuccessfully(true);
+            setFlowId(res.data.FlowID);
+            setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
             setViewJob(null);
-
-            // for sending answer
-            // const payload: IFollowingRequest = {
-            //   FlowID: res.data.FlowID,
-            //   SubscriberWorkflowID: res.data.SubscriberWorkflowID,
-            //   candidateId: candidateId,
-            //   message: "Yes", // answer example
-            // };
-
-            // const followingRes: ApiResponse<IFollowingResponse> =
-            //   await apiInstance.sendFollowing(payload);
-
-            // if (followingRes.data?.success) {
-            //   setTimeout(() => setViewJob(null), 1000);
-            // }
           } else {
             res.data?.errors[0] &&
               setApplyJobError(res.data?.errors[0] || "Something went wrong");
