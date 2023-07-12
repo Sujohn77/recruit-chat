@@ -59,7 +59,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     setIsAuthInFirebase,
     isApplyJobFlow,
     sendPreScreenMessage,
-    setSelectedAlertJobLocations,
+    setSearchLocations,
     _setMessages,
     setCurrentMsgType,
   } = useChatMessenger();
@@ -184,7 +184,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
               _id: generateLocalId(),
             };
 
-            setSelectedAlertJobLocations(items);
+            setSearchLocations(items);
             _setMessages((prevMessages) => [
               alertEmailMess,
               messWithLocations,
@@ -301,6 +301,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
           type: currentMsgType,
           payload: { items: uniq(newValues) },
         });
+      } else {
+        setSearchLocations(uniq(newValues));
       }
     }
   };

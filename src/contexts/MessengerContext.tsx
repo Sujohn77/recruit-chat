@@ -129,7 +129,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmailAddress: () => {},
   setFirstName: () => {},
   setLastName: () => {},
-  setSelectedAlertJobLocations: () => {},
+  setSearchLocations: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -201,9 +201,6 @@ const ChatProvider = ({
   const [emailAddress, setEmailAddress] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [selectedAlertJobLocations, setSelectedAlertJobLocations] = useState<
-    string[]
-  >([]);
 
   // ----------------------------------------------------------------------------- //
 
@@ -353,24 +350,27 @@ const ChatProvider = ({
     }
   }, [serverMessages.length, isInitialized]);
 
-  const createJobAlert = async ({ email, type }: IJobAlertData) => {
-    if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
-      setIsChatLoading(true);
-      try {
-        await apiInstance.createJobAlert({
-          email: email,
-          location: selectedAlertJobLocations.join(" "),
-          jobCategory: alertCategories?.length ? alertCategories[0] : "",
-          candidateId: candidateId,
-        });
-      } catch (err) {
-        clearAuthConfig();
-      } finally {
-        setIsChatLoading(false);
-        setSelectedAlertJobLocations([]);
+  const createJobAlert = useCallback(
+    async ({ email, type }: IJobAlertData) => {
+      if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
+        setIsChatLoading(true);
+        try {
+          await apiInstance.createJobAlert({
+            email: email,
+            location: searchLocations.join(" "),
+            jobCategory: alertCategories?.length ? alertCategories[0] : "",
+            candidateId: candidateId,
+          });
+        } catch (err) {
+          clearAuthConfig();
+        } finally {
+          setIsChatLoading(false);
+          setSearchLocations([]);
+        }
       }
-    }
-  };
+    },
+    [searchLocations, alertCategories, candidateId]
+  );
 
   // Initiate an action & set state
   const dispatch = useCallback(
@@ -1096,7 +1096,7 @@ const ChatProvider = ({
     setEmailAddress,
     setFirstName,
     setLastName,
-    setSelectedAlertJobLocations,
+    setSearchLocations,
   };
 
   // console.log(

@@ -77,7 +77,7 @@ export interface IChatMessengerContext {
   setEmailAddress: (email: string) => void;
   setFirstName: (name: string) => void;
   setLastName: (name: string) => void;
-  setSelectedAlertJobLocations: (locations: string[]) => void;
+  setSearchLocations: (locations: string[]) => void;
 }
 
 export interface IFileUploadContext {
