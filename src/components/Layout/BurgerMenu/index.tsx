@@ -52,7 +52,7 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
       setIsApplyJobFlow(false);
     }
 
-    if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && !isAnonym && chatId) {
+    if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && chatId) {
       try {
         if (emailAddress) {
           dispatch({
