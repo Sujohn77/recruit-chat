@@ -121,12 +121,13 @@ export enum CHAT_ACTIONS {
   ANSWER_QUESTIONS = "answer_questions",
   HIRING_PROCESS = "hiring_process",
   UPLOAD_CV = "upload_cv",
-  SEND_ALERT_CATEGORIES = "send_alert_categories",
   SEARCH_WITH_RESUME = "send_with_resume",
   RESET_FILE = "reset_file",
   UPLOADED_CV = "uploaded_cv",
   CANCEL_JOB_SEARCH_WITH_RESUME = "CANCEL_JOB_SEARCH_WITH_RESUME",
   UPDATE_OR_MERGE_CANDIDATE = "UPDATE_OR_MERGE_CANDIDATE",
+  SET_ALERT_JOB_LOCATIONS = "SET_ALERT_JOB_LOCATIONS",
+  SEND_ALERT_JOB_LOCATIONS = "SEND_ALERT_JOB_LOCATIONS",
 }
 
 export enum Status {

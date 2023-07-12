@@ -19,6 +19,7 @@ import * as S from "./styles";
 import { ICONS } from "assets";
 import { Status, TextFieldTypes } from "utils/constants";
 import {
+  generateLocalId,
   getAccessWriteType,
   getFormattedLocations,
   getInputType,
@@ -30,7 +31,7 @@ import {
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
-import { CHAT_ACTIONS } from "utils/types";
+import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
 import { useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
@@ -58,6 +59,9 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     setIsAuthInFirebase,
     isApplyJobFlow,
     sendPreScreenMessage,
+    setSelectedAlertJobLocations,
+    _setMessages,
+    setCurrentMsgType,
   } = useChatMessenger();
 
   useEffect(() => {
@@ -91,6 +95,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     category,
     lastActionType: currentMsgType,
   });
+
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
@@ -103,17 +108,15 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
   useEffect(() => {
     if (
-      currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
+      (currentMsgType === CHAT_ACTIONS.SET_CATEGORY ||
+        currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) &&
       (!!draftMessage || !!file)
     ) {
       setIsShowResults(true);
     }
   }, [currentMsgType]);
 
-  const inputType = useMemo(
-    () => getInputType({ actionType: currentMsgType, category }),
-    [category, currentMsgType]
-  );
+  const inputType = getInputType(currentMsgType);
 
   const { matchedPart, matchedItems } = useMemo(
     () =>
@@ -143,8 +146,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         matchedItems,
       });
       const isNoMatches =
-        isCategoryOrLocation && !isResults({ draftMessage, searchItems });
-      const matchedSearchItem = getMatchedItem({ searchItems, draftMessage });
+        isCategoryOrLocation && !isResults(draftMessage, searchItems);
+      const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
 
       if (inputType === TextFieldTypes.MultiSelect) {
         const isSelectedValues = matchedSearchItem || inputValues.length;
@@ -152,17 +155,53 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
           isSelectedValues && currentMsgType
             ? getNextActionType(currentMsgType)
             : CHAT_ACTIONS.NO_MATCH;
-        const payload = {
-          items: !!matchedSearchItem
-            ? uniq([...inputValues, matchedSearchItem])
-            : uniq(inputValues),
-        };
 
-        actionType &&
-          dispatch({
-            type: actionType,
-            payload,
-          });
+        if (actionType) {
+          const items = !!matchedSearchItem
+            ? uniq([...inputValues, matchedSearchItem])
+            : uniq(inputValues);
+          if (
+            actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
+            currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+          ) {
+            const alertEmailMess: ILocalMessage = {
+              isOwn: false,
+              localId: generateLocalId(),
+              content: {
+                subType: MessageType.TEXT,
+                text: t("messages:alertEmail"),
+              },
+              _id: null,
+            };
+
+            const messWithLocations: ILocalMessage = {
+              isOwn: true,
+              localId: generateLocalId(),
+              content: {
+                subType: MessageType.TEXT,
+                text: items.join("   "),
+              },
+              _id: generateLocalId(),
+            };
+
+            setSelectedAlertJobLocations(items);
+            _setMessages((prevMessages) => [
+              alertEmailMess,
+              messWithLocations,
+              ...prevMessages,
+            ]);
+            setInputValues([]);
+            setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+          } else {
+            const action = {
+              type: actionType,
+              payload: { items },
+            };
+
+            dispatch(action);
+          }
+        }
+        //
       } else {
         dispatch({
           type:
@@ -182,9 +221,9 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       const isWriteAccess = getAccessWriteType(currentMsgType) || file;
-      if (event.key === "Enter" && isWriteAccess) {
+      if (draftMessage && event.key === "Enter" && isWriteAccess) {
         event.preventDefault();
-        onSendMessage();
+        onSendMessageHandler();
       }
     };
     document.addEventListener("keydown", keyDownHandler);
@@ -257,14 +296,16 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     if (currentMsgType) {
       setInputValues(uniq(newValues));
       setDraftMessage(null);
-      dispatch({
-        type: currentMsgType,
-        payload: { items: uniq(newValues) },
-      });
+      if (currentMsgType !== CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) {
+        dispatch({
+          type: currentMsgType,
+          payload: { items: uniq(newValues) },
+        });
+      }
     }
   };
 
-  const onSendMessage = async () => {
+  const onSendMessageHandler = async () => {
     if (!isChatLoading) {
       try {
         if (isApplyJobFlow && draftMessage) {
@@ -279,8 +320,12 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
             setIsShowResults(false);
           }
 
-          if (currentMsgType === CHAT_ACTIONS.ASK_QUESTION) {
-            draftMessage && chooseButtonOption(draftMessage);
+          switch (currentMsgType) {
+            case CHAT_ACTIONS.ASK_QUESTION:
+              draftMessage && chooseButtonOption(draftMessage);
+              break;
+            default:
+              break;
           }
         }
       } catch (error) {}
@@ -331,7 +376,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
       {isWriteAccess && (
         <S.PlaneIcon
-          onClick={onSendMessage}
+          onClick={onSendMessageHandler}
           disabled={isChatLoading}
           src={ICONS.INPUT_PLANE}
           width="16"

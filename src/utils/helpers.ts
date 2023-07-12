@@ -585,12 +585,19 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
       return CHAT_ACTIONS.SET_WORK_PERMIT;
     case CHAT_ACTIONS.SET_SALARY:
       return CHAT_ACTIONS.APPLY_ETHNIC;
+
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+
     case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
-      return CHAT_ACTIONS.SEND_ALERT_CATEGORIES;
-    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
+      return CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
+
+    // case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
+    //   return CHAT_ACTIONS.SEND_ALERT_JOB_LOCATIONS
+
+    case CHAT_ACTIONS.SEND_ALERT_JOB_LOCATIONS:
       return CHAT_ACTIONS.SET_ALERT_EMAIL;
+
     case CHAT_ACTIONS.SET_CATEGORY:
       return CHAT_ACTIONS.SET_LOCATIONS;
     case CHAT_ACTIONS.SET_LOCATIONS:
@@ -708,52 +715,35 @@ export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
     type === CHAT_ACTIONS.SEND_LOCATIONS ||
     type === CHAT_ACTIONS.UPLOAD_CV ||
     type === CHAT_ACTIONS.SET_LOCATIONS ||
-    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES ||
+    type === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
 
   return isAllowedType && !!matchedItems.length;
 };
 
-export const getInputType = ({
-  actionType,
-  category,
-}: {
-  actionType: CHAT_ACTIONS | null;
-  category: string | null;
-}) => {
+export const getInputType = (actionType: CHAT_ACTIONS | null) => {
   const isMultiselectInput =
     actionType === CHAT_ACTIONS.SET_LOCATIONS ||
-    actionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+    actionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES ||
+    actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
 
   return isMultiselectInput
     ? TextFieldTypes.MultiSelect
     : TextFieldTypes.Select;
 };
 
-export const isResults = ({
-  draftMessage,
-  searchItems,
-}: {
-  draftMessage: string | null;
-  searchItems: string[];
-}) => {
-  return (
-    !draftMessage ||
-    !!searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase())
-  );
-};
+export const isResults = (draftMessage: string | null, searchItems: string[]) =>
+  !draftMessage ||
+  !!searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
 
-export const getMatchedItem = ({
-  searchItems,
-  draftMessage,
-}: {
-  draftMessage: string | null;
-  searchItems: string[];
-}) => {
-  return find(
+export const getMatchedItem = (
+  draftMessage: string | null,
+  searchItems: string[]
+) =>
+  find(
     searchItems,
     (l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || "")
   );
-};
 
 export const parseThemeResponse = (res: IApiThemeResponse) => ({
   primaryColor: res.client_primary_colour,

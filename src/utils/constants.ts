@@ -126,12 +126,16 @@ export const getChatActionMessages = (
           isChatMessage: true,
         },
       ];
-    case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
+    case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t("messages:alertEmail"),
+          text: i18n.t("messages:botMessageYou"),
         },
+        // {
+        //   subType: MessageType.TEXT,
+        //   text: i18n.t("messages:alertEmail"),
+        // },
       ];
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
       return [

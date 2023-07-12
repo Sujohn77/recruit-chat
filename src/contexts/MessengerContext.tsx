@@ -129,6 +129,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmailAddress: () => {},
   setFirstName: () => {},
   setLastName: () => {},
+  setSelectedAlertJobLocations: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -200,6 +201,9 @@ const ChatProvider = ({
   const [emailAddress, setEmailAddress] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [selectedAlertJobLocations, setSelectedAlertJobLocations] = useState<
+    string[]
+  >([]);
 
   // ----------------------------------------------------------------------------- //
 
@@ -344,7 +348,7 @@ const ChatProvider = ({
 
   useEffect(() => {
     if (isLoadedMessages && initialAction) {
-      triggerAction(initialAction);
+      dispatch(initialAction);
       setInitialAction(null);
     }
   }, [serverMessages.length, isInitialized]);
@@ -355,7 +359,7 @@ const ChatProvider = ({
       try {
         await apiInstance.createJobAlert({
           email: email,
-          location: getFormattedLocations(locations)[0],
+          location: selectedAlertJobLocations.join(" "),
           jobCategory: alertCategories?.length ? alertCategories[0] : "",
           candidateId: candidateId,
         });
@@ -363,12 +367,13 @@ const ChatProvider = ({
         clearAuthConfig();
       } finally {
         setIsChatLoading(false);
+        setSelectedAlertJobLocations([]);
       }
     }
   };
 
   // Initiate an action & set state
-  const triggerAction = useCallback(
+  const dispatch = useCallback(
     (action: ITriggerActionProps) => {
       // Check if there were errors before
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
@@ -395,7 +400,7 @@ const ChatProvider = ({
         }
         return;
       }
-
+      // console.warn("action type -->", type);
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           const searchCategory = payload?.item!.toLowerCase();
@@ -494,6 +499,7 @@ const ChatProvider = ({
           break;
         }
       }
+
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
@@ -537,12 +543,12 @@ const ChatProvider = ({
               if (apiResponse.data?.requisitions.length) {
                 setOfferJobs(apiResponse.data?.requisitions);
               } else {
-                triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
+                dispatch({ type: CHAT_ACTIONS.NO_MATCH });
               }
             } catch (err) {
               isDevMode &&
                 console.log(
-                  "%c getChatBotResponse err ",
+                  "%c getChatBotResponse (searchRequisitions) error ",
                   err,
                   `color: #ff8c00;`
                 );
@@ -655,7 +661,7 @@ const ChatProvider = ({
             setJobPositions(payload.items);
             additionalCondition = !!payload.items.length;
           } else {
-            triggerAction({ type: CHAT_ACTIONS.NO_MATCH });
+            dispatch({ type: CHAT_ACTIONS.NO_MATCH });
           }
           break;
         }
@@ -871,7 +877,14 @@ const ChatProvider = ({
       // Simulate chat bot reaction
       setTimeout(() => {
         updatedMessages?.length && setMessages(updatedMessages);
-        setCurrentMsgType(getNextActionType(type));
+        const nextMsgType = getNextActionType(type);
+
+        // console.log("====================================");
+        // console.log("__type", type);
+        // console.log("__nextMsgType", nextMsgType);
+        // console.log("====================================");
+
+        setCurrentMsgType(nextMsgType);
         setStatus(Status.DONE);
       }, 0);
 
@@ -1048,7 +1061,7 @@ const ChatProvider = ({
     prefferedJob,
     user,
     chooseButtonOption,
-    dispatch: triggerAction,
+    dispatch,
     submitMessage,
     setSnapshotMessages,
     setCurrentMsgType,
@@ -1083,6 +1096,7 @@ const ChatProvider = ({
     setEmailAddress,
     setFirstName,
     setLastName,
+    setSelectedAlertJobLocations,
   };
 
   // console.log(

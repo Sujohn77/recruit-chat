@@ -33,7 +33,10 @@ export const useTextField = ({
         };
       }
 
-      if (lastActionType === CHAT_ACTIONS.SET_LOCATIONS) {
+      if (
+        lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
+        lastActionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+      ) {
         return {
           searchItems: locations,
           placeHolder: t("placeHolders:chooseLocation"),
@@ -59,12 +62,14 @@ export const useTextField = ({
     []
   );
 
-  return getTextFieldProps({
+  const inputProps = getTextFieldProps({
     lastActionType,
     requisitions,
     locations,
     category,
   });
+
+  return inputProps;
 };
 
 export const useApiKey = () => {
