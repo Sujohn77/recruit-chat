@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { TextField } from "@mui/material";
+import { COLORS } from "utils/colors";
 
 export const FormInput = styled(TextField)`
   input,
   textarea {
-    background: #f3f2f2;
+    background: ${COLORS.CONCRETE};
     border-radius: 10px;
 
     padding: 10px;

@@ -1,96 +1,96 @@
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 const defaultTheme = {
-  primaryColor: colors.boulder,
-  secondaryColor: colors.alto,
+  primaryColor: COLORS.BOULDER,
+  secondaryColor: COLORS.ALTO,
   imageUrl: null,
-  headerColor: colors.alto,
-  messageButtonColor: colors.alto,
-  buttonSecondaryColor: colors.gray2,
-  searchResultsColor: colors.silver,
+  headerColor: COLORS.ALTO,
+  messageButtonColor: COLORS.ALTO,
+  buttonSecondaryColor: COLORS.GRAY_2,
+  searchResultsColor: COLORS.SILVER,
   borderStyle: "solid",
   borderWidth: "0px",
-  borderColor: "#ccc",
+  borderColor: COLORS.SILVER,
   chatbotName: "",
   header: {
-    color: colors.alto,
+    color: COLORS.ALTO,
   },
 
   loader: {
-    background: "#d3d3d370",
+    background: COLORS.DESERt_STORM,
   },
 
   searchResults: {
-    color: colors.dustyGray,
+    color: COLORS.DUSTY_GRAY,
     items: {
-      backgroundColor: colors.silver,
+      backgroundColor: COLORS.SILVER,
     },
   },
 
   notification: {
-    color: colors.silverChalice,
-    backgroundColor: colors.alabaster,
+    color: COLORS.SILVER_CHALICE,
+    backgroundColor: COLORS.ALABASTER,
   },
 
   message: {
-    backgroundColor: colors.alto,
-    primaryColor: colors.dustyGray,
-    secondaryColor: colors.black,
+    backgroundColor: COLORS.ALTO,
+    primaryColor: COLORS.DUSTY_GRAY,
+    secondaryColor: COLORS.BLACK,
     own: {
-      color: colors.white,
+      color: COLORS.WHITE,
     },
     chat: {
-      color: colors.dustyGray,
-      backgroundColor: colors.alto,
+      color: COLORS.DUSTY_GRAY,
+      backgroundColor: COLORS.ALTO,
     },
     file: {
-      backgroundColor: colors.silverChalice,
-      color: colors.alto,
+      backgroundColor: COLORS.SILVER_CHALICE,
+      color: COLORS.ALTO,
     },
     transcriptForm: {
-      color: colors.scorpion,
-      buttonColor: colors.white,
+      color: COLORS.SCORPION,
+      buttonColor: COLORS.WHITE,
     },
     interestedJob: {
-      color: colors.white,
+      color: COLORS.WHITE,
     },
     jobOffer: {
-      color: colors.black,
+      color: COLORS.BLACK,
     },
     button: {
-      borderColor: colors.boulder,
-      color: colors.black,
-      backgroundColor: colors.alto,
+      borderColor: COLORS.BOULDER,
+      color: COLORS.BLACK,
+      backgroundColor: COLORS.ALTO,
     },
-    postedDate: colors.alabaster,
-    initialColor: colors.tundora,
+    postedDate: COLORS.ALABASTER,
+    initialColor: COLORS.TUNDORA,
   },
 
   text: {
-    color: colors.black,
+    color: COLORS.BLACK,
   },
 
   button: {
-    primaryColor: colors.boulder,
-    secondaryColor: colors.white,
+    primaryColor: COLORS.BOULDER,
+    secondaryColor: COLORS.WHITE,
   },
 
   select: {
     option: {
-      background: colors.alto,
-      color: colors.dustyGray,
+      background: COLORS.ALTO,
+      color: COLORS.DUSTY_GRAY,
     },
   },
 
   input: {
-    backgroundColor: colors.gallery,
-    color: colors.silverChalice,
+    backgroundColor: COLORS.GALLERY,
+    color: COLORS.SILVER_CHALICE,
   },
 
   forms: {
     browse: {
-      colors: colors.black,
-      background: colors.silverChalice2,
+      colors: COLORS.BLACK,
+      background: COLORS.SILVER_CHALICE_2,
     },
   },
 };

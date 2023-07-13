@@ -63,9 +63,11 @@ export interface IApiMessage {
 export enum UserLicenseTypes {
   Standard = "Standart",
 }
+
 export type AppKeyType = {
   appKey: string;
 };
+
 export interface IUserSelf {
   id: number;
   userLicenseType: UserLicenseTypes.Standard;
@@ -183,32 +185,11 @@ export interface IChatRoom extends IChatRoomID {
   muted: IMuteStatus[];
   ownerId: number;
 }
-export interface ChatsState {
-  rooms: IChatRoom[];
-  archivedRooms: IChatRoom[];
-  totalUnread: number;
-}
 
 export enum SnapshotType {
   Added = "added",
   Modified = "modified",
   Removed = "removed",
-}
-
-export interface ILocationRequisition {
-  city: string | null;
-  state: string | null;
-  postalCode: string | null;
-  country: string | null;
-  latitude: string | null;
-  longitude: string | null;
-  radius: string | number | null;
-  radiusUnit: string | null;
-}
-
-export interface IApiSignedRequest {
-  appKey: string;
-  codeVersion: string;
 }
 
 // Loop

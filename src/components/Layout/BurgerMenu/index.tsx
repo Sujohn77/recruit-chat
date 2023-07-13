@@ -12,7 +12,7 @@ import { LOG } from "utils/helpers";
 import { apiInstance } from "services/api";
 import { CHAT_ACTIONS, IMenuItem } from "utils/types";
 import { ISendTranscriptResponse } from "services/types";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   setIsShowResults,
@@ -20,7 +20,6 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
   const {
     dispatch,
     chatId,
-    isAnonym,
     setIsApplyJobFlow,
     isCandidateWithEmail,
     emailAddress,
@@ -72,7 +71,7 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
             ChatID: chatId,
           });
 
-        LOG(sendTranscriptRes, "Send Transcript Response", colors.lightgreen);
+        LOG(sendTranscriptRes, "Send Transcript Response", COLORS.PASTEL_GRIN);
       } catch (error) {
         LOG(error, "ERROR");
       }

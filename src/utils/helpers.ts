@@ -1,16 +1,13 @@
 import { profile } from "contexts/mockData";
-import moment from "moment";
 import { IUser } from "contexts/types";
+import moment from "moment";
 import randomString from "random-string";
 import capitalize from "lodash/capitalize";
-import findIndex from "lodash/findIndex";
 import unionBy from "lodash/unionBy";
 import filter from "lodash/filter";
-import sortBy from "lodash/sortBy";
 import find from "lodash/find";
 import map from "lodash/map";
 import { Buffer } from "buffer";
-import jwt_decode from "jwt-decode";
 
 import {
   MessageType,
@@ -18,18 +15,13 @@ import {
   CHAT_ACTIONS,
   USER_INPUTS,
   IContent,
-  QueuesState,
-  UpdateQueueChatRoomMessagesAction,
-  IQueueChatRoom,
-  IMessageID,
   IGetUpdatedMessages,
   IFilterItemsWithType,
-  IReplaceLocalMessages,
   IRequisition,
   IPushMessage,
+  ISnapshot,
 } from "./types";
-import { colors } from "./colors";
-import { getProcessedSnapshots } from "../firebase/config";
+import { COLORS } from "./colors";
 import {
   getReplaceMessageType,
   isPushMessageType,
@@ -44,10 +36,15 @@ import {
   IMessage,
   ISearchJobsPayload,
   IUserSelf,
+  I_id,
   LocationType,
   ServerMessageType,
+  SnapshotType,
 } from "services/types";
 import i18n from "services/localization";
+import sortBy from "lodash/sortBy";
+import findIndex from "lodash/findIndex";
+import remove from "lodash/remove";
 
 window.Buffer = Buffer;
 
@@ -93,8 +90,8 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 
   if (!msg.isOwn) {
     return {
-      color: colors.dustyGray,
-      backColor: colors.alto,
+      color: COLORS.DUSTY_GRAY,
+      backColor: COLORS.ALTO,
       isOwn: !!msg.isOwn,
       padding,
       cursor,
@@ -103,21 +100,14 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   return {
     color:
       msg.content.subType === MessageType.BUTTON
-        ? colors.tundora
-        : colors.white,
+        ? COLORS.TUNDORA
+        : COLORS.WHITE,
     backColor:
-      msg.content.subType === MessageType.BUTTON ? colors.alto : colors.boulder,
+      msg.content.subType === MessageType.BUTTON ? COLORS.ALTO : COLORS.BOULDER,
     padding,
     isOwn: !!msg.isOwn,
     cursor,
   };
-};
-
-export const isTokenExpired = (token: string) => {
-  let decodedToken: { exp: number } = jwt_decode(token);
-  let currentDate = new Date();
-
-  return decodedToken.exp * 1000 < currentDate.getTime();
 };
 
 export const getActionTypeByOption = (option: USER_INPUTS) => {
@@ -189,22 +179,6 @@ export const MessageTypeId: Record<ServerMessageType, number> = {
   [MessageType.FILE]: 2,
 };
 
-export const MessageSubtypeId: Record<ServerMessageType, number | null> = {
-  /* Default text hasn't subtype */
-  [MessageType.TEXT]: null,
-
-  /* Each of file types has subtype */
-  [MessageType.DATE]: 98,
-  [MessageType.UNREAD_MESSAGES]: 99,
-  [MessageType.VIDEO]: 2,
-  [MessageType.DOCUMENT]: 4,
-  [MessageType.FILE]: 5,
-
-  /* Each of events has subtype */
-  [MessageType.TRANSCRIPT]: 1,
-  [MessageType.CHAT_CREATED]: 3,
-};
-
 export const getLocalMessage = (
   requestMessage: IApiMessage,
   sender: IUserSelf
@@ -233,10 +207,6 @@ export const getLocalMessage = (
     sender,
     searchValue: "",
   };
-};
-
-export const capitalizeFirstLetter = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 // CONTEXT
@@ -359,65 +329,6 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
   return parsedMessages;
 };
 
-type Handler<A> = (state: QueuesState, action: A) => QueuesState;
-export const updateChatRoomMessages: Handler<
-  UpdateQueueChatRoomMessagesAction
-> = (state, { messagesSnapshots, chatId, queueId }) => {
-  const chatRooms: IQueueChatRoom[] = [...state.rooms[queueId]];
-
-  // Find room
-  const foundRoomIndex = findIndex(
-    state.rooms[queueId],
-    (room) => room.chatId?.toString() === chatId
-  );
-
-  if (foundRoomIndex !== -1) {
-    // Update whole room (link) with new messages
-    const processedSnapshots = sortBy(
-      getProcessedSnapshots<IMessageID, IMessage>(
-        chatRooms[foundRoomIndex].messages || [],
-        messagesSnapshots,
-        "chatItemId",
-        [],
-        "localId"
-      ),
-      (message) => -message.dateCreated.seconds
-    );
-
-    chatRooms[foundRoomIndex] = {
-      ...chatRooms[foundRoomIndex],
-      messages: processedSnapshots,
-    };
-  }
-
-  return { ...state, rooms: { ...state.rooms, [queueId]: chatRooms } };
-};
-
-const responseMessages = {
-  refineSearch: "Let's try again to find a job",
-  changeLang: "You changed the \n language to ",
-};
-
-export const getMessageBySubtype = ({
-  subType,
-  value,
-}: {
-  subType: string | undefined;
-  value?: string;
-}) => {
-  if (!subType) {
-    return undefined;
-  }
-  switch (subType) {
-    case CHAT_ACTIONS.REFINE_SEARCH:
-      return responseMessages.refineSearch;
-    case CHAT_ACTIONS.CHANGE_LANG:
-      return responseMessages.changeLang + value;
-    default:
-      return null;
-  }
-};
-
 export const getItemById = (items: any[], id: string) => {
   return find(items, (job) => job.id === Number(id));
 };
@@ -446,7 +357,7 @@ export const getMessagesOnAction = ({
 
   console.log(
     "%c   push   ",
-    `color: ${colors.lightgreen}; background-color: ${colors.black};`,
+    `color: ${COLORS.PASTEL_GRIN}; background-color: ${COLORS.BLACK};`,
     responseMessages,
     updatedMessages
   );
@@ -544,21 +455,6 @@ export const replaceItemsWithType = ({
   }
 
   return updatedMessages;
-};
-
-export const replaceLocalMessages = ({
-  messages,
-  parsedMessages,
-}: IReplaceLocalMessages) => {
-  return map(messages, (msg) => {
-    if (!msg._id) {
-      const updatedMessage = parsedMessages.find(
-        (updateMsg) => updateMsg.localId === msg.localId
-      );
-      return updatedMessage || msg;
-    }
-    return msg;
-  });
 };
 
 export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
@@ -818,14 +714,14 @@ export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 export const LOG = (
   logObj: any,
   description?: string,
-  color = colors.purple,
-  background = colors.black
+  color = COLORS.PURPLE,
+  background = COLORS.BLACK
 ) => {
   console.log("====================================");
   console.log(
     `%c   ${description}   `,
     `color: ${
-      description === "ERROR" ? colors.torchRed : color
+      description === "ERROR" ? COLORS.TORCH_RED : color
     }; font-size: 14px; background-color: ${background};`,
     logObj
   );
@@ -848,4 +744,91 @@ export const parseFirebaseMessages = (
     ),
     "chatItemId"
   );
+};
+
+export const getProcessedSnapshots = <TId, TItem extends TId>(
+  initialItems: TItem[],
+  snapshots: ISnapshot<TItem>[],
+  idField: keyof TId,
+  fieldsToSave: (keyof TItem)[] = [],
+  localIdField: keyof TItem | null = null
+): TItem[] => {
+  let newItemsArray: TItem[] = initialItems.slice();
+  snapshots.forEach((snapshot) => {
+    const { type: snapshotType, data: snapshotData } = snapshot;
+
+    /* Skipping objects without id field */
+    if (!snapshotData[idField]) {
+      return;
+    }
+    const updateItem = () => {
+      let foundItemIndex: number = findIndex(
+        newItemsArray,
+        (item) => item[idField] === snapshotData[idField]
+      );
+
+      // // Try to find object with localId
+      if (foundItemIndex === -1 && localIdField && snapshotData[localIdField]) {
+        foundItemIndex = findIndex(
+          newItemsArray,
+          (item) => item[localIdField] === snapshotData[localIdField]
+        );
+      }
+
+      if (foundItemIndex !== -1) {
+        fieldsToSave.forEach((field) => {
+          snapshotData[field] = newItemsArray[foundItemIndex][field];
+        });
+
+        newItemsArray = [
+          ...newItemsArray.slice(0, foundItemIndex),
+          snapshotData,
+          ...newItemsArray.slice(foundItemIndex + 1),
+        ];
+      } else {
+        fieldsToSave.forEach((field) => {
+          if (!snapshotData[field]) {
+            // @ts-ignore
+            snapshotData[field] = [];
+          }
+        });
+
+        newItemsArray = [snapshotData, ...newItemsArray];
+      }
+    };
+
+    const removeItem = () => {
+      remove(
+        newItemsArray,
+        (item: any) => item[idField] === snapshotData[idField]
+      );
+    };
+
+    switch (snapshotType) {
+      case SnapshotType.Added:
+      case SnapshotType.Modified:
+        updateItem();
+        break;
+      case SnapshotType.Removed:
+        removeItem();
+        break;
+      default:
+        break;
+    }
+  });
+
+  return newItemsArray;
+};
+
+export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
+  const processedSnapshots: IMessage[] = sortBy(
+    getProcessedSnapshots<I_id, IMessage>(
+      serverMessages || [],
+      nextMessages,
+      "chatItemId",
+      []
+    ),
+    (message: any) => -message.dateCreated.seconds
+  );
+  return processedSnapshots;
 };

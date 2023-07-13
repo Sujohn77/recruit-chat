@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
 import { Button } from "@mui/material";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -35,7 +35,7 @@ export const EmailSentText = styled.p`
   font-size: 16px;
   line-height: 19px;
   text-align: center;
-  color: ${colors.black};
+  color: ${COLORS.BLACK};
   opacity: 0.5;
 `;
 
@@ -52,7 +52,7 @@ export const OtpContent = styled.div`
     font-weight: 500;
     font-size: 14px;
     line-height: 17px;
-    color: ${colors.dustyGray};
+    color: ${COLORS.DUSTY_GRAY};
     font-family: Inter-Medium;
   }
 `;
@@ -63,7 +63,7 @@ export const ImageButton = styled(Button)`
   width: 34px;
   flex-shrink: 1;
   border-radius: 50% !important;
-  background: ${colors.alto}!important;
+  background: ${COLORS.ALTO}!important;
   text-align: center !important;
   line-height: 34px;
   box-sizing: border-box;

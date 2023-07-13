@@ -9,9 +9,9 @@ import {
 } from "react";
 
 import { DefaultInput } from "components/Layout";
-import { INPUT_TYPES, TextFieldTypes } from "utils/constants";
-import { isResultsType } from "utils/helpers";
 import { CHAT_ACTIONS } from "utils/types";
+import { isResultsType } from "utils/helpers";
+import { INPUT_TYPES, TextFieldTypes } from "utils/constants";
 import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
 
 interface IAutocompleteProps {

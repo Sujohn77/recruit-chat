@@ -10,9 +10,11 @@ import { getMessageProps } from "utils/helpers";
 import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
 import * as S from "./styles";
 
-type PropsType = { message: ILocalMessage };
+interface ISalaryFormProps {
+  message: ILocalMessage;
+}
 
-export const SalaryForm: FC<PropsType> = ({ message }) => {
+export const SalaryForm: FC<ISalaryFormProps> = ({ message }) => {
   const { t } = useTranslation();
   const { dispatch, error } = useChatMessenger();
   const messagesProps = getMessageProps(message);

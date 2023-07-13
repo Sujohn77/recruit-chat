@@ -5,7 +5,7 @@ import { useTheme } from "styled-components";
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
 import { ICONS } from "assets";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
 
@@ -54,7 +54,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
             alt="rob-face"
           />
           <S.Title>{title}</S.Title>
-          <S.CloseChat onClick={onCloseChat} color={colors.black} />
+          <S.CloseChat onClick={onCloseChat} color={COLORS.BLACK} />
         </>
       )}
     </S.ChatHeaderWrapper>

@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 interface IMessageListContainerProps {
   resultsHeight: number;
@@ -12,7 +12,7 @@ export const infiniteScrollStyle: CSSProperties = {
 };
 
 export const Wrapper = styled.div`
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
 `;
 
 export const MessagesArea = styled.div`
@@ -20,8 +20,8 @@ export const MessagesArea = styled.div`
   overflow: hidden;
   font-family: Inter-Medium;
   border: ${({ theme: { borderStyle, borderWidth } }) =>
-    `${borderWidth} ${borderStyle}  ${colors.alto}`};
-  border-bottom: 1px solid ${colors.alto};
+    `${borderWidth} ${borderStyle}  ${COLORS.ALTO}`};
+  border-bottom: 1px solid ${COLORS.ALTO};
   position: relative;
 `;
 

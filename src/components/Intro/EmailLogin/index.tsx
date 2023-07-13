@@ -3,7 +3,7 @@ import React, { ChangeEvent, FC, useState } from "react";
 import { useTheme } from "styled-components";
 
 import * as S from "../styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { ButtonsTheme } from "utils/types";
 import { validateEmail } from "utils/helpers";
 import { INPUT_TYPES, InputTheme } from "utils/constants";
@@ -77,7 +77,7 @@ export const EmailForm: FC<IEmailFormProps> = ({ setIsEmailForm }) => {
       <Close
         height="12px"
         onClick={onClose}
-        color={colors.doveGray}
+        color={COLORS.DOVE_GRAY}
         style={closeStl}
       />
     </S.Wrapper>

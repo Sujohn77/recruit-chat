@@ -1,10 +1,10 @@
+import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useEffect, useState } from "react";
 
 import { Chat } from "components";
 import { Intro } from "screens";
-import { useChatMessenger } from "contexts/MessengerContext";
 
-export const HomeContent: FC = () => {
+export const Content: FC = () => {
   const { setIsApplyJobFlow } = useChatMessenger();
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null

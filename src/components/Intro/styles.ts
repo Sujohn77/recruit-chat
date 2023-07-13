@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.message.chat.backgroundColor};
@@ -40,6 +40,6 @@ export const EmailSentText = styled.p`
   font-size: 16px;
   line-height: 19px;
   text-align: center;
-  color: ${colors.black};
+  color: ${COLORS.BLACK};
   opacity: 0.5;
 `;

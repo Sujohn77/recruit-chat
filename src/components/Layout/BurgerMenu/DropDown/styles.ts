@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -31,7 +31,7 @@ export const List = styled.ul`
 
 export const Option = styled.li`
   &:not(:last-child) {
-    border-bottom: 1px solid ${colors.silverDark};
+    border-bottom: 1px solid ${COLORS.SILVER_DARK};
   }
   padding: 11px 21px 10px;
   font-weight: 500;

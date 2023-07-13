@@ -1,26 +1,40 @@
-export const colors = {
-  black: "#000000",
-  white: "#ffffff",
-  shamrock: "#3FC3A2",
-  zambesi: "#5f5f5f",
-  alto: "#d9d9d9",
-  dustyGray: "#969696",
-  silverChalice: "#a7a7a7",
-  boulder: "#787878",
-  tundora: "#454545",
-  silver: "#cacaca",
-  silverDark: "#C3C3C3",
-  alabaster: "#FAFAFA",
-  gray: "#868686",
-  gray2: "#8E8E8E",
-  gallery: "#f0eeee",
-  scorpion: "#565656",
-  persian: "#00a881",
-  dimgray: "#696969",
-  torchRed: "#FF2121",
-  purple: "#908DFF",
-  doveGray: "#616161",
-  lightgreen: "#90ee90",
-  silverChalice2: "#A6A6A6",
-  cornflowerBlue: "#618AED",
+// Use link for each color name
+// https://chir.ag/projects/name-that-color/
+
+export const COLORS = {
+  ALABASTER: "#FAFAFA",
+  ALTO: "#d9d9d9",
+  BLACK: "#000000",
+  BOULDER: "#787878",
+  CONCRETE: "#f3f2f2",
+  CORNFLOWER_BLUE: "#618AED",
+  DESERt_STORM: "#d3d3d370",
+  DIMGRAY: "#696969",
+  DOVE_GRAY: "#616161",
+  DUSTY_GRAY: "#969696",
+  GALLERY: "#f0eeee",
+  GRAY: "#868686",
+  GRAY_2: "#8E8E8E",
+  PASTEL_GRIN: "#90ee90",
+  PERSIAN: "#00a881",
+  PERSIAN_RED: "#d32f2f",
+  PURPLE: "#908DFF",
+  SCORPION: "#565656",
+  SHAMROCK: "#3FC3A2",
+  SILVER: "#cacaca",
+  SILVER_CHALICE: "#a7a7a7",
+  SILVER_CHALICE_2: "#A6A6A6",
+  SILVER_DARK: "#C3C3C3",
+  TORCH_RED: "#FF2121",
+  TUNDORA: "#454545",
+  WHITE: "#ffffff",
+  ZAMBESI: "#5f5f5f",
 };
+
+// a way to sort COLORS object keys alphabetically
+//
+// const sortedCOLORS = Object.keys(COLORS)
+//     .sort()
+//     .reduce((acc, key) => ({
+//         ...acc, [key]: COLORS[key]
+//     }), {})

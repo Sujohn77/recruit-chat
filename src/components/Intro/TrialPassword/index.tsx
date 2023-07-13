@@ -29,6 +29,7 @@ export const TrialPassword: FC = () => {
             _id: generateLocalId(),
             content: {
               subType: MessageType.TEXT,
+              // TODO: add translation
               text: "We have sent you a temporary code by email. Enter it in the box below!",
             },
           }}

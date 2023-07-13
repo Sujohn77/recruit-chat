@@ -1,5 +1,5 @@
 export * from "./Chat";
 export * from "./DragAndDrop";
-export * from "./HomeContent";
+export * from "./Content";
 export * from "./InfiniteScrollView";
 export * from "./Intro";

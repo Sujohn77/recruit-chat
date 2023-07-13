@@ -52,12 +52,13 @@ import {
   getSearchJobsData,
   getCreateCandidateData,
   pushMessage,
-  getFormattedLocations,
   getStorageValue,
   generateLocalId,
   LOG,
   parseFirebaseMessages,
   validationUserContacts,
+  getParsedSnapshots,
+  getProcessedSnapshots,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -67,14 +68,12 @@ import {
   IUser,
 } from "./types";
 import { useRequisitions } from "services/hooks";
-import { getParsedSnapshots } from "services/utils";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
-import { getProcessedSnapshots } from "firebase/config";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -252,16 +251,16 @@ const ChatProvider = ({
   }, [isApplyJobSuccessfully]);
 
   useEffect(() => {
-    LOG(_firebaseMessages, "_firebaseMessages", colors.white);
+    LOG(_firebaseMessages, "_firebaseMessages", COLORS.WHITE);
   }, [_firebaseMessages]);
   useEffect(() => {
-    LOG(candidateId, "candidateId", colors.white);
+    LOG(candidateId, "candidateId", COLORS.WHITE);
   }, [candidateId]);
   useEffect(() => {
-    LOG(chatId, "chatId", colors.white);
+    LOG(chatId, "chatId", COLORS.WHITE);
   }, [chatId]);
   useEffect(() => {
-    LOG(isCandidateAnonym, "isCandidateAnonym", colors.white);
+    LOG(isCandidateAnonym, "isCandidateAnonym", COLORS.WHITE);
   }, [isCandidateAnonym]);
 
   useEffect(() => {

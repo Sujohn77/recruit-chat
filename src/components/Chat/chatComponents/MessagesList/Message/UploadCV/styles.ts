@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { IMAGES } from "assets";
 
 export const Wrapper = styled.div`
@@ -57,7 +57,7 @@ export const Circle = styled.div`
   height: 60px;
   border-radius: 50%;
   margin: 0 0 16px;
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
   display: flex;
   justify-content: center;
   align-items: center;

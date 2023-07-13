@@ -1,8 +1,7 @@
+import styled from "styled-components";
 import { Button } from "@mui/material";
 import { MessageBox } from "components/Chat/chatComponents/MessagesList/Message/styles";
-import styled from "styled-components";
-
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 const borderWidth = "1.5px";
 
@@ -161,7 +160,7 @@ export const ImageButton = styled(Button)`
   width: 34px;
   flex-shrink: 1;
   border-radius: 50% !important;
-  background: ${colors.alto}!important;
+  background: ${COLORS.ALTO}!important;
   text-align: center !important;
   line-height: 34px;
   box-sizing: border-box;

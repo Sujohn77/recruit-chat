@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { COLORS } from "utils/colors";
 
 export const MenuItemWrapper = styled.div`
   display: flex;
@@ -19,6 +20,6 @@ export const MenuItemWrapper = styled.div`
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid #c4c4c4;
+    border-bottom: 1px solid ${COLORS.SILVER};
   }
 `;

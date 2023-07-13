@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import styled from "styled-components";
 
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { ButtonsTheme } from "utils/types";
 
 interface IStyledProps {
@@ -20,13 +20,13 @@ export const ButtonWrapper = styled(Button)`
     background = ButtonsTheme.Purple,
     variant,
   }: IStyledProps) =>
-    variant !== "outlined" ? `${colors[background]}!important` : "#fff"};
+    variant !== "outlined" ? `${COLORS[background]}!important` : COLORS.WHITE};
 
   border: ${({ background = ButtonsTheme.Purple, variant }: IStyledProps) =>
     variant === "outlined"
-      ? `1px solid ${colors[background]}!important`
+      ? `1px solid ${COLORS[background]}!important`
       : "none"};
 
   color: ${({ background = ButtonsTheme.Purple, variant }: IStyledProps) =>
-    variant !== "outlined" ? "#fff" : colors[background]}!important;
+    variant !== "outlined" ? COLORS.WHITE : COLORS[background]}!important;
 `;

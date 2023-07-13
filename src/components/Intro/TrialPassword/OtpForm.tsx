@@ -11,14 +11,13 @@ import { DefaultButton, DefaultInput } from "components/Layout";
 
 export const OtpForm: FC = () => {
   const { loginByEmail, isVerified, error, setError } = useAuthContext();
+  const theme = useTheme() as ThemeType;
+
+  const ref = useRef<HTMLInputElement>(null);
 
   const [lengthError, setLengthError] = useState<string | null>(null);
   const [oneTimePassword, setOneTimePassword] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
-
-  const theme = useTheme() as ThemeType;
-
-  const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (error) {

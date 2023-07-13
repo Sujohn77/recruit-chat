@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -27,7 +27,7 @@ export const Avatar = styled.div`
   height: 69px;
   border-radius: 50%;
   margin: 0 auto 32px;
-  background-color: ${colors.white};
+  background-color: ${COLORS.WHITE};
 `;
 
 export const SetJobAlert = styled(Button)`
@@ -36,7 +36,7 @@ export const SetJobAlert = styled(Button)`
   border: 1px solid ${(props) => props.theme.primaryColor}!important;
   border-radius: 100px !important;
   text-transform: initial !important;
-  background-color: ${colors.white};
+  background-color: ${COLORS.WHITE};
 `;
 
 export const RefineJobSearch = styled(Button)`

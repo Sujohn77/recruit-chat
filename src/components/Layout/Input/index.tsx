@@ -14,7 +14,7 @@ import { IMAGES } from "assets";
 import { INPUT_TYPES, InputTheme } from "utils/constants";
 import { Image } from "screens/Intro/styles";
 
-type PropsType = {
+interface IInputProps {
   value: string;
   onChange: (
     value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,9 +28,9 @@ type PropsType = {
   style?: CSSProperties;
   ref?: ForwardedRef<HTMLInputElement>;
   isErrorIcon?: boolean;
-};
+}
 
-export const DefaultInput: FC<PropsType> = forwardRef(
+export const DefaultInput: FC<IInputProps> = forwardRef(
   (
     {
       value,

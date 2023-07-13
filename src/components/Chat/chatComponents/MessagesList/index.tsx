@@ -3,12 +3,12 @@ import { useFileUploadContext } from "contexts/FileUploadContext";
 import { FC, useEffect, useRef } from "react";
 import map from "lodash/map";
 
-import { Loader } from "components/Layout/Loader";
-import { InfiniteScrollView } from "components";
-import { infiniteScrollStyle } from "./styles";
-import { Message } from "./Message";
 import * as S from "./styles";
+import { Message } from "./Message";
+import { infiniteScrollStyle } from "./styles";
+import { InfiniteScrollView } from "components";
 import { MessageType } from "utils/types";
+import { Loader } from "components/Layout/Loader";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Dispatch,
   SetStateAction,
@@ -7,26 +8,19 @@ import {
 } from "react";
 import map from "lodash/map";
 
-import { handleRefreshToken } from "./utils";
-import { IApiMessage, LocationType } from "./types";
-import Api, { apiInstance } from "services/api";
+import { LocationType } from "./types";
+import { apiInstance } from "services/api";
 import { IRequisition } from "utils/types";
 import { isDevMode } from "utils/constants";
 
-type RequisitionType = {
+interface IRequisitionType {
   title: string;
   category: string;
-};
-
-const apiInstanse = new Api();
-
-export const sendMessage = (message: IApiMessage) => {
-  handleRefreshToken(() => apiInstanse.sendMessage(message));
-};
+}
 
 const requisitionParams = {
-  pageSize: 20,
   // page: 1,
+  pageSize: 20,
   keyword: "*",
   appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
   codeVersion: "1.0.3",
@@ -36,7 +30,7 @@ export const useRequisitions = (
   searchRequisitionsTrigger: any,
   setIsChatLoading: Dispatch<SetStateAction<boolean>>
 ) => {
-  const [requisitions, setRequisitions] = useState<RequisitionType[]>([]);
+  const [requisitions, setRequisitions] = useState<IRequisitionType[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
 
   const setJobPositions = (requisitions: IRequisition[]) => {

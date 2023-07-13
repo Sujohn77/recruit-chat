@@ -1,8 +1,7 @@
 import styled from "styled-components";
-
 import { FormInput } from "components/Layout/Autocomplete/styles";
 import { DarkButton } from "components/Layout/styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const CloseBtnStyle = {
   right: "7px",
@@ -65,7 +64,7 @@ export const QuestionInput = styled(FormInput)`
   input,
   textarea {
     background: #fff !important;
-    color: ${colors.doveGray};
+    color: ${COLORS.DOVE_GRAY};
     font-family: "Inter-Medium";
   }
 `;

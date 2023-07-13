@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const NoFound = styled.div<{ isRefineOnly?: boolean }>`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -30,7 +30,7 @@ export const SetJobAlert = styled(Button)`
   border: 1px solid ${(props) => props.theme.primaryColor} !important;
   border-radius: 100px !important;
   text-transform: initial !important;
-  background-color: ${colors.white} !important;
+  background-color: ${COLORS.WHITE} !important;
 `;
 
 export const RefineJobSearch = styled(Button)`

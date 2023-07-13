@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 const animationDuration = "0.35s";
 
 export const Wrapper = styled.div`
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
   position: relative;
   border-radius: 10px;
   overflow: hidden;
@@ -68,7 +68,7 @@ export const InputMessage = styled.span`
 `;
 
 export const Notification = styled.div`
-  background: ${colors.lightgreen};
+  background: ${COLORS.PASTEL_GRIN};
   display: flex;
   gap: 8px;
   align-items: center;

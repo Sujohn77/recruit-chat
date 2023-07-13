@@ -8,16 +8,14 @@ interface IDropDownProps {
   onClick: (value: string) => void;
 }
 
-export const DropDown: FC<IDropDownProps> = ({ options, onClick }) => {
-  const items = map(options, (opt, index) => (
-    <Option key={`lang-option-${index}`} onClick={() => onClick(opt)}>
-      {opt}
-    </Option>
-  ));
-
-  return (
-    <Wrapper>
-      <List>{items}</List>
-    </Wrapper>
-  );
-};
+export const DropDown: FC<IDropDownProps> = ({ options, onClick }) => (
+  <Wrapper>
+    <List>
+      {map(options, (opt, index) => (
+        <Option key={`lang-option-${index}`} onClick={() => onClick(opt)}>
+          {opt}
+        </Option>
+      ))}
+    </List>
+  </Wrapper>
+);

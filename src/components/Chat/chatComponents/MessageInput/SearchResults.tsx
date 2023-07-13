@@ -8,7 +8,7 @@ import React, {
 import map from "lodash/map";
 
 import * as S from "./styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 interface IGetOption {
   option: any;
@@ -71,7 +71,7 @@ export const SearchResults: FC<ISearchResultsProps> = ({
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
       <S.SearchHeader>
         {headerName}
-        <S.Close color={colors.gray} onClick={onClose} />
+        <S.Close color={COLORS.GRAY} onClick={onClose} />
       </S.SearchHeader>
 
       <S.SearchBody {...getListboxProps()}>{items}</S.SearchBody>

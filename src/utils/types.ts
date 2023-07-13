@@ -136,7 +136,7 @@ export enum Status {
 }
 
 export enum ButtonsTheme {
-  Purple = "purple",
+  Purple = "PURPLE",
 }
 
 export interface IChatRoom extends IChatRoomID {
@@ -171,51 +171,9 @@ export interface IQueue {
   rooms: IChatRoom[];
 }
 
-export interface IQueuesRooms {
-  [key: string]: IQueueChatRoom[];
-}
-
-export interface QueuesState {
-  queues: IQueueItem[];
-  queueIds: string[];
-  rooms: IQueuesRooms;
-  archivedRooms: IQueueChatRoom[];
-  totalUnread: number;
-  chatStatusFilter: number[];
-  changeStatusError: boolean | null;
-}
-
-export interface UpdateQueueChatRoomMessagesAction {
-  type: QueuesActionTypes["UPDATE_CHAT_ROOM_MESSAGES"];
-  messagesSnapshots: ISnapshot<IMessage>[];
-  chatId: string;
-  queueId: string;
-}
-
-export interface IQueueChatRoom extends IChatRoom {
-  statusId?: number;
-}
-
-interface QueuesActionTypes {
-  SET_CURRENT_QUEUES: "SET_CURRENT_QUEUES";
-  SET_QUEUE: "SET_QUEUE";
-  REMOVE_QUEUE: "REMOVE_QUEUE";
-  UPDATE_CHAT_ROOM_MESSAGES: "UPDATE_CHAT_ROOM_MESSAGES";
-  UPDATE_QUEUE_CHATS_LIST: "UPDATE_QUEUE_CHATS_LIST";
-
-  SEND_MESSAGE: "SEND_MESSAGE";
-
-  SET_QUEUE_CHAT_STATUS: "SET_QUEUE_CHAT_STATUS";
-
-  SET_CHAT_STATUS_FILTER: "SET_CHAT_STATUS_FILTER";
-
-  CLEAR_QUEUES_STATE: "CLEAR_QUEUES_STATE";
-}
-
 export interface IMessageID {
   chatItemId: number;
 }
-
 export interface IQueueItem {
   queueId: string;
   name: string;
@@ -251,11 +209,6 @@ export interface IFilterItemsWithType {
   type: MessageType;
   messages: ILocalMessage[];
   excludeItem: string;
-}
-
-export interface IReplaceLocalMessages {
-  messages: ILocalMessage[];
-  parsedMessages: ILocalMessage[];
 }
 
 export interface IRequisition extends IWithID, ILocation {

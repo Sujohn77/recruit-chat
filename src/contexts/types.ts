@@ -111,23 +111,6 @@ export interface IAuthContext {
   clearAuthConfig: () => void;
 }
 
-export interface IFileData {
-  lastModified: number;
-  name: string;
-  readonly size: number;
-  readonly type: string;
-  arrayBuffer(): Promise<ArrayBuffer>;
-  slice(start?: number, end?: number, contentType?: string): Blob;
-  stream(): ReadableStream;
-  text(): Promise<string>;
-}
-
-export interface IAddMessageProps {
-  text: string;
-  subType?: MessageType;
-  isChatMessage?: boolean;
-}
-
 export type PayloadType = {
   item?: string | null;
   items?: any[];
@@ -155,41 +138,7 @@ export interface ITriggerActionProps {
   payload?: PayloadType;
 }
 
-export type IResponseAction = {
-  [key in CHAT_ACTIONS]?: {
-    replaceLatest?: boolean;
-    messages: ILocalMessage[];
-  };
-};
-export type IResponseInput = {
-  [key in USER_INPUTS]?: {
-    replaceLatest?: boolean;
-    messages: ILocalMessage[];
-  };
-};
-
-export enum ServerMessageType {
-  Text = "text",
-  Transcript = "transcript_sent",
-  Video = "video_uploaded",
-  ChatCreated = "chat_created",
-  Document = "document_uploaded",
-  File = "resume_uploaded",
-  UnreadMessages = "unread_messages",
-  Date = "date",
-}
-
 export interface IPortionMessages extends ISnapshot<IMessage> {}
-
-// export interface IRequisition {
-//   _id: number | string;
-//   title: string;
-//   location: string;
-//   postedDate: string;
-//   fullTime: string;
-//   introDescription: string;
-//   description: string;
-// }
 
 export interface ISubmitMessageProps {
   type: MessageType;
@@ -204,4 +153,9 @@ export interface IUser {
   isPermitWork?: boolean;
   wishSalary?: number;
   salaryCurrency?: string;
+}
+
+export interface IEmailLogin {
+  oneTimePassword?: string;
+  email?: string;
 }

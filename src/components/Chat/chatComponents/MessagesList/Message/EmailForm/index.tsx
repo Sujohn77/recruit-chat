@@ -8,9 +8,7 @@ import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
 import { FormInput } from "components/Layout/Autocomplete/styles";
 
-interface IEmailFormProps {}
-
-export const EmailForm: FC<IEmailFormProps> = () => {
+export const EmailForm: FC = () => {
   const { t } = useTranslation();
   const { dispatch } = useChatMessenger();
 

@@ -1,18 +1,19 @@
 import { TextField } from "@mui/material";
 import styled from "styled-components";
 
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { InputTheme } from "utils/constants";
 
 export const Wrapper = styled.div`
   width: 100%;
   position: relative;
+
   span {
     position: absolute;
     right: 12px;
     top: 12px;
     font-size: 12px;
-    color: #d32f2f;
+    color: ${COLORS.PERSIAN_RED};
   }
 `;
 
@@ -21,7 +22,7 @@ export const TextAreaInputWrapper = styled.div``;
 export const FormInput = styled(TextField)`
   input,
   textarea {
-    background: #f3f2f2;
+    background: ${COLORS.CONCRETE};
     border-radius: 10px;
 
     padding: 10px;
@@ -50,10 +51,10 @@ export const FormInput = styled(TextField)`
 `;
 
 export const TextInput = styled.input`
-  color: ${colors.silverChalice};
+  color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: ${({ theme }) =>
-    theme === InputTheme.Default ? "#fff" : "none"};
+    theme === InputTheme.Default ? COLORS.WHITE : "none"};
   font-size: 16px;
   line-height: 19px;
   outline: none;
@@ -68,7 +69,7 @@ export const TextInput = styled.input`
 `;
 
 export const TextAreaInput = styled.textarea`
-  color: ${colors.silverChalice};
+  color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: none;
   font-size: 16px;
@@ -82,7 +83,7 @@ export const ErrorText = styled.span`
   right: 42px;
   top: 20px;
   font-size: 13px;
-  color: #d32f2f;
+  color: ${COLORS.PERSIAN_RED};
   display: flex;
   align-items: center;
 `;

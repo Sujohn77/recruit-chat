@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -52,7 +52,7 @@ export const Slide = styled.div`
     height: 100%;
     border-width: 1.5px 1.5px 0 0;
     border-style: solid;
-    border-color: ${colors.alabaster};
+    border-color: ${COLORS.ALABASTER};
     display: block;
   }
 
@@ -65,7 +65,7 @@ export const Slide = styled.div`
     height: 100%;
     border-width: 0 1.5px 0 0;
     border-style: solid;
-    border-color: ${colors.alabaster};
+    border-color: ${COLORS.ALABASTER};
   }
 `;
 

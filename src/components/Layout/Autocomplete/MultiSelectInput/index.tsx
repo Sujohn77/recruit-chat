@@ -8,16 +8,15 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
-import { AutocompleteGetTagProps, useAutocomplete } from "@mui/material";
+import { useAutocomplete } from "@mui/material";
 import filter from "lodash/filter";
 import map from "lodash/map";
 
 import * as S from "./styles";
-import { colors } from "utils/colors";
 import { isResultsType } from "utils/helpers";
-import { Close } from "screens/Intro/styles";
 import { TextInput } from "components/Layout/Input/styles";
 import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
+import { Tag } from "./tag";
 
 interface IMultiSelectInputProps {
   value: string;
@@ -31,19 +30,6 @@ interface IMultiSelectInputProps {
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
   setHeight: Dispatch<SetStateAction<number>>;
-}
-
-interface TagProps extends ReturnType<AutocompleteGetTagProps> {
-  label: string;
-}
-
-function Tag({ label, onDelete }: TagProps) {
-  return (
-    <S.TagWrapper>
-      <span>{label}</span>
-      <Close onClick={onDelete} color={colors.gray} />
-    </S.TagWrapper>
-  );
 }
 
 export const MultiSelectInput: FC<IMultiSelectInputProps> = ({

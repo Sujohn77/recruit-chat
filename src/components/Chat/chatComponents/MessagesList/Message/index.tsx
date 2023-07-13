@@ -25,8 +25,6 @@ interface IMessageProps {
   isLastMessage: boolean;
   withoutMargin?: boolean;
   setShowLoginScreen: (show: boolean) => void;
-  // onClick: (content: IContent) => void;
-  // handleOfferSubmit: ((id: string | number) => void) | undefined;
 }
 
 export const MS_1000 = 1000;

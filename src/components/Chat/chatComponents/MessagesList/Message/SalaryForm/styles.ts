@@ -1,6 +1,7 @@
-import { Button } from "@mui/material";
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { Button } from "@mui/material";
+
+import { COLORS } from "utils/colors";
 import { MessageBox } from "../styles";
 
 export const Wrapper = styled(MessageBox)`
@@ -31,7 +32,7 @@ export const Title = styled.p`
 
 export const Option = styled(Button)<{ selected?: boolean }>`
   background: ${({ theme, selected }) =>
-    selected ? colors.dimgray : theme.buttonSecondaryColor}!important;
+    selected ? COLORS.DIMGRAY : theme.buttonSecondaryColor}!important;
 
   border-radius: 100px !important;
   width: 100px !important;

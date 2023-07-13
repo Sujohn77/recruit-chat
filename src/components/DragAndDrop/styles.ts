@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const DragAndDropWrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -16,7 +16,7 @@ export const DragAndDropWrapper = styled.div`
 `;
 
 export const Border = styled.div`
-  border: dashed ${colors.gray} 4px;
+  border: dashed ${COLORS.GRAY} 4px;
   background-color: rgba(255, 255, 255, 0.8);
   position: absolute;
   top: 0;
@@ -32,7 +32,7 @@ export const Center = styled.div`
   right: 0;
   left: 0;
   text-align: center;
-  color: ${colors.gray};
+  color: ${COLORS.GRAY};
   font-size: 36;
 `;
 

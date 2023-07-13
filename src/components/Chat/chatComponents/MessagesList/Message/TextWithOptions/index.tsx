@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import map from "lodash/map";
 
 import { IMessageProps } from "utils/helpers";
@@ -7,22 +7,27 @@ import { CHAT_ACTIONS } from "utils/types";
 import { MessageBox, MessageText } from "../styles";
 import * as S from "./styles";
 
-interface IProps extends IMessageProps {
+interface ITextWithOptionsProps extends IMessageProps {
   text: string;
 }
 
-export const TextWithOptions: FC<IProps> = (props) => {
-  const { text, ...messageProps } = props;
+export const TextWithOptions: FC<ITextWithOptionsProps> = ({
+  text,
+  ...messageProps
+}) => {
   const { dispatch, currentMsgType } = useChatMessenger();
 
-  const onClick = (opt: string) => {
-    if (currentMsgType) {
-      dispatch({
-        type: currentMsgType,
-        payload: { item: opt },
-      });
-    }
-  };
+  const onClick = useCallback(
+    (opt: string) => {
+      if (currentMsgType) {
+        dispatch({
+          type: currentMsgType,
+          payload: { item: opt },
+        });
+      }
+    },
+    [currentMsgType]
+  );
 
   const options = currentMsgType && getMessageOptions(currentMsgType);
 
@@ -46,7 +51,7 @@ export const TextWithOptions: FC<IProps> = (props) => {
   );
 };
 
-export const getMessageOptions = (type: CHAT_ACTIONS) => {
+const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
     // case CHAT_ACTIONS.SET_ALERT_PERIOD:
     //   return ['Daily', 'Weekly', 'Monthly'];

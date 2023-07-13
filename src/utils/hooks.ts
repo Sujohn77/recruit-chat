@@ -1,10 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ISearchRequisition } from "contexts/types";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
+import "firebase/auth";
 
-import { searchAlertCategories } from "components/Chat/mockData";
 import { CHAT_ACTIONS } from "./types";
+import { searchAlertCategories } from "components/Chat/mockData";
+import firebase from "firebase";
+import { useChatMessenger } from "contexts/MessengerContext";
 
 interface IUseTextField {
   lastActionType: CHAT_ACTIONS | null;
@@ -86,4 +90,27 @@ export const useApiKey = () => {
   }
 
   return apiKey;
+};
+
+export const useFirebaseSignIn = () => {
+  const { firebaseToken, setIsAuthInFirebase } = useChatMessenger();
+
+  useEffect(() => {
+    if (firebaseToken) {
+      // reinitializeAppWithoutLongPolling().then(() => {
+      firebase
+        .auth()
+        .signInWithCustomToken(firebaseToken)
+        .then((response) => {
+          console.log("(Firebase) SUCCESS SIGN IN", response);
+          setIsAuthInFirebase(true);
+          return { response };
+        })
+        .catch((error) => {
+          console.log("(Firebase) SIGN IN Error --->", error?.message, error);
+          return { error };
+        });
+      // });
+    }
+  }, [firebaseToken]);
 };

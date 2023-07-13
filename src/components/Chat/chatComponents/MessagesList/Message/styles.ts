@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import styled from "styled-components";
 
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { IMessageProps } from "utils/helpers";
 import { InfoItem } from "../../ViewJob/styles";
 
@@ -103,7 +103,7 @@ export const MessageContent = styled.div<{ isFile?: boolean }>`
   ${({ isFile, theme }) =>
     isFile &&
     `
-        background:${colors.white};
+        background:${COLORS.WHITE};
         border-radius: 8px;
         padding: 8px;
         height: 35px;

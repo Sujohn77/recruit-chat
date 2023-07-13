@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 const borderWidth = "1.5px";
 const animationDuration = "0.25s";
@@ -9,7 +9,7 @@ export const ButtonStyles = {
   margin: "0 auto 16px",
   display: "block",
   animation: "fadeHeight 0.6s ease-in",
-  background: colors.white,
+  background: COLORS.WHITE,
 };
 
 export const Flex = styled.div`

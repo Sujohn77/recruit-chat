@@ -58,7 +58,7 @@ export const UploadCV: FC<IUploadCVProps> = ({
         </S.Circle>
 
         <S.Text>{t("messages:uploadCV")}</S.Text>
-        {/* // TODO: add translation */}
+
         <S.Text>or</S.Text>
         <S.Button htmlFor={isLastMessage ? resumeElementId : ""}>
           {t("buttons:browse")}

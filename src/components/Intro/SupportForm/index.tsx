@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import find from "lodash/find";
 
 import * as S from "./styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { INPUT_TYPES } from "utils/constants";
 import { validateFields } from "utils/helpers";
 import { ButtonsTheme, CHAT_ACTIONS } from "utils/types";
@@ -105,7 +105,7 @@ export const SupportForm: FC<ISupportFormProps> = ({
       <Close
         height="12px"
         onClick={onClose}
-        color={colors.doveGray}
+        color={COLORS.DOVE_GRAY}
         style={S.CloseBtnStyle}
       />
     </S.Wrapper>

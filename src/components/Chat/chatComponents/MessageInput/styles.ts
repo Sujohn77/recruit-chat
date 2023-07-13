@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Box from "@mui/material/Box";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 interface IPlaneIconProps {
   disabled: boolean;
@@ -115,7 +115,7 @@ export const Close = styled.div<{ color?: string }>`
     content: "";
     height: 17px;
     width: 1.5px;
-    background: ${colors.gray};
+    background: ${COLORS.GRAY};
     display: inline-block;
     position: absolute;
     top: 1px;

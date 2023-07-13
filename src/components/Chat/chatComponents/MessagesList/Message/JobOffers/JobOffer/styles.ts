@@ -1,5 +1,5 @@
-import { DefaultButton } from "components/Layout";
 import styled from "styled-components";
+import { COLORS } from "utils/colors";
 
 const MARGIN = "0 12px";
 
@@ -36,7 +36,7 @@ export const Error = styled.div`
 `;
 
 export const ErrorText = styled.span`
-  color: #d32f2f;
+  color: ${COLORS.PERSIAN_RED};
 `;
 
 export const WarningImg = styled.img`

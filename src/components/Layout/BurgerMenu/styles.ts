@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   width: 40px;
@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 
 export const MenuItemsWrapper = styled.div`
   padding: 0 10px;
-  background: ${colors.gallery};
+  background: ${COLORS.GALLERY};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
   position: absolute;

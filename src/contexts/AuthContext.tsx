@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
-import { IAuthContext } from "./types";
+import { IAuthContext, IEmailLogin } from "./types";
 import { authInstance } from "services/api";
 import { LocalStorage } from "utils/constants";
 
@@ -28,20 +28,11 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
   const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const [subscriberID, setSubscriberID] = useState<number | null>(
-  //     Number(localStorage.getItem(LocalStorage.SubscriberID)) || null
-  // );
   const [mobileSubscribeId, setMobileSubscribeId] = useState<number | null>(
     null
   );
 
-  const loginByEmail = async ({
-    email,
-    oneTimePassword,
-  }: {
-    oneTimePassword?: string;
-    email?: string;
-  }) => {
+  const loginByEmail = async ({ email, oneTimePassword }: IEmailLogin) => {
     try {
       email && setVerifyEmail(email);
 
@@ -53,10 +44,7 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
       const response = await authInstance.verifyByEmail(data);
       if (response.data?.isEmailExists) {
         const { isOTPSent, MSISDN, isEmailVerified } = response.data;
-        // if (subscriberID) {
-        //     setSubscriberID(subscriberID);
-        //     localStorage.setItem(LocalStorage.SubscriberID, `${subscriberID}`);
-        // }
+
         MSISDN && setMobileSubscribeId(MSISDN);
         setIsVerified(!!response.data.isEmailVerified);
         !isEmailVerified && setIsOTPSent(!!isOTPSent);
@@ -74,11 +62,10 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
     }
   };
 
-  const clearAuthConfig = () => {
+  const clearAuthConfig = useCallback(() => {
     localStorage.removeItem(LocalStorage.SubscriberID);
-    // setSubscriberID(null);
     setMobileSubscribeId(null);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider

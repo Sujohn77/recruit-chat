@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 import { Slide } from "../MessagesList/Message/JobOffers/styles";
 import { DarkButton } from "components/Layout/styles";
@@ -8,7 +8,7 @@ import { MenuItemWrapper } from "components/Layout/BurgerMenu/MenuItem/styles";
 export const ViewBody = styled.div`
   position: absolute;
   top: 60px;
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
   padding: 0 16px 38px;
   overflow: auto;
   height: 480px;
@@ -62,7 +62,7 @@ export const TextTitle = styled.h3`
 
 export const ViewShortInfo = styled.div`
   padding: 0 0 16px;
-  border-bottom: 1px solid ${colors.alto};
+  border-bottom: 1px solid ${COLORS.ALTO};
   margin-bottom: 24px;
 `;
 
@@ -74,7 +74,7 @@ export const InfoItem = styled(MenuItemWrapper)`
   border-bottom: none !important;
   margin-bottom: 8px;
   padding: 0;
-  color: ${colors.black};
+  color: ${COLORS.BLACK};
 `;
 
 export const ViewText = styled.div`
@@ -128,7 +128,7 @@ export const Error = styled.div`
 `;
 
 export const ErrorText = styled.span`
-  color: #d32f2f;
+  color: ${COLORS.PERSIAN_RED};
 `;
 
 export const WarningImg = styled.img`

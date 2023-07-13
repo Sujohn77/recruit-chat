@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Flex } from "screens/Intro/styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { MessageBox } from "../styles";
 
 export const Wrapper = styled(MessageBox)`
@@ -9,7 +9,7 @@ export const Wrapper = styled(MessageBox)`
 `;
 
 export const Section = styled.div`
-  /* border-bottom: 1px solid ${colors.silverChalice}; */
+  /* border-bottom: 1px solid ${COLORS.SILVER_CHALICE}; */
 
   > button {
     margin: 0 6px 16px !important;
@@ -28,7 +28,7 @@ export const Text = styled.p`
 export const FeedbackIconWrapper = styled.div<{ isReversed: boolean }>`
   height: 40px;
   width: 40px;
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -36,7 +36,7 @@ export const FeedbackIconWrapper = styled.div<{ isReversed: boolean }>`
   cursor: pointer;
   box-sizing: border-box;
   &:active {
-    border: 1px solid ${colors.black};
+    border: 1px solid ${COLORS.BLACK};
   }
 
   img {

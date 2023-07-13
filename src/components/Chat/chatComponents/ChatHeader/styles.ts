@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 import { Close, Flex } from "../../../../screens/Intro/styles";
 
 export const ChatHeaderWrapper = styled.div`
@@ -18,7 +18,7 @@ export const ChatHeaderWrapper = styled.div`
 export const Avatar = styled.div`
   width: 32px;
   height: 32px;
-  background: ${colors.white};
+  background: ${COLORS.WHITE};
   margin-right: 12px;
   border-radius: 50%;
 `;

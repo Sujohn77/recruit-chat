@@ -1,7 +1,5 @@
-import moment from "moment";
-
 import i18n from "services/localization";
-import { generateLocalId, getParsedMessages } from "./helpers";
+import { getParsedMessages } from "./helpers";
 import {
   CHAT_ACTIONS,
   HTTPStatusCodes,
@@ -11,10 +9,10 @@ import {
 } from "./types";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
-
 export const isDevMode = process.env.NODE_ENV === "development";
-
 export const currencies = ["$", "€"];
+export const resumeElementId = "chatbot_resume";
+export const autolinkerClassName = "link-in-message";
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
@@ -31,17 +29,6 @@ export const HTTP_STATUSES: Record<HTTPStatusCodes, number> = {
 export enum ChannelName {
   SMS = "SMS",
 }
-
-export const initialChatMessage = {
-  _id: null,
-  localId: generateLocalId(),
-  content: {
-    subType: MessageType.INITIAL_MESSAGE,
-    text: "Please choose one of the following options to begin your job search",
-  },
-  dateCreated: { seconds: moment().unix() },
-  isOwn: false,
-};
 
 const questions = [
   {
@@ -346,10 +333,6 @@ export const isPushMessageType = (type: CHAT_ACTIONS) => {
   );
 };
 
-// export const isReversePush = (type: CHAT_ACTIONS) => {
-//     return type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV;
-// };
-
 export const getChatActionResponse = ({
   type,
   additionalCondition,
@@ -385,12 +368,6 @@ export const getChatActionResponse = ({
   // const isPushMessage = isPushMessageType(type);
   return responseChatMessages;
 };
-
-export enum EnvironmentMode {
-  Development = "development",
-  Production = "production",
-  Test = "test",
-}
 
 export const languages = ["EN", "FR", "UA"];
 
@@ -435,7 +412,3 @@ export enum IUserLoginDataKeys {
   AppKey = "appKey",
   CodeVersion = "codeVersion",
 }
-
-export const resumeElementId = "chatbot_resume";
-
-export const autolinkerClassName = "link-in-message";

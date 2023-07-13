@@ -20,8 +20,6 @@ export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
     // dispatch({ type: CHAT_ACTIONS.HELP });
   };
 
-  // const handleFeedBackClick = () => {};
-
   return (
     <S.Wrapper {...messagesProps}>
       <S.Section>

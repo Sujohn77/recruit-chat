@@ -1,0 +1,102 @@
+<!-- This is file for call (init) chatbot -->
+<!DOCTYPE html>
+<script>
+  var guid = "f466faec-ea83-4122-8c23-458ab21e96be";
+
+  const appendChatBot = (style, token) => {
+    const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
+    const ifrm = document.createElement("iframe");
+
+    ifrm.setAttribute("src", url_string);
+    ifrm.setAttribute("id", "chat-iframe");
+    ifrm.setAttribute("width", "370px");
+    ifrm.setAttribute(
+      "sandbox",
+      "allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
+    );
+
+    ifrm.sandbox.add(
+      "allow-popups",
+      "allow-popups-to-escape-sandbox",
+      "allow-scripts",
+      "allow-same-origin"
+    );
+    ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;height: 601px;`;
+
+    document.body.appendChild(ifrm);
+
+    ifrm.addEventListener("load", () => {
+      // console.log("====================================");
+      // console.log("load token", token);
+      // console.log("====================================");
+      ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
+    });
+    ifrm.onerror = () => refreshToken();
+
+    function onMessage(event) {
+      if (
+        url_string.indexOf(event.origin) !== -1 &&
+        event.data.event_id === "refresh_token"
+      ) {
+        refreshToken(event.data.callback);
+      }
+    }
+
+    if (window.addEventListener) {
+      window.addEventListener("message", onMessage);
+    } else {
+      window.attachEvent("onmessage", onMessage); // IE8
+    }
+  };
+
+  const refreshToken = (callback) => {
+    fetch("https://qa-integrations.loopworks.com/api/chatbot/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ChatbotGuid: guid.trim() }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data?.errors) {
+          console.log(data.errors[0]);
+        } else {
+          callback && callback(data);
+        }
+      });
+  };
+
+  const getChatBotStyle = async (token) => {
+    // console.log("====================================");
+    // console.log("getChatBotStyle token", token);
+    // console.log("====================================");
+
+    fetch(
+      "https://qa-integrations.loopworks.com/api/chatbot/style?ChatBotGuid=" +
+        guid
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.statusCode === 413) {
+          refreshToken(getChatBotStyle);
+        } else {
+          appendChatBot(JSON.parse(data), token);
+        }
+      });
+  };
+
+  refreshToken(getChatBotStyle);
+</script>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Website (Chat-Bot)</title>
+  </head>
+  <body>
+    <div id="root">CHATBOT</div>
+  </body>
+</html>

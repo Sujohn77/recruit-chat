@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { FormControl } from "@mui/material";
 import { FormInput } from "components/Layout/Autocomplete/styles";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 interface ILoginProps {
   showLoginScreen: boolean;
@@ -87,7 +87,7 @@ export const Login: FC<ILoginProps> = ({
         <S.CloseLogin
           height="25px"
           onClick={() => setShowLoginScreen(false)}
-          color={colors.black}
+          color={COLORS.BLACK}
         />
 
         <S.HeaderTitle>{t("messages:provideName")}</S.HeaderTitle>

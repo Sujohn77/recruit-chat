@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { colors } from "utils/colors";
+import { COLORS } from "utils/colors";
 
 export const Notification = styled.div`
-  background: ${colors.lightgreen};
+  background: ${COLORS.PASTEL_GRIN};
   display: flex;
   gap: 8px;
   align-items: center;

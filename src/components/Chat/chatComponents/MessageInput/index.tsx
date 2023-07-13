@@ -32,7 +32,7 @@ import {
   validateEmailOrPhone,
 } from "utils/helpers";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
-import { useTextField } from "utils/hooks";
+import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
 interface IMessageInputProps {
@@ -40,6 +40,7 @@ interface IMessageInputProps {
 }
 
 export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
+  useFirebaseSignIn();
   const { t } = useTranslation();
   const { file, setNotification, showJobTitles } = useFileUploadContext();
   const {
@@ -55,37 +56,12 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     chooseButtonOption,
     isChatLoading,
     alertCategories,
-    firebaseToken,
-    setIsAuthInFirebase,
     isApplyJobFlow,
     sendPreScreenMessage,
     setSearchLocations,
     _setMessages,
     setCurrentMsgType,
   } = useChatMessenger();
-
-  useEffect(() => {
-    if (firebaseToken) {
-      // reinitializeAppWithoutLongPolling().then(() => {
-      firebase
-        .auth()
-        .signInWithCustomToken(firebaseToken)
-        .then((response) => {
-          console.log("====================================");
-          console.log("(Firebase) SUCCESS SIGN IN", response);
-          console.log("====================================");
-          setIsAuthInFirebase(true);
-          return { response };
-        })
-        .catch((error) => {
-          console.log("====================================");
-          console.log("(Firebase) SIGN IN Error --->", error?.message, error);
-          console.log("====================================");
-          return { error };
-        });
-      // });
-    }
-  }, [firebaseToken]);
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);
@@ -99,22 +75,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
-
-  // ------------------------------------------------- //
-
-  useEffect(() => {
-    showJobTitles && setIsShowResults(showJobTitles);
-  }, [showJobTitles]);
-
-  useEffect(() => {
-    if (
-      (currentMsgType === CHAT_ACTIONS.SET_CATEGORY ||
-        currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) &&
-      (!!draftMessage || !!file)
-    ) {
-      setIsShowResults(true);
-    }
-  }, [currentMsgType]);
 
   const inputType = getInputType(currentMsgType);
 
@@ -137,6 +97,37 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
       alertCategories,
     ]
   );
+
+  const isWriteAccess =
+    getAccessWriteType(currentMsgType) &&
+    (file || draftMessage || !!inputValues.length);
+
+  const marginTop =
+    status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
+      ? "-30px"
+      : "0px";
+
+  // ------------------------------------------------- //
+
+  useEffect(() => {
+    showJobTitles && setIsShowResults(showJobTitles);
+  }, [showJobTitles]);
+
+  useEffect(() => {
+    if (
+      (currentMsgType === CHAT_ACTIONS.SET_CATEGORY ||
+        currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) &&
+      (!!draftMessage || !!file)
+    ) {
+      setIsShowResults(true);
+    }
+  }, [currentMsgType]);
+
+  useEffect(() => {
+    if (currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS) {
+      setInputValues([]);
+    }
+  }, [currentMsgType]);
 
   // Callbacks
   const sendMessage = useCallback(
@@ -217,7 +208,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
   );
 
-  // Effects
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       const isWriteAccess = getAccessWriteType(currentMsgType) || file;
@@ -232,12 +222,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
       document.removeEventListener("keydown", keyDownHandler);
     };
   }, [draftMessage, sendMessage]);
-
-  useEffect(() => {
-    if (currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS) {
-      setInputValues([]);
-    }
-  }, [currentMsgType]);
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -333,15 +317,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
       } catch (error) {}
     }
   };
-
-  const isWriteAccess =
-    getAccessWriteType(currentMsgType) &&
-    (file || draftMessage || !!inputValues.length);
-
-  const marginTop =
-    status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
-      ? "-30px"
-      : "0px";
 
   const inputProps = {
     type: inputType,
