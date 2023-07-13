@@ -17,7 +17,7 @@ const defaultTheme = {
   },
 
   loader: {
-    background: COLORS.DESERt_STORM,
+    background: COLORS.DESERT_STORM,
   },
 
   searchResults: {

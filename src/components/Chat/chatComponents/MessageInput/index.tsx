@@ -11,8 +11,6 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
-import firebase from "firebase";
-import "firebase/auth";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
