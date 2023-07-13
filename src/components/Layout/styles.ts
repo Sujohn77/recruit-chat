@@ -13,15 +13,15 @@ export const DefaultButton = styled(ButtonBase)`
 `;
 
 export const DarkButton = styled(DefaultButton)`
-  height: 40px;
-  width: 100%;
+  height: 30px;
+  width: calc(50% - 5px);
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${(props) => props.theme.primaryColor}!important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
-  border-radius: 100px !important;
-  font-size: 14px;
+  border-radius: 8px !important;
+  font-size: 12px;
   line-height: 17px;
   font-family: Inter-SemiBold;
 

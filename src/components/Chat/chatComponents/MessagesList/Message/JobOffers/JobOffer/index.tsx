@@ -2,6 +2,7 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
+import parse from "html-react-parser";
 
 import * as S from "./styles";
 import { IJobOfferProps } from "./props";
@@ -107,22 +108,26 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     <S.JobOfferWrapper>
       <S.OfferTitle>{jobOffer.title}</S.OfferTitle>
 
-      <DarkButton onClick={handleReadMore}>
-        {t("chat_item_description:read_more")}
-      </DarkButton>
+      <S.Description>{parse(jobOffer.description)}</S.Description>
 
-      {isLoading ? (
-        <S.LoaderWrapper>
-          <Loader showLoader absolutePosition={false} />
-        </S.LoaderWrapper>
-      ) : (
+      <S.ButtonsWrapper>
+        <DarkButton onClick={handleReadMore}>
+          {t("chat_item_description:read_more")}
+        </DarkButton>
+
         <DarkButton
           disabled={isLoading || !isLastMessage}
           onClick={interestedIn}
         >
-          {t("chat_item_description:interested_in")}
+          {isLoading ? (
+            <S.LoaderWrapper>
+              <Loader showLoader absolutePosition={false} />
+            </S.LoaderWrapper>
+          ) : (
+            t("chat_item_description:interested_in")
+          )}
         </DarkButton>
-      )}
+      </S.ButtonsWrapper>
     </S.JobOfferWrapper>
   );
 };

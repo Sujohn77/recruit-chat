@@ -361,7 +361,7 @@ export interface IFacentsValue {
 
 export type LocationType = {
   city: string;
-  state?: string;
+  state?: string | null;
   country: string;
   zip?: string | null;
 };

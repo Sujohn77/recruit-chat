@@ -224,6 +224,13 @@ export interface IRequisition extends IWithID, ILocation {
   hiringType: string | null;
   jobURL: string | null;
   applyURL: string | null;
+  expiryDate?: string | number | null;
+  jobCode?: number | null;
+  jobCustomData?: { name: string; value: string }[];
+  poolData?: {
+    pools?: { candidateCount: number; poolId: number }[];
+    totalCandidateCount?: number;
+  };
 }
 
 export interface IMenuItem {

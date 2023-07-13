@@ -1,48 +1,24 @@
 import styled from "styled-components";
-import { COLORS } from "utils/colors";
 
-const MARGIN = "0 12px";
+// const MARGIN = "0 12px";
 
 export const JobOfferWrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
+  color: ${({ theme: { message } }) => message.jobOffer.color};
   border-radius: 10px;
   padding: 20px 18px;
-  color: ${({ theme: { message } }) => message.jobOffer.color};
-  font-size: 14px;
-  line-height: 17px;
   margin: 0 18px;
   box-sizing: border-box;
-
+  font-size: 14px;
+  line-height: 17px;
   min-height: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-`;
-
-export const Category = styled.h3`
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 500;
-  margin: 0 0 24px;
 `;
 
 export const OfferTitle = styled.p`
-  height: 34px;
-  margin: ${MARGIN};
-`;
-
-export const Error = styled.div`
-  display: flex;
-`;
-
-export const ErrorText = styled.span`
-  color: ${COLORS.PERSIAN_RED};
-`;
-
-export const WarningImg = styled.img`
-  margin-top: 10px;
-  width: 12px;
-  height: 12px;
+  margin: 0;
+  font-weight: 600;
 `;
 
 export const LoaderWrapper = styled.div`
@@ -52,13 +28,16 @@ export const LoaderWrapper = styled.div`
   justify-content: center;
 `;
 
-export const SuccessInteresting = styled.div`
-  height: 40px;
-  width: 100%;
+export const ButtonsWrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+  justify-content: space-between;
+  margin-top: auto;
+`;
+
+export const Description = styled.p`
+  height: 130px;
+  overflow: hidden;
+  margin: 0;
+  opacity: 0.4;
+  margin-bottom: 25px;
 `;
