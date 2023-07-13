@@ -19,7 +19,7 @@ export const Circle = styled.div`
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.65, 0.05, 0.08, 0.99);
   animation-iteration-count: infinte;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
   animation-fill-mode: forwards;
   transform: perspective(1px) translateZ(0);
 
@@ -35,7 +35,7 @@ export const Circle = styled.div`
     opacity: 0;
     animation-duration: 1s;
     animation-name: ripple-out;
-    animation-delay: 1.2s;
+    animation-delay: 0.7s;
   }
 
   @keyframes appear {
@@ -76,7 +76,7 @@ export const Tick = styled.div`
   animation-duration: 600ms;
   animation-timing-function: cubic-bezier(0.65, 0.05, 0.08, 0.99);
   animation-iteration-count: infinte;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
   animation-fill-mode: forwards;
 
   @keyframes pop {
