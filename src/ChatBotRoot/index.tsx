@@ -5,10 +5,10 @@ import { FileUploadProvider } from "contexts/FileUploadContext";
 import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
-import { Content } from "components";
+import { Content } from "content";
 import { IApiThemeResponse } from "utils/api";
-import { SessionStorage, isDevMode } from "utils/constants";
 import { regExpJWT, regExpUuid } from "utils/helpers";
+import { SessionStorage, isDevMode } from "utils/constants";
 
 export const ChatBotRoot: FC = () => {
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
