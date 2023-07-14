@@ -40,7 +40,8 @@ export const FORM_URLENCODED = {
 };
 
 // const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // James's guid
-const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
+// const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
+const GUID = process.env.REACT_APP_GUID;
 export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 
 class Api {
