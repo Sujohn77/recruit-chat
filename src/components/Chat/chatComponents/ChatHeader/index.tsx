@@ -1,5 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { Dispatch, FC, SetStateAction, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 
 import * as S from "./styles";
@@ -11,21 +12,24 @@ import { Flex, IntroImage } from "screens/Intro/styles";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   setShowLoginScreen: (show: boolean) => void;
-  title?: string;
+  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  setShowConfirmLogout: Dispatch<SetStateAction<boolean>>;
 }
 
-const defaultTitle = "Recruit bot";
-
 export const ChatHeader: FC<IChatHeaderProps> = ({
-  title = defaultTitle,
   setIsSelectedOption,
   showLoginScreen,
   setShowLoginScreen,
+  setShowConfirmLogout,
 }) => {
+  const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob } = useChatMessenger();
+  const { viewJob, setViewJob, isCandidateWithEmail } = useChatMessenger();
+
+  const title = viewJob
+    ? t("chat_item_description:view_job_title")
+    : theme.chatbotName || t("chat_item_description:title");
 
   const handleBackButton = useCallback(() => {
     if (showLoginScreen) {
@@ -35,18 +39,22 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     }
   }, [showLoginScreen]);
 
-  const onCloseChat = useCallback(() => setIsSelectedOption(false), []);
+  const onCloseChat = useCallback(() => {
+    if (isCandidateWithEmail) {
+      setShowConfirmLogout(true);
+    } else {
+      setIsSelectedOption(false);
+    }
+  }, [isCandidateWithEmail]);
 
   return (
     <S.ChatHeaderWrapper>
-      {viewJob && (
+      {viewJob ? (
         <Flex>
           <BackButton onClick={handleBackButton} />
           <S.ViewTitle>{title}</S.ViewTitle>
         </Flex>
-      )}
-
-      {!viewJob && (
+      ) : (
         <>
           <IntroImage
             src={theme?.imageUrl || ICONS.LOGO}

@@ -13,6 +13,8 @@ import map from "lodash/map";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
 import { ApiResponse } from "apisauce";
+import firebase from "firebase";
+import "firebase/auth";
 
 import {
   MessageType,
@@ -129,6 +131,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setFirstName: () => {},
   setLastName: () => {},
   setSearchLocations: () => {},
+  logout: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -152,7 +155,7 @@ const ChatProvider = ({
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
-  const [prefferedJob, setPrefferedJob] = useState<IRequisition | null>(null);
+  const [preferredJob, setPreferredJob] = useState<IRequisition | null>(null);
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
   const [user, setUser] = useState<IUser | null>(null);
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
@@ -173,12 +176,7 @@ const ChatProvider = ({
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
 
-  const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
-  const [candidateId, setCandidateId] = useState<number | undefined>();
-  const [chatId, setChatID] = useState<number | undefined>();
-
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
-  const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
@@ -186,17 +184,27 @@ const ChatProvider = ({
     setIsChatLoading
   );
   // ----------------------------------------------------------------------------- //
-
-  const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
-  const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
-  const [chatBotToken, setToken] = useState(
+  const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
+  const [chatBotToken, setChatBotToken] = useState(
     getStorageValue(SessionStorage.Token)
   );
-  const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
+
   const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
+  const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
+
+  const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
+  const [candidateId, setCandidateId] = useState<number | undefined>();
+  const [chatId, setChatID] = useState<number | undefined>();
+  const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
+  const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
+
   const [isApplyJobFlow, setIsApplyJobFlow] = useState(false);
-  const [flowId, setFlowId] = useState<number>();
-  const [subscriberWorkflowId, setSubscriberWorkflowId] = useState<number>();
+  const [flowId, setFlowId] = useState<number | undefined>(undefined);
+  const [subscriberWorkflowId, setSubscriberWorkflowId] = useState<
+    number | undefined
+  >(undefined);
+
+  // Candidate info
   const [emailAddress, setEmailAddress] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -263,49 +271,48 @@ const ChatProvider = ({
     LOG(isCandidateAnonym, "isCandidateAnonym", COLORS.WHITE);
   }, [isCandidateAnonym]);
 
-  useEffect(() => {
-    const createAnonymCandidateId = async () => {
-      setIsLoadedMessages(true);
-      try {
-        const token: string | null = getStorageValue(SessionStorage.Token);
-        if (token) {
-          userAPI.setAuthHeader(token);
-        }
-
-        const res: ApiResponse<ICreateCandidateResponse> =
-          await userAPI.createAnonymCandidate({
-            firstName: "Anonymous",
-            lastName: "ChatbotUser",
-            typeId: 17,
-          });
-
-        if (res.data?.id) {
-          setCandidateId(res.data.id);
-
-          const firebaseTokenResponse: ApiResponse<string> =
-            await userAPI.getFirebaseAccessToken(res.data?.id);
-
-          if (firebaseTokenResponse.data) {
-            _setFirebaseToken(firebaseTokenResponse.data);
-          }
-
-          const chatRes: ApiResponse<ICreateChatResponse> =
-            await userAPI.createChatByAnonymUser(res.data.id);
-
-          if (chatRes.data?.chatId) {
-            setChatID(chatRes.data?.chatId);
-          }
-        }
-      } catch (error) {
-        console.log("====================================");
-        console.log("error", error);
-        console.log("====================================");
-      } finally {
-        setIsLoadedMessages(false);
+  const createAnonymCandidate = useCallback(async () => {
+    setIsLoadedMessages(true);
+    try {
+      const token: string | null = getStorageValue(SessionStorage.Token);
+      if (token) {
+        userAPI.setAuthHeader(token);
+        setChatBotToken(token);
       }
-    };
 
-    createAnonymCandidateId();
+      const res: ApiResponse<ICreateCandidateResponse> =
+        await userAPI.createAnonymCandidate({
+          firstName: "Anonymous",
+          lastName: "ChatbotUser",
+          typeId: 17,
+        });
+
+      if (res.data?.id) {
+        setCandidateId(res.data.id);
+
+        const firebaseTokenResponse: ApiResponse<string> =
+          await userAPI.getFirebaseAccessToken(res.data?.id);
+
+        if (firebaseTokenResponse.data) {
+          _setFirebaseToken(firebaseTokenResponse.data);
+        }
+
+        const chatRes: ApiResponse<ICreateChatResponse> =
+          await userAPI.createChatByAnonymUser(res.data.id);
+
+        if (chatRes.data?.chatId) {
+          setChatID(chatRes.data?.chatId);
+        }
+      }
+    } catch (error) {
+      LOG(error, "CreateAnonymCandidate ERROR");
+    } finally {
+      setIsLoadedMessages(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    createAnonymCandidate();
   }, []);
 
   useEffect(() => {
@@ -421,7 +428,7 @@ const ChatProvider = ({
         }
         case CHAT_ACTIONS.INTERESTED_IN: {
           const job = getItemById(offerJobs, payload?.item!);
-          setPrefferedJob(job!);
+          setPreferredJob(job!);
           break;
         }
         case CHAT_ACTIONS.SUCCESS_UPLOAD_CV: {
@@ -670,7 +677,7 @@ const ChatProvider = ({
             try {
               const createCandidateData = getCreateCandidateData({
                 user,
-                prefferedJob,
+                prefferedJob: preferredJob,
               });
               await apiInstance.createCandidate(createCandidateData);
             } catch (error) {
@@ -696,7 +703,7 @@ const ChatProvider = ({
               type: CHAT_ACTIONS.HIRING_PROCESS,
             });
             const lastMessIsButton =
-              messages[0].content.subType === MessageType.BUTTON;
+              messages[0]?.content.subType === MessageType.BUTTON;
 
             try {
               const data = {
@@ -910,7 +917,7 @@ const ChatProvider = ({
 
   const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
     const updatedMessages = map(messages, (msg) =>
-      msg.content.subType === type && !msg._id
+      msg?.content.subType === type && !msg._id
         ? { ...msg, _id: messageId }
         : msg
     );
@@ -989,7 +996,7 @@ const ChatProvider = ({
           );
           break;
         case CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME:
-          if (messages[0].content.subType === MessageType.SUBMIT_FILE) {
+          if (messages[0]?.content.subType === MessageType.SUBMIT_FILE) {
             setChatAction(null);
             setMessages(messages.slice(1));
           }
@@ -1045,6 +1052,37 @@ const ChatProvider = ({
     }
   };
 
+  const logout = useCallback(() => {
+    // firebase logout
+    firebase.auth()?.signOut();
+    // Clear state
+    setIsApplyJobSuccessfully(false);
+    setIsChatLoading(false);
+    setIsLoadedMessages(false);
+    setSearchLocations([]);
+    setOfferJobs([]);
+    setViewJob(null);
+    setPreferredJob(null);
+    setAlertCategories([]);
+    setUser(null);
+    setMessages([]);
+    setStatus(null);
+    setError(null);
+    setResumeName("");
+    setIsCandidateAnonym(true);
+    setCandidateId(undefined);
+    setEmailAddress("");
+    setFirstName("");
+    setLastName("");
+    setSubscriberWorkflowId(undefined);
+    setFlowId(undefined);
+    setIsApplyJobFlow(false);
+    setIsAuthInFirebase(false);
+    setIsCandidateWithEmail(false);
+    // create new anonym user
+    createAnonymCandidate();
+  }, []);
+
   const chatState: IChatMessengerContext = {
     status,
     messages,
@@ -1057,7 +1095,7 @@ const ChatProvider = ({
     offerJobs,
     alertCategories,
     viewJob,
-    prefferedJob,
+    prefferedJob: preferredJob,
     user,
     chooseButtonOption,
     dispatch,
@@ -1096,6 +1134,7 @@ const ChatProvider = ({
     setFirstName,
     setLastName,
     setSearchLocations,
+    logout,
   };
 
   // console.log(

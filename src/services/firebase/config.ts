@@ -27,7 +27,8 @@ export const reinitializeAppWithoutLongPolling = async () => {
           app.firestore().settings({
             experimentalForceLongPolling: false,
           });
-        });
+        })
+        .catch((error) => Promise.reject(error));
     } else {
       app = firebaseApp.initializeApp(FIREBASE_CONFIG);
       app.firestore().settings({

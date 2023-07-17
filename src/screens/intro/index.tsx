@@ -24,7 +24,7 @@ export const Intro: FC<IIntroScreenProps> = ({
   const { t } = useTranslation();
   const { isVerified } = useAuthContext();
 
-  const [isEmailForm, setIsEmailForm] = useState(false);
+  const [isEmailForm] = useState(false);
   const [isNeedSupport, setIsNeedSupport] = useState(false);
   const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
 

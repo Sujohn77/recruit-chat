@@ -1,14 +1,15 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useEffect, useState } from "react";
-
-import * as S from "./styles";
-import { validateEmail } from "utils/helpers";
-import { CHAT_ACTIONS } from "utils/types";
-import { useTranslation } from "react-i18next";
+import { FC, useCallback, useState } from "react";
 import { FormControl } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
+import { PopUp } from "..";
+import * as S from "./styles";
+import { COLORS } from "utils/colors";
+import { CHAT_ACTIONS } from "utils/types";
+import { validateEmail } from "utils/helpers";
 import { FormInput } from "components/Layout/Autocomplete/styles";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
-import { COLORS } from "utils/colors";
 
 interface ILoginProps {
   showLoginScreen: boolean;
@@ -19,7 +20,6 @@ export const Login: FC<ILoginProps> = ({
   showLoginScreen,
   setShowLoginScreen,
 }) => {
-  const { isAnonym } = useChatMessenger();
   const { t } = useTranslation();
   const { dispatch } = useChatMessenger();
 
@@ -30,10 +30,6 @@ export const Login: FC<ILoginProps> = ({
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
-  useEffect(() => {
-    !isAnonym && setShowLoginScreen(false);
-  }, [isAnonym, setShowLoginScreen]);
 
   const onChange = useCallback(
     (type: number) => (e: any) => {
@@ -57,8 +53,8 @@ export const Login: FC<ILoginProps> = ({
     []
   );
 
-  const onClick = (value: string) => {
-    const errorText = validateEmail(value);
+  const onLogin = () => {
+    const errorText = validateEmail(email);
 
     if (errorText) {
       setEmailError(errorText);
@@ -82,7 +78,7 @@ export const Login: FC<ILoginProps> = ({
   };
 
   return !showLoginScreen ? null : (
-    <S.ViewBody>
+    <PopUp>
       <S.Wrapper>
         <S.CloseLogin
           height="25px"
@@ -121,10 +117,8 @@ export const Login: FC<ILoginProps> = ({
           />
         </FormControl>
 
-        <FormButton onClick={() => onClick(email)}>
-          {t("buttons:send")}
-        </FormButton>
+        <FormButton onClick={onLogin}>{t("buttons:send")}</FormButton>
       </S.Wrapper>
-    </S.ViewBody>
+    </PopUp>
   );
 };

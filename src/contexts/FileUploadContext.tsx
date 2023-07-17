@@ -121,7 +121,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
         setResumeId(response.data?.resumeId);
 
         const isLastMsgEqualToUploadType =
-          messages[0].content.subType === MessageType.UPLOAD_CV;
+          messages[0]?.content.subType === MessageType.UPLOAD_CV;
 
         if (isLastMsgEqualToUploadType) {
           dispatch({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });

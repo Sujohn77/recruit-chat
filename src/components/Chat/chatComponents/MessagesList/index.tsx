@@ -63,9 +63,9 @@ export const MessagesList: FC<IMessagesListProps> = ({
             let withoutMargin = undefined;
             const isNextMessCVFile =
               messages[index - 1] &&
-              messages[index - 1].content?.subType === MessageType.UPLOADED_CV;
+              messages[index - 1]?.content?.subType === MessageType.UPLOADED_CV;
             if (
-              message.content.subType === MessageType.UPLOAD_CV &&
+              message?.content?.subType === MessageType.UPLOAD_CV &&
               isNextMessCVFile
             ) {
               withoutMargin = true;

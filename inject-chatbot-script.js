@@ -16,7 +16,8 @@ const refreshToken = (callback) => {
       } else {
         callback?.(data);
       }
-    });
+    })
+    .catch((error) => Promise.reject(error));
 };
 
 const appendChatBot = (style, token) => {
@@ -78,7 +79,8 @@ const getChatBotStyle = async (token) => {
       } else {
         appendChatBot(JSON.parse(data), token);
       }
-    });
+    })
+    .catch((error) => Promise.reject(error));
 };
 
 refreshToken(getChatBotStyle);

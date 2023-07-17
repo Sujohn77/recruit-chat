@@ -31,12 +31,12 @@ export const MS_1000 = 1000;
 
 export const Message: FC<IMessageProps> = memo(
   ({ message, isLastMessage, withoutMargin, setShowLoginScreen }) => {
-    const subType = message.content.subType;
+    const subType = message?.content?.subType;
     const messageProps = { ...getMessageProps(message) };
 
     switch (subType) {
       case MessageType.INITIAL_MESSAGE:
-        return <S.InitialMessage>{message.content.text}</S.InitialMessage>;
+        return <S.InitialMessage>{message?.content?.text}</S.InitialMessage>;
       case MessageType.UPLOAD_CV:
         return (
           <UploadCV
@@ -69,7 +69,7 @@ export const Message: FC<IMessageProps> = memo(
         return <InterestedIn message={message} />;
       case MessageType.TEXT_WITH_CHOICE: {
         return (
-          <TextWithOptions text={message.content.text!} {...messageProps} />
+          <TextWithOptions text={message?.content.text!} {...messageProps} />
         );
       }
       case MessageType.HIRING_PROCESS: {

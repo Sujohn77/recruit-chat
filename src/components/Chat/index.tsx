@@ -1,17 +1,14 @@
-import { useChatMessenger } from "contexts/MessengerContext";
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useTheme } from "styled-components";
 
+import * as S from "./styles";
 import {
   ChatHeader,
   MessageInput,
   MessagesList,
   ViewJob,
 } from "./chatComponents";
-import * as S from "./styles";
-import { ThemeType } from "utils/theme/default";
 import { Login } from "./chatComponents/Login";
+import { Logout } from "./chatComponents/Logout";
 interface IChatProps {
   isSelectedOption: boolean;
   setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
@@ -22,22 +19,15 @@ export const Chat: FC<IChatProps> = ({
   isSelectedOption,
   setIsSelectedOption,
 }) => {
-  const { t } = useTranslation();
-  const theme = useTheme() as ThemeType;
-  const { viewJob } = useChatMessenger();
-
   const [height, setHeight] = useState(480);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
-
-  const title = viewJob
-    ? t("chat_item_description:view_job_title")
-    : theme.chatbotName || t("chat_item_description:title");
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
 
   return (
     <S.Wrapper isOpened={!!isSelectedOption}>
       <ChatHeader
+        setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}
-        title={title}
         setIsSelectedOption={setIsSelectedOption}
         setShowLoginScreen={setShowLoginScreen}
       />
@@ -49,6 +39,12 @@ export const Chat: FC<IChatProps> = ({
       <Login
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
+      />
+
+      <Logout
+        showLogoutScreen={showConfirmLogout}
+        setShowConfirmLogout={setShowConfirmLogout}
+        setIsSelectedOption={setIsSelectedOption}
       />
 
       <ViewJob setShowLoginScreen={setShowLoginScreen} />

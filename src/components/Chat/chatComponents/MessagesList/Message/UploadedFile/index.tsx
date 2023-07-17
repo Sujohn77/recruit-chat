@@ -11,8 +11,8 @@ interface IUploadedCvProps {
 
 export const UploadedFile: FC<IUploadedCvProps> = ({ message }) => (
   <S.Notification>
-    {message.content.text && <S.Icon src={ICONS.ATTACHED_FILE} />}
+    {message?.content.text && <S.Icon src={ICONS.ATTACHED_FILE} />}
 
-    <S.NotificationText>{message.content.text}</S.NotificationText>
+    <S.NotificationText>{message?.content.text}</S.NotificationText>
   </S.Notification>
 );

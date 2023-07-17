@@ -84,9 +84,9 @@ export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   const padding =
-    msg.content.subType === MessageType.FILE ? "8px" : "12px 16px";
+    msg?.content.subType === MessageType.FILE ? "8px" : "12px 16px";
   const cursor =
-    msg.content.subType === MessageType.BUTTON ? "pointer" : "initial";
+    msg?.content.subType === MessageType.BUTTON ? "pointer" : "initial";
 
   if (!msg.isOwn) {
     return {
@@ -99,11 +99,13 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   }
   return {
     color:
-      msg.content.subType === MessageType.BUTTON
+      msg?.content.subType === MessageType.BUTTON
         ? COLORS.TUNDORA
         : COLORS.WHITE,
     backColor:
-      msg.content.subType === MessageType.BUTTON ? COLORS.ALTO : COLORS.BOULDER,
+      msg?.content.subType === MessageType.BUTTON
+        ? COLORS.ALTO
+        : COLORS.BOULDER,
     padding,
     isOwn: !!msg.isOwn,
     cursor,
@@ -315,8 +317,8 @@ export const getParsedMessage = ({
 export const getServerParsedMessages = (messages: IMessage[]) => {
   const parsedMessages = map(messages, (msg) => {
     const content: IContent = {
-      subType: msg.content.subType,
-      text: msg.content.text,
+      subType: msg?.content.subType,
+      text: msg?.content.text,
     };
     return {
       dateCreated: msg.dateCreated,
@@ -395,10 +397,10 @@ export const pushMessage = ({
     messages: !messages.length ? [...messages, ...initialMessages] : messages,
   });
 
-  if (message.content.subType !== MessageType.TEXT || !!text)
+  if (message?.content.subType !== MessageType.TEXT || !!text)
     setMessages([message, ...updatedMessages]);
 
-  if (message.content.text) {
+  if (message?.content.text) {
     // Push initial message
     // TODO: uncomment when backend is ready
     // const isInitialMessage = !messages.length;
@@ -428,7 +430,7 @@ export const popMessage = ({
 
   const updatedMessages = !type
     ? messages
-    : messages.filter((msg) => msg.content.subType !== type);
+    : messages.filter((msg) => msg?.content.subType !== type);
 
   !type && updatedMessages.shift();
 
@@ -442,11 +444,11 @@ export const replaceItemsWithType = ({
 }: IFilterItemsWithType) => {
   const item = find(
     messages,
-    (msg) => msg.content.subType === type && msg.content.text === excludeItem
+    (msg) => msg?.content.subType === type && msg.content.text === excludeItem
   );
   const updatedMessages = filter(
     messages,
-    (msg) => msg.content.subType !== type
+    (msg) => msg?.content.subType !== type
   );
 
   if (item) {
@@ -718,13 +720,25 @@ export const LOG = (
   background = COLORS.BLACK
 ) => {
   console.log("====================================");
-  console.log(
-    `%c   ${description}   `,
-    `color: ${
-      description === "ERROR" ? COLORS.TORCH_RED : color
-    }; font-size: 14px; background-color: ${background};`,
-    logObj
-  );
+
+  if (description) {
+    console.log(
+      `%c   ${description}   `,
+      `color: ${
+        description?.includes("ERROR") ? COLORS.TORCH_RED : color
+      }; font-size: 14px; background-color: ${background};`,
+      logObj
+    );
+  } else {
+    console.log(
+      `%c   ___   `,
+      `color: ${
+        description?.includes("ERROR") ? COLORS.TORCH_RED : color
+      }; font-size: 14px; background-color: ${background};`,
+      logObj
+    );
+  }
+
   console.log("====================================");
 };
 
@@ -733,10 +747,10 @@ export const parseFirebaseMessages = (
 ): ILocalMessage[] => {
   return unionBy(
     map(
-      filter(fMessages, (mess) => mess.content.subType !== "chat_created"),
+      filter(fMessages, (mess) => mess?.content.subType !== "chat_created"),
       (mess) => ({
         dateCreated: mess.dateCreated,
-        content: mess.content,
+        content: mess?.content,
         isOwn: mess.sender.id === -2 ? false : true,
         _id: mess.chatItemId,
         localId: mess.localId,

@@ -3,11 +3,11 @@ import { ISearchRequisition } from "contexts/types";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
+import firebase from "firebase";
 import "firebase/auth";
 
 import { CHAT_ACTIONS } from "./types";
 import { searchAlertCategories } from "components/Chat/mockData";
-import firebase from "firebase";
 import { useChatMessenger } from "contexts/MessengerContext";
 
 interface IUseTextField {

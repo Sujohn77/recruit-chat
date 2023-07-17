@@ -10,7 +10,7 @@ import {
 } from "services/types";
 
 import { BASE_API_URL, SessionStorage, isDevMode } from "../../utils/constants";
-import { getStorageValue } from "../../utils/helpers";
+import { LOG, getStorageValue } from "../../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
@@ -73,20 +73,40 @@ class Api {
         }
 
         const status = error?.response?.status;
+        const originalRequest = error.config;
+        console.log("====================================");
+        console.log("error?.response", error?.response);
+        console.log("status", status);
+        console.log("refresh token", originalRequest);
+        console.log("====================================");
 
-        if (status !== 401 && status !== 403) {
+        if (status && status !== 401 && status !== 403) {
           // TODO: add logic to display errors
         }
 
-        const originalRequest = error.config;
-        if (status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
+        if (status === 401 && !originalRequest?._isFirst) {
+          originalRequest._isFirst = true;
 
           const res: ApiResponse<string> = await apiInstance.refreshToken();
           if (res.data) {
             apiInstance.setChatAuthHeader(res.data);
-            return axios(originalRequest);
+            axios(originalRequest);
           }
+
+          window.parent.postMessage(
+            {
+              event_id: "refresh_token",
+              callback: () => {
+                LOG("window.parent.postMessage Callback");
+              },
+            },
+            "*"
+          );
+        }
+
+        if (status === null && !originalRequest?._isFirst) {
+          originalRequest._isFirst = true;
+          axios(originalRequest);
         }
 
         return Promise.reject(error);
