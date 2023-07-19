@@ -68,9 +68,11 @@
       .catch((error) => Promise.reject(error));
   };
 
+  refreshToken(getChatBotStyle);
+
   function onMessage(event) {
     console.log("====================================");
-    console.log("event", event);
+    console.log("-----  onMessage event  -----", event);
     console.log("====================================");
     if (
       url_string.indexOf(event.origin) !== -1 &&
@@ -79,8 +81,6 @@
       refreshToken(event.data.callback);
     }
   }
-
-  refreshToken(getChatBotStyle);
 
   if (window.addEventListener) {
     window.addEventListener("message", onMessage);
