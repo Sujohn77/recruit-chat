@@ -32,7 +32,7 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
   };
 
   const renderSendingTime = useCallback((message: ILocalMessage) => {
-    if (message.localId !== message._id && message.isOwn) {
+    if (message?.localId !== message._id && message.isOwn) {
       return message._id ? (
         <S.TimeText>
           {moment(message.dateCreated?.seconds! * MS_1000).format("HH:mm A")}

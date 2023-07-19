@@ -56,7 +56,7 @@ export const TextMessage: FC<ITextMessageProps> = memo(
     }, []);
 
     const renderSendingTime = (message: ILocalMessage) => {
-      if (message.localId !== message._id && message.isOwn) {
+      if (message?.localId !== message._id && message.isOwn) {
         if (message._id) {
           return (
             <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>

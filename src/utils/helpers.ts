@@ -189,7 +189,7 @@ export const getLocalMessage = (
 
   return {
     chatItemId: -1,
-    localId: requestMessage.localId,
+    localId: requestMessage?.localId,
     content: {
       typeId: MessageTypeId.text,
       // subType: requestMessage.subType,
@@ -324,7 +324,7 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
       dateCreated: msg.dateCreated,
       content,
       isOwn: msg.sender.id === profile.id,
-      localId: msg.localId,
+      localId: msg?.localId,
       _id: msg.chatItemId,
     };
   });
@@ -753,7 +753,7 @@ export const parseFirebaseMessages = (
         content: mess?.content,
         isOwn: mess.sender.id === -2 ? false : true,
         _id: mess.chatItemId,
-        localId: mess.localId,
+        localId: mess?.localId,
       })
     ),
     "chatItemId"

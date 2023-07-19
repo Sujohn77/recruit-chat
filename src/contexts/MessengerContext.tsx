@@ -347,7 +347,7 @@ const ChatProvider = ({
       setServerMessages(processedSnapshots);
       setIsLoadedMessages(true);
     }
-  }, [nextMessages.length && nextMessages[0].data.localId]);
+  }, [nextMessages.length && nextMessages[0].data?.localId]);
 
   useEffect(() => {
     if (isLoadedMessages && initialAction) {
@@ -952,7 +952,7 @@ const ChatProvider = ({
           SubscriberWorkflowID: subscriberWorkflowId,
           candidateId,
           message,
-          localId: localMess.localId?.toString()!,
+          localId: localMess?.localId?.toString()!,
         };
 
         const answerResponse: ApiResponse<IFollowingResponse> =
@@ -1032,7 +1032,7 @@ const ChatProvider = ({
         return (
           findIndex(
             messages,
-            (localmsg) => msg.localId === localmsg.localId
+            (localmsg) => msg?.localId === localmsg?.localId
           ) === -1
         );
       });
@@ -1042,7 +1042,7 @@ const ChatProvider = ({
         const updatedMessages = map(messages, (localmsg) => {
           const updatedIndex = findIndex(
             parsedMessages,
-            (msg) => msg.localId === localmsg.localId
+            (msg) => msg?.localId === localmsg?.localId
           );
           return updatedIndex !== -1 ? parsedMessages[updatedIndex] : localmsg;
         });
