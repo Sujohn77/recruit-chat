@@ -67,21 +67,26 @@ class Api {
         return response;
       },
       async function (error) {
-        if (isDevMode) {
-          console.log("ApiError", error?.message);
-          console.log("error?.response?.status", error?.response?.status);
-        }
-
         const status = error?.response?.status;
         const originalRequest = error.config;
+
         console.log("====================================");
+        console.log("error", error);
         console.log("error?.response", error?.response);
         console.log("status", status);
         console.log("originalRequest", originalRequest);
         console.log("====================================");
 
-        if (status && status !== 401 && status !== 403) {
-          // TODO: add logic to display errors
+        if (status === 401) {
+          window.parent.postMessage(
+            {
+              event_id: "refresh_token",
+              callback: () => {
+                LOG("window.parent.postMessage Callback");
+              },
+            },
+            "*"
+          );
         }
 
         if (status === 401 && !originalRequest?._isFirst) {
@@ -92,16 +97,10 @@ class Api {
             apiInstance.setChatAuthHeader(res.data);
             axios(originalRequest);
           }
+        }
 
-          window.parent.postMessage(
-            {
-              event_id: "refresh_token",
-              callback: () => {
-                LOG("window.parent.postMessage Callback");
-              },
-            },
-            "*"
-          );
+        if (status && status !== 401 && status !== 403) {
+          // TODO: Add logic to display errors
         }
 
         if (status === null && !originalRequest?._isFirst) {

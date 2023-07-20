@@ -1,10 +1,10 @@
 <!-- This is file for call (init) chatbot -->
 <!DOCTYPE html>
 <script>
-  var guid = "f466faec-ea83-4122-8c23-458ab21e96be";
+  const guid = "f466faec-ea83-4122-8c23-458ab21e96be";
+  const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
 
   const appendChatBot = (style, token) => {
-    const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
     const ifrm = document.createElement("iframe");
 
     ifrm.setAttribute("src", url_string);
@@ -78,7 +78,11 @@
       url_string.indexOf(event.origin) !== -1 &&
       event.data.event_id === "refresh_token"
     ) {
-      refreshToken(event.data.callback);
+      refreshToken(event.data.callback)
+        .then((data) => {
+          console.log("DATA", data);
+        })
+        .catch(() => console.log("_ E R R O R _"));
     }
   }
 
