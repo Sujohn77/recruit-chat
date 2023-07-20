@@ -77,7 +77,7 @@ class Api {
         console.log("====================================");
         console.log("error?.response", error?.response);
         console.log("status", status);
-        console.log("refresh token", originalRequest);
+        console.log("originalRequest", originalRequest);
         console.log("====================================");
 
         if (status && status !== 401 && status !== 403) {

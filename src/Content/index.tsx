@@ -3,9 +3,10 @@ import { FC, useEffect, useState } from "react";
 
 import { Chat } from "components";
 import { Intro } from "screens";
+import { TIMEOUT } from "utils/constants";
 
 export const Content: FC = () => {
-  const { setIsApplyJobFlow } = useChatMessenger();
+  const { setIsApplyJobFlow, logout, messages } = useChatMessenger();
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null
   );
@@ -15,6 +16,15 @@ export const Content: FC = () => {
       setIsApplyJobFlow(false);
     }
   }, [isSelectedOption]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      logout();
+      setIsSelectedOption(false);
+    }, TIMEOUT);
+
+    return () => clearTimeout(timeout);
+  }, [messages.length]);
 
   return (
     <>
