@@ -71,10 +71,7 @@ class Api {
         const originalRequest = error.config;
 
         console.log("====================================");
-        console.log("error", error);
-        console.log("error?.response", error?.response);
-        console.log("status", status);
-        console.log("originalRequest", originalRequest);
+        console.log("interceptors error", error);
         console.log("====================================");
 
         if (status === 401 && !originalRequest?._isFirst) {
