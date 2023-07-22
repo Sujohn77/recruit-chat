@@ -77,18 +77,6 @@ class Api {
         console.log("originalRequest", originalRequest);
         console.log("====================================");
 
-        if (status === 401) {
-          window.parent.postMessage(
-            {
-              event_id: "refresh_token",
-              callback: () => {
-                LOG("window.parent.postMessage Callback");
-              },
-            },
-            "*"
-          );
-        }
-
         if (status === 401 && !originalRequest?._isFirst) {
           originalRequest._isFirst = true;
 
@@ -106,6 +94,18 @@ class Api {
         if (status === null && !originalRequest?._isFirst) {
           originalRequest._isFirst = true;
           axios(originalRequest);
+        }
+
+        if (status === 401) {
+          LOG(status, "window.parent.postMessage");
+          window.parent.postMessage(
+            JSON.parse(
+              JSON.stringify({
+                event_id: "refresh_token",
+              })
+            ),
+            "*"
+          );
         }
 
         return Promise.reject(error);
