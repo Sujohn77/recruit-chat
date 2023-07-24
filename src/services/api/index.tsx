@@ -71,30 +71,20 @@ class Api {
         const originalRequest = error.config;
 
         console.log("====================================");
-        console.log("interceptors error", error);
+        console.log(" axios interceptors error", error);
         console.log("====================================");
-
-        if (status === 401 && !originalRequest?._isFirst) {
-          originalRequest._isFirst = true;
-
-          const res: ApiResponse<string> = await apiInstance.refreshToken();
-          if (res.data) {
-            apiInstance.setChatAuthHeader(res.data);
-            axios(originalRequest);
-          }
-        }
 
         if (status && status !== 401 && status !== 403) {
           // TODO: Add logic to display errors
         }
 
         if (status === null && !originalRequest?._isFirst) {
-          originalRequest._isFirst = true;
           axios(originalRequest);
+          originalRequest._isFirst = true;
+          return;
         }
 
-        if (status === 401) {
-          LOG(status, "window.parent.postMessage");
+        if (status === 401 && !originalRequest?._isFirst) {
           window.parent.postMessage(
             JSON.parse(
               JSON.stringify({
@@ -103,12 +93,19 @@ class Api {
             ),
             "*"
           );
+          originalRequest._isFirst = true;
         }
 
         return Promise.reject(error);
       }
     );
   }
+
+  repeatLastRequest = () => {
+    if (this.lastRequest) {
+      axios(this.lastRequest);
+    }
+  };
 
   requestInterceptor = (request: AxiosRequestConfig) => {
     const token = getStorageValue(SessionStorage.Token);
@@ -124,7 +121,7 @@ class Api {
 
       this.lastRequest = request;
     } else {
-      isDevMode && console.log("no token");
+      console.log("no token");
     }
     return request;
     // if (isExpired) {

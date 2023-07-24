@@ -6,9 +6,10 @@ import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { Content } from "content";
+import { LOG, regExpJWT, regExpUuid } from "utils/helpers";
+import { SessionStorage } from "utils/constants";
 import { IApiThemeResponse } from "utils/api";
-import { regExpJWT, regExpUuid } from "utils/helpers";
-import { SessionStorage, isDevMode } from "utils/constants";
+import { apiInstance } from "services/api";
 
 export const ChatBotRoot: FC = () => {
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
@@ -16,17 +17,19 @@ export const ChatBotRoot: FC = () => {
 
   useEffect(() => {
     const onPostMessage = (event: MessageEvent) => {
+      LOG(event.data, "message from parent");
+
       if (regExpUuid.test(event.data?.guid)) {
         setChatBotID(event.data.guid);
       }
+
       if (event.data?.style) {
         setTheme(event.data.style);
       }
+
       if (regExpJWT.test(event.data?.token)) {
-        if (isDevMode) {
-          // console.log(event.data?.token);
-        }
         sessionStorage.setItem(SessionStorage.Token, event.data.token);
+        apiInstance.repeatLastRequest();
       }
     };
 

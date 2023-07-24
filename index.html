@@ -3,12 +3,13 @@
 <script>
   const guid = "f466faec-ea83-4122-8c23-458ab21e96be";
   const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
+  const iframeID = "chat-iframe";
 
   const appendChatBot = (style, token) => {
     const ifrm = document.createElement("iframe");
 
     ifrm.setAttribute("src", url_string);
-    ifrm.setAttribute("id", "chat-iframe");
+    ifrm.setAttribute("id", iframeID);
     ifrm.setAttribute("width", "370px");
     ifrm.setAttribute(
       "sandbox",
@@ -32,6 +33,31 @@
   };
 
   const refreshToken = async (callback) => {
+    try {
+      const refreshRes = await fetch(
+        "https://qa-integrations.loopworks.com/api/chatbot/token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ChatbotGuid: guid.trim() }),
+        }
+      );
+
+      const data = await refreshRes.clone().json();
+
+      if (data?.errors) {
+        console.log(data.errors[0]);
+        return Promise.reject(data.errors[0]);
+      } else {
+        callback && callback(data);
+        return Promise.resolve(data);
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+
     fetch("https://qa-integrations.loopworks.com/api/chatbot/token", {
       method: "POST",
       headers: {
@@ -39,7 +65,11 @@
       },
       body: JSON.stringify({ ChatbotGuid: guid.trim() }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        const res = response.json();
+        console.log("response.json()", res);
+        return res;
+      })
       .then((data) => {
         if (data?.errors) {
           console.log(data.errors[0]);
@@ -71,16 +101,21 @@
   refreshToken(getChatBotStyle);
 
   function onMessage(event) {
-    console.log("====================================");
-    console.log("-----  onMessage event  -----", event);
-    console.log("====================================");
     if (
       url_string.indexOf(event.origin) !== -1 &&
       event.data.event_id === "refresh_token"
     ) {
       refreshToken(event.data.callback)
         .then((data) => {
-          console.log("DATA", data);
+          if (data) {
+            const chatbotIframe = document.getElementById(iframeID);
+            if (chatbotIframe) {
+              chatbotIframe.contentWindow.postMessage(
+                { token: data },
+                url_string
+              );
+            }
+          }
         })
         .catch(() => console.log("_ E R R O R _"));
     }
@@ -98,7 +133,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test Website (Chat-Bot)</title>
+    <title>Chat-Bot</title>
   </head>
   <body>
     <div id="root">CHATBOT</div>
