@@ -52,7 +52,7 @@ export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 class Api {
   protected client: ApisauceInstance;
   protected jwtToken: string;
-  protected lastRequest: any;
+  protected lastRequest: AxiosRequestConfig | undefined;
 
   constructor(baseURL = BASE_API_URL) {
     this.client = apisauce.create({
@@ -106,9 +106,14 @@ class Api {
     );
   }
 
-  repeatLastRequest = () => {
+  repeatLastRequest = (token: string) => {
     if (this.lastRequest) {
-      axios(this.lastRequest);
+      if (this.lastRequest.headers) {
+        this.lastRequest.headers["Authorization"] =
+          "chatbot-jwt-token " + token;
+      }
+      // @ts-ignore
+      this.client.axiosInstance.request(this.lastRequest);
     }
   };
 

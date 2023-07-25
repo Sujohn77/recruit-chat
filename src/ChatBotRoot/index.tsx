@@ -29,7 +29,7 @@ export const ChatBotRoot: FC = () => {
 
       if (regExpJWT.test(event.data?.token)) {
         sessionStorage.setItem(SessionStorage.Token, event.data.token);
-        apiInstance.repeatLastRequest();
+        apiInstance.repeatLastRequest(event.data.token);
       }
     };
 
