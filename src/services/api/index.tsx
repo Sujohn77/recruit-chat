@@ -1,4 +1,4 @@
-import apisauce, { ApiResponse, ApisauceInstance } from "apisauce";
+import apisauce, { ApisauceInstance } from "apisauce";
 import axios, { AxiosRequestConfig } from "axios";
 import {
   IApplyJobResponse,
@@ -9,8 +9,13 @@ import {
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
 
-import { BASE_API_URL, SessionStorage, isDevMode } from "../../utils/constants";
-import { LOG, getStorageValue } from "../../utils/helpers";
+import {
+  BASE_API_URL,
+  IframeMessageType,
+  SessionStorage,
+  isDevMode,
+} from "../../utils/constants";
+import { getStorageValue } from "../../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
@@ -88,7 +93,7 @@ class Api {
           window.parent.postMessage(
             JSON.parse(
               JSON.stringify({
-                event_id: "refresh_token",
+                event_id: IframeMessageType.RefreshToken,
               })
             ),
             "*"

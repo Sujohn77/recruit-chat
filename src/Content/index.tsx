@@ -3,10 +3,10 @@ import { FC, useEffect, useState } from "react";
 
 import { Chat } from "components";
 import { Intro } from "screens";
-import { TIMEOUT } from "utils/constants";
+import { IframeMessageType, TIMEOUT } from "utils/constants";
 
 export const Content: FC = () => {
-  const { setIsApplyJobFlow, logout, messages } = useChatMessenger();
+  const { setIsApplyJobFlow, messages } = useChatMessenger();
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null
   );
@@ -19,8 +19,14 @@ export const Content: FC = () => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      logout();
-      setIsSelectedOption(false);
+      window.parent.postMessage(
+        JSON.parse(
+          JSON.stringify({
+            event_id: IframeMessageType.RefreshChatbot,
+          })
+        ),
+        "*"
+      );
     }, TIMEOUT);
 
     return () => clearTimeout(timeout);

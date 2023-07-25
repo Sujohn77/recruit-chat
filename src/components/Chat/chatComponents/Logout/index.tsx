@@ -4,6 +4,7 @@ import { PopUp } from "..";
 import * as S from "./styles";
 import { DarkButton } from "components/Layout/styles";
 import { useChatMessenger } from "contexts/MessengerContext";
+import { IframeMessageType } from "utils/constants";
 
 interface ILogoutProps {
   showLogoutScreen: boolean;
@@ -19,6 +20,15 @@ export const Logout: FC<ILogoutProps> = ({
   const { logout } = useChatMessenger();
 
   const onLogout = useCallback(() => {
+    window.parent.postMessage(
+      JSON.parse(
+        JSON.stringify({
+          event_id: IframeMessageType.RefreshToken,
+        })
+      ),
+      "*"
+    );
+
     logout();
     setShowConfirmLogout(false);
     setIsSelectedOption(false);
