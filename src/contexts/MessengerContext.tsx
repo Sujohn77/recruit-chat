@@ -259,9 +259,9 @@ const ChatProvider = ({
     return () => savedSocketConnection?.unsubscribe();
   }, [isApplyJobSuccessfully]);
 
-  useEffect(() => {
-    LOG(_firebaseMessages, "_firebaseMessages", COLORS.WHITE);
-  }, [_firebaseMessages]);
+  // useEffect(() => {
+  //   LOG(_firebaseMessages, "_firebaseMessages", COLORS.WHITE);
+  // }, [_firebaseMessages]);
   useEffect(() => {
     LOG(candidateId, "candidateId", COLORS.WHITE);
   }, [candidateId]);

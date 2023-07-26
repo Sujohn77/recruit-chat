@@ -14,6 +14,7 @@ export const currencies = ["$", "€"];
 export const resumeElementId = "chatbot_resume";
 export const autolinkerClassName = "link-in-message";
 export const REFRESH_APP_TIMEOUT = 20 * 60 * 1000;
+export const _TIMEOUT = 5 * 60 * 1000; // for testing
 export const REFRESH_TOKEN_TIMEOUT = 29 * 60 * 1000;
 
 export const HTTP_RESPONSES = {
