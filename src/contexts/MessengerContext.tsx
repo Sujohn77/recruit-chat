@@ -132,6 +132,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setLastName: () => {},
   setSearchLocations: () => {},
   logout: () => {},
+  setChatBotToken: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -274,10 +275,8 @@ const ChatProvider = ({
   const createAnonymCandidate = useCallback(async () => {
     setIsLoadedMessages(true);
     try {
-      const token: string | null = getStorageValue(SessionStorage.Token);
-      if (token) {
-        userAPI.setAuthHeader(token);
-        setChatBotToken(token);
+      if (chatBotToken) {
+        userAPI.setAuthHeader(chatBotToken);
       }
 
       const res: ApiResponse<ICreateCandidateResponse> =
@@ -1135,6 +1134,7 @@ const ChatProvider = ({
     setLastName,
     setSearchLocations,
     logout,
+    setChatBotToken,
   };
 
   // console.log(

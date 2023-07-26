@@ -3,10 +3,16 @@ import { FC, useEffect, useState } from "react";
 
 import { Chat } from "components";
 import { Intro } from "screens";
-import { IframeMessageType, TIMEOUT } from "utils/constants";
+import {
+  EventIds,
+  REFRESH_APP_TIMEOUT,
+  REFRESH_TOKEN_TIMEOUT,
+} from "utils/constants";
+import { postMessToParent } from "utils/helpers";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages } = useChatMessenger();
+
   const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
     null
   );
@@ -18,19 +24,22 @@ export const Content: FC = () => {
   }, [isSelectedOption]);
 
   useEffect(() => {
+    // REFRESH CHATBOT
     const timeout = setTimeout(() => {
-      window.parent.postMessage(
-        JSON.parse(
-          JSON.stringify({
-            event_id: IframeMessageType.RefreshChatbot,
-          })
-        ),
-        "*"
-      );
-    }, TIMEOUT);
+      postMessToParent(EventIds.RefreshChatbot);
+    }, REFRESH_APP_TIMEOUT);
 
     return () => clearTimeout(timeout);
   }, [messages.length]);
+
+  useEffect(() => {
+    // REFRESH TOKEN
+    const interval = setInterval(() => {
+      postMessToParent(EventIds.RefreshToken);
+    }, REFRESH_TOKEN_TIMEOUT);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>

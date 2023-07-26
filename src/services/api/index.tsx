@@ -11,11 +11,11 @@ import {
 
 import {
   BASE_API_URL,
-  IframeMessageType,
+  EventIds,
   SessionStorage,
   isDevMode,
 } from "../../utils/constants";
-import { getStorageValue } from "../../utils/helpers";
+import { getStorageValue, postMessToParent } from "../../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
@@ -90,14 +90,7 @@ class Api {
         }
 
         if (status === 401 && !originalRequest?._isFirst) {
-          window.parent.postMessage(
-            JSON.parse(
-              JSON.stringify({
-                event_id: IframeMessageType.RefreshToken,
-              })
-            ),
-            "*"
-          );
+          postMessToParent(EventIds.RefreshToken);
           originalRequest._isFirst = true;
         }
 
@@ -134,19 +127,6 @@ class Api {
       console.log("no token");
     }
     return request;
-    // if (isExpired) {
-    //     window.parent.postMessage(
-    //         {
-    //             event_id: 'refresh_token',
-    //             // callback: this.requestInterceptor.bind(request),
-    //         },
-    //         '*'
-    //     );
-    // } else {
-    //     if (request && request.headers) request.headers.post['chatbot-jwt-token'] = token;
-    //     this.lastRequest = request;
-    //     return request;
-    // }
   };
 
   setHeader = (key: string, value: string) => this.client.setHeader(key, value);

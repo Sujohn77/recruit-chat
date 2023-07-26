@@ -13,7 +13,8 @@ export const isDevMode = process.env.NODE_ENV === "development";
 export const currencies = ["$", "€"];
 export const resumeElementId = "chatbot_resume";
 export const autolinkerClassName = "link-in-message";
-export const TIMEOUT = 5 * 60000;
+export const REFRESH_APP_TIMEOUT = 20 * 60 * 1000;
+export const REFRESH_TOKEN_TIMEOUT = 29 * 60 * 1000;
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
@@ -412,4 +413,9 @@ export enum IUserLoginDataKeys {
   TwoFactorAuthCode = "twofactorauthcode",
   AppKey = "appKey",
   CodeVersion = "codeVersion",
+}
+
+export enum EventIds {
+  RefreshToken = "refresh_token",
+  RefreshChatbot = "refresh_chatbot",
 }

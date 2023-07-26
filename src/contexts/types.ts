@@ -79,6 +79,7 @@ export interface IChatMessengerContext {
   setLastName: (name: string) => void;
   setSearchLocations: (locations: string[]) => void;
   logout: () => void;
+  setChatBotToken: (token: string) => void;
 }
 
 export interface IFileUploadContext {

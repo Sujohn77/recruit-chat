@@ -28,6 +28,7 @@ import {
   LocalStorage,
   TextFieldTypes,
   SessionStorage,
+  EventIds,
 } from "./constants";
 import { IApiThemeResponse } from "./api";
 import {
@@ -845,4 +846,16 @@ export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
     (message: any) => -message.dateCreated.seconds
   );
   return processedSnapshots;
+};
+
+export const postMessToParent = (eventId: EventIds = EventIds.RefreshToken) => {
+  // refresh token is performed (available only) on the parent side of the iframe
+  window.parent.postMessage(
+    JSON.parse(
+      JSON.stringify({
+        event_id: eventId,
+      })
+    ),
+    "*"
+  );
 };
