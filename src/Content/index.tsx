@@ -20,6 +20,19 @@ export const Content: FC = () => {
   );
 
   useEffect(() => {
+    // for parent iframe height size
+    window.parent.postMessage(
+      JSON.parse(
+        JSON.stringify({
+          event_id: EventIds.IFrameHeight,
+          isSelectedOption,
+        })
+      ),
+      "*"
+    );
+  }, [isSelectedOption]);
+
+  useEffect(() => {
     if (!isSelectedOption) {
       setIsApplyJobFlow(false);
     }

@@ -419,4 +419,5 @@ export enum IUserLoginDataKeys {
 export enum EventIds {
   RefreshToken = "refresh_token",
   RefreshChatbot = "refresh_chatbot",
+  IFrameHeight = "iframe_height",
 }
