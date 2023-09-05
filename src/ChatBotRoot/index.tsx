@@ -43,12 +43,10 @@ export const ChatBotRoot: FC = () => {
     };
   }, []);
 
-  const isChatBot = process.env.NODE_ENV !== "production" || chatBotID;
-
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        {isChatBot && (
+        {chatBotID && (
           <ChatProvider chatBotID={chatBotID}>
             <ThemeContextProvider value={theme}>
               <FileUploadProvider>

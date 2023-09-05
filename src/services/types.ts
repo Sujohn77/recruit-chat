@@ -134,15 +134,26 @@ export interface IMessageOption {
 }
 
 export interface IMessage extends I_id, IMessageContent {
-  dateCreated: { seconds: number };
-  optionList?: { isActive: boolean; options: IMessageOption[] };
-  dateModified: { seconds: number };
-  isEdited: boolean;
+  dateCreated: {
+    seconds: number;
+  };
+  isOwn?: boolean;
   localId?: string;
-  isOwn: boolean;
+  subType?: MessageType;
+  text?: string;
+  isChatMessage?: boolean;
+  optionList?: {
+    isActive: boolean;
+    options: IMessageOption[];
+  };
+  dateModified?: {
+    seconds: number;
+  };
+  isEdited?: boolean;
   sender: IUserSelf;
-  searchValue: string;
+  searchValue?: string;
   isReceived?: boolean;
+  _id?: string | null;
 }
 
 export interface ISnapshot<T = Object> {
