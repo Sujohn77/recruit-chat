@@ -13,7 +13,7 @@ import {
   MessageType,
   ILocalMessage,
   CHAT_ACTIONS,
-  USER_INPUTS,
+  ButtonsOptions,
   IContent,
   IGetUpdatedMessages,
   IFilterItemsWithType,
@@ -113,21 +113,21 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   };
 };
 
-export const getActionTypeByOption = (option: USER_INPUTS) => {
+export const getActionTypeByOption = (option: ButtonsOptions) => {
   switch (option.toLowerCase()) {
-    case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
+    case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
     }
     // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
     //   return CHAT_ACTIONS.HIRING_PROCESS;
     // }
-    case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
+    case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
-    case USER_INPUTS.UPLOADED_CV: {
+    case ButtonsOptions.UPLOADED_CV: {
       return CHAT_ACTIONS.UPLOADED_CV;
     }
-    case USER_INPUTS.CANCEL_JOB_SEARCH_WITH_RESUME:
+    case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
 
     default: {
@@ -183,20 +183,22 @@ export const MessageTypeId: Record<ServerMessageType, number> = {
 };
 
 export const getLocalMessage = (
-  requestMessage: IApiMessage,
-  sender: IUserSelf
+  sender: IUserSelf,
+  requestMessage?: IApiMessage,
+  chatBotMessage?: IMessage
 ): IMessage => {
   const currentUnixTime = moment().unix();
 
   return {
-    chatItemId: -1,
-    localId: requestMessage?.localId,
+    chatItemId: chatBotMessage?.chatItemId || -1,
+    localId: requestMessage?.localId || chatBotMessage?.localId,
     content: {
       typeId: MessageTypeId.text,
-      // subType: requestMessage.subType,
+      subTypeId: null,
+      contextId:
+        requestMessage?.contextId || chatBotMessage?.content.contextId || null,
+      text: requestMessage?.msg || chatBotMessage?.text,
       subType: MessageType.TEXT,
-      contextId: requestMessage.contextId || null,
-      text: requestMessage.msg,
       url: null,
     },
     dateCreated: {
@@ -206,9 +208,11 @@ export const getLocalMessage = (
       seconds: currentUnixTime,
     },
     isEdited: false,
-    isOwn: false,
+    isReceived: false,
     sender,
     searchValue: "",
+    isOwn: false,
+    subType: chatBotMessage?.subType || chatBotMessage?.content.subType,
   };
 };
 
@@ -849,7 +853,6 @@ export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
 };
 
 export const postMessToParent = (eventId: EventIds = EventIds.RefreshToken) => {
-  // refresh token is performed (available only) on the parent side of the iframe
   window.parent.postMessage(
     JSON.parse(
       JSON.stringify({

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import moment from "moment";
 
 import { IMAGES } from "assets";
-import { ILocalMessage, USER_INPUTS } from "utils/types";
+import { ILocalMessage, ButtonsOptions } from "utils/types";
 import { getMessageProps } from "utils/helpers";
 import { resumeElementId } from "utils/constants";
 import { MS_1000 } from "..";
@@ -25,7 +25,7 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
   const onSearchWithResume = () => {
     if (isLastMessage) {
       if (file?.name) {
-        chooseButtonOption(USER_INPUTS.UPLOADED_CV, file?.name);
+        chooseButtonOption(ButtonsOptions.UPLOADED_CV, file?.name);
       }
       searchWithResume();
     }
@@ -56,7 +56,7 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
         resetFile();
       }
 
-      chooseButtonOption(USER_INPUTS.CANCEL_JOB_SEARCH_WITH_RESUME);
+      chooseButtonOption(ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME);
     }
   };
 

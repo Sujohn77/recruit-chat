@@ -10,7 +10,6 @@ import {
   CHAT_ACTIONS,
   MessageType,
   ILocalMessage,
-  USER_INPUTS,
   IRequisition,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
