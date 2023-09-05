@@ -73,7 +73,8 @@ export const Message: FC<IMessageProps> = memo(
         );
       }
       case MessageType.HIRING_PROCESS: {
-        return <HiringHelp message={message} />;
+        // return <HiringHelp message={message} />; // for phase 2
+        return null;
       }
       case MessageType.QUESTION_FORM: {
         return null;

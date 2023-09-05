@@ -8,7 +8,7 @@ export enum ChatScreens {
 
 export interface AppStore {
   isLoading: boolean;
-  chatScreen: ChatScreens;
+  chatScreen: ChatScreens | null;
 
   setIsLoading: (isLoading: boolean) => void;
   setChatScreen: (status: ChatScreens) => void;
@@ -16,7 +16,7 @@ export interface AppStore {
 
 export const useAppStore = create<AppStore>((set, get) => ({
   isLoading: false,
-  chatScreen: ChatScreens.Default,
+  chatScreen: null,
 
   setIsLoading(isLoading: boolean) {
     set(() => ({ isLoading }));

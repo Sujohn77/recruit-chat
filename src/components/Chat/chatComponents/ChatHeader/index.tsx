@@ -9,16 +9,15 @@ import { ICONS } from "assets";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
   setShowLoginScreen: (show: boolean) => void;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   setShowConfirmLogout: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ChatHeader: FC<IChatHeaderProps> = ({
-  setIsSelectedOption,
   showLoginScreen,
   setShowLoginScreen,
   setShowConfirmLogout,
@@ -26,6 +25,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, isCandidateWithEmail } = useChatMessenger();
+  const { setChatScreen } = useAppStore();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -43,7 +43,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     if (isCandidateWithEmail) {
       setShowConfirmLogout(true);
     } else {
-      setIsSelectedOption(false);
+      setChatScreen(ChatScreens.Default);
     }
   }, [isCandidateWithEmail]);
 

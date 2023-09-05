@@ -1,8 +1,10 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { FormControl } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import AnimateHeight, { Height } from "react-animate-height";
 
+import { IMAGES } from "assets";
 import { PopUp } from "..";
 import * as S from "./styles";
 import { COLORS } from "utils/colors";
@@ -10,6 +12,8 @@ import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
 import { FormInput } from "components/Layout/Autocomplete/styles";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
+
+const ANIMATION_ID = "LOGIN_ANIMATION_ID";
 
 interface ILoginProps {
   showLoginScreen: boolean;
@@ -30,6 +34,11 @@ export const Login: FC<ILoginProps> = ({
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [height, setHeight] = useState<Height>(0);
+
+  useEffect(() => {
+    setHeight(emailError ? "auto" : 0);
+  }, [emailError]);
 
   const onChange = useCallback(
     (type: number) => (e: any) => {
@@ -88,7 +97,7 @@ export const Login: FC<ILoginProps> = ({
 
         <S.HeaderTitle>{t("messages:provideName")}</S.HeaderTitle>
 
-        <FormControl>
+        <FormControl aria-expanded={height !== 0} aria-controls={ANIMATION_ID}>
           <FormInput
             value={firstName}
             onChange={onChange(1)}
@@ -111,10 +120,16 @@ export const Login: FC<ILoginProps> = ({
             value={email}
             onChange={onChange(3)}
             error={!!emailError}
-            helperText={emailError}
             onClick={() => setTouched(!touched)}
             placeholder="Email"
           />
+
+          <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
+            <S.Error>
+              <S.WarningImg src={IMAGES.WARN} alt="" />
+              {emailError}
+            </S.Error>
+          </AnimateHeight>
         </FormControl>
 
         <FormButton onClick={onLogin}>{t("buttons:send")}</FormButton>

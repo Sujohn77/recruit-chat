@@ -1,5 +1,5 @@
 import { useAuthContext } from "contexts/AuthContext";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
@@ -13,14 +13,10 @@ export enum CHAT_OPTIONS {
 }
 
 interface IIntroScreenProps {
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
-  isSelectedOption: boolean | boolean | null;
+  isSelectedOption: boolean | null;
 }
 
-export const Intro: FC<IIntroScreenProps> = ({
-  setIsSelectedOption,
-  isSelectedOption,
-}) => {
+export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => {
   const { t } = useTranslation();
   const { isVerified } = useAuthContext();
 
@@ -28,16 +24,13 @@ export const Intro: FC<IIntroScreenProps> = ({
   const [isNeedSupport, setIsNeedSupport] = useState(false);
   const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
 
-  const handleSupportClick = () => {
-    setIsNeedSupport(true);
-  };
+  const handleSupportClick = () => setIsNeedSupport(true);
 
   return (
     <S.Wrapper isClosed={!!isSelectedOption}>
       <DefaultMessages
         text={t("messages:initialMessage")}
         isOptions={!isQuestionSubmit}
-        setIsSelectedOption={setIsSelectedOption}
       />
 
       {!isNeedSupport && isEmailForm && !isVerified && (
@@ -59,10 +52,7 @@ export const Intro: FC<IIntroScreenProps> = ({
       )}
 
       {isQuestionSubmit && (
-        <DefaultMessages
-          text={t("messages:wantContinue")}
-          setIsSelectedOption={setIsSelectedOption}
-        />
+        <DefaultMessages text={t("messages:wantContinue")} />
       )}
     </S.Wrapper>
   );

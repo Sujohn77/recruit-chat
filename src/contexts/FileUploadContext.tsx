@@ -76,7 +76,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
   }, [showJobTitles]);
 
   useEffect(() => {
-    let reader = new FileReader();
+    const reader = new FileReader();
 
     reader.onloadend = () => {
       if (file && reader.result && candidateId) {
@@ -89,7 +89,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           blob: result.replace(`data:${file.type};base64,`, ""),
         };
         setResumeData(resumeData);
-        uploadCVHandler(file, resumeData);
+        uploadCVHandler(resumeData);
       }
     };
 
@@ -112,7 +112,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     }
   }, [resumeId]);
 
-  const uploadCVHandler = async (file: File, resumeData: IResumeData) => {
+  const uploadCVHandler = async (resumeData: IResumeData) => {
     setIsFileDownloading(true);
     try {
       const response = await apiInstance.uploadCV(resumeData);

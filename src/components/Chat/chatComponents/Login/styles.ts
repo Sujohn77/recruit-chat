@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Close } from "screens/Intro/styles";
+import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
@@ -23,4 +24,17 @@ export const CloseLogin = styled(Close)`
   height: 18px;
   width: 18px;
   cursor: pointer;
+`;
+
+export const WarningImg = styled.img`
+  width: 12px;
+  height: 12px;
+  margin-top: 10px;
+  margin-right: 8px;
+`;
+
+export const Error = styled.p`
+  margin: 0;
+  font-size: 13px;
+  color: ${COLORS.PERSIAN_RED};
 `;

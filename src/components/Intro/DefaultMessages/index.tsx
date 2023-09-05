@@ -1,6 +1,6 @@
 import { useAuthContext } from "contexts/AuthContext";
 import { useChatMessenger } from "contexts/MessengerContext";
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import map from "lodash/map";
 
@@ -10,21 +10,22 @@ import { IOption } from "./types";
 import { ICONS } from "assets";
 import { LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
+import { CHAT_ACTIONS } from "utils/types";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 interface IDefaultMessagesProps {
   text: string;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
   isOptions?: boolean;
 }
 
 export const DefaultMessages: FC<IDefaultMessagesProps> = ({
   text,
-  setIsSelectedOption,
   isOptions = true,
 }) => {
   const theme = useTheme() as ThemeType;
   const { isVerified } = useAuthContext();
   const { dispatch } = useChatMessenger();
+  const { setChatScreen } = useAppStore();
 
   const [initialOption, setInitialOption] = useState<IOption | null>(null);
 
@@ -39,8 +40,9 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
 
   const onClick = (option: IOption) => {
     const { message: item, type } = option;
-
-    setIsSelectedOption(true);
+    setChatScreen(
+      ChatScreens[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
+    );
     dispatch({ type, payload: { item, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
   };

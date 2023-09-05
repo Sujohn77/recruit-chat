@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import isNull from "lodash/isNull";
 
 import { Chat } from "components";
@@ -10,14 +10,14 @@ import {
   REFRESH_TOKEN_TIMEOUT,
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
+  const { chatScreen } = useAppStore();
 
-  const [isSelectedOption, setIsSelectedOption] = useState<boolean | null>(
-    null
-  );
+  const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
 
   useEffect(() => {
     // for parent iframe height size
@@ -33,16 +33,16 @@ export const Content: FC = () => {
   }, [isSelectedOption]);
 
   useEffect(() => {
-    if (!isSelectedOption) {
+    if (chatScreen !== ChatScreens.FindAJob) {
       setIsApplyJobFlow(false);
     }
-  }, [isSelectedOption]);
+  }, [chatScreen]);
 
   useEffect(() => {
     // REFRESH CHATBOT
     let timeout: NodeJS.Timeout | undefined;
 
-    if (!isNull(isSelectedOption)) {
+    if (!isNull(chatScreen)) {
       timeout = setTimeout(
         () => postMessToParent(EventIds.RefreshChatbot),
         REFRESH_APP_TIMEOUT
@@ -50,7 +50,7 @@ export const Content: FC = () => {
     }
 
     return () => timeout && clearTimeout(timeout);
-  }, [isSelectedOption, messages.length]);
+  }, [chatScreen, messages.length]);
 
   useEffect(() => {
     // REFRESH TOKEN
@@ -59,7 +59,7 @@ export const Content: FC = () => {
 
     // the candidate may not initiate the chatbot for a long time (not selected anything in init screen)
     // in this case do not start the interval for token refresh
-    if (!isNull(isSelectedOption)) {
+    if (!isNull(chatScreen)) {
       const currentTime = new Date();
       const difference = currentTime.getTime() - firstTime.current.getTime(); // difference in milliseconds
       let resultInMinutes = Math.round(difference / 60000);
@@ -119,21 +119,13 @@ export const Content: FC = () => {
       timeout && clearTimeout(timeout);
       interval && clearInterval(interval);
     };
-  }, [isSelectedOption]);
+  }, [chatScreen]);
 
   return (
     <>
-      {isSelectedOption && (
-        <Chat
-          setIsSelectedOption={setIsSelectedOption}
-          isSelectedOption={isSelectedOption}
-        />
-      )}
+      {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
 
-      <Intro
-        setIsSelectedOption={setIsSelectedOption}
-        isSelectedOption={isSelectedOption}
-      />
+      <Intro isSelectedOption={isSelectedOption} />
     </>
   );
 };

@@ -99,7 +99,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   }, [isClicked, shouldCallAgain]);
 
   return !viewJob ? null : (
-    <S.ViewBody>
+    <S.ViewBody aria-expanded={height !== 0} aria-controls={ANIMATION_ID}>
       <S.ViewShortInfo>
         <S.TextHeaderTitle>{viewJob.title}</S.TextHeaderTitle>
 

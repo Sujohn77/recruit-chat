@@ -11,8 +11,7 @@ export const ChatContent: FC = () => {
   const { chatScreen } = useAppStore();
   const { addNewMessages } = useChatStore();
 
-  const showChat =
-    chatScreen === ChatScreens.FindAJob || chatScreen === ChatScreens.QnA;
+  const showChat = !!chatScreen && chatScreen !== ChatScreens.Default;
 
   useEffect(() => {
     switch (chatScreen) {
@@ -31,9 +30,9 @@ export const ChatContent: FC = () => {
 
   return (
     <>
-      {/* {showChat && <Chat isShowChat={showChat} />} */}
+      {showChat && <Chat isShowChat={showChat} />}
 
-      {/* <Intro isSelectedOption={showChat} /> */}
+      <Intro isSelectedOption={showChat} />
     </>
   );
 };

@@ -6,26 +6,26 @@ import { DarkButton } from "components/Layout/styles";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { EventIds } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
+import { ChatScreens, useAppStore } from "store/app.store";
 
 interface ILogoutProps {
   showLogoutScreen: boolean;
   setShowConfirmLogout: Dispatch<SetStateAction<boolean>>;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Logout: FC<ILogoutProps> = ({
   showLogoutScreen,
   setShowConfirmLogout,
-  setIsSelectedOption,
 }) => {
   const { logout } = useChatMessenger();
+  const { setChatScreen } = useAppStore();
 
   const onLogout = useCallback(() => {
     postMessToParent(EventIds.RefreshToken);
 
     logout();
     setShowConfirmLogout(false);
-    setIsSelectedOption(false);
+    setChatScreen(ChatScreens.Default);
   }, []);
 
   return showLogoutScreen ? (

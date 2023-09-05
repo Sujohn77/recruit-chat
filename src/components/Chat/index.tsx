@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import React, { FC, useState } from "react";
 
 import * as S from "./styles";
 import {
@@ -10,25 +10,20 @@ import {
 import { Login } from "./chatComponents/Login";
 import { Logout } from "./chatComponents/Logout";
 interface IChatProps {
-  isSelectedOption: boolean;
-  setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
+  isShowChat: boolean;
   children?: React.ReactNode | React.ReactNode[];
 }
 
-export const Chat: FC<IChatProps> = ({
-  isSelectedOption,
-  setIsSelectedOption,
-}) => {
+export const Chat: FC<IChatProps> = ({ isShowChat }) => {
   const [height, setHeight] = useState(480);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
 
   return (
-    <S.Wrapper isOpened={!!isSelectedOption}>
+    <S.Wrapper isOpened={isShowChat}>
       <ChatHeader
         setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}
-        setIsSelectedOption={setIsSelectedOption}
         setShowLoginScreen={setShowLoginScreen}
       />
       <MessagesList
@@ -44,7 +39,6 @@ export const Chat: FC<IChatProps> = ({
       <Logout
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
-        setIsSelectedOption={setIsSelectedOption}
       />
 
       <ViewJob setShowLoginScreen={setShowLoginScreen} />
