@@ -16,6 +16,7 @@ export const autolinkerClassName = "link-in-message";
 export const REFRESH_APP_TIMEOUT = 20 * 60 * 1000;
 export const _TIMEOUT = 5 * 60 * 1000; // for testing
 export const REFRESH_TOKEN_TIMEOUT = 29 * 60 * 1000;
+export const APP_VERSION = "1.0.3";
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,

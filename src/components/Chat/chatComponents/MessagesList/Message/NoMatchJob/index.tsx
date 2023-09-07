@@ -17,7 +17,6 @@ export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
   if (isRefineOnly) {
     return (
       <S.Wrapper isRefineOnly>
-        <S.Avatar />
         <S.RefineJobSearch
           onClick={() => dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH })}
         >
@@ -30,7 +29,6 @@ export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
   return (
     <S.Wrapper>
       <S.Title>{t("chat_item_description:no_match")}</S.Title>
-      <S.Avatar />
 
       <S.SetJobAlert
         style={{ backgroundColor: COLORS.WHITE }}

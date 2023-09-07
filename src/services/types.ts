@@ -47,6 +47,8 @@ export interface ISendTranscriptResponse extends ISuccessResponse {}
 
 export interface ISendTranscript {
   ChatID: number;
+  appKey?: string;
+  codeVersion?: string;
 }
 
 export interface IApiMessage {
