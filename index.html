@@ -5,8 +5,12 @@
   const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
   // const url_string = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`;
   const iframeID = "chat-iframe";
+  let chatBotStyle;
+  let chatBotToken;
 
   const appendChatBot = (style, token) => {
+    chatBotStyle = style;
+    chatBotToken = token;
     const ifrm = document.createElement("iframe");
 
     ifrm.setAttribute("src", url_string);
@@ -117,6 +121,13 @@
               ? "601px"
               : "135px";
           }
+          break;
+        // this case for Safari (iframe.onload didn't work)
+        case "get_chatbot_data":
+          chatbotIframe.contentWindow.postMessage(
+            { guid, style: chatBotStyle, token: chatBotToken },
+            url_string
+          );
           break;
         default:
           break;

@@ -421,4 +421,5 @@ export enum EventIds {
   RefreshToken = "refresh_token",
   RefreshChatbot = "refresh_chatbot",
   IFrameHeight = "iframe_height",
+  GetChatBotData = "get_chatbot_data",
 }

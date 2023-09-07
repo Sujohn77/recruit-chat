@@ -6,8 +6,8 @@ import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { Content } from "content";
-import { LOG, regExpJWT, regExpUuid } from "utils/helpers";
-import { SessionStorage } from "utils/constants";
+import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
+import { EventIds, SessionStorage } from "utils/constants";
 import { IApiThemeResponse } from "utils/api";
 import { apiInstance } from "services/api";
 
@@ -18,7 +18,7 @@ export const ChatBotRoot: FC = () => {
   const [chatBotID, setChatBotID] = useState<string | null>(null);
 
   useEffect(() => {
-    const onPostMessage = (event: MessageEvent) => {
+    const onMessage = (event: MessageEvent) => {
       LOG(event.data, "message from parent");
 
       if (regExpUuid.test(event.data?.guid)) {
@@ -36,12 +36,24 @@ export const ChatBotRoot: FC = () => {
       }
     };
 
-    window.addEventListener("message", onPostMessage);
+    window.addEventListener("message", onMessage);
 
     return () => {
-      window.removeEventListener("message", onPostMessage);
+      window.removeEventListener("message", onMessage);
     };
   }, []);
+
+  useEffect(() => {
+    // for Safari (iframe.onload didn't work)
+    let timeout: NodeJS.Timeout;
+    if (!chatBotID) {
+      timeout = setTimeout(() => {
+        postMessToParent(EventIds.GetChatBotData);
+      }, 500);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [chatBotID]);
 
   return (
     <Container id="chat-bot">
