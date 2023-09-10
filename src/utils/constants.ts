@@ -1,5 +1,5 @@
 import i18n from "services/localization";
-import { getParsedMessages } from "./helpers";
+import { LOG, getParsedMessages } from "./helpers";
 import {
   CHAT_ACTIONS,
   HTTPStatusCodes,
@@ -7,6 +7,7 @@ import {
   ILocalMessage,
   MessageType,
 } from "./types";
+import { COLORS } from "./colors";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 export const isDevMode = process.env.NODE_ENV === "development";
@@ -60,6 +61,7 @@ export const getChatActionMessages = (
   param?: string,
   withoutDefaultQuestions?: boolean
 ) => {
+  LOG(type, "TYPE", COLORS.WHITE);
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [

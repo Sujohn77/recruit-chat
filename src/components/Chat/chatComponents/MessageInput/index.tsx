@@ -17,6 +17,7 @@ import * as S from "./styles";
 import { ICONS } from "assets";
 import { Status, TextFieldTypes } from "utils/constants";
 import {
+  LOG,
   generateLocalId,
   getAccessWriteType,
   getFormattedLocations,
@@ -192,6 +193,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         }
         //
       } else {
+        LOG(currentMsgType, "!!!!!! currentMsgType !!!!!!");
         dispatch({
           type:
             isNoMatches || !currentMsgType

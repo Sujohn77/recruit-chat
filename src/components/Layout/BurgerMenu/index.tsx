@@ -71,9 +71,9 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
             ChatID: chatId,
           });
 
-        LOG(sendTranscriptRes, "Send Transcript Response", COLORS.PASTEL_GRIN);
+        LOG(sendTranscriptRes, "___Send Transcript Response", COLORS.WHITE);
       } catch (error) {
-        LOG(error, "ERROR");
+        LOG(error, "____Send Transcript Response ERROR");
       }
     } else {
       dispatch({

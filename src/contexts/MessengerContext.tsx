@@ -366,6 +366,14 @@ const ChatProvider = ({
             jobCategory: alertCategories?.length ? alertCategories[0] : "",
             candidateId: candidateId,
           });
+
+          if (chatId) {
+            const sendTranscript: ApiResponse<ISendTranscriptResponse> =
+              await apiInstance.sendTranscript({
+                ChatID: chatId,
+              });
+            LOG(sendTranscript, "!!sendTranscript RESPONSE!!");
+          }
         } catch (err) {
           clearAuthConfig();
         } finally {
@@ -593,7 +601,11 @@ const ChatProvider = ({
 
                 setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
-                LOG(candidateRes, "UpdateOrMargeCandidate Response");
+                LOG(
+                  candidateRes,
+                  "UpdateOrMargeCandidate Response",
+                  COLORS.WHITE
+                );
 
                 const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
                   await apiInstance.sendTranscript({
@@ -604,6 +616,7 @@ const ChatProvider = ({
               }
             }
           } catch (error) {
+            LOG(error, "Send Transcript Response ERROR");
           } finally {
             setIsChatLoading(false);
           }
