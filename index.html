@@ -1,22 +1,35 @@
 <!-- This is file for call (init) chatbot -->
 <!DOCTYPE html>
 <script>
-  // const guid = "9e2db3cf-238b-4182-980e-725e16699331";
-  // const url_string = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`;
+  // ----------------------------- CONSTANTS ----------------------------- //
   // const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // 'prod' guid
+  // const guid = "9e2db3cf-238b-4182-980e-725e16699331";
+  // const chatbotSrc = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`;
   const guid = "f466faec-ea83-4122-8c23-458ab21e96be";
-  const url_string = `http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com`;
+  const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com";
+  const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
+  const logStyle =
+    "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;";
   const iframeID = "chat-iframe";
+  const loaderID = "_chat-bot-loader";
+  const loaderStyleId = "loader_style_id";
 
-  let chatBotStyle;
+  const eventIds = {
+    REFRESH_TOKEN: "refresh_token",
+    REFRESH_CHATBOT: "refresh_chatbot",
+    IFRAME_HEIGHT: "iframe_height",
+    GET_CHATBOT_DATA: "get_chatbot_data",
+  };
+  // ---------------------------------------------------------------------- //
   let chatBotToken;
+  let chatBotStyle;
 
-  const appendChatBot = (style, token) => {
+  function appendChatBot(style, token) {
     chatBotStyle = style;
     chatBotToken = token;
-    const ifrm = document.createElement("iframe");
 
-    ifrm.setAttribute("src", url_string);
+    const ifrm = document.createElement("iframe");
+    ifrm.setAttribute("src", chatbotSrc);
     ifrm.setAttribute("id", iframeID);
     ifrm.setAttribute("width", "370px");
     ifrm.setAttribute(
@@ -32,26 +45,24 @@
     );
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
-    document.body.appendChild(ifrm);
+    document.body?.appendChild(ifrm);
+    removeLoader();
 
     ifrm.addEventListener("load", () => {
       ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
     });
     ifrm.onerror = () => refreshToken();
-  };
+  }
 
-  const refreshToken = async (callback) => {
+  async function refreshToken(callback) {
     try {
-      const refreshRes = await fetch(
-        "https://qa-integrations.loopworks.com/api/chatbot/token",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ChatbotGuid: guid.trim() }),
-        }
-      );
+      const refreshRes = await fetch(`${BASE_URL}/token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ChatbotGuid: guid.trim() }),
+      });
 
       const data = await refreshRes.clone().json();
 
@@ -63,62 +74,54 @@
         return Promise.resolve(data);
       }
     } catch (error) {
+      console.log("%cERROR", logStyle + "color: #d32f2f;", error);
       return Promise.reject(error);
     }
-  };
+  }
 
-  const getChatBotStyle = async (token) => {
-    fetch(
-      "https://qa-integrations.loopworks.com/api/chatbot/style?ChatBotGuid=" +
-        guid
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.statusCode === 413) {
-          refreshToken(getChatBotStyle);
-        } else {
-          appendChatBot(JSON.parse(data), token);
-        }
-      })
-      .catch((error) => Promise.reject(error));
-  };
+  async function getChatBotStyle(token) {
+    try {
+      const response = await fetch(`${BASE_URL}/style?ChatBotGuid=` + guid);
+      const data = await response.clone().json();
+
+      if (data?.statusCode === 413) {
+        refreshToken(getChatBotStyle);
+      } else {
+        appendChatBot(JSON.parse(data), token);
+      }
+    } catch (error) {
+      removeLoader();
+      return Promise.reject(error);
+    }
+  }
 
   refreshToken(getChatBotStyle);
 
   function onMessage(event) {
-    console.log(
-      "%cEVENT",
-      "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;",
-      event
-    );
-    if (url_string.indexOf(event.origin) !== -1 && event.data.event_id) {
+    if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
+      console.log("%cEVENT", logStyle, event);
       const chatbotIframe = document.getElementById(iframeID);
 
       switch (event.data.event_id) {
-        case "refresh_token":
+        case eventIds.REFRESH_TOKEN:
           refreshToken(event.data.callback)
             .then((data) => {
-              if (data) {
-                if (chatbotIframe) {
-                  chatbotIframe.contentWindow.postMessage(
-                    { token: data },
-                    url_string
-                  );
-                }
+              if (data && chatbotIframe) {
+                chatbotIframe.contentWindow.postMessage(
+                  { token: data },
+                  chatbotSrc
+                );
               }
             })
             .catch(() => console.log("_ E R R O R _"));
 
           break;
-        case "refresh_chatbot":
-          console.log(
-            "%cREFRESH CHATBOT",
-            "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;"
-          );
+        case eventIds.REFRESH_CHATBOT:
+          console.log("%cREFRESH CHATBOT", logStyle);
           chatbotIframe?.remove();
           refreshToken(getChatBotStyle);
           break;
-        case "iframe_height":
+        case eventIds.IFRAME_HEIGHT:
           if (chatbotIframe && "isSelectedOption" in event.data) {
             chatbotIframe.style.height = event.data.isSelectedOption
               ? "601px"
@@ -126,10 +129,10 @@
           }
           break;
         // this case for Safari (iframe.onload didn't work)
-        case "get_chatbot_data":
+        case eventIds.GET_CHATBOT_DATA:
           chatbotIframe.contentWindow.postMessage(
             { guid, style: chatBotStyle, token: chatBotToken },
-            url_string
+            chatbotSrc
           );
           break;
         default:
@@ -138,11 +141,55 @@
     }
   }
 
+  function injectLoader() {
+    const loader = document.createElement("span");
+    loader.setAttribute("id", loaderID);
+    loader.style.cssText = `
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #00b6ea;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    `;
+
+    const style = document.createElement("style");
+    style.type = "text/css";
+    style.id = loaderStyleId;
+    style.innerHTML = `
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    `;
+    document?.body.appendChild(loader);
+    document?.body.appendChild(style);
+  }
+
+  function removeLoader() {
+    document.getElementById(loaderID)?.remove();
+    document.getElementById(loaderStyleId)?.remove();
+  }
+
   if (window.addEventListener) {
     window.addEventListener("message", onMessage);
   } else {
     window.attachEvent("onmessage", onMessage); // IE8
   }
+
+  window.onload = () => {
+    injectLoader();
+  };
 </script>
 
 <html lang="en">
