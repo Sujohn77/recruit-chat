@@ -775,7 +775,7 @@ export const getProcessedSnapshots = <TId, TItem extends TId>(
   let newItemsArray: TItem[] = initialItems.slice();
   snapshots.forEach((snapshot) => {
     const { type: snapshotType, data: snapshotData } = snapshot;
-
+    LOG(snapshots, "SNAPSHOTS");
     /* Skipping objects without id field */
     if (!snapshotData[idField]) {
       return;

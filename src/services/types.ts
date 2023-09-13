@@ -105,7 +105,7 @@ export interface I_id {
 }
 export interface IMessageContent {
   content: IMessageContentInnerInfo;
-  options?: IMessageOption[];
+  options?: IMessageOptionItem[];
 }
 
 export interface IMessageContentInnerInfo {
@@ -128,12 +128,17 @@ export enum ServerMessageType {
   Date = "date",
 }
 
-export interface IMessageOption {
+export interface IMessageOptionItem {
   id: number;
-  isSelected: boolean;
   itemId: number;
-  name: string;
-  text: string;
+  isSelected?: boolean;
+  name?: string;
+  text?: string;
+}
+
+export interface IMessageOptions {
+  isActive: boolean;
+  options: IMessageOptionItem[];
 }
 
 export interface IMessage extends I_id, IMessageContent {
@@ -145,10 +150,7 @@ export interface IMessage extends I_id, IMessageContent {
   subType?: MessageType;
   text?: string;
   isChatMessage?: boolean;
-  optionList?: {
-    isActive: boolean;
-    options: IMessageOption[];
-  };
+  optionList?: null | IMessageOptions;
   dateModified?: {
     seconds: number;
   };
@@ -574,7 +576,7 @@ export interface INewChat {
     isEdited?: boolean;
     isReceived?: boolean;
     isRejected?: boolean;
-    optionList?: null | unknown;
+    optionList?: null | IMessageOptionItem;
     bulkSendId?: number;
   };
   options: null | unknown;
