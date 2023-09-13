@@ -755,10 +755,11 @@ export const parseFirebaseMessages = (
       filter(fMessages, (mess) => mess?.content.subType !== "chat_created"),
       (mess) => ({
         dateCreated: mess.dateCreated,
-        content: mess?.content,
+        content: mess.content,
         isOwn: mess.sender.id === -2 ? false : true,
+        localId: mess.localId,
+        optionList: mess.optionList,
         _id: mess.chatItemId,
-        localId: mess?.localId,
       })
     ),
     "chatItemId"

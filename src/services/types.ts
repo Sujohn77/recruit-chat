@@ -576,7 +576,7 @@ export interface INewChat {
     isEdited?: boolean;
     isReceived?: boolean;
     isRejected?: boolean;
-    optionList?: null | IMessageOptionItem;
+    optionList?: null | IMessageOptions;
     bulkSendId?: number;
   };
   options: null | unknown;

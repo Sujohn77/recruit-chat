@@ -5,6 +5,7 @@ import { CHAT_OPTIONS } from "screens/Intro";
 import {
   IChatRoomID,
   IMessage,
+  IMessageOptions,
   IMuteStatus,
   IUserSelf,
   LocationType,
@@ -70,6 +71,7 @@ export interface ILocalMessage {
   dateCreated?: { seconds: number };
   content: IContent;
   isOwn?: boolean;
+  optionList?: null | IMessageOptions;
 }
 
 export enum ButtonsOptions {

@@ -31,7 +31,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
     if (currentMsgType !== null && !nextMessages.length) {
       scrollToBottom();
     }
-  }, [messages.length, currentMsgType, nextMessages]); // TODO: test scroll
+  }, [messages.length, currentMsgType, nextMessages]);
 
   useEffect(() => {
     scrollToBottom();
