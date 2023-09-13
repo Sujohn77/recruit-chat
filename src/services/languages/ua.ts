@@ -18,7 +18,8 @@ export const ua = {
     chooseLocation: "Оберіть або введіть місце роботи",
     email: "Пошта",
     alert_category: "Відповісти для вибору категорії...",
-    startTyping: "Start typing to select a job title...",
+    startTyping: "Почніть вводити, щоб вибрати назву посади...",
+    selectOption: "Будь ласка, оберіть один з варіантів",
   },
   labels: {
     required: "Обов'язкове",

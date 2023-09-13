@@ -60,6 +60,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     setSearchLocations,
     _setMessages,
     setCurrentMsgType,
+    messages,
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
@@ -325,7 +326,9 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     matchedItems,
     matchedPart,
     value: draftMessage || "",
-    placeHolder: isApplyJobFlow
+    placeHolder: messages[0].optionList
+      ? t("placeHolders:selectOption")
+      : isApplyJobFlow
       ? t("placeHolders:default")
       : placeHolder || t("placeHolders:bot_typing"),
     setIsShowResults,
@@ -348,10 +351,16 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
           onChange={onChangeAutocomplete}
         />
       ) : (
-        <Autocomplete {...inputProps} onChange={onChangeCategory} />
+        <Autocomplete
+          {...inputProps}
+          onChange={onChangeCategory}
+          disabled={
+            !!messages[0].optionList && !!messages[0].optionList.options.length
+          }
+        />
       )}
 
-      {isWriteAccess && (
+      {isWriteAccess && !messages[0].optionList && (
         <S.PlaneIcon
           onClick={onSendMessageHandler}
           disabled={isChatLoading}

@@ -28,6 +28,7 @@ interface IInputProps {
   style?: CSSProperties;
   ref?: ForwardedRef<HTMLInputElement>;
   isErrorIcon?: boolean;
+  disabled?: boolean;
 }
 
 export const DefaultInput: FC<IInputProps> = forwardRef(
@@ -43,6 +44,7 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
       error,
       style,
       isErrorIcon = false,
+      disabled = false,
     },
     ref
   ) => {
@@ -57,6 +59,7 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
             rows={rows}
             style={style}
             placeholder={!isFocus && !error ? placeHolder : ""}
+            disabled={disabled}
             onClick={() => setIsShowResults?.(true)}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
@@ -76,6 +79,7 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
           onChange={onChange}
           theme={theme}
           style={style}
+          disabled={disabled}
           onClick={() => setIsShowResults?.(true)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}

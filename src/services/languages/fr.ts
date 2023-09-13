@@ -19,6 +19,7 @@ export const fr = {
     email: "E-mail",
     alert_category: "Reply to choose category...",
     startTyping: "Start typing to select a job title...",
+    selectOption: "Please select one of the options",
   },
   labels: {
     required: "Requis",

@@ -26,6 +26,7 @@ interface IAutocompleteProps {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   setHeight: Dispatch<SetStateAction<number>>;
+  disabled?: boolean;
 }
 
 export const Autocomplete: FC<IAutocompleteProps> = (props) => {
@@ -40,6 +41,7 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     isShowResults,
     setIsShowResults,
     setHeight,
+    disabled = false,
   } = props;
 
   const { dispatch, currentMsgType, user, error } = useChatMessenger();
@@ -88,6 +90,7 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
         placeHolder={placeHolder}
         setIsShowResults={setIsShowResults}
         error={error}
+        disabled={disabled}
       />
     </div>
   );

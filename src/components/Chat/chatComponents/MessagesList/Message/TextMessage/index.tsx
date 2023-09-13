@@ -2,13 +2,14 @@ import { FC, memo, useEffect } from "react";
 import moment from "moment";
 import DOMPurify from "isomorphic-dompurify";
 
-import { ICONS, IMAGES } from "assets";
+import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
 import { autolinkerClassName } from "utils/constants";
 import { ILocalMessage, MessageType } from "utils/types";
+import { OptionList } from "./OptionList";
 import { MS_1000 } from "..";
-import { Icon } from "../../styles";
 import * as S from "../styles";
+import { Icon } from "../../styles";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -34,13 +35,14 @@ export const TextMessage: FC<ITextMessageProps> = memo(
         listeners = document.querySelectorAll(`.${autolinkerClassName}`);
         for (let i = 0; i < listeners.length; i++) {
           listenersClones.push(listeners[i].cloneNode(true));
+          const listener = listeners[i];
 
-          listeners[i].addEventListener("click", () => {
-            if (listeners?.[i].innerHTML) {
-              const newTab = window.open(listeners?.[i].innerHTML, "_blank");
+          if (listener.innerHTML) {
+            listener.addEventListener("click", () => {
+              const newTab = window.open(listener.innerHTML, "_blank");
               newTab?.focus?.();
-            }
-          });
+            });
+          }
         }
       }
 
@@ -71,7 +73,7 @@ export const TextMessage: FC<ITextMessageProps> = memo(
 
     return (
       <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
-        <S.MessageContent isFile={isFile}>
+        <S.MessageContent isFile={isFile} withOptions={!!message.optionList}>
           {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
           {message?.content.text?.includes(autolinkerClassName) ? (
@@ -88,6 +90,8 @@ export const TextMessage: FC<ITextMessageProps> = memo(
           )}
 
           {renderSendingTime(message)}
+
+          {message.optionList && <OptionList optionList={message.optionList} />}
         </S.MessageContent>
       </S.MessageBox>
     );

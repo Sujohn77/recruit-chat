@@ -96,10 +96,17 @@ export const MessageButton = styled.div<IMessageProps>`
   margin-bottom: 16px !important;
 `;
 
-export const MessageContent = styled.div<{ isFile?: boolean }>`
+interface IMessageContentProps {
+  isFile?: boolean;
+  withOptions?: boolean;
+}
+
+export const MessageContent = styled.div<IMessageContentProps>`
   align-items: center;
   display: flex;
   gap: 8px;
+  flex-direction: ${({ withOptions }) => (withOptions ? "column" : "row")};
+
   ${({ isFile, theme }) =>
     isFile &&
     `
