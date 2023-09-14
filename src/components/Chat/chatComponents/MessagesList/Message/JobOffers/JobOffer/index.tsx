@@ -32,7 +32,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isClicked, setIsClicked] = useState(0);
 
-  const interestedIn = async () => {
+  const interestedInHandler = async () => {
     setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if ((!isAnonym || isCandidateWithEmail) && !isLoading) {
       if (candidateId) {
@@ -98,7 +98,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   useEffect(() => {
     // if the user has not yet entered an email then the login is displayed and that after login the callback is recalled
     if (isClicked === 1 && shouldCallAgain) {
-      interestedIn();
+      interestedInHandler();
     }
   }, [isClicked, shouldCallAgain]);
 
@@ -117,7 +117,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
 
         <DarkButton
           disabled={isLoading || !isLastMessage}
-          onClick={interestedIn}
+          onClick={interestedInHandler}
         >
           {isLoading ? (
             <S.LoaderWrapper>

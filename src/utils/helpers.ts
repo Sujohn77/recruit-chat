@@ -724,8 +724,6 @@ export const LOG = (
   color = COLORS.PURPLE,
   background = COLORS.BLACK
 ) => {
-  console.log("====================================");
-
   if (description) {
     console.log(
       `%c   ${description}   `,
@@ -743,13 +741,15 @@ export const LOG = (
       logObj
     );
   }
-
-  console.log("====================================");
+  console.log("_____________________________________________________________");
 };
 
 export const parseFirebaseMessages = (
   fMessages: IMessage[]
 ): ILocalMessage[] => {
+  console.log("====================================");
+  console.log(fMessages, "fMessages");
+  console.log("====================================");
   return unionBy(
     map(
       filter(fMessages, (mess) => mess?.content.subType !== "chat_created"),
