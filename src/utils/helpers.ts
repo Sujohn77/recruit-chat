@@ -760,6 +760,7 @@ export const parseFirebaseMessages = (
         localId: mess.localId,
         optionList: mess.optionList,
         _id: mess.chatItemId,
+        chatItemId: mess.chatItemId,
       })
     ),
     "chatItemId"

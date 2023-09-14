@@ -91,7 +91,12 @@ export const TextMessage: FC<ITextMessageProps> = memo(
 
           {renderSendingTime(message)}
 
-          {message.optionList && <OptionList optionList={message.optionList} />}
+          {message.optionList && (
+            <OptionList
+              chatItemId={message.chatItemId}
+              optionList={message.optionList}
+            />
+          )}
         </S.MessageContent>
       </S.MessageBox>
     );

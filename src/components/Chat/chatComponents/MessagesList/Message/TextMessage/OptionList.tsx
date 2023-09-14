@@ -6,15 +6,19 @@ import * as S from "./styles";
 
 interface IOptionListProps {
   optionList: IMessageOptions;
+  chatItemId?: number;
 }
 
-export const OptionList: FC<IOptionListProps> = ({ optionList }) => {
+export const OptionList: FC<IOptionListProps> = ({
+  optionList,
+  chatItemId,
+}) => {
   const { sendPreScreenMessage } = useChatMessenger();
 
   const onSelectOption = useCallback(async (option: IMessageOptionItem) => {
     if (option.text) {
       try {
-        await sendPreScreenMessage(option.text);
+        await sendPreScreenMessage(option.text, option.id, chatItemId);
       } catch (error) {
         // TODO: add error handler
       }

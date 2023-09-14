@@ -945,7 +945,11 @@ const ChatProvider = ({
   };
 
   // for sending answer (after "Apply job")
-  const sendPreScreenMessage = async (message: string) => {
+  const sendPreScreenMessage = async (
+    message: string,
+    optionId?: number,
+    chatItemId?: number
+  ) => {
     if (flowId && subscriberWorkflowId && candidateId) {
       const localMess: ILocalMessage = {
         localId: generateLocalId(),
@@ -960,11 +964,13 @@ const ChatProvider = ({
       try {
         setIsChatLoading(true);
         const payload: ISendAnswerRequest = {
-          FlowID: flowId,
           SubscriberWorkflowID: subscriberWorkflowId,
+          localId: localMess?.localId?.toString()!,
+          FlowID: flowId,
           candidateId,
           message,
-          localId: localMess?.localId?.toString()!,
+          optionId,
+          chatItemId,
         };
 
         const answerResponse: ApiResponse<IFollowingResponse> =

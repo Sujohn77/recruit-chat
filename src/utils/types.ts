@@ -72,6 +72,7 @@ export interface ILocalMessage {
   content: IContent;
   isOwn?: boolean;
   optionList?: null | IMessageOptions;
+  chatItemId?: number;
 }
 
 export enum ButtonsOptions {

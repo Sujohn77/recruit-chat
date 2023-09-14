@@ -498,6 +498,8 @@ export interface ISendAnswerRequest {
   message: string; // ("yes")  the user's typed response/answer
   candidateId: number;
   localId: string;
+  optionId?: number;
+  chatItemId?: number;
 }
 
 export interface IFollowingResponse extends ISuccessResponse {}

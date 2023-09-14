@@ -69,7 +69,11 @@ export interface IChatMessengerContext {
   setFlowId: (flowId: number) => void;
   setSubscriberWorkflowId: (id: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
-  sendPreScreenMessage: (message: string) => Promise<any>;
+  sendPreScreenMessage: (
+    message: string,
+    optionId?: number,
+    chatItemId?: number
+  ) => Promise<any>;
   emailAddress: string;
   firstName: string;
   lastName: string;
