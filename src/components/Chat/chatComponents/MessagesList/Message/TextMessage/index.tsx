@@ -14,10 +14,11 @@ import { Icon } from "../../styles";
 interface ITextMessageProps {
   message: ILocalMessage;
   isLastMessage?: boolean;
+  index?: number;
 }
 
 export const TextMessage: FC<ITextMessageProps> = memo(
-  ({ message, isLastMessage }) => {
+  ({ message, isLastMessage, index }) => {
     const subType = message?.content.subType;
     const messageProps = { ...getMessageProps(message) };
 
@@ -71,7 +72,10 @@ export const TextMessage: FC<ITextMessageProps> = memo(
       return null;
     };
 
-    return (
+    // TODO: fix
+    const wrongMess = !!message.isOwn && !!message.optionList;
+
+    return wrongMess ? null : (
       <S.MessageBox {...messageProps} isLastMessage={isLastMessage}>
         <S.MessageContent isFile={isFile} withOptions={!!message.optionList}>
           {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
@@ -93,6 +97,8 @@ export const TextMessage: FC<ITextMessageProps> = memo(
 
           {message.optionList && (
             <OptionList
+              index={index}
+              isLastMessage={isLastMessage}
               chatItemId={message.chatItemId}
               optionList={message.optionList}
             />

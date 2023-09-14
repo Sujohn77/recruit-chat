@@ -12,11 +12,12 @@ export const OptionList = styled.div`
 
 export const Text = styled.span``;
 
-export const Option = styled(Button)`
+export const Option = styled(Button)<{ isLast?: boolean }>`
   margin: 0 5px 16px !important;
   color: ${(props) => props.theme.primaryColor} !important;
   border: 1px solid ${(props) => props.theme.primaryColor} !important;
   border-radius: 100px !important;
   text-transform: initial !important;
-  background-color: ${COLORS.WHITE} !important;
+  background-color: ${({ isLast }) =>
+    isLast ? COLORS.SILVER_DARK : COLORS.WHITE} !important;
 `;

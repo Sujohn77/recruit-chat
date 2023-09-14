@@ -72,6 +72,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
             }
             return (
               <Message
+                index={index}
                 key={`${message?.localId}-${message.dateCreated}`}
                 setShowLoginScreen={setShowLoginScreen}
                 message={message}
