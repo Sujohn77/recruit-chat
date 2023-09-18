@@ -187,7 +187,7 @@ class Api {
   };
   addCandidateByJobId = (jobId: number, candidateId: number) =>
     this.client.post<ISuccessResponse>("api/pool/addcandidatebyjobid", {
-      candidateId: candidateId,
+      candidateId,
       jobId,
     });
 

@@ -33,7 +33,6 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   const [isClicked, setIsClicked] = useState(0);
 
   const interestedInHandler = async () => {
-    setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if ((!isAnonym || isCandidateWithEmail) && !isLoading) {
       if (candidateId) {
         let interestedInResMess: ILocalMessage;
@@ -92,6 +91,9 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
       }
     } else {
       setShowLoginScreen(true);
+      setIsClicked((prevValue) =>
+        prevValue === 1 ? prevValue : prevValue + 1
+      );
     }
   };
 
