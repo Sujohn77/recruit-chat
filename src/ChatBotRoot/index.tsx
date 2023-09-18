@@ -5,7 +5,7 @@ import { FileUploadProvider } from "contexts/FileUploadContext";
 import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
-import { Content } from "content";
+import { Content } from "Content";
 import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
 import { EventIds, SessionStorage } from "utils/constants";
 import { IApiThemeResponse } from "utils/api";

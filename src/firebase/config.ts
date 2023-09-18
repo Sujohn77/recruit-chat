@@ -74,7 +74,7 @@ export const getProcessedSnapshots = <TId, TItem extends TId>(
 
     switch (snapshotType) {
       case SnapshotType.Added:
-      case SnapshotType.Modified:
+        // case SnapshotType.Modified:
         updateItem();
         break;
       case SnapshotType.Removed:
