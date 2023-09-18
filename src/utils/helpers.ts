@@ -853,7 +853,7 @@ export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
   return processedSnapshots;
 };
 
-export const postMessToParent = (eventId: EventIds = EventIds.RefreshToken) => {
+export const postMessToParent = (eventId: EventIds) => {
   window.parent.postMessage(
     JSON.parse(
       JSON.stringify({

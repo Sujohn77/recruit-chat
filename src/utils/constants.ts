@@ -424,4 +424,5 @@ export enum EventIds {
   RefreshChatbot = "refresh_chatbot",
   IFrameHeight = "iframe_height",
   GetChatBotData = "get_chatbot_data",
+  HideSpinner = "hide_spinner",
 }

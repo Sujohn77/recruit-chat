@@ -44,6 +44,7 @@ export const ChatBotRoot: FC = () => {
   }, []);
 
   useEffect(() => {
+    postMessToParent(EventIds.HideSpinner); // hide spinner from the parent page
     // for Safari (iframe.onload didn't work)
     let timeout: NodeJS.Timeout;
     if (!chatBotID) {

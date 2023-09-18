@@ -20,10 +20,12 @@
     REFRESH_CHATBOT: "refresh_chatbot",
     IFRAME_HEIGHT: "iframe_height",
     GET_CHATBOT_DATA: "get_chatbot_data",
+    HIDE_SPINNER: "hide_spinner",
   };
   // ---------------------------------------------------------------------- //
   let chatBotToken;
   let chatBotStyle;
+  let spinner;
 
   function appendChatBot(style, token) {
     chatBotStyle = style;
@@ -47,7 +49,6 @@
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
     document.body?.appendChild(ifrm);
-    removeLoader();
 
     ifrm.addEventListener("load", () => {
       ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
@@ -97,7 +98,6 @@
   }
 
   refreshToken(getChatBotStyle);
-
   function onMessage(event) {
     if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
       console.log("%cEVENT", logStyle, event);
@@ -135,6 +135,13 @@
             { guid, style: chatBotStyle, token: chatBotToken },
             chatbotSrc
           );
+          break;
+
+        case eventIds.HIDE_SPINNER:
+          document.getElementById(loaderID)?.remove();
+          document.getElementById(loaderStyleId)?.remove();
+          spinner?.loader?.remove();
+          spinner?.style?.remove();
           break;
         default:
           break;
@@ -176,11 +183,7 @@
     `;
     document?.body.appendChild(loader);
     document?.body.appendChild(style);
-  }
-
-  function removeLoader() {
-    document.getElementById(loaderID)?.remove();
-    document.getElementById(loaderStyleId)?.remove();
+    return { loader, style };
   }
 
   if (window.addEventListener) {
@@ -190,7 +193,7 @@
   }
 
   window.onload = () => {
-    injectLoader();
+    spinner = injectLoader();
   };
 </script>
 
