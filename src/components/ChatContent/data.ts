@@ -13,19 +13,25 @@ const chatBotSender: IUserSelf = {
 
 export const questions = [
   {
-    text: i18n.t("messages:whatHiring"),
+    text: i18n.t("questions:recruitment_process"),
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
   },
   {
-    text: i18n.t("messages:howSubmitCV"),
+    text: i18n.t("questions:part_time"),
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
   },
   {
-    text: i18n.t("messages:howMuchExperience"),
+    text: i18n.t("questions:flexible_work"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
+    text: i18n.t("questions:about_company"),
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
@@ -35,6 +41,30 @@ export const questions = [
     subType: MessageType.TEXT,
   },
 ];
+// export const questions = [ // previous questions
+//   {
+//     text: i18n.t("messages:whatHiring"),
+//     subType: MessageType.BUTTON,
+//     isChatMessage: true,
+//     isOwn: true,
+//   },
+//   {
+//     text: i18n.t("messages:howSubmitCV"),
+//     subType: MessageType.BUTTON,
+//     isChatMessage: true,
+//     isOwn: true,
+//   },
+//   {
+//     text: i18n.t("messages:howMuchExperience"),
+//     subType: MessageType.BUTTON,
+//     isChatMessage: true,
+//     isOwn: true,
+//   },
+//   {
+//     text: i18n.t("messages:popularQuestions"),
+//     subType: MessageType.TEXT,
+//   },
+// ];
 
 export const findJobMessages = [
   {

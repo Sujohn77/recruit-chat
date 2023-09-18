@@ -114,6 +114,12 @@ export const ua = {
     ask_question: "Поставити питання",
     find_job: "Знайти роботу",
   },
+  questions: {
+    about_company: "Can you tell me more about the company?",
+    flexible_work: "Does GMS offer flexible work schedules?",
+    part_time: "Do you offer part-time positions?",
+    recruitment_process: "What’s the recruitment process?",
+  },
 };
 
 // export type Localization = typeof ua;

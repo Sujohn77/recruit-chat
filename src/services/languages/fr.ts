@@ -117,4 +117,10 @@ export const fr = {
     find_job: "Trouver un emploi",
     ask_question: "Poser une question",
   },
+  questions: {
+    about_company: "Pouvez-vous m'en dire plus sur l'entreprise ?",
+    flexible_work: "GMS propose-t-il des horaires de travail flexibles ?",
+    part_time: "Proposez-vous des postes à temps partiel ?",
+    recruitment_process: "Quel est le processus de recrutement ?",
+  },
 };

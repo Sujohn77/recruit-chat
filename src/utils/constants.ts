@@ -8,6 +8,7 @@ import {
   MessageType,
 } from "./types";
 import { COLORS } from "./colors";
+import { questions } from "components/ChatContent/data";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 export const isDevMode = process.env.NODE_ENV === "development";
@@ -34,27 +35,6 @@ export const HTTP_STATUSES: Record<HTTPStatusCodes, number> = {
 export enum ChannelName {
   SMS = "SMS",
 }
-
-const questions = [
-  {
-    text: i18n.t("messages:whatHiring"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-  },
-  {
-    text: i18n.t("messages:howSubmitCV"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-  },
-  {
-    text: i18n.t("messages:howMuchExperience"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-  },
-];
 
 export const getChatActionMessages = (
   type: CHAT_ACTIONS,
@@ -180,16 +160,7 @@ export const getChatActionMessages = (
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
-      const messages = withoutDefaultQuestions
-        ? []
-        : [
-            ...questions,
-            {
-              text: i18n.t("messages:popularQuestions"),
-              subType: MessageType.TEXT,
-            },
-          ];
-
+      const messages = withoutDefaultQuestions ? [] : questions;
       return messages;
     case CHAT_ACTIONS.GET_USER_NAME:
       return [

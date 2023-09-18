@@ -115,6 +115,12 @@ export const en = {
     ask_question: "Ask questions",
     find_job: "Find a job",
   },
+  questions: {
+    about_company: "Can you tell me more about the company?",
+    flexible_work: "Does GMS offer flexible work schedules?",
+    part_time: "Do you offer part-time positions?",
+    recruitment_process: "What’s the recruitment process?",
+  },
 };
 
 export type Localization = typeof en;
