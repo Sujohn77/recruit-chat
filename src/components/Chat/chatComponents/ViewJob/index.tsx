@@ -35,6 +35,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
+  const [showApplyBtn, setShowApplyBtn] = useState(true);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
@@ -55,7 +56,6 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   }, [height, applyJobError]);
 
   const handleApplyJobClick = async () => {
-    setIsClicked((prevValue) => (prevValue === 1 ? prevValue : prevValue + 1));
     if (!isAnonym || isCandidateWithEmail) {
       if (viewJob?.id && candidateId && chatId) {
         setApplyJobLoading(true);
@@ -73,8 +73,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
             setViewJob(null);
           } else {
-            res.data?.errors[0] &&
-              setApplyJobError(res.data?.errors[0] || "Something went wrong");
+            setShowApplyBtn(false);
+            setApplyJobError(res.data?.errors[0] || "Something went wrong");
           }
 
           if (res.data?.statusCode === 105) {
@@ -87,6 +87,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
         }
       }
     } else {
+      setIsClicked((value) => (value === 1 ? value : value + 1));
       setShowLoginScreen(true);
     }
   };
@@ -109,18 +110,20 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           <S.InfoItem>{viewJob.hiringType}</S.InfoItem>
         </S.ShortItems>
 
-        <S.SubmitButton
-          disabled={applyJobLoading}
-          onClick={handleApplyJobClick}
-        >
-          {applyJobLoading ? (
-            <S.LoaderWrapper>
-              <Loader showLoader absolutePosition={false} />
-            </S.LoaderWrapper>
-          ) : (
-            "Apply"
-          )}
-        </S.SubmitButton>
+        {showApplyBtn && (
+          <S.SubmitButton
+            disabled={applyJobLoading}
+            onClick={handleApplyJobClick}
+          >
+            {applyJobLoading ? (
+              <S.LoaderWrapper>
+                <Loader showLoader absolutePosition={false} />
+              </S.LoaderWrapper>
+            ) : (
+              "Apply"
+            )}
+          </S.SubmitButton>
+        )}
       </S.ViewShortInfo>
 
       <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
@@ -147,15 +150,21 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       </S.ViewText>
       <S.TextTitle>Job description: </S.TextTitle>
       <S.ViewDescription>{parse(viewJob.description)}</S.ViewDescription>
-      <S.SubmitButton disabled={applyJobLoading} onClick={handleApplyJobClick}>
-        {applyJobLoading ? (
-          <S.LoaderWrapper>
-            <Loader showLoader absolutePosition={false} />
-          </S.LoaderWrapper>
-        ) : (
-          "Apply"
-        )}
-      </S.SubmitButton>
+
+      {showApplyBtn && (
+        <S.SubmitButton
+          disabled={applyJobLoading}
+          onClick={handleApplyJobClick}
+        >
+          {applyJobLoading ? (
+            <S.LoaderWrapper>
+              <Loader showLoader absolutePosition={false} />
+            </S.LoaderWrapper>
+          ) : (
+            "Apply"
+          )}
+        </S.SubmitButton>
+      )}
 
       <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
         <S.Error>
