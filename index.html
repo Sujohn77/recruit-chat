@@ -183,6 +183,13 @@
     `;
     document?.body.appendChild(loader);
     document?.body.appendChild(style);
+
+    // timeout in case of errors in the process of chatbot implementation
+    setTimeout(() => {
+      loader.remove();
+      style.remove();
+    }, 10000);
+
     return { loader, style };
   }
 
