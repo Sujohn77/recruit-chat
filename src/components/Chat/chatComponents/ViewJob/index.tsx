@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
+import isNull from "lodash/isNull";
 
 import * as S from "./styles";
 import { IMAGES } from "assets";
@@ -36,6 +37,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
   const [showApplyBtn, setShowApplyBtn] = useState(true);
+
+  useEffect(() => {
+    isNull(viewJob) && setShowApplyBtn(true);
+  }, [viewJob]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
