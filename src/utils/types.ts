@@ -63,6 +63,7 @@ export interface IState {
 export interface IContent {
   subType: MessageType;
   text?: string;
+  locations?: string[];
 }
 
 export interface ILocalMessage {

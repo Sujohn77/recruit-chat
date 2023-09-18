@@ -170,7 +170,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
               localId: generateLocalId(),
               content: {
                 subType: MessageType.TEXT,
-                text: items.join("   "),
+                text: items.join("\r"),
+                locations: items,
               },
               _id: generateLocalId(),
             };

@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 
 import { IMessageOptionItem, IMessageOptions } from "services/types";
 import { useChatMessenger } from "contexts/MessengerContext";
-import * as S from "./styles";
+import * as S from "./option-list-styles";
 
 interface IOptionListProps {
   optionList: IMessageOptions;

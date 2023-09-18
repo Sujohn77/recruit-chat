@@ -10,6 +10,7 @@ import { OptionList } from "./OptionList";
 import { MS_1000 } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
+import { LocationList, LocationItem } from "./styles";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -80,7 +81,13 @@ export const TextMessage: FC<ITextMessageProps> = memo(
         <S.MessageContent isFile={isFile} withOptions={!!message.optionList}>
           {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
-          {message?.content.text?.includes(autolinkerClassName) ? (
+          {message.content.locations ? (
+            <LocationList>
+              {message.content.locations.map((l, i) => (
+                <LocationItem key={`${l}-${i}`}>{l}</LocationItem>
+              ))}
+            </LocationList>
+          ) : message?.content.text?.includes(autolinkerClassName) ? (
             <S.MessageText
               dangerouslySetInnerHTML={{
                 // DOMPurify DOMPurify sanitizes HTML and prevents XSS attacks. (converts a "dirty" HTML string to a clean HTML string)
