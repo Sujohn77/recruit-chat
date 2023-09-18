@@ -57,7 +57,7 @@ class Api {
   constructor(baseURL = BASE_API_URL) {
     this.client = apisauce.create({
       baseURL,
-      timeout: 10000,
+      timeout: 20000,
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",
