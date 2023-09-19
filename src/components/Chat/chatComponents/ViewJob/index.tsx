@@ -48,7 +48,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       timeout = setTimeout(() => {
         setHeight(0);
         setApplyJobError(null);
-      }, 5000);
+      }, 10000);
     }
 
     if (height === 0 && applyJobError) {
@@ -79,7 +79,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             setViewJob(null);
           } else {
             setShowApplyBtn(false);
-            setApplyJobError(res.data?.errors[0] || "Something went wrong");
+            setApplyJobError(
+              res.data?.errors[0]?.trim() ||
+                "Sorry, it's not possible to accept this job."
+            );
           }
 
           if (res.data?.statusCode === 105) {
