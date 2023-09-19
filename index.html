@@ -66,6 +66,12 @@
         body: JSON.stringify({ ChatbotGuid: guid.trim() }),
       });
 
+      console.log("refreshToken RES", refreshRes);
+      // if request was canceled
+      if (refreshRes.status === null) {
+        refreshToken(callback);
+      }
+
       const data = await refreshRes.clone().json();
 
       if (data?.errors) {
@@ -84,6 +90,13 @@
   async function getChatBotStyle(token) {
     try {
       const response = await fetch(`${BASE_URL}/style?ChatBotGuid=` + guid);
+
+      console.log("getChatBotStyle RES", response);
+      // if request was canceled
+      if (response.status === null) {
+        getChatBotStyle(token);
+      }
+
       const data = await response.clone().json();
 
       if (data?.statusCode === 413) {
@@ -92,15 +105,19 @@
         appendChatBot(JSON.parse(data), token);
       }
     } catch (error) {
-      removeLoader();
+      document.getElementById(loaderID)?.remove();
+      document.getElementById(loaderStyleId)?.remove();
+      spinner?.loader?.remove();
+      spinner?.style?.remove();
       return Promise.reject(error);
     }
   }
 
   refreshToken(getChatBotStyle);
+
   function onMessage(event) {
     if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-      console.log("%cEVENT", logStyle, event);
+      // console.log("%cEVENT", logStyle, event);
       const chatbotIframe = document.getElementById(iframeID);
 
       switch (event.data.event_id) {
@@ -153,34 +170,34 @@
     const loader = document.createElement("span");
     loader.setAttribute("id", loaderID);
     loader.style.cssText = `
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 2;
-    width: 48px;
-    height: 48px;
-    border: 5px solid #00b6ea;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    opacity: 0.7;
-    `;
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 2;
+      width: 48px;
+      height: 48px;
+      border: 5px solid #00b6ea;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+      opacity: 0.7;
+      `;
 
     const style = document.createElement("style");
     style.type = "text/css";
     style.id = loaderStyleId;
     style.innerHTML = `
-    @keyframes rotation {
-      0% {
-        transform: rotate(0deg);
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    `;
+      `;
     document?.body.appendChild(loader);
     document?.body.appendChild(style);
 
