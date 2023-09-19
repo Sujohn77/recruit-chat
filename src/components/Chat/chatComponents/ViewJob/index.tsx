@@ -86,7 +86,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           }
 
           if (res.data?.statusCode === 105) {
-            res.data?.errors[0] && setApplyJobError(res.data?.errors[0]);
+            setApplyJobError(res.data?.errors[0] || "Something went wrong...");
           }
         } catch (error) {
           error.message && setApplyJobError(error.message);
