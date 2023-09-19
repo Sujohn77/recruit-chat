@@ -116,8 +116,8 @@
   refreshToken(getChatBotStyle);
 
   function onMessage(event) {
+    console.log("%cEVENT", logStyle, event);
     if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-      // console.log("%cEVENT", logStyle, event);
       const chatbotIframe = document.getElementById(iframeID);
 
       switch (event.data.event_id) {
@@ -155,6 +155,13 @@
           break;
 
         case eventIds.HIDE_SPINNER:
+          console.log("_________________________________________");
+          console.log(
+            " document.getElementById(loaderID)",
+            document.getElementById(loaderID)
+          );
+          console.log(" spinner?.loader", spinner?.loader);
+          console.log("_________________________________________");
           document.getElementById(loaderID)?.remove();
           document.getElementById(loaderStyleId)?.remove();
           spinner?.loader?.remove();
@@ -170,42 +177,42 @@
     const loader = document.createElement("span");
     loader.setAttribute("id", loaderID);
     loader.style.cssText = `
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 2;
-      width: 48px;
-      height: 48px;
-      border: 5px solid #00b6ea;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      display: inline-block;
-      box-sizing: border-box;
-      animation: rotation 1s linear infinite;
-      opacity: 0.7;
-      `;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #00b6ea;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    opacity: 0.7; `;
 
     const style = document.createElement("style");
     style.type = "text/css";
     style.id = loaderStyleId;
     style.innerHTML = `
-      @keyframes rotation {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
       }
-      `;
-    document?.body.appendChild(loader);
+      100% {
+        transform: rotate(360deg);
+      }
+    }`;
     document?.body.appendChild(style);
+    document?.body.appendChild(loader);
 
     // timeout in case of errors in the process of chatbot implementation
     setTimeout(() => {
+      document.getElementById(loaderID)?.remove();
+      document.getElementById(loaderStyleId)?.remove();
       loader.remove();
       style.remove();
-    }, 10000);
+    }, 5000);
 
     return { loader, style };
   }
