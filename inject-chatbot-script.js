@@ -24,6 +24,13 @@ let chatBotToken;
 let chatBotStyle;
 let spinner;
 
+function removeSpinner() {
+  document.getElementById(loaderID)?.remove();
+  document.getElementById(loaderStyleId)?.remove();
+  spinner?.loader?.remove();
+  spinner?.style?.remove();
+}
+
 function appendChatBot(style, token) {
   chatBotStyle = style;
   chatBotToken = token;
@@ -48,6 +55,7 @@ function appendChatBot(style, token) {
   document.body?.appendChild(ifrm);
 
   ifrm.addEventListener("load", () => {
+    removeSpinner();
     ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
   });
   ifrm.onerror = () => refreshToken();
@@ -102,10 +110,7 @@ async function getChatBotStyle(token) {
       appendChatBot(JSON.parse(data), token);
     }
   } catch (error) {
-    document.getElementById(loaderID)?.remove();
-    document.getElementById(loaderStyleId)?.remove();
-    spinner?.loader?.remove();
-    spinner?.style?.remove();
+    removeSpinner();
     return Promise.reject(error);
   }
 }
@@ -114,7 +119,7 @@ refreshToken(getChatBotStyle);
 
 function onMessage(event) {
   if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-    console.log("%cEVENT", logStyle, event);
+    console.log("%cEVENT", logStyle, event.event_id);
     const chatbotIframe = document.getElementById(iframeID);
 
     switch (event.data.event_id) {
@@ -152,10 +157,7 @@ function onMessage(event) {
         break;
 
       case eventIds.HIDE_SPINNER:
-        document.getElementById(loaderID)?.remove();
-        document.getElementById(loaderStyleId)?.remove();
-        spinner?.loader?.remove();
-        spinner?.style?.remove();
+        removeSpinner();
         break;
       default:
         break;
@@ -163,7 +165,13 @@ function onMessage(event) {
   }
 }
 
-function injectLoader() {
+if (window.addEventListener) {
+  window.addEventListener("message", onMessage);
+} else {
+  window.attachEvent("onmessage", onMessage); // IE8
+}
+
+window.onload = () => {
   const loader = document.createElement("span");
   loader.setAttribute("id", loaderID);
   loader.style.cssText = `
@@ -183,7 +191,7 @@ function injectLoader() {
     `;
 
   const style = document.createElement("style");
-  style.type = "text/css";
+  style.setAttribute("type", "text/css");
   style.id = loaderStyleId;
   style.innerHTML = `
     @keyframes rotation {
@@ -202,17 +210,7 @@ function injectLoader() {
   setTimeout(() => {
     loader.remove();
     style.remove();
-  }, 10000);
+  }, 5000);
 
-  return { loader, style };
-}
-
-if (window.addEventListener) {
-  window.addEventListener("message", onMessage);
-} else {
-  window.attachEvent("onmessage", onMessage); // IE8
-}
-
-window.onload = () => {
-  spinner = injectLoader();
+  spinner = { loader, style };
 };

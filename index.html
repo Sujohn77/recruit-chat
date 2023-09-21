@@ -27,6 +27,20 @@
   let chatBotStyle;
   let spinner;
 
+  function removeSpinner() {
+    console.log("_________________________________________");
+    console.log(
+      " document.getElementById(loaderID)",
+      document.getElementById(loaderID)
+    );
+    console.log(" spinner?.loader", spinner?.loader);
+    console.log("_________________________________________");
+    document.getElementById(loaderID)?.remove();
+    document.getElementById(loaderStyleId)?.remove();
+    spinner?.loader?.remove();
+    spinner?.style?.remove();
+  }
+
   function appendChatBot(style, token) {
     chatBotStyle = style;
     chatBotToken = token;
@@ -51,6 +65,7 @@
     document.body?.appendChild(ifrm);
 
     ifrm.addEventListener("load", () => {
+      removeSpinner();
       ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
     });
     ifrm.onerror = () => refreshToken();
@@ -105,10 +120,7 @@
         appendChatBot(JSON.parse(data), token);
       }
     } catch (error) {
-      document.getElementById(loaderID)?.remove();
-      document.getElementById(loaderStyleId)?.remove();
-      spinner?.loader?.remove();
-      spinner?.style?.remove();
+      removeSpinner();
       return Promise.reject(error);
     }
   }
@@ -155,17 +167,7 @@
           break;
 
         case eventIds.HIDE_SPINNER:
-          console.log("_________________________________________");
-          console.log(
-            " document.getElementById(loaderID)",
-            document.getElementById(loaderID)
-          );
-          console.log(" spinner?.loader", spinner?.loader);
-          console.log("_________________________________________");
-          document.getElementById(loaderID)?.remove();
-          document.getElementById(loaderStyleId)?.remove();
-          spinner?.loader?.remove();
-          spinner?.style?.remove();
+          removeSpinner();
           break;
         default:
           break;
@@ -173,7 +175,13 @@
     }
   }
 
-  function injectLoader() {
+  if (window.addEventListener) {
+    window.addEventListener("message", onMessage);
+  } else {
+    window.attachEvent("onmessage", onMessage); // IE8
+  }
+
+  window.onload = () => {
     const loader = document.createElement("span");
     loader.setAttribute("id", loaderID);
     loader.style.cssText = `
@@ -189,10 +197,11 @@
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
-    opacity: 0.7; `;
+    opacity: 0.7;
+    `;
 
     const style = document.createElement("style");
-    style.type = "text/css";
+    style.setAttribute("type", "text/css");
     style.id = loaderStyleId;
     style.innerHTML = `
     @keyframes rotation {
@@ -202,29 +211,18 @@
       100% {
         transform: rotate(360deg);
       }
-    }`;
-    document?.body.appendChild(style);
+    }
+    `;
     document?.body.appendChild(loader);
+    document?.body.appendChild(style);
 
     // timeout in case of errors in the process of chatbot implementation
     setTimeout(() => {
-      document.getElementById(loaderID)?.remove();
-      document.getElementById(loaderStyleId)?.remove();
       loader.remove();
       style.remove();
     }, 5000);
 
-    return { loader, style };
-  }
-
-  if (window.addEventListener) {
-    window.addEventListener("message", onMessage);
-  } else {
-    window.attachEvent("onmessage", onMessage); // IE8
-  }
-
-  window.onload = () => {
-    spinner = injectLoader();
+    spinner = { loader, style };
   };
 </script>
 
