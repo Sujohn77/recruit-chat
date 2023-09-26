@@ -19,8 +19,6 @@ export const ChatBotRoot: FC = () => {
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      LOG(event.data, "message from parent");
-
       if (regExpUuid.test(event.data?.guid)) {
         setChatBotID(event.data.guid);
       }
