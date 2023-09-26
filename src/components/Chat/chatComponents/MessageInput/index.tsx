@@ -132,75 +132,68 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   // Callbacks
   const sendMessage = useCallback(
     (draftMessage: string | null) => {
-      const isCategoryOrLocation = isResultsType({
-        type: currentMsgType,
-        matchedItems,
-      });
-      const isNoMatches =
-        isCategoryOrLocation && !isResults(draftMessage, searchItems);
       const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
+      const isSelectedValues =
+        matchedSearchItem || inputValues.length || draftMessage;
+      const actionType =
+        isSelectedValues && currentMsgType
+          ? getNextActionType(currentMsgType)
+          : CHAT_ACTIONS.NO_MATCH;
 
-      if (inputType === TextFieldTypes.MultiSelect) {
-        const isSelectedValues = matchedSearchItem || inputValues.length;
-        const actionType =
-          isSelectedValues && currentMsgType
-            ? getNextActionType(currentMsgType)
-            : CHAT_ACTIONS.NO_MATCH;
+      if (inputType === TextFieldTypes.MultiSelect && actionType) {
+        const items = !!matchedSearchItem
+          ? uniq([...inputValues, matchedSearchItem])
+          : uniq(inputValues.length ? inputValues : [draftMessage!]);
 
-        if (actionType) {
-          const items = !!matchedSearchItem
-            ? uniq([...inputValues, matchedSearchItem])
-            : uniq(inputValues);
-          if (
-            actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
-            currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
-          ) {
-            const alertEmailMess: ILocalMessage = {
-              isOwn: false,
-              localId: generateLocalId(),
-              content: {
-                subType: MessageType.TEXT,
-                text: t("messages:alertEmail"),
-              },
-              _id: null,
-            };
+        if (
+          actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
+          currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+        ) {
+          const alertEmailMess: ILocalMessage = {
+            isOwn: false,
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: t("messages:alertEmail"),
+            },
+            _id: null,
+          };
 
-            const messWithLocations: ILocalMessage = {
-              isOwn: true,
-              localId: generateLocalId(),
-              content: {
-                subType: MessageType.TEXT,
-                text: items.join("\r"),
-                locations: items,
-              },
-              _id: generateLocalId(),
-            };
+          const messWithLocations: ILocalMessage = {
+            isOwn: true,
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: matchedSearchItem ? items.join("\r") : draftMessage!,
+              locations: items.length ? items : [draftMessage || ""],
+            },
+            _id: generateLocalId(),
+          };
 
-            setSearchLocations(items);
-            _setMessages((prevMessages) => [
-              alertEmailMess,
-              messWithLocations,
-              ...prevMessages,
-            ]);
-            setInputValues([]);
-            setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
-          } else {
-            const action = {
-              type: actionType,
-              payload: { items },
-            };
-
-            dispatch(action);
+          setSearchLocations(items.length ? items : [draftMessage!]);
+          _setMessages((prevMessages) => [
+            alertEmailMess,
+            messWithLocations,
+            ...prevMessages,
+          ]);
+          setInputValues([]);
+          setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+        } else {
+          if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
+            setSearchLocations(matchedSearchItem ? items : [draftMessage!]);
           }
+
+          dispatch({
+            type: actionType,
+            payload: { items },
+          });
         }
+
         //
       } else {
         LOG(currentMsgType, "!!!!!! currentMsgType !!!!!!");
         dispatch({
-          type:
-            isNoMatches || !currentMsgType
-              ? CHAT_ACTIONS.NO_MATCH
-              : currentMsgType,
+          type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
           payload: { item: draftMessage },
         });
       }
@@ -209,6 +202,76 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     },
     [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
   );
+
+  // const sendMessage = useCallback(
+  //   (draftMessage: string | null) => {
+  //     const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
+  //     const isSelectedValues =
+  //       matchedSearchItem || inputValues.length || !!draftMessage?.trim();
+  //     const actionType =
+  //       isSelectedValues && currentMsgType
+  //         ? getNextActionType(currentMsgType)
+  //         : CHAT_ACTIONS.NO_MATCH;
+
+  //     LOG(draftMessage, "draftMessage");
+
+  //     if (inputType === TextFieldTypes.MultiSelect && actionType) {
+  //       const items = !!matchedSearchItem
+  //         ? uniq([...inputValues, matchedSearchItem])
+  //         : uniq(inputValues);
+  //       if (
+  //         actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
+  //         currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+  //       ) {
+  //         const alertEmailMess: ILocalMessage = {
+  //           isOwn: false,
+  //           localId: generateLocalId(),
+  //           content: {
+  //             subType: MessageType.TEXT,
+  //             text: t("messages:alertEmail"),
+  //           },
+  //           _id: null,
+  //         };
+
+  //         const messWithLocations: ILocalMessage = {
+  //           isOwn: true,
+  //           localId: generateLocalId(),
+  //           content: {
+  //             subType: MessageType.TEXT,
+  //             text: items.join("\r"),
+  //             locations: items,
+  //           },
+  //           _id: generateLocalId(),
+  //         };
+
+  //         setSearchLocations(items);
+  //         _setMessages((prevMessages) => [
+  //           alertEmailMess,
+  //           messWithLocations,
+  //           ...prevMessages,
+  //         ]);
+  //         setInputValues([]);
+  //         setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+  //       } else {
+  //         const action = {
+  //           type: actionType,
+  //           payload: { items },
+  //         };
+
+  //         dispatch(action);
+  //       }
+  //     } else {
+  //       LOG(currentMsgType, "!!!!!! currentMsgType !!!!!!");
+  //       dispatch({
+  //         type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
+  //         payload: { item: draftMessage },
+  //       });
+  //     }
+
+  //     setDraftMessage(null);
+  //   },
+  //   [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
+  // );
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {

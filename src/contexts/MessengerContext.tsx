@@ -76,6 +76,7 @@ import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
+import find from "lodash/find";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -416,16 +417,20 @@ const ChatProvider = ({
       // console.warn("action type -->", type);
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
-          const searchCategory = payload?.item!.toLowerCase();
-          const requisition = requisitions.find(
-            (r) => r.title.toLowerCase() === searchCategory
-          );
-          requisition && setCategory(requisition.category);
+          if (payload?.item?.trim()) {
+            const searchCategory = payload?.item?.trim()?.toLowerCase();
+            const foundRequisition = find(
+              requisitions,
+              (r) => r.title.toLowerCase() === searchCategory
+            );
+            setCategory(foundRequisition?.category || payload?.item?.trim());
+            payload!.item = foundRequisition?.title || payload?.item?.trim();
+          }
 
-          payload!.item = requisition?.title;
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
+          LOG(payload?.items, "payload?.items CHAT_ACTIONS.SET_LOCATIONS");
           setSearchLocations(payload?.items!);
           return;
         }
@@ -545,7 +550,7 @@ const ChatProvider = ({
           if (category) {
             const data = getSearchJobsData(
               category,
-              searchLocations[0]?.split(",")[0]
+              searchLocations[0]?.split(",")[0] || searchLocations[0]
             );
             setIsChatLoading(true);
             try {
