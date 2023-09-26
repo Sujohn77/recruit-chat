@@ -430,7 +430,6 @@ const ChatProvider = ({
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {
-          LOG(payload?.items, "payload?.items CHAT_ACTIONS.SET_LOCATIONS");
           setSearchLocations(payload?.items!);
           return;
         }
