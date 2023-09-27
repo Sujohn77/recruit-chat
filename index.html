@@ -27,19 +27,19 @@
   let chatBotStyle;
   let spinner;
 
-  function removeSpinner() {
-    console.log("_________________________________________");
-    console.log(
-      " document.getElementById(loaderID)",
-      document.getElementById(loaderID)
-    );
-    console.log(" spinner?.loader", spinner?.loader);
-    console.log("_________________________________________");
-    document.getElementById(loaderID)?.remove();
-    document.getElementById(loaderStyleId)?.remove();
-    spinner?.loader?.remove();
-    spinner?.style?.remove();
-  }
+  // function removeSpinner() {
+  //   console.log("_________________________________________");
+  //   console.log(
+  //     " document.getElementById(loaderID)",
+  //     document.getElementById(loaderID)
+  //   );
+  //   console.log(" spinner?.loader", spinner?.loader);
+  //   console.log("_________________________________________");
+  //   document.getElementById(loaderID)?.remove();
+  //   document.getElementById(loaderStyleId)?.remove();
+  //   spinner?.loader?.remove();
+  //   spinner?.style?.remove();
+  // }
 
   function appendChatBot(style, token) {
     chatBotStyle = style;
@@ -65,7 +65,7 @@
     document.body?.appendChild(ifrm);
 
     ifrm.addEventListener("load", () => {
-      removeSpinner();
+      // removeSpinner();
       ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
     });
     ifrm.onerror = () => refreshToken();
@@ -120,7 +120,7 @@
         appendChatBot(JSON.parse(data), token);
       }
     } catch (error) {
-      removeSpinner();
+      // removeSpinner();
       return Promise.reject(error);
     }
   }
@@ -167,7 +167,7 @@
           break;
 
         case eventIds.HIDE_SPINNER:
-          removeSpinner();
+          // removeSpinner();
           break;
         default:
           break;
@@ -181,49 +181,49 @@
     window.attachEvent("onmessage", onMessage); // IE8
   }
 
-  window.onload = () => {
-    const loader = document.createElement("span");
-    loader.setAttribute("id", loaderID);
-    loader.style.cssText = `
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 2;
-    width: 48px;
-    height: 48px;
-    border: 5px solid #00b6ea;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    opacity: 0.7;
-    `;
+  // window.onload = () => {
+  //   const loader = document.createElement("span");
+  //   loader.setAttribute("id", loaderID);
+  //   loader.style.cssText = `
+  //   position: fixed;
+  //   right: 20px;
+  //   bottom: 20px;
+  //   z-index: 2;
+  //   width: 48px;
+  //   height: 48px;
+  //   border: 5px solid #00b6ea;
+  //   border-bottom-color: transparent;
+  //   border-radius: 50%;
+  //   display: inline-block;
+  //   box-sizing: border-box;
+  //   animation: rotation 1s linear infinite;
+  //   opacity: 0.7;
+  //   `;
 
-    const style = document.createElement("style");
-    style.setAttribute("type", "text/css");
-    style.id = loaderStyleId;
-    style.innerHTML = `
-    @keyframes rotation {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    `;
-    document?.body.appendChild(loader);
-    document?.body.appendChild(style);
+  //   const style = document.createElement("style");
+  //   style.setAttribute("type", "text/css");
+  //   style.id = loaderStyleId;
+  //   style.innerHTML = `
+  //   @keyframes rotation {
+  //     0% {
+  //       transform: rotate(0deg);
+  //     }
+  //     100% {
+  //       transform: rotate(360deg);
+  //     }
+  //   }
+  //   `;
+  //   document?.body.appendChild(loader);
+  //   document?.body.appendChild(style);
 
-    // timeout in case of errors in the process of chatbot implementation
-    setTimeout(() => {
-      loader.remove();
-      style.remove();
-    }, 5000);
+  //   // timeout in case of errors in the process of chatbot implementation
+  //   setTimeout(() => {
+  //     loader.remove();
+  //     style.remove();
+  //   }, 5000);
 
-    spinner = { loader, style };
-  };
+  //   spinner = { loader, style };
+  // };
 </script>
 
 <html lang="en">
