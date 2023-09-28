@@ -125,6 +125,8 @@ export const SubmitButton = styled(DarkButton)`
 
 export const Error = styled.div`
   display: flex;
+  align-items: center;
+  margin-bottom: 8px;
 `;
 
 export const ErrorText = styled.span`
