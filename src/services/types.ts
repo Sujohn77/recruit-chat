@@ -223,13 +223,14 @@ export interface ISearchJobsPayload {
     city: string;
     state: null;
     postalCode: null;
-    country: null;
+    country: null | string;
     latitude: null;
     longitude: null;
     radius: null;
     radiusUnit: "km";
   };
   externalSystemId?: number;
+  uniqueTitles?: boolean;
 }
 
 export interface IResumeDataPayload {

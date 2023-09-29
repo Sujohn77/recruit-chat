@@ -17,7 +17,6 @@ import * as S from "./styles";
 import { ICONS } from "assets";
 import { Status, TextFieldTypes } from "utils/constants";
 import {
-  LOG,
   generateLocalId,
   getAccessWriteType,
   getFormattedLocations,
@@ -180,7 +179,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
           setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
         } else {
           if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
-            setSearchLocations(matchedSearchItem ? items : [draftMessage!]);
+            setSearchLocations(items);
           }
 
           dispatch({
@@ -191,7 +190,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
         //
       } else {
-        LOG(currentMsgType, "!!!!!! currentMsgType !!!!!!");
         dispatch({
           type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
           payload: { item: draftMessage },
@@ -212,8 +210,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   //       isSelectedValues && currentMsgType
   //         ? getNextActionType(currentMsgType)
   //         : CHAT_ACTIONS.NO_MATCH;
-
-  //     LOG(draftMessage, "draftMessage");
 
   //     if (inputType === TextFieldTypes.MultiSelect && actionType) {
   //       const items = !!matchedSearchItem
@@ -261,7 +257,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   //         dispatch(action);
   //       }
   //     } else {
-  //       LOG(currentMsgType, "!!!!!! currentMsgType !!!!!!");
   //       dispatch({
   //         type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
   //         payload: { item: draftMessage },
@@ -295,8 +290,6 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
 
     if (error) {
       if (currentMsgType === CHAT_ACTIONS.APPLY_AGE && error) {
-        // TODO: test
-
         const age = Number(value);
         if (age < 15 || age > 80) {
           setError(null);

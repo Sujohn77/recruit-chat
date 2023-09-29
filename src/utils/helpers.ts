@@ -514,7 +514,8 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
 
 export const getSearchJobsData = (
   category: string,
-  city: string
+  city: string,
+  country?: string
 ): ISearchJobsPayload => {
   return {
     pageSize: 20,
@@ -527,13 +528,14 @@ export const getSearchJobsData = (
       city,
       state: null,
       postalCode: null,
-      country: null,
+      country: country?.trim() || null,
       latitude: null,
       longitude: null,
       radius: null,
       radiusUnit: "km",
     },
     externalSystemId: 789,
+    uniqueTitles: true,
   };
 };
 

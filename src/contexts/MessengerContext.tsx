@@ -35,6 +35,7 @@ import {
   ISnapshot,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
+  IRequisitionsResponse,
 } from "services/types";
 import {
   getChatActionResponse,
@@ -77,6 +78,7 @@ import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
 import find from "lodash/find";
+import filter from "lodash/filter";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -154,6 +156,7 @@ const ChatProvider = ({
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
+  const [_categoryTitle, _setCategoryTitle] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
   const [offerJobs, setOfferJobs] = useState<IRequisition[]>([]);
   const [viewJob, setViewJob] = useState<IRequisition | null>(null);
@@ -424,6 +427,7 @@ const ChatProvider = ({
               (r) => r.title.toLowerCase() === searchCategory
             );
             setCategory(foundRequisition?.category || payload?.item?.trim());
+            _setCategoryTitle(foundRequisition?.title || payload?.item?.trim());
             payload!.item = foundRequisition?.title || payload?.item?.trim();
           }
 
@@ -553,12 +557,25 @@ const ChatProvider = ({
             );
             setIsChatLoading(true);
             try {
-              const apiResponse = await apiInstance.searchRequisitions(data);
-              additionalCondition = !!apiResponse.data?.requisitions.length;
-              setSearchLocations([]);
-              setCategory(null);
-              if (apiResponse.data?.requisitions.length) {
-                setOfferJobs(apiResponse.data?.requisitions);
+              const res: ApiResponse<IRequisitionsResponse> =
+                await apiInstance.searchRequisitions(data);
+
+              additionalCondition = !!res.data?.requisitions.length;
+
+              if (res.data?.requisitions.length) {
+                const offersWithSelectedTitle = filter(
+                  res.data.requisitions,
+                  (r) => r.title === _categoryTitle
+                );
+                const restOffers = filter(
+                  res.data.requisitions,
+                  (r) => r.title !== _categoryTitle
+                );
+
+                setOfferJobs([...offersWithSelectedTitle, ...restOffers]);
+                setSearchLocations([]);
+                setCategory(null);
+                _setCategoryTitle(null);
               } else {
                 dispatch({ type: CHAT_ACTIONS.NO_MATCH });
               }
@@ -571,6 +588,7 @@ const ChatProvider = ({
                 );
             } finally {
               setCategory(null);
+              _setCategoryTitle(null);
               setSearchLocations([]);
               setIsChatLoading(false);
             }
@@ -709,7 +727,7 @@ const ChatProvider = ({
             const questionMess: ILocalMessage = {
               content: {
                 subType: MessageType.TEXT,
-                text: payload.question.trim(),
+                text: payload.question?.trim(),
               },
               isOwn: true,
               localId: generateLocalId(),
@@ -723,7 +741,7 @@ const ChatProvider = ({
 
             try {
               const data = {
-                question: payload.question.trim(),
+                question: payload.question?.trim(),
                 languageCode: "en",
                 options: {
                   answersNumber: 1,
@@ -926,6 +944,7 @@ const ChatProvider = ({
 
   const clearFilters = () => {
     setCategory(null);
+    _setCategoryTitle(null);
     setCurrentMsgType(null);
     setAlertCategories(null);
     setSearchLocations([]);
@@ -1101,6 +1120,7 @@ const ChatProvider = ({
     setIsApplyJobFlow(false);
     setIsAuthInFirebase(false);
     setIsCandidateWithEmail(false);
+    _setCategoryTitle(null);
     // create new anonym user
     createAnonymCandidate();
   }, []);
