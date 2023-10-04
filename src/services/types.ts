@@ -214,6 +214,7 @@ export interface ISearchJobsPayload {
   pageSize: number;
   // page?: number;
   keyword: string;
+  page?: number;
   companyId?: string;
   minDatePosted?: string;
   appKey?: string;

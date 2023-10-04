@@ -19,11 +19,11 @@ interface IRequisitionType {
 }
 
 const requisitionParams = {
-  // page: 1,
-  pageSize: 20,
+  pageSize: 50,
+  page: 0,
   keyword: "*",
-  appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
-  codeVersion: "1.0.3",
+  minDatePosted: "2016-11-13T00:00:00",
+  uniqueTitles: true,
 };
 
 export const useRequisitions = (

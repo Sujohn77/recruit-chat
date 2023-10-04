@@ -518,11 +518,11 @@ export const getSearchJobsData = (
   country?: string
 ): ISearchJobsPayload => {
   return {
-    pageSize: 20,
-    // page: 0,
+    page: 0,
+    pageSize: 50,
     keyword: "*",
-    // companyId: '6591',
     minDatePosted: "2016-11-13T00:00:00",
+    uniqueTitles: true,
     categories: [category],
     location: {
       city,
@@ -534,8 +534,7 @@ export const getSearchJobsData = (
       radius: null,
       radiusUnit: "km",
     },
-    externalSystemId: 789,
-    uniqueTitles: true,
+    // externalSystemId: 789,
   };
 };
 

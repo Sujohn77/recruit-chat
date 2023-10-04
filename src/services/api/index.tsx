@@ -164,8 +164,6 @@ class Api {
     this.client.post<IRequisitionsResponse>("api/requisition/search", {
       ...data,
       keyword: "*",
-      appKey: "117BD5BC-857D-428B-97BE-A5EC7256E281",
-      codeVersion: "1.0.3",
     });
   searchWithResume = (data: IResumeDataPayload) =>
     this.client.post<IRequisitionsResponse>(
