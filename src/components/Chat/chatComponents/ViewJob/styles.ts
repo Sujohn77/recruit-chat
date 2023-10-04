@@ -134,7 +134,6 @@ export const ErrorText = styled.span`
 `;
 
 export const WarningImg = styled.img`
-  margin-top: 10px;
   width: 12px;
   height: 12px;
 `;
