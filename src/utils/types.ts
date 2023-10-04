@@ -243,3 +243,8 @@ export interface IMenuItem {
   isDropdown?: boolean;
   options?: string[];
 }
+
+export interface IJobAlertData {
+  email: string;
+  type: CHAT_ACTIONS;
+}

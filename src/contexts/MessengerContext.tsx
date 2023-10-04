@@ -23,6 +23,7 @@ import {
   ButtonsOptions,
   IRequisition,
   IMessageID,
+  IJobAlertData,
 } from "utils/types";
 import {
   IAskAQuestionResponse,
@@ -136,16 +137,13 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setSearchLocations: () => {},
   logout: () => {},
   setChatBotToken: () => {},
+  createJobAlert: () => {},
+  clearJobFilters: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
   chatMessengerDefaultState
 );
-
-interface IJobAlertData {
-  email: string;
-  type: CHAT_ACTIONS;
-}
 
 const ChatProvider = ({
   chatBotID: chatBotId = "17",
@@ -499,7 +497,7 @@ const ChatProvider = ({
           });
 
           if (emailOrPhone && !error?.length) {
-            clearFilters();
+            clearJobFilters();
             createJobAlert({ type, email: emailOrPhone });
             setUser({
               ...user,
@@ -512,7 +510,7 @@ const ChatProvider = ({
           break;
         }
         case CHAT_ACTIONS.REFINE_SEARCH: {
-          clearFilters();
+          clearJobFilters();
 
           setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
           setShowJobAutocompleteBox(true);
@@ -942,7 +940,7 @@ const ChatProvider = ({
     ]
   );
 
-  const clearFilters = () => {
+  const clearJobFilters = () => {
     setCategory(null);
     _setCategoryTitle(null);
     setCurrentMsgType(null);
@@ -1178,6 +1176,8 @@ const ChatProvider = ({
     setSearchLocations,
     logout,
     setChatBotToken,
+    createJobAlert,
+    clearJobFilters,
   };
 
   // console.log(

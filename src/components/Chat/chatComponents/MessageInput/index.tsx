@@ -60,6 +60,9 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     _setMessages,
     setCurrentMsgType,
     messages,
+    emailAddress,
+    createJobAlert,
+    clearJobFilters,
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
@@ -153,7 +156,11 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
             localId: generateLocalId(),
             content: {
               subType: MessageType.TEXT,
-              text: t("messages:alertEmail"),
+              text: t(
+                `messages:${
+                  emailAddress ? "emailAlreadyProvided" : "alertEmail"
+                }`
+              ),
             },
             _id: null,
           };
@@ -177,6 +184,14 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
           ]);
           setInputValues([]);
           setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+
+          if (emailAddress) {
+            clearJobFilters();
+            createJobAlert({
+              email: emailAddress,
+              type: CHAT_ACTIONS.SET_ALERT_EMAIL,
+            });
+          }
         } else {
           if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
             setSearchLocations(items);

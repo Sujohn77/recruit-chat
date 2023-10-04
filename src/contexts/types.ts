@@ -11,6 +11,7 @@ import {
   MessageType,
   ILocalMessage,
   IRequisition,
+  IJobAlertData,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
 
@@ -83,6 +84,8 @@ export interface IChatMessengerContext {
   setSearchLocations: (locations: string[]) => void;
   logout: () => void;
   setChatBotToken: (token: string) => void;
+  createJobAlert: (payload: IJobAlertData) => void;
+  clearJobFilters: () => void;
 }
 
 export interface IFileUploadContext {
