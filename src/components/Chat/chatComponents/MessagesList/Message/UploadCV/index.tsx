@@ -53,8 +53,8 @@ export const UploadCV: FC<IUploadCVProps> = ({
   return (
     <S.Wrapper style={{ marginBottom: withoutMargin ? 0 : 32 }}>
       <DragAndDrop handleDrop={showFile}>
-        <S.Circle>
-          <S.UploadImg onClick={onHandleUpload} />
+        <S.Circle onClick={onHandleUpload}>
+          <S.UploadImg />
         </S.Circle>
 
         <S.Text>{t("messages:uploadCV")}</S.Text>
