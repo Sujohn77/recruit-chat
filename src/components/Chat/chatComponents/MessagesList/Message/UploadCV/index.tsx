@@ -1,4 +1,5 @@
 import { useFileUploadContext } from "contexts/FileUploadContext";
+import { useChatMessenger } from "contexts/MessengerContext";
 import { ChangeEvent, FC, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
@@ -10,6 +11,7 @@ import { resumeElementId } from "utils/constants";
 import { Close } from "components/Intro/DefaultMessages/styles";
 import * as S from "./styles";
 import * as ChatStyles from "../../../../styles";
+import { ButtonsOptions } from "utils/types";
 
 interface IUploadCVProps {
   isLastMessage?: boolean;
@@ -24,6 +26,7 @@ export const UploadCV: FC<IUploadCVProps> = ({
   const theme = useTheme() as ThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
   const { file, notification, resetFile, showFile } = useFileUploadContext();
+  const { chooseButtonOption } = useChatMessenger();
 
   useEffect(() => {
     return () => {
@@ -48,6 +51,7 @@ export const UploadCV: FC<IUploadCVProps> = ({
       inputFile.current.value = "";
     }
     resetFile();
+    chooseButtonOption(ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME);
   };
 
   return (
