@@ -6,12 +6,12 @@ import { useTheme } from "styled-components";
 
 import { ICONS } from "assets";
 import { DragAndDrop } from "components";
+import { ButtonsOptions } from "utils/types";
 import { ThemeType } from "utils/theme/default";
 import { resumeElementId } from "utils/constants";
 import { Close } from "components/Intro/DefaultMessages/styles";
 import * as S from "./styles";
 import * as ChatStyles from "../../../../styles";
-import { ButtonsOptions } from "utils/types";
 
 interface IUploadCVProps {
   isLastMessage?: boolean;
