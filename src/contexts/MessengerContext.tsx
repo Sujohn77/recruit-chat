@@ -369,13 +369,13 @@ const ChatProvider = ({
             candidateId: candidateId,
           });
 
-          if (chatId) {
-            const sendTranscript: ApiResponse<ISendTranscriptResponse> =
-              await apiInstance.sendTranscript({
-                ChatID: chatId,
-              });
-            LOG(sendTranscript, "!!sendTranscript RESPONSE!!");
-          }
+          // if (chatId) {
+          //   const sendTranscript: ApiResponse<ISendTranscriptResponse> =
+          //     await apiInstance.sendTranscript({
+          //       ChatID: chatId,
+          //     });
+          //   LOG(sendTranscript, "!!sendTranscript RESPONSE!!");
+          // }
         } catch (err) {
           clearAuthConfig();
         } finally {

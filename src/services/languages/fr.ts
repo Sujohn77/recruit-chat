@@ -46,7 +46,8 @@ export const fr = {
     daily: "Journellement",
     alertEmail:
       "Que est une adresse un courriel meilleure, pour atteindre vous? \n \n nous sommes seul contact avec vous pour un modifications et un un potentiels job débouchés",
-    emailAlreadyProvided: "Your email address has already been provided",
+    emailAlreadyProvided:
+      "You've successfully subscribed to job alerts using the email address that you've already provided",
     successSubscribed:
       "Vous fructueusement abonnèrent se to un job alarmes hebdomadaires.",
     thanks: "Merci!",
