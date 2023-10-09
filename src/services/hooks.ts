@@ -61,18 +61,20 @@ export const useRequisitions = (
 
   useEffect(() => {
     (async function () {
-      setIsChatLoading(true);
-      try {
-        const response = await apiInstance.searchRequisitions(
-          requisitionParams
-        );
-        if (response?.data?.requisitions?.length) {
-          setJobPositions(response.data.requisitions);
+      if (searchRequisitionsTrigger !== 1) {
+        setIsChatLoading(true);
+        try {
+          const response = await apiInstance.searchRequisitions(
+            requisitionParams
+          );
+          if (response?.data?.requisitions?.length) {
+            setJobPositions(response.data.requisitions);
+          }
+        } catch (err) {
+          isDevMode && console.log("searchRequisitions error:", err);
+        } finally {
+          setIsChatLoading(false);
         }
-      } catch (err) {
-        isDevMode && console.log("searchRequisitions error:", err);
-      } finally {
-        setIsChatLoading(false);
       }
     })();
   }, [searchRequisitionsTrigger]);
