@@ -37,28 +37,31 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
   const [showApplyBtn, setShowApplyBtn] = useState(true);
+  const [jobIdWithoutFlowId, setJobIdWithoutFlowId] = useState<number>();
 
   useEffect(() => {
     isNull(viewJob) && setShowApplyBtn(true);
   }, [viewJob]);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout | undefined;
-    if (height === "auto") {
-      timeout = setTimeout(() => {
-        setHeight(0);
-        setApplyJobError(null);
-      }, 10000);
-    }
-
     if (height === 0 && applyJobError) {
       setHeight("auto");
     }
-
-    return () => {
-      timeout && clearTimeout(timeout);
-    };
   }, [height, applyJobError]);
+
+  useEffect(() => {
+    if (viewJob === null) {
+      setHeight(0);
+      setApplyJobError(null);
+    }
+  }, [viewJob]);
+
+  useEffect(() => {
+    if (viewJob?.id && +viewJob?.id === jobIdWithoutFlowId) {
+      setShowApplyBtn(false);
+      setApplyJobError("Sorry, it's not possible to accept this job.");
+    }
+  }, [viewJob, jobIdWithoutFlowId]);
 
   const handleApplyJobClick = async () => {
     if (!isAnonym || isCandidateWithEmail) {
@@ -83,6 +86,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               res.data?.errors[0]?.trim() ||
                 "Sorry, it's not possible to accept this job."
             );
+
+            if (res.data?.FlowID === 0) {
+              setJobIdWithoutFlowId(+viewJob.id);
+            }
           }
 
           if (res.data?.statusCode === 105) {
@@ -132,14 +139,14 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             )}
           </S.SubmitButton>
         )}
-      </S.ViewShortInfo>
 
-      <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
-        <S.Error>
-          <S.WarningImg src={IMAGES.WARN} alt="" />
-          <S.ErrorText>{applyJobError}</S.ErrorText>
-        </S.Error>
-      </AnimateHeight>
+        <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
+          <S.Error>
+            <S.WarningImg src={IMAGES.WARN} alt="" />
+            <S.ErrorText>{applyJobError}</S.ErrorText>
+          </S.Error>
+        </AnimateHeight>
+      </S.ViewShortInfo>
 
       <S.ViewText>
         {viewJob.company && (
