@@ -1182,7 +1182,7 @@ const ChatProvider = ({
 
   // console.log(
   //   "%c   chat state   ",
-  //   `color: ${colors.shamrock}; font-size: 14px; background-color: ${colors.black};`,
+  //   `color: ${COLORS.PASTEL_GRIN}; font-size: 14px; background-color: ${COLORS.BLACK};`,
   //   chatState
   // );
 
