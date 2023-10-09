@@ -3,7 +3,6 @@ import { FC } from "react";
 
 import * as S from "./styles";
 import { OtpForm } from "./OtpForm";
-import { ICONS } from "assets";
 import { MessageType } from "utils/types";
 import { generateLocalId } from "utils/helpers";
 import { ThemeType } from "utils/theme/default";
@@ -16,11 +15,7 @@ export const TrialPassword: FC = () => {
   return (
     <S.Wrapper>
       <S.IntroImageButton>
-        <IntroImage
-          src={theme?.imageUrl || ICONS.LOGO}
-          size="20px"
-          alt="rob-face"
-        />
+        <IntroImage src={theme?.imageUrl} size="20px" alt="" />
       </S.IntroImageButton>
 
       <S.OtpContent>

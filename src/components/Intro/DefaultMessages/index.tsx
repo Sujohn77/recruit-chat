@@ -56,12 +56,7 @@ export const DefaultMessages: FC<IDefaultMessagesProps> = ({
 
   return (
     <S.Wrapper>
-      <S.IntroImage
-        src={theme?.imageUrl || ICONS.LOGO}
-        size="34px"
-        alt="rob-face"
-        isRounded
-      />
+      <S.IntroImage src={theme?.imageUrl} size="34px" alt="" isRounded />
 
       <S.InfoContent>
         <S.Question>{text}</S.Question>

@@ -3,7 +3,7 @@ import { COLORS } from "utils/colors";
 const defaultTheme = {
   primaryColor: COLORS.BOULDER,
   secondaryColor: COLORS.ALTO,
-  imageUrl: null,
+  imageUrl: null || "",
   headerColor: COLORS.ALTO,
   messageButtonColor: COLORS.ALTO,
   buttonSecondaryColor: COLORS.GRAY_2,

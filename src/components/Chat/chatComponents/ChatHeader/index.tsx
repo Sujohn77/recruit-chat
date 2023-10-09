@@ -56,11 +56,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
         </Flex>
       ) : (
         <>
-          <IntroImage
-            src={theme?.imageUrl || ICONS.LOGO}
-            size="20px"
-            alt="rob-face"
-          />
+          <IntroImage src={theme?.imageUrl} size="20px" alt="" />
           <S.Title>{title}</S.Title>
           <S.CloseChat onClick={onCloseChat} color={COLORS.BLACK} />
         </>
