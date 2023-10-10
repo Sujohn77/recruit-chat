@@ -467,13 +467,13 @@ export const replaceItemsWithType = ({
 export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
   switch (chatMsgType) {
     case CHAT_ACTIONS.REFINE_SEARCH:
-    case CHAT_ACTIONS.FIND_JOB:
+    case CHAT_ACTIONS.ANSWER_QUESTIONS:
     case CHAT_ACTIONS.APPLY_ETHNIC:
     case CHAT_ACTIONS.GET_USER_EMAIL:
     case CHAT_ACTIONS.SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.SET_CATEGORY;
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
-      return CHAT_ACTIONS.SET_CATEGORY;
+      return null;
     case CHAT_ACTIONS.INTERESTED_IN:
       return CHAT_ACTIONS.GET_USER_NAME;
     case CHAT_ACTIONS.GET_USER_NAME:
