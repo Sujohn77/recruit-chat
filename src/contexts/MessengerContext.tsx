@@ -139,6 +139,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setChatBotToken: () => {},
   createJobAlert: () => {},
   clearJobFilters: () => {},
+  isChatInputAvailable: false,
+  setIsChatInputAvailable: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -206,11 +208,26 @@ const ChatProvider = ({
   const [subscriberWorkflowId, setSubscriberWorkflowId] = useState<
     number | undefined
   >(undefined);
+  const [isChatInputAvailable, setIsChatInputAvailable] = useState(false);
 
   // Candidate info
   const [emailAddress, setEmailAddress] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+
+  useEffect(() => {
+    switch (currentMsgType) {
+      case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
+      case CHAT_ACTIONS.ASK_QUESTION:
+      case CHAT_ACTIONS.SET_CATEGORY:
+      case CHAT_ACTIONS.SET_LOCATIONS:
+      case CHAT_ACTIONS.SET_ALERT_EMAIL:
+        setIsChatInputAvailable(true);
+        break;
+      default:
+        setIsChatInputAvailable(false);
+    }
+  }, [currentMsgType]);
 
   // ----------------------------------------------------------------------------- //
 
@@ -329,12 +346,6 @@ const ChatProvider = ({
   }, [showJobAutocompleteBox]);
 
   // -------------------------------------------------------------------------- //
-
-  useEffect(() => {
-    if (isDevMode) {
-      // console.log("Current chat action: ", currentMsgType);
-    }
-  }, [currentMsgType]);
 
   // Effects
   useEffect(() => {
@@ -1028,6 +1039,8 @@ const ChatProvider = ({
 
       switch (type) {
         case CHAT_ACTIONS.ANSWER_QUESTIONS:
+          setIsChatInputAvailable(true);
+          setCurrentMsgType(CHAT_ACTIONS.SET_CATEGORY);
           setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
           setTimeout(
             () => setMessages([...responseMessages, ...updatedMessages]),
@@ -1178,6 +1191,8 @@ const ChatProvider = ({
     setChatBotToken,
     createJobAlert,
     clearJobFilters,
+    isChatInputAvailable,
+    setIsChatInputAvailable,
   };
 
   // console.log(

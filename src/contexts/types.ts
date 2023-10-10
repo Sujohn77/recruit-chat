@@ -86,6 +86,8 @@ export interface IChatMessengerContext {
   setChatBotToken: (token: string) => void;
   createJobAlert: (payload: IJobAlertData) => void;
   clearJobFilters: () => void;
+  isChatInputAvailable: boolean;
+  setIsChatInputAvailable: (isAvailable: boolean) => void;
 }
 
 export interface IFileUploadContext {

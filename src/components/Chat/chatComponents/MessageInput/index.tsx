@@ -63,6 +63,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     emailAddress,
     createJobAlert,
     clearJobFilters,
+    isChatInputAvailable,
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
@@ -391,6 +392,10 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     }
   };
 
+  const disabled =
+    !isChatInputAvailable ||
+    (!!messages[0].optionList && !!messages[0].optionList.options.length);
+
   const inputProps = {
     type: inputType,
     headerName: headerName,
@@ -398,11 +403,14 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     matchedItems,
     matchedPart,
     value: draftMessage || "",
-    placeHolder: messages[0].optionList
-      ? t("placeHolders:selectOption")
-      : isApplyJobFlow
-      ? t("placeHolders:default")
-      : placeHolder || t("placeHolders:bot_typing"),
+    placeHolder:
+      inputType === TextFieldTypes.Select && disabled
+        ? ""
+        : messages[0].optionList
+        ? t("placeHolders:selectOption")
+        : currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE
+        ? t("placeHolders:default")
+        : placeHolder || t("placeHolders:bot_typing"),
     setIsShowResults,
     isShowResults,
     setHeight,
@@ -426,9 +434,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
         <Autocomplete
           {...inputProps}
           onChange={onChangeCategory}
-          disabled={
-            !!messages[0].optionList && !!messages[0].optionList.options.length
-          }
+          disabled={disabled}
         />
       )}
 

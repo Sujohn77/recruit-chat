@@ -23,27 +23,27 @@ input[type="number"] {
 @font-face {
   font-family: "Inter";
   src: local("Inter-Regular"),
-    url(/public/fonts/Inter-Regular.ttf) format("truetype");
+    url(/public/fonts/Inter-Regular.woff2) format("woff2");
   font-weight: 500;
 }
 
 @font-face {
   font-family: "Inter-Bold";
-  src: local("Inter-Bold"), url(/public/fonts/Inter-Bold.ttf) format("truetype");
+  src: local("Inter-Bold"), url(/public/fonts/Inter-Bold.woff2) format("woff2");
   font-weight: 600;
 }
 
 @font-face {
   font-family: "Inter-SemiBold";
   src: local("Inter-SemiBold"),
-    url(/public/fonts/Inter-SemiBold.ttf) format("truetype");
+    url(/public/fonts/Inter-SemiBold.woff2) format("woff2");
   font-weight: 500;
 }
 
 @font-face {
   font-family: "Inter-Medium";
   src: local("Inter-Medium"),
-    url(/public/fonts/Inter-Medium.ttf) format("truetype");
+    url(/public/fonts/Inter-Medium.woff2) format("woff2");
   font-weight: 500;
 }
 
