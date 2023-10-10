@@ -41,7 +41,7 @@ export const getChatActionMessages = (
   param?: string,
   withoutDefaultQuestions?: boolean
 ) => {
-  LOG(type, "TYPE", COLORS.WHITE);
+  LOG(type, "getChatActionMessages TYPE", COLORS.WHITE);
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [
