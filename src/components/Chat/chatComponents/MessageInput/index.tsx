@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
+import uniqBy from "lodash/uniqBy";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
@@ -24,8 +25,6 @@ import {
   getMatchedItem,
   getMatchedItems,
   getNextActionType,
-  isResults,
-  isResultsType,
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
@@ -400,7 +399,7 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
     type: inputType,
     headerName: headerName,
     subHeaderName,
-    matchedItems,
+    matchedItems: uniqBy(matchedItems, (i) => i),
     matchedPart,
     value: draftMessage || "",
     placeHolder:
