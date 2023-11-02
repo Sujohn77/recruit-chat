@@ -141,6 +141,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   clearJobFilters: () => {},
   isChatInputAvailable: false,
   setIsChatInputAvailable: () => {},
+  requisitionsPage: 0,
+  setRequisitionsPage: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -180,13 +182,16 @@ const ChatProvider = ({
   const [searchRequisitionsTrigger, setSearchRequisitionsTrigger] = useState(1);
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
+  const [requisitionsPage, setRequisitionsPage] = useState(0);
 
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
   const { requisitions, locations, setJobPositions } = useRequisitions(
     searchRequisitionsTrigger,
-    setIsChatLoading
+    setIsChatLoading,
+    requisitionsPage,
+    setRequisitionsPage
   );
   // ----------------------------------------------------------------------------- //
   const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
@@ -1193,6 +1198,8 @@ const ChatProvider = ({
     clearJobFilters,
     isChatInputAvailable,
     setIsChatInputAvailable,
+    requisitionsPage,
+    setRequisitionsPage,
   };
 
   // console.log(

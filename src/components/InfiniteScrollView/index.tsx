@@ -3,7 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { IInfiniteScrollViewProps } from "./props";
 
-const DEFAULT_SCROLL_THRESHOLD = 300;
+const DEFAULT_SCROLL_THRESHOLD = 200;
 const DEFAULT_LOADER = <div />;
 
 export const InfiniteScrollView: FC<IInfiniteScrollViewProps> = ({

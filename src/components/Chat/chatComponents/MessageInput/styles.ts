@@ -82,8 +82,16 @@ export const SearchBody = styled.ul`
   }
 `;
 
+export const ScrollWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+  position: relative;
+`;
+
 export const SearchPosition = styled.li`
-  height: ${searchItemHeight}px;
+  min-height: ${searchItemHeight}px;
   box-sizing: border-box;
   width: 100%;
   padding: 7px 16px;

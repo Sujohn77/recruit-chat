@@ -74,6 +74,7 @@ export const Autocomplete: FC<IAutocompleteProps> = (props) => {
     <div>
       {isResults && (
         <SearchResults
+          isSingleSelection
           setIsShowResults={setIsShowResults}
           headerName={headerName}
           matchedItems={matchedItems}

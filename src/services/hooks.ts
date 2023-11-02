@@ -18,9 +18,8 @@ interface IRequisitionType {
   category: string;
 }
 
-const requisitionParams = {
-  pageSize: 50,
-  page: 0,
+const searchParams = {
+  pageSize: 25,
   keyword: "*",
   minDatePosted: "2016-11-13T00:00:00",
   uniqueTitles: true,
@@ -28,47 +27,52 @@ const requisitionParams = {
 
 export const useRequisitions = (
   searchRequisitionsTrigger: any,
-  setIsChatLoading: Dispatch<SetStateAction<boolean>>
+  setIsChatLoading: Dispatch<SetStateAction<boolean>>,
+  page: number,
+  setPage: Dispatch<SetStateAction<number>>
 ) => {
   const [requisitions, setRequisitions] = useState<IRequisitionType[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
-
-  const setJobPositions = (requisitions: IRequisition[]) => {
-    setRequisitions(
-      map(requisitions, (c: IRequisition) => ({
-        title: c.title,
-        category: c.categories![0],
-      }))
-    );
-    if (requisitions.length) {
-      setLocations(map(requisitions, (r) => r.location));
-    }
-  };
-
-  const searchRequisitions = useCallback(async () => {
-    setIsChatLoading(true);
-    try {
-      const response = await apiInstance.searchRequisitions(requisitionParams);
-      if (response?.data?.requisitions?.length) {
-        setJobPositions(response.data.requisitions);
-      }
-    } catch (err) {
-      isDevMode && console.log("searchRequisitions", err);
-    } finally {
-      setIsChatLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     (async function () {
       if (searchRequisitionsTrigger !== 1) {
         setIsChatLoading(true);
         try {
-          const response = await apiInstance.searchRequisitions(
-            requisitionParams
-          );
+          const response = await apiInstance.searchRequisitions({
+            ...searchParams,
+            page,
+          });
           if (response?.data?.requisitions?.length) {
-            setJobPositions(response.data.requisitions);
+            if (page !== 0) {
+              setRequisitions((prevValue) => [
+                ...prevValue,
+                ...map(response?.data?.requisitions, (c: IRequisition) => ({
+                  title: c.title,
+                  category: c.categories![0],
+                })),
+              ]);
+
+              if (response?.data?.requisitions.length) {
+                setLocations((prevValue) => [
+                  ...prevValue,
+                  ...map(response?.data?.requisitions, (r) => r.location),
+                ]);
+              }
+            } else {
+              setRequisitions(
+                map(response?.data?.requisitions, (c: IRequisition) => ({
+                  title: c.title,
+                  category: c.categories![0],
+                }))
+              );
+
+              if (response?.data?.requisitions.length) {
+                setLocations(
+                  map(response?.data?.requisitions, (r) => r.location)
+                );
+              }
+            }
           }
         } catch (err) {
           isDevMode && console.log("searchRequisitions error:", err);
@@ -77,7 +81,64 @@ export const useRequisitions = (
         }
       }
     })();
+  }, [searchRequisitionsTrigger, page]);
+
+  useEffect(() => {
+    setPage(0);
   }, [searchRequisitionsTrigger]);
 
-  return { requisitions, locations, setJobPositions, searchRequisitions };
+  const setJobPositions = (requisitions: IRequisition[]) => {
+    if (page !== 0) {
+      setRequisitions((prevValue) => [
+        ...prevValue,
+        ...map(requisitions, (c: IRequisition) => ({
+          title: c.title,
+          category: c.categories![0],
+        })),
+      ]);
+
+      if (requisitions.length) {
+        setLocations((prevValue) => [
+          ...prevValue,
+          ...map(requisitions, (r) => r.location),
+        ]);
+      }
+    } else {
+      setRequisitions(
+        map(requisitions, (c: IRequisition) => ({
+          title: c.title,
+          category: c.categories![0],
+        }))
+      );
+
+      if (requisitions.length) {
+        setLocations(map(requisitions, (r) => r.location));
+      }
+    }
+  };
+
+  const searchRequisitions = async () => {
+    setIsChatLoading(true);
+    try {
+      const response = await apiInstance.searchRequisitions({
+        ...searchParams,
+        page,
+      });
+      if (response?.data?.requisitions?.length) {
+        setJobPositions(response.data.requisitions);
+      }
+    } catch (err) {
+      isDevMode && console.log("searchRequisitions", err);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  return {
+    requisitions,
+    locations,
+    setJobPositions,
+    searchRequisitions,
+    setPage,
+  };
 };

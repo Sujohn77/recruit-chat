@@ -88,6 +88,8 @@ export interface IChatMessengerContext {
   clearJobFilters: () => void;
   isChatInputAvailable: boolean;
   setIsChatInputAvailable: (isAvailable: boolean) => void;
+  requisitionsPage: number;
+  setRequisitionsPage: (page: number) => void;
 }
 
 export interface IFileUploadContext {
