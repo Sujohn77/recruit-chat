@@ -25,6 +25,7 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     emailAddress,
     firstName,
     lastName,
+    setViewJob,
   } = useChatMessenger();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -49,6 +50,7 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     // cancels sending messages related to Apply Job
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
+      setViewJob(null);
     }
 
     if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && chatId) {
