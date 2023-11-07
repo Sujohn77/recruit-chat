@@ -1,6 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { useFileUploadContext } from "contexts/FileUploadContext";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import map from "lodash/map";
 
 import * as S from "./styles";
@@ -46,6 +46,33 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const showLoader =
     isFileDownloading || isJobSearchingLoading || isChatLoading;
 
+  const messageList = useMemo(
+    () =>
+      map(messages, (message, index) => {
+        let withoutMargin = undefined;
+        const isNextMessCVFile =
+          messages[index - 1] &&
+          messages[index - 1]?.content?.subType === MessageType.UPLOADED_CV;
+        if (
+          message?.content?.subType === MessageType.UPLOAD_CV &&
+          isNextMessCVFile
+        ) {
+          withoutMargin = true;
+        }
+        return (
+          <Message
+            index={index}
+            key={`${message?.localId}-${message.dateCreated}`}
+            setShowLoginScreen={setShowLoginScreen}
+            message={message}
+            isLastMessage={index === 0}
+            withoutMargin={withoutMargin}
+          />
+        );
+      }),
+    [messages]
+  );
+
   return (
     <S.MessagesArea>
       <S.MessageListContainer
@@ -59,28 +86,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
           style={infiniteScrollStyle}
           inverse
         >
-          {map(messages, (message, index) => {
-            let withoutMargin = undefined;
-            const isNextMessCVFile =
-              messages[index - 1] &&
-              messages[index - 1]?.content?.subType === MessageType.UPLOADED_CV;
-            if (
-              message?.content?.subType === MessageType.UPLOAD_CV &&
-              isNextMessCVFile
-            ) {
-              withoutMargin = true;
-            }
-            return (
-              <Message
-                index={index}
-                key={`${message?.localId}-${message.dateCreated}`}
-                setShowLoginScreen={setShowLoginScreen}
-                message={message}
-                isLastMessage={index === 0}
-                withoutMargin={withoutMargin}
-              />
-            );
-          })}
+          {messageList}
         </InfiniteScrollView>
       </S.MessageListContainer>
 
