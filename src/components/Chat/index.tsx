@@ -3,12 +3,13 @@ import React, { FC, useState } from "react";
 import * as S from "./styles";
 import {
   ChatHeader,
+  Login,
+  Logout,
   MessageInput,
   MessagesList,
   ViewJob,
 } from "./chatComponents";
-import { Login } from "./chatComponents/Login";
-import { Logout } from "./chatComponents/Logout";
+
 interface IChatProps {
   isShowChat: boolean;
   children?: React.ReactNode | React.ReactNode[];
@@ -31,17 +32,18 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
         resultsHeight={height}
       />
 
+      {/* -------------------- pop-ups ----------------------  */}
       <Login
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
       />
-
       <Logout
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
       />
-
       <ViewJob setShowLoginScreen={setShowLoginScreen} />
+      {/* ----------------------------------------------------  */}
+
       <MessageInput setHeight={setHeight} />
     </S.Wrapper>
   );
