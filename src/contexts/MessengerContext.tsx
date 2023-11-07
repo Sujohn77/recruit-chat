@@ -917,7 +917,6 @@ const ChatProvider = ({
         action,
         messages: updatedMessages,
         responseMessages,
-        additionalCondition,
       });
 
       // console.log("responseMessages", responseMessages);
