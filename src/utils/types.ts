@@ -193,7 +193,6 @@ export interface IGetUpdatedMessages {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   responseMessages: ILocalMessage[];
-  additionalCondition: boolean | null;
 }
 
 export interface IPushMessage {

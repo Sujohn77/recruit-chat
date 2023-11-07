@@ -344,7 +344,6 @@ export const getMessagesOnAction = ({
   action,
   messages,
   responseMessages,
-  additionalCondition,
 }: IGetUpdatedMessages) => {
   const { type } = action;
   let updatedMessages = messages;

@@ -160,8 +160,7 @@ export const getChatActionMessages = (
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
-      const messages = withoutDefaultQuestions ? [] : questions;
-      return messages;
+      return withoutDefaultQuestions ? [] : questions;
     case CHAT_ACTIONS.GET_USER_NAME:
       return [
         {
@@ -316,8 +315,6 @@ export const getChatActionResponse = ({
   param,
   isQuestion = false,
 }: IGetChatResponseProps): ILocalMessage[] => {
-  const messages = getChatActionMessages(type, param, isQuestion);
-
   if (
     additionalCondition !== null &&
     additionalCondition !== undefined &&
@@ -330,20 +327,8 @@ export const getChatActionResponse = ({
     return getChatActionResponse({ type: newType });
   }
 
-  const responseChatMessages = getParsedMessages(messages);
-  // TODO: uncomment when backend is ready
-  // for (let msg of responseChatMessages) {
-  //     const serverMessage = {
-  //         ...defaultServerMessage,
-  //         msg: msg.content.text,
-  //         subType: msg.content.subType,
-  //         localId: `${msg.localId}`,
-  //     };
-  //     sendMessage(serverMessage);
-  // }
-
-  // const isPushMessage = isPushMessageType(type);
-  return responseChatMessages;
+  const responseMessages = getChatActionMessages(type, param, isQuestion);
+  return getParsedMessages(responseMessages);
 };
 
 export const languages = ["EN", "FR", "UA"];
