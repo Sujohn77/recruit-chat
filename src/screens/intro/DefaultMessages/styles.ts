@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import { Button } from "@mui/material";
 import { MessageBox } from "components/Chat/chatComponents/MessagesList/Message/styles";
-import { COLORS } from "utils/colors";
-
-const borderWidth = "1.5px";
 
 export const Flex = styled.div`
   display: flex;
@@ -15,35 +11,6 @@ export const Flex = styled.div`
 export const Wrapper = styled(Flex)`
   margin-left: 16px;
   margin-bottom: 18px;
-`;
-
-export const Close = styled.div<{ height?: string; color?: string }>`
-  position: absolute;
-  right: 16px;
-  top: 10px;
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-
-  &:before,
-  &:after {
-    content: "";
-    height: ${({ height = "17px" }) => height};
-    width: ${borderWidth};
-    background: ${({ color }) => color};
-    display: inline-block;
-    position: absolute;
-    top: 1px;
-    left: 9px;
-  }
-
-  &:before {
-    transform: rotate(-45deg);
-  }
-
-  &:after {
-    transform: rotate(45deg);
-  }
 `;
 
 export const Message = styled.div`
@@ -123,13 +90,6 @@ export const IntroImage = styled(Image)<{ isRounded?: boolean }>`
   box-sizing: border-box;
 `;
 
-export const IntroImageBackground = styled.div<{ source: string }>`
-  width: 20px;
-  height: 20px;
-  background: ${({ source }) => source} no-repeat;
-  background-size: cover;
-`;
-
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;
@@ -152,16 +112,4 @@ export const InfoContent = styled.div`
 
   height: 100%;
   overflow: hidden;
-`;
-
-export const ImageButton = styled(Button)`
-  min-width: 34px !important;
-  height: 34px;
-  width: 34px;
-  flex-shrink: 1;
-  border-radius: 50% !important;
-  background: ${COLORS.ALTO}!important;
-  text-align: center !important;
-  line-height: 34px;
-  box-sizing: border-box;
 `;

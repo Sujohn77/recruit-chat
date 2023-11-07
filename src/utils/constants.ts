@@ -333,6 +333,11 @@ export const getChatActionResponse = ({
 
 export const languages = ["EN", "FR", "UA"];
 
+export enum CHAT_OPTIONS {
+  FIND_JOB = "FIND JOB",
+  ASK_QUESTION = "ASK QUESTION",
+}
+
 export enum Status {
   PENDING = "PENDING",
   ERROR = "ERROR",

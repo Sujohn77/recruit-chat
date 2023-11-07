@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { COLORS } from "utils/colors";
 
 const animationDuration = "0.35s";
+const borderWidth = "1.5px";
 
 export const Wrapper = styled.div`
   background: ${COLORS.WHITE};
@@ -95,4 +96,31 @@ export const NotificationText = styled.p`
 export const Icon = styled.img`
   width: 16px;
   height: 16px;
+`;
+
+export const Close = styled.div<{ height?: string; color?: string }>`
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+
+  &:before,
+  &:after {
+    content: "";
+    height: ${({ height = "17px" }) => height};
+    width: ${borderWidth};
+    background: ${({ color }) => color};
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    left: 9px;
+  }
+  &:before {
+    transform: rotate(-45deg);
+  }
+  &:after {
+    transform: rotate(45deg);
+  }
 `;

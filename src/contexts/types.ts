@@ -107,23 +107,14 @@ export interface IFileUploadContext {
 
 export interface IAuthContext {
   setError: (error: string | null) => void;
-  loginByEmail: ({
-    email,
-    oneTimePassword,
-  }: {
-    email?: string;
-    oneTimePassword?: string;
-  }) => void;
+
   error: string | null;
 
   mobileSubscribeId: number | null;
-  isVerified: boolean;
-  isOTPpSent: boolean;
-  verifyEmail: string | null;
   clearAuthConfig: () => void;
 }
 
-export type PayloadType = {
+export type IPayloadType = {
   item?: string | null;
   items?: any[];
   isChatMessage?: boolean;
@@ -147,7 +138,7 @@ export type PayloadType = {
 
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;
-  payload?: PayloadType;
+  payload?: IPayloadType;
 }
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}

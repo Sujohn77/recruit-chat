@@ -5,9 +5,9 @@ import { FileUploadProvider } from "contexts/FileUploadContext";
 import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
-import { Content } from "content";
-import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
-import { EventIds, SessionStorage } from "utils/constants";
+import { Content } from "Content";
+import { postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
+import { EventIds, SessionStorage, isDevMode } from "utils/constants";
 import { IApiThemeResponse } from "utils/api";
 import { apiInstance } from "services/api";
 
@@ -57,7 +57,7 @@ export const ChatBotRoot: FC = () => {
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        {chatBotID && (
+        {(chatBotID || isDevMode) && (
           <ChatProvider chatBotID={chatBotID}>
             <ThemeContextProvider value={theme}>
               <FileUploadProvider>

@@ -1,7 +1,6 @@
 import { ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
-import { CHAT_OPTIONS } from "screens/Intro";
 import {
   IChatRoomID,
   IMessage,
@@ -10,6 +9,7 @@ import {
   IUserSelf,
   LocationType,
 } from "services/types";
+import { CHAT_OPTIONS } from "./constants";
 
 export interface IWithID {
   id: string | number;

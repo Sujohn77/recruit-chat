@@ -2,7 +2,7 @@ import { ICONS } from "assets";
 import i18n from "services/localization";
 import { CHAT_ACTIONS } from "utils/types";
 
-export const messages = {
+export const defMessages = {
   options: [
     {
       icon: ICONS.SEARCH_ICON,
