@@ -145,13 +145,6 @@ class Api {
       data
     );
 
-  sendMessage = (payload: IApiMessage) =>
-    this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
-  markChatRead = (chatId?: number) =>
-    this.client.post<IUpdateMessagesResponse>(
-      "/api/messenger/chat/acknowledge",
-      { chatId }
-    );
   getUserSelf = (data: AppKeyType) =>
     this.client.get<IUserSelf>("api/user/self", data);
   uploadCV = (data: IUploadCVPayload) =>
