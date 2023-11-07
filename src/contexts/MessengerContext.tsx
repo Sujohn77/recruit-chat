@@ -1036,10 +1036,10 @@ const ChatProvider = ({
       excludeItem,
     });
 
-    LOG(type, "type", COLORS.PERSIAN_RED);
-    LOG(excludeItem, "excludeItem", COLORS.PERSIAN);
-    LOG(updatedMessages, "updatedMessages", COLORS.PERSIAN_RED);
-    LOG(messages, "messages", COLORS.PERSIAN);
+    // LOG(type, "type", COLORS.PERSIAN_RED);
+    // LOG(excludeItem, "excludeItem", COLORS.PERSIAN);
+    // LOG(updatedMessages, "updatedMessages", COLORS.PERSIAN_RED);
+    // LOG(messages, "messages", COLORS.PERSIAN);
 
     if (type) {
       const responseMessages = getChatActionResponse({
@@ -1081,7 +1081,7 @@ const ChatProvider = ({
 
         getChatBotResponse(action);
       }
-      LOG(updatedMessages, "updatedMessages", COLORS.BLACK, COLORS.WHITE);
+      // LOG(updatedMessages, "updatedMessages", COLORS.BLACK, COLORS.WHITE);
       setMessages(updatedMessages);
     }
   };
