@@ -24,12 +24,11 @@ export const DefaultMessages: FC = () => {
   const { dispatch } = useChatMessenger();
   const { setChatScreen } = useAppStore();
 
-  const onClick = useCallback((option: IOption) => {
-    const { message: item, type } = option;
+  const onClick = useCallback(({ message, type }: IOption) => {
     setChatScreen(
       ChatScreens[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
     );
-    dispatch({ type, payload: { item, isChatMessage: true } });
+    dispatch({ type, payload: { item: message, isChatMessage: true } });
     localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
   }, []);
 
