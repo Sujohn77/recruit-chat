@@ -4,15 +4,18 @@ import { COLORS } from "utils/colors";
 const animationDuration = "0.35s";
 const borderWidth = "1.5px";
 
-export const Wrapper = styled.div`
+interface IWrapperProps {
+  isOpened: boolean;
+}
+
+export const Wrapper = styled.div<IWrapperProps>`
   background: ${COLORS.WHITE};
   position: relative;
   border-radius: 10px;
   overflow: hidden;
   z-index: 1;
   height: 0;
-
-  animation: ${({ isOpened }: { isOpened: boolean }) =>
+  animation: ${({ isOpened }) =>
     isOpened
       ? `open ${animationDuration} ease-in`
       : `close ${animationDuration} ease-in`};

@@ -4,6 +4,10 @@ import { COLORS } from "utils/colors";
 const borderWidth = "1.5px";
 const animationDuration = "0.25s";
 
+interface IWrapperProps {
+  isClosed: boolean;
+}
+
 export const ButtonStyles = {
   width: "250px",
   margin: "0 auto 16px",
@@ -19,13 +23,12 @@ export const Flex = styled.div`
   width: 100%;
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<IWrapperProps>`
   width: 370px;
   position: absolute;
   bottom: 0;
   right: 0;
-
-  animation: ${({ isClosed }: { isClosed: boolean }) =>
+  animation: ${({ isClosed }) =>
     isClosed && `fadeOut ${animationDuration} ease-in-out`};
   overflow: hidden;
   animation-fill-mode: forwards;

@@ -7,10 +7,8 @@ interface IIntroScreenProps {
   isSelectedOption: boolean | null;
 }
 
-export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => {
-  return (
-    <S.Wrapper isClosed={!!isSelectedOption}>
-      <DefaultMessages />
-    </S.Wrapper>
-  );
-};
+export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => (
+  <S.Wrapper isClosed={!!isSelectedOption}>
+    <DefaultMessages />
+  </S.Wrapper>
+);
