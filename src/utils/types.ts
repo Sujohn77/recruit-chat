@@ -212,6 +212,7 @@ export interface IFilterItemsWithType {
   type: MessageType;
   messages: ILocalMessage[];
   excludeItem: string;
+  withoutFiltering?: boolean; // for ask questions
 }
 
 export interface IRequisition extends IWithID, ILocation {

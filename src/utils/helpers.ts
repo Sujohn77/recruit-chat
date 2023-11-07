@@ -445,7 +445,13 @@ export const replaceItemsWithType = ({
   type,
   messages,
   excludeItem,
+  withoutFiltering = false,
 }: IFilterItemsWithType) => {
+  // for ask questions
+  if (withoutFiltering) {
+    return messages;
+  }
+
   const item = find(
     messages,
     (msg) => msg?.content.subType === type && msg.content.text === excludeItem

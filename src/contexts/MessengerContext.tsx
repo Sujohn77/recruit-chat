@@ -80,6 +80,7 @@ import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
 import find from "lodash/find";
 import filter from "lodash/filter";
+import { questions } from "components/ChatContent/data";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -1018,6 +1019,8 @@ const ChatProvider = ({
       type: MessageType.BUTTON,
       messages,
       excludeItem,
+      // for ask questions
+      withoutFiltering: questions.some((q) => q.text === excludeItem),
     });
 
     // LOG(type, "type", COLORS.PERSIAN_RED);
