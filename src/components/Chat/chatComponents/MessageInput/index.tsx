@@ -66,9 +66,8 @@ export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
-  const formattedLocations = getFormattedLocations(locations);
   const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
-    locations: formattedLocations,
+    locations: getFormattedLocations(locations),
     requisitions,
     category,
     lastActionType: currentMsgType,
