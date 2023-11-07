@@ -747,9 +747,10 @@ const ChatProvider = ({
               localId: generateLocalId(),
               _id: generateLocalId(),
             };
-            const hiringProcessMessage = getChatActionResponse({
-              type: CHAT_ACTIONS.HIRING_PROCESS,
-            });
+            // hiringProcessMessage for another phase
+            // const hiringProcessMessage = getChatActionResponse({
+            //   type: CHAT_ACTIONS.HIRING_PROCESS,
+            // });
             const lastMessIsButton =
               messages[0]?.content.subType === MessageType.BUTTON;
 
@@ -790,7 +791,7 @@ const ChatProvider = ({
                 //       ...messages,
                 //     ];
                 updatedMessages = [
-                  ...hiringProcessMessage,
+                  // ...hiringProcessMessage,
                   ...answers,
                   questionMess,
                   ...messages,
@@ -817,7 +818,7 @@ const ChatProvider = ({
                 //     ];
 
                 updatedMessages = [
-                  ...hiringProcessMessage,
+                  // ...hiringProcessMessage,
                   withoutAnswer,
                   questionMess,
                   ...messages,
@@ -836,9 +837,10 @@ const ChatProvider = ({
                 dateCreated: { seconds: moment().unix() },
               };
               updatedMessages = lastMessIsButton
-                ? [...hiringProcessMessage, withoutAnswer, ...messages]
+                ? // ? [...hiringProcessMessage, withoutAnswer, ...messages]
+                  [withoutAnswer, ...messages]
                 : [
-                    ...hiringProcessMessage,
+                    // ...hiringProcessMessage,
                     withoutAnswer,
                     questionMess,
                     ...messages,
@@ -1034,6 +1036,11 @@ const ChatProvider = ({
       excludeItem,
     });
 
+    LOG(type, "type", COLORS.PERSIAN_RED);
+    LOG(excludeItem, "excludeItem", COLORS.PERSIAN);
+    LOG(updatedMessages, "updatedMessages", COLORS.PERSIAN_RED);
+    LOG(messages, "messages", COLORS.PERSIAN);
+
     if (type) {
       const responseMessages = getChatActionResponse({
         type,
@@ -1074,6 +1081,7 @@ const ChatProvider = ({
 
         getChatBotResponse(action);
       }
+      LOG(updatedMessages, "updatedMessages", COLORS.BLACK, COLORS.WHITE);
       setMessages(updatedMessages);
     }
   };
