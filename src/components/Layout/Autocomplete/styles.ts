@@ -9,7 +9,7 @@ export const FormInput = styled(TextField)`
     border-radius: 10px;
 
     padding: 10px;
-    font-family: Inter;
+    /* font-family: Inter; */
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;

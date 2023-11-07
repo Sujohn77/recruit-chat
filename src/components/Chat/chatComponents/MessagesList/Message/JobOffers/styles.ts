@@ -3,7 +3,7 @@ import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   position: relative;
-  font-family: Inter-SemiBold;
+  /* font-family: Inter-SemiBold; */
   margin: 0 0 16px;
   button {
     opacity: 1;

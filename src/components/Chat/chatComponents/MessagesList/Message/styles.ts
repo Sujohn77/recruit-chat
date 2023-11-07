@@ -171,7 +171,7 @@ export const ActionButton = styled(Button)`
   border-radius: 20px !important;
   font-size: 14px !important;
   padding: 11px 12px !important;
-  font-family: "Inter-Medium" !important;
+  /* font-family: "Inter-Medium" !important; */
   span {
     line-height: 17px;
   }

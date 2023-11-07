@@ -9,7 +9,7 @@ export const DefaultButton = styled(ButtonBase)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter-Medium;
+  /* font-family: Inter-Medium; */
 `;
 
 export const DarkButton = styled(DefaultButton)`
@@ -23,7 +23,7 @@ export const DarkButton = styled(DefaultButton)`
   border-radius: 8px !important;
   font-size: 12px;
   line-height: 17px;
-  font-family: Inter-SemiBold;
+  /* font-family: Inter-SemiBold; */
 
   &:disabled {
     opacity: 0.3;
@@ -39,7 +39,7 @@ export const PrimaryButton = styled(DefaultButton)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter-SemiBold;
+  /* font-family: Inter-SemiBold; */
   margin: 0 0 16px !important;
   color: ${(props) => props.theme.primaryColor}!important;
   border: 1px solid ${(props) => props.theme.primaryColor}!important;

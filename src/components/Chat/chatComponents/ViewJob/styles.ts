@@ -13,7 +13,7 @@ export const ViewBody = styled.div`
   overflow: auto;
   height: 480px;
   box-sizing: border-box;
-  font-family: Inter-Medium;
+  /* font-family: Inter-Medium; */
   font-weight: 500;
   animation: fade-in 0.25s ease-in forwards;
   opacity: 0;

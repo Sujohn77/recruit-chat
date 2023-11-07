@@ -24,7 +24,7 @@ export const Avatar = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-family: Inter-Bold;
+  /* font-family: Inter-Bold; */
   font-size: 16px;
   line-height: 19px;
   margin: 0;
@@ -36,7 +36,7 @@ export const ViewTitle = styled.h3`
   margin: 0 auto;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter;
+  /* font-family: Inter; */
   font-weight: 500;
 `;
 

@@ -28,7 +28,7 @@ export const Title = styled.p`
   line-height: 17px;
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
-  font-family: "Inter-Bold";
+  /* font-family: "Inter-Bold"; */
 `;
 
 export const Description = styled.p`
@@ -65,6 +65,6 @@ export const QuestionInput = styled(FormInput)`
   textarea {
     background: #fff !important;
     color: ${COLORS.DOVE_GRAY};
-    font-family: "Inter-Medium";
+    /* font-family: "Inter-Medium"; */
   }
 `;

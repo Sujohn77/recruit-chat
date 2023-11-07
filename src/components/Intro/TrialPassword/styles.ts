@@ -53,7 +53,7 @@ export const OtpContent = styled.div`
     font-size: 14px;
     line-height: 17px;
     color: ${COLORS.DUSTY_GRAY};
-    font-family: Inter-Medium;
+    /* font-family: Inter-Medium; */
   }
 `;
 

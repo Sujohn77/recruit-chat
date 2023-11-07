@@ -107,7 +107,7 @@ export const Question = styled(MessageBox)`
 
 export const Text = styled.span`
   font-size: 14px;
-  font-family: Inter-Medium;
+  /* font-family: Inter-Medium; */
   color: ${(props) => props.theme.initialColor};
 `;
 
