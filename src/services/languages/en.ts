@@ -34,7 +34,7 @@ export const en = {
   },
   messages: {
     initialMessage: "Hi! Are you looking for a job?",
-    uploadCV: "Upload CV",
+    uploadCV: "Upload resume",
     dragAndDrop: "Drag and drop a resume file here",
     answerQuestions: "Answer questions",
     whatJobTitle:

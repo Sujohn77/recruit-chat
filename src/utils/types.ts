@@ -79,7 +79,7 @@ export interface ILocalMessage {
 export enum ButtonsOptions {
   FIND_JOB = "Find a job",
   ASK_QUESTION = "Ask a question",
-  UPLOAD_CV = "Upload CV",
+  UPLOAD_CV = "Upload resume",
   ANSWER_QUESTIONS = "Answer questions",
   HOW_MUCH_EXPERIENCE = "How much work experience do I need for your company?",
   HOW_SUBMIT_CV = "Can I submit my CV",
