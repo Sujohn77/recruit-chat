@@ -144,3 +144,9 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+`;

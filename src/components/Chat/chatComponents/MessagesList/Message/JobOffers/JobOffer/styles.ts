@@ -28,12 +28,6 @@ export const LoaderWrapper = styled.div`
   justify-content: center;
 `;
 
-export const ButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: auto;
-`;
-
 export const Description = styled.p`
   height: 130px;
   overflow: hidden;

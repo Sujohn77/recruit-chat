@@ -37,10 +37,10 @@ export const JobOffers: React.FC<IJobOffersProps> = ({
           return index < offerJobs.length ? (
             <JobOffer
               key={offerJobs[index].id}
-              isActive={activeIndex === index}
-              isLastMessage={isLastMessage}
-              setShowLoginScreen={setShowLoginScreen}
               jobOffer={offerJobs[index]}
+              // isActive={activeIndex === index}
+              // isLastMessage={isLastMessage}
+              // setShowLoginScreen={setShowLoginScreen}
             />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />
