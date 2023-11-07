@@ -123,7 +123,7 @@ export interface IAuthContext {
   clearAuthConfig: () => void;
 }
 
-export type PayloadType = {
+export type IPayloadType = {
   item?: string | null;
   items?: any[];
   isChatMessage?: boolean;
@@ -147,7 +147,7 @@ export type PayloadType = {
 
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;
-  payload?: PayloadType;
+  payload?: IPayloadType;
 }
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}

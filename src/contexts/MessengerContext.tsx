@@ -782,14 +782,6 @@ const ChatProvider = ({
                     dateCreated: { seconds: moment().unix() },
                   })
                 );
-                // updatedMessages = lastMessIsButton
-                //   ? [...hiringProcessMessage, ...answers, ...messages]
-                //   : [
-                //       ...hiringProcessMessage,
-                //       ...answers,
-                //       questionMess,
-                //       ...messages,
-                //     ];
                 updatedMessages = [
                   // ...hiringProcessMessage,
                   ...answers,
@@ -808,14 +800,6 @@ const ChatProvider = ({
                   _id: generateLocalId(),
                   dateCreated: { seconds: moment().unix() },
                 };
-                // updatedMessages = lastMessIsButton
-                //   ? [...hiringProcessMessage, withoutAnswer, ...messages]
-                //   : [
-                //       ...hiringProcessMessage,
-                //       withoutAnswer,
-                //       questionMess,
-                //       ...messages,
-                //     ];
 
                 updatedMessages = [
                   // ...hiringProcessMessage,

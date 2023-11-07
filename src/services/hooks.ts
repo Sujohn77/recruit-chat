@@ -13,7 +13,7 @@ import { apiInstance } from "services/api";
 import { IRequisition } from "utils/types";
 import { isDevMode } from "utils/constants";
 
-interface IRequisitionType {
+export interface IRequisitionType {
   title: string;
   category: string;
 }
