@@ -27,7 +27,7 @@ export const DarkButton = styled(DefaultButton)<IDarkButtonProps>`
   border-radius: 8px !important;
   font-size: 14px;
   line-height: 17px;
-  font-weight: ${({ fontWeight = 500 }) => fontWeight};
+  font-weight: ${({ fontWeight = 700 }) => fontWeight};
   /* font-family: Inter-SemiBold; */
 
   &:disabled {

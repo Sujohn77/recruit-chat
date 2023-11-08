@@ -124,7 +124,6 @@ export const Content: FC = () => {
   return (
     <>
       {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
-
       <Intro isSelectedOption={isSelectedOption} />
     </>
   );

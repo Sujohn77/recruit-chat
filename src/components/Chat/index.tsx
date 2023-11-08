@@ -31,17 +31,18 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
         resultsHeight={height}
       />
 
+      {/* -------------------------- PopUp's -------------------------- */}
       <Login
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
       />
-
       <Logout
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
       />
-
       <ViewJob setShowLoginScreen={setShowLoginScreen} />
+      {/* ------------------------------------------------------------- */}
+
       <MessageInput setHeight={setHeight} />
     </S.Wrapper>
   );
