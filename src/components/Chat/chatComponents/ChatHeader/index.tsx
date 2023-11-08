@@ -5,11 +5,11 @@ import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
-import { ICONS } from "assets";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
-import { ChatScreens, useAppStore } from "store/app.store";
+import { useChatStore } from "store/chat.store";
+import { ChatScreens } from "utils/constants";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
@@ -25,7 +25,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const { viewJob, setViewJob, isCandidateWithEmail } = useChatMessenger();
-  const { setChatScreen } = useAppStore();
+  const { setChatScreen } = useChatStore();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")

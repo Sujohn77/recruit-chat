@@ -333,6 +333,12 @@ export const getChatActionResponse = ({
 
 export const languages = ["EN", "FR", "UA"];
 
+export enum ChatScreens {
+  Default = "Default",
+  QnA = "AskAQuestion",
+  FindAJob = "FindAJob",
+}
+
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",
   ASK_QUESTION = "ASK QUESTION",

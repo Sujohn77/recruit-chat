@@ -6,10 +6,10 @@ import map from "lodash/map";
 
 import * as S from "./styles";
 import { defMessages } from "./data";
-import { ChatScreens, useAppStore } from "store/app.store";
 import { CHAT_ACTIONS } from "utils/types";
-import { LocalStorage } from "utils/constants";
+import { ChatScreens, LocalStorage } from "utils/constants";
 import { ThemeType } from "utils/theme/default";
+import { useChatStore } from "store/chat.store";
 
 export interface IOption {
   icon: string;
@@ -22,7 +22,7 @@ export const DefaultMessages: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const { dispatch } = useChatMessenger();
-  const { setChatScreen } = useAppStore();
+  const { setChatScreen } = useChatStore();
 
   const onClick = useCallback(({ message, type }: IOption) => {
     setChatScreen(

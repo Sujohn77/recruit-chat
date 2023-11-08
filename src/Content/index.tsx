@@ -5,17 +5,18 @@ import isNull from "lodash/isNull";
 import { Chat } from "components";
 import { Intro } from "screens";
 import {
+  ChatScreens,
   EventIds,
   REFRESH_APP_TIMEOUT,
   REFRESH_TOKEN_TIMEOUT,
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
-import { ChatScreens, useAppStore } from "store/app.store";
+import { useChatStore } from "store/chat.store";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
-  const { chatScreen } = useAppStore();
+  const { chatScreen } = useChatStore();
 
   const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
 
