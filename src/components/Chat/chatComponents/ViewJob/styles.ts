@@ -75,6 +75,17 @@ export const InfoItem = styled(MenuItemWrapper)`
   margin-bottom: 8px;
   padding: 0;
   color: ${COLORS.BLACK};
+
+  &:before {
+    content: "";
+    background: ${(props) => props.theme.primaryColor};
+    display: inline-block;
+    margin-right: 8px;
+    width: 10px;
+    border-radius: 50%;
+    height: 10px;
+    margin-top: 4px;
+  }
 `;
 
 export const ViewText = styled.div`

@@ -224,6 +224,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             <DarkButton
               disabled={applyJobLoading}
               onClick={handleApplyJobClick}
+              fontWeight={700}
             >
               {applyJobLoading ? (
                 <S.LoaderWrapper>
@@ -235,7 +236,11 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             </DarkButton>
           )}
 
-          <DarkButton disabled={isLoading} onClick={interestedInHandler}>
+          <DarkButton
+            disabled={isLoading}
+            onClick={interestedInHandler}
+            fontWeight={700}
+          >
             {isLoading ? (
               <S.LoaderWrapper>
                 <Loader showLoader absolutePosition={false} />

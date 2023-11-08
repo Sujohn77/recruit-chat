@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { ButtonBase } from "@mui/material";
 
+interface IDarkButtonProps {
+  fontWeight?: number;
+}
+
 export const DefaultButton = styled(ButtonBase)`
   display: flex;
   align-items: center;
@@ -12,7 +16,7 @@ export const DefaultButton = styled(ButtonBase)`
   /* font-family: Inter-Medium; */
 `;
 
-export const DarkButton = styled(DefaultButton)`
+export const DarkButton = styled(DefaultButton)<IDarkButtonProps>`
   height: 30px;
   width: calc(50% - 5px);
   display: flex;
@@ -21,8 +25,9 @@ export const DarkButton = styled(DefaultButton)`
   background: ${(props) => props.theme.primaryColor}!important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
   border-radius: 8px !important;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 17px;
+  font-weight: ${({ fontWeight = 500 }) => fontWeight};
   /* font-family: Inter-SemiBold; */
 
   &:disabled {
