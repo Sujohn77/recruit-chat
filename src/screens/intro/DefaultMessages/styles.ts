@@ -79,7 +79,7 @@ export const Message = styled.div`
 `;
 
 export const Question = styled(MessageBox)`
-  width: 225px;
+  min-width: 225px;
   padding: 0px 16px;
   line-height: 41px;
   border: none;
