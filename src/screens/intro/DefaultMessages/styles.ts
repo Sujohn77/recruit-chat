@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import { Button } from "@mui/material";
 import { MessageBox } from "components/Chat/chatComponents/MessagesList/Message/styles";
-import { COLORS } from "utils/colors";
 
 const borderWidth = "1.5px";
 
@@ -123,13 +121,6 @@ export const IntroImage = styled(Image)<{ isRounded?: boolean }>`
   box-sizing: border-box;
 `;
 
-export const IntroImageBackground = styled.div<{ source: string }>`
-  width: 20px;
-  height: 20px;
-  background: ${({ source }) => source} no-repeat;
-  background-size: cover;
-`;
-
 export const Options = styled(Flex)`
   margin-left: auto;
   width: fit-content;
@@ -152,16 +143,4 @@ export const InfoContent = styled.div`
 
   height: 100%;
   overflow: hidden;
-`;
-
-export const ImageButton = styled(Button)`
-  min-width: 34px !important;
-  height: 34px;
-  width: 34px;
-  flex-shrink: 1;
-  border-radius: 50% !important;
-  background: ${COLORS.ALTO}!important;
-  text-align: center !important;
-  line-height: 34px;
-  box-sizing: border-box;
 `;
