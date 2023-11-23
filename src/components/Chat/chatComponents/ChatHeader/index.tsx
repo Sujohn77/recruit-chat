@@ -5,11 +5,9 @@ import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
-import { ICONS } from "assets";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
-import { ChatScreens, useAppStore } from "store/app.store";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;
@@ -24,8 +22,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob, isCandidateWithEmail } = useChatMessenger();
-  const { setChatScreen } = useAppStore();
+  const { viewJob, setViewJob } = useChatMessenger();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -39,13 +36,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     }
   }, [showLoginScreen]);
 
-  const onCloseChat = useCallback(() => {
-    if (isCandidateWithEmail) {
-      setShowConfirmLogout(true);
-    } else {
-      setChatScreen(ChatScreens.Default);
-    }
-  }, [isCandidateWithEmail]);
+  const onCloseChat = useCallback(() => setShowConfirmLogout(true), []);
 
   return (
     <S.ChatHeaderWrapper>
