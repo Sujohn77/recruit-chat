@@ -68,7 +68,9 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   useEffect(() => {
     if (viewJob?.id && +viewJob?.id === jobIdWithoutFlowId) {
       setShowApplyBtn(false);
-      setApplyJobError("Sorry, it's not possible to accept this job.");
+      setApplyJobError(
+        "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com"
+      );
     }
   }, [viewJob, jobIdWithoutFlowId]);
 
@@ -185,7 +187,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             setShowApplyBtn(false);
             setApplyJobError(
               res.data?.errors[0]?.trim() ||
-                "Sorry, it's not possible to accept this job."
+                "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com"
             );
 
             if (res.data?.FlowID === 0) {
