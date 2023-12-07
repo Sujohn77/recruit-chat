@@ -128,7 +128,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               content: {
                 subType: MessageType.TEXT,
                 // TODO: add translation
-                text: "Already registered themselves for this job",
+                // text: "Already registered themselves for this job",
+                text: "You have already expressed interest in this job and created a job alert",
               },
             };
           } else if (response.data?.statusCode === 105) {
