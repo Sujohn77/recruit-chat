@@ -25,6 +25,7 @@
   // ---------------------------------------------------------------------- //
   let chatBotToken;
   let chatBotStyle;
+  let chatBotProps;
   let spinner;
 
   // function removeSpinner() {
@@ -41,8 +42,9 @@
   //   spinner?.style?.remove();
   // }
 
-  function appendChatBot(style, token) {
+  function appendChatBot(style, token, props) {
     chatBotStyle = style;
+    chatBotProps = props;
     chatBotToken = token;
 
     const ifrm = document.createElement("iframe");
@@ -66,7 +68,7 @@
 
     ifrm.addEventListener("load", () => {
       // removeSpinner();
-      ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
+      ifrm.contentWindow.postMessage({ guid, style, token, props }, ifrm.src);
     });
     ifrm.onerror = () => refreshToken();
   }
@@ -104,9 +106,10 @@
 
   async function getChatBotStyle(token) {
     try {
-      const response = await fetch(`${BASE_URL}/style?ChatBotGuid=` + guid);
+      const response = await fetch(
+        `${BASE_URL}/configuration/?chatBotGuid=${guid}`
+      );
 
-      console.log("getChatBotStyle RES", response);
       // if request was canceled
       if (response.status === null) {
         getChatBotStyle(token);
@@ -117,7 +120,7 @@
       if (data?.statusCode === 413) {
         refreshToken(getChatBotStyle);
       } else {
-        appendChatBot(JSON.parse(data), token);
+        appendChatBot(data.style, token, data.props);
       }
     } catch (error) {
       // removeSpinner();
@@ -161,7 +164,12 @@
         // this case for Safari (iframe.onload didn't work)
         case eventIds.GET_CHATBOT_DATA:
           chatbotIframe.contentWindow.postMessage(
-            { guid, style: chatBotStyle, token: chatBotToken },
+            {
+              guid,
+              style: chatBotStyle,
+              token: chatBotToken,
+              props: chatBotProps,
+            },
             chatbotSrc
           );
           break;

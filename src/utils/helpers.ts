@@ -733,9 +733,7 @@ export const LOG = (
   if (description) {
     console.log(
       `%c   ${description}   `,
-      `color: ${
-        description?.includes("ERROR") ? COLORS.TORCH_RED : color
-      }; font-size: 14px; background-color: ${background};`,
+      `color: ${color}; font-size: 14px; background-color: ${background};`,
       logObj
     );
   } else {

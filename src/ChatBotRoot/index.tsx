@@ -16,6 +16,7 @@ export const ChatBotRoot: FC = () => {
 
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
   const [chatBotID, setChatBotID] = useState<string | null>(null);
+  const [chatBotRootProps, setChatBotRootProps] = useState();
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -23,8 +24,14 @@ export const ChatBotRoot: FC = () => {
         setChatBotID(event.data.guid);
       }
 
+      LOG(event.data, "event.data");
+
       if (event.data?.style) {
+        LOG(event.data?.style, "event.data?.style");
         setTheme(event.data.style);
+      }
+      if (event.data?.props) {
+        setChatBotRootProps(event.data.props);
       }
 
       if (regExpJWT.test(event.data?.token)) {
