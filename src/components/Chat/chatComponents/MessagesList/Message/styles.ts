@@ -19,8 +19,8 @@ export const MessageBox = styled.div<IMessageProps>`
   width: fit-content;
   max-width: 270px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
-  color: ${({ theme: { message }, isOwn }) =>
-    isOwn ? message?.own.color : message?.chat.color};
+  color: ${({ theme: { message, messageTextColor }, isOwn }) =>
+    isOwn ? messageTextColor || message?.own.color : message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   background: ${({ isOwn, theme }) =>

@@ -12,6 +12,7 @@ const defaultTheme = {
   borderWidth: "0px",
   borderColor: COLORS.SILVER,
   chatbotName: "",
+  messageTextColor: COLORS.WHITE,
   header: {
     color: COLORS.ALTO,
   },
@@ -59,7 +60,7 @@ const defaultTheme = {
     },
     button: {
       borderColor: COLORS.BOULDER,
-      color: COLORS.BLACK,
+      color: COLORS.WHITE,
       backgroundColor: COLORS.ALTO,
     },
     postedDate: COLORS.ALABASTER,
