@@ -81,7 +81,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       shouldCallAgain &&
       lastBtn.current === "interested_in"
     ) {
-      interestedInHandler();
+      interestedInHandler(true);
     }
   }, [isClicked, shouldCallAgain]);
 
@@ -98,7 +98,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     };
   }, [viewJob]);
 
-  const interestedInHandler = async () => {
+  const interestedInHandler = async (isRecall = false) => {
     lastBtn.current = "interested_in";
     if ((!isAnonym || isCandidateWithEmail) && !isLoading && viewJob) {
       if (candidateId) {
@@ -116,7 +116,11 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               localId: generateLocalId(),
               content: {
                 subType: MessageType.TEXT,
-                text: t("chat_item_description:success_interested_id"),
+                text: t(
+                  `chat_item_description:${
+                    isRecall ? "short_success_interested" : "success_interested"
+                  }`
+                ),
               },
             };
           } else if (response.data?.statusCode === 303) {
@@ -241,7 +245,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
           <DarkButton
             disabled={isLoading}
-            onClick={interestedInHandler}
+            onClick={() => interestedInHandler(false)}
             fontWeight={700}
           >
             {isLoading ? (
