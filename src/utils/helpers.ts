@@ -20,6 +20,8 @@ import {
   IRequisition,
   IPushMessage,
   ISnapshot,
+  IParsedTheme,
+  IApiThemeResponse,
 } from "./types";
 import { COLORS } from "./colors";
 import {
@@ -30,7 +32,6 @@ import {
   SessionStorage,
   EventIds,
 } from "./constants";
-import { IApiThemeResponse } from "./api";
 import {
   ContactType,
   IApiMessage,
@@ -654,19 +655,19 @@ export const getMatchedItem = (
     (l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || "")
   );
 
-export const parseThemeResponse = (res: IApiThemeResponse) => ({
-  primaryColor: res.client_primary_colour,
-  secondaryColor: res.client_secondary_color,
-  imageUrl: res.chatbot_logo_URL,
-  borderStyle: res.chatbot_border_style,
-  borderWidth: res.chatbot_border_thickness,
-  borderColor: res.chatbot_border_color,
-  headerColor: res.chatbot_header_color,
-  messageButtonColor: res.chatbot_bubble_color,
-  buttonSecondaryColor: res.chat_button_secondary_color,
-  searchResultsColor: res.chat_search_results_color,
-  chatbotName: res.chatbot_name,
-  chatbotHeaderTextColor: res.chatbot_header_text_colour,
+export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
+  primaryColor: theme.client_primary_colour,
+  secondaryColor: theme.client_secondary_color,
+  imageUrl: theme.chatbot_logo_URL,
+  borderStyle: theme.chatbot_border_style,
+  borderWidth: theme.chatbot_border_thickness,
+  borderColor: theme.chatbot_border_color,
+  headerColor: theme.chatbot_header_color,
+  messageButtonColor: theme.chatbot_bubble_color,
+  buttonSecondaryColor: theme.chat_button_secondary_color,
+  searchResultsColor: theme.chat_search_results_color,
+  chatbotName: theme.chatbot_name,
+  chatbotHeaderTextColor: theme.chatbot_header_text_colour,
 });
 
 export const getStorageValue = (

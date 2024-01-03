@@ -6,10 +6,10 @@ import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { Content } from "content";
-import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
-import { EventIds, SessionStorage } from "utils/constants";
-import { IApiThemeResponse } from "utils/api";
 import { apiInstance } from "services/api";
+import { IApiThemeResponse } from "utils/types";
+import { EventIds, SessionStorage } from "utils/constants";
+import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
 
 export const ChatBotRoot: FC = () => {
   const { setChatBotToken } = useChatMessenger();
