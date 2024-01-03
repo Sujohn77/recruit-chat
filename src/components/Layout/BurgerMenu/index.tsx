@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
@@ -27,22 +27,8 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     lastName,
     setViewJob,
   } = useChatMessenger();
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const closeMenu = (e: any) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", closeMenu);
-
-    return () => {
-      document.addEventListener("mousedown", closeMenu);
-    };
-  }, [isOpen]);
 
   const handleItemClick = async (item: IMenuItem) => {
     const { type, text } = item;
@@ -87,16 +73,17 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     }
   };
 
-  const handleBurgerClick = useCallback(() => {
-    setIsOpen((prevValue) => !prevValue);
-  }, []);
+  const handleBurgerClick = useCallback(
+    () => setIsOpen((prevState) => !prevState),
+    []
+  );
 
   return (
     <S.Wrapper onClick={handleBurgerClick}>
       <BurgerIcon />
 
       {isOpen && (
-        <S.MenuItemsWrapper ref={menuRef}>
+        <S.MenuItemsWrapper onMouseLeave={() => setIsOpen(false)}>
           {map(
             isCandidateWithEmail ? menuForCandidateWithEmail : menuItems,
             (item, index) => (
