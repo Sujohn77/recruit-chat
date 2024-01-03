@@ -80,9 +80,9 @@ export const TextAreaInput = styled.textarea`
 
 export const ErrorText = styled.span`
   position: absolute;
-  right: 42px;
+  left: 80px;
   top: 20px;
-  font-size: 13px;
+  font-size: 16px;
   color: ${COLORS.PERSIAN_RED};
   display: flex;
   align-items: center;
