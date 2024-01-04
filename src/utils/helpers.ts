@@ -868,3 +868,13 @@ export const postMessToParent = (eventId: EventIds) => {
     "*"
   );
 };
+
+export const isValidColor = (strColor?: string): boolean => {
+  if (strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color !== "";
+  } else {
+    return false;
+  }
+};
