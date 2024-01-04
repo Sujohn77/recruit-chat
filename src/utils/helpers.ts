@@ -100,10 +100,10 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
     };
   }
   return {
-    color:
-      msg?.content.subType === MessageType.BUTTON
-        ? COLORS.TUNDORA
-        : COLORS.WHITE,
+    // color:
+    //   msg?.content.subType === MessageType.BUTTON
+    //     ? COLORS.TUNDORA
+    //     : COLORS.WHITE,
     backColor:
       msg?.content.subType === MessageType.BUTTON
         ? COLORS.ALTO

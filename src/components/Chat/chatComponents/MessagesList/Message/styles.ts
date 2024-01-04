@@ -9,6 +9,11 @@ interface ICancelProps {
   disabled?: boolean;
 }
 
+interface IMessageContentProps {
+  isFile?: boolean;
+  withOptions?: boolean;
+}
+
 export const MessageBox = styled.div<IMessageProps>`
   position: relative;
   border-radius: 10px;
@@ -40,7 +45,7 @@ export const MessageBox = styled.div<IMessageProps>`
     }
   }
 
-  ${({ backColor = "#D9D9D9", isOwn = false, theme }) => `
+  ${({ isOwn = false, theme }) => `
         margin-bottom: 24px;
         &:after {
             content: '';
@@ -96,11 +101,6 @@ export const MessageButton = styled.div<IMessageProps>`
   margin-bottom: 16px !important;
 `;
 
-interface IMessageContentProps {
-  isFile?: boolean;
-  withOptions?: boolean;
-}
-
 export const MessageContent = styled.div<IMessageContentProps>`
   align-items: center;
   display: flex;
@@ -143,11 +143,13 @@ export const InitialMessage = styled.div`
   line-height: 17px;
   margin-bottom: 32px;
 `;
+
 export const MessageUnsendIcon = styled.img`
   width: 12px;
   height: 12px;
   filter: invert(1);
 `;
+
 export const TimeText = styled.div`
   color: ${({ theme: { text } }) => text.postedDate};
   white-space: nowrap;
@@ -171,7 +173,7 @@ export const ActionButton = styled(Button)`
   border-radius: 20px !important;
   font-size: 14px !important;
   padding: 11px 12px !important;
-  /* font-family: "Inter-Medium" !important; */
+
   span {
     line-height: 17px;
   }
