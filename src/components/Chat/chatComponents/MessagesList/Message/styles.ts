@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import styled from "styled-components";
 
 import { COLORS } from "utils/colors";
-import { IMessageProps } from "utils/helpers";
+import { IMessageProps, isValidColor } from "utils/helpers";
 import { InfoItem } from "../../ViewJob/styles";
 
 interface ICancelProps {
@@ -12,6 +12,7 @@ interface ICancelProps {
 interface IMessageContentProps {
   isFile?: boolean;
   withOptions?: boolean;
+  isOwn?: boolean;
 }
 
 export const MessageBox = styled.div<IMessageProps>`
@@ -25,7 +26,9 @@ export const MessageBox = styled.div<IMessageProps>`
   max-width: 270px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
   color: ${({ theme: { message, messageTextColor }, isOwn }) =>
-    isOwn ? messageTextColor || message?.own.color : message?.chat.color};
+    isOwn
+      ? (isValidColor(messageTextColor) && COLORS.WHITE) || message?.own.color
+      : message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   background: ${({ isOwn, theme }) =>
@@ -92,6 +95,10 @@ export const MessageContent = styled.div<IMessageContentProps>`
   display: flex;
   gap: 8px;
   flex-direction: ${({ withOptions }) => (withOptions ? "column" : "row")};
+  color: ${({ color, isOwn, theme }) =>
+    isOwn
+      ? (isValidColor(color) && COLORS.WHITE) || theme.message?.own.color
+      : theme.message?.chat.color};
 
   ${({ isFile, theme }) =>
     isFile &&
@@ -121,6 +128,7 @@ export const MessageText = styled.p`
   overflow: hidden;
   max-width: 218px;
   white-space: pre-line;
+  font-weight: 500;
 `;
 
 export const InitialMessage = styled.div`

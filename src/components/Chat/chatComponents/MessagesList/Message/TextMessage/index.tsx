@@ -78,7 +78,11 @@ export const TextMessage: FC<ITextMessageProps> = memo(
 
     return wrongMess ? null : (
       <S.MessageBox {...messageProps}>
-        <S.MessageContent isFile={isFile} withOptions={!!message.optionList}>
+        <S.MessageContent
+          isFile={isFile}
+          withOptions={!!message.optionList}
+          isOwn={message.isOwn}
+        >
           {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
           {message.content.locations ? (
