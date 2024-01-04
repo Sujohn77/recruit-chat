@@ -17,7 +17,7 @@ const ANIMATION_ID = "LOGIN_ANIMATION_ID";
 
 interface ILoginProps {
   showLoginScreen: boolean;
-  setShowLoginScreen: (show: boolean) => void;
+  setShowLoginScreen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Login: FC<ILoginProps> = ({
@@ -35,6 +35,44 @@ export const Login: FC<ILoginProps> = ({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [height, setHeight] = useState<Height>(0);
+
+  const onLogin = useCallback(() => {
+    const errorText = validateEmail(email);
+
+    if (errorText) {
+      setEmailError(errorText);
+    } else if (!firstName.trim()) {
+      setFirstNameError(t("labels:required"));
+    } else if (!lastName.trim()) {
+      setLastNameError(t("labels:required"));
+    } else {
+      dispatch({
+        type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+        payload: {
+          candidateData: {
+            emailAddress: email,
+            firstName,
+            lastName,
+            callback: () => setShowLoginScreen(false),
+          },
+        },
+      });
+    }
+  }, [email, firstName, lastName]);
+
+  useEffect(() => {
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        onLogin();
+      }
+    };
+    document.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [onLogin]);
 
   useEffect(() => {
     setHeight(emailError ? "auto" : 0);
@@ -61,30 +99,6 @@ export const Login: FC<ILoginProps> = ({
     },
     []
   );
-
-  const onLogin = () => {
-    const errorText = validateEmail(email);
-
-    if (errorText) {
-      setEmailError(errorText);
-    } else if (!firstName.trim()) {
-      setFirstNameError(t("labels:required"));
-    } else if (!lastName.trim()) {
-      setLastNameError(t("labels:required"));
-    } else {
-      dispatch({
-        type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
-        payload: {
-          candidateData: {
-            emailAddress: email,
-            firstName,
-            lastName,
-            callback: () => setShowLoginScreen(false),
-          },
-        },
-      });
-    }
-  };
 
   return !showLoginScreen ? null : (
     <PopUp>
