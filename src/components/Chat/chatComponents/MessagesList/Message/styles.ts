@@ -31,20 +31,6 @@ export const MessageBox = styled.div<IMessageProps>`
   background: ${({ isOwn, theme }) =>
     isOwn ? theme.primaryColor : theme.message.chat.backgroundColor};
 
-  p {
-    animation: ${({ isLastMessage }) =>
-      isLastMessage && `0.3s message ease-in`};
-  }
-
-  @keyframes message {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
   ${({ isOwn = false, theme }) => `
         margin-bottom: 24px;
         &:after {
