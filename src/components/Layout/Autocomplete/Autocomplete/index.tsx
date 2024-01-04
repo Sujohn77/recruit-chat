@@ -12,7 +12,7 @@ import { DefaultInput } from "components/Layout";
 import { CHAT_ACTIONS } from "utils/types";
 import { isResultsType } from "utils/helpers";
 import { INPUT_TYPES, TextFieldTypes } from "utils/constants";
-import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
+import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
 
 interface IAutocompleteProps {
   value: string;

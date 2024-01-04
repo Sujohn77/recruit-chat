@@ -32,11 +32,11 @@ import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
 import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
-interface IMessageInputProps {
+interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const MessageInput: FC<IMessageInputProps> = ({ setHeight }) => {
+export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   useFirebaseSignIn();
   const { t } = useTranslation();
   const { file, setNotification, showJobTitles } = useFileUploadContext();

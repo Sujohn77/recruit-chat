@@ -1,12 +1,7 @@
 import React, { FC, useState } from "react";
 
 import * as S from "./styles";
-import {
-  ChatHeader,
-  MessageInput,
-  MessagesList,
-  ViewJob,
-} from "./chatComponents";
+import { ChatHeader, ChatInput, MessagesList, ViewJob } from "./chatComponents";
 import { Login } from "./chatComponents/Login";
 import { Logout } from "./chatComponents/Logout";
 interface IChatProps {
@@ -43,7 +38,7 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
       <ViewJob setShowLoginScreen={setShowLoginScreen} />
       {/* ------------------------------------------------------------- */}
 
-      <MessageInput setHeight={setHeight} />
+      <ChatInput setHeight={setHeight} />
     </S.Wrapper>
   );
 };

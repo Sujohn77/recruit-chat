@@ -15,7 +15,7 @@ import map from "lodash/map";
 import * as S from "./styles";
 import { isResultsType } from "utils/helpers";
 import { TextInput } from "components/Layout/Input/styles";
-import { SearchResults } from "components/Chat/chatComponents/MessageInput/SearchResults";
+import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
 import { Tag } from "./tag";
 
 interface IMultiSelectInputProps {

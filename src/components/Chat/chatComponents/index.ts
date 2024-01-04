@@ -1,5 +1,5 @@
 export * from "./ChatHeader";
-export * from "./MessageInput";
+export * from "./ChatInput";
 export * from "./MessagesList";
 export * from "./ViewJob";
 export * from "./PopUp";
