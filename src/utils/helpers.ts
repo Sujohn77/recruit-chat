@@ -69,12 +69,10 @@ interface IIsResultType {
 }
 
 export interface IMessageProps {
-  color?: string;
   backColor?: string;
   isOwn?: boolean;
   padding?: string;
   cursor?: string;
-  isLastMessage?: boolean;
 }
 
 interface IUserContact {
@@ -92,26 +90,27 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 
   if (!msg.isOwn) {
     return {
-      color: COLORS.DUSTY_GRAY,
+      // color: COLORS.DUSTY_GRAY,
       backColor: COLORS.ALTO,
       isOwn: !!msg.isOwn,
       padding,
       cursor,
     };
+  } else {
+    return {
+      // color:
+      //   msg?.content.subType === MessageType.BUTTON
+      //     ? COLORS.TUNDORA
+      //     : COLORS.WHITE,
+      backColor:
+        msg?.content.subType === MessageType.BUTTON
+          ? COLORS.ALTO
+          : COLORS.BOULDER,
+      padding,
+      isOwn: !!msg.isOwn,
+      cursor,
+    };
   }
-  return {
-    // color:
-    //   msg?.content.subType === MessageType.BUTTON
-    //     ? COLORS.TUNDORA
-    //     : COLORS.WHITE,
-    backColor:
-      msg?.content.subType === MessageType.BUTTON
-        ? COLORS.ALTO
-        : COLORS.BOULDER,
-    padding,
-    isOwn: !!msg.isOwn,
-    cursor,
-  };
 };
 
 export const getActionTypeByOption = (option: ButtonsOptions) => {

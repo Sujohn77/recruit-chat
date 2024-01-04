@@ -18,7 +18,6 @@ export const Wrapper = styled.div`
 export const MessagesArea = styled.div`
   max-height: calc(100% - 120px);
   overflow: hidden;
-  /* font-family: Inter-Medium; */
   border: ${({ theme: { borderStyle, borderWidth } }) =>
     `${borderWidth} ${borderStyle}  ${COLORS.ALTO}`};
   border-bottom: 1px solid ${COLORS.ALTO};

@@ -61,7 +61,7 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
   };
 
   return (
-    <S.MessageBox {...getMessageProps(message)} isLastMessage={isLastMessage}>
+    <S.MessageBox {...getMessageProps(message)}>
       {message?.content?.text && (
         <S.MessageText>{message.content.text}</S.MessageText>
       )}

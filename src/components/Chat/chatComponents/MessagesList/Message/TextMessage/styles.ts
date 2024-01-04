@@ -6,4 +6,6 @@ export const LocationList = styled.ul`
   list-style-type: none;
 `;
 
-export const LocationItem = styled.li``;
+export const LocationItem = styled.li`
+  color: ${({ theme }) => theme.messageTextColor};
+`;

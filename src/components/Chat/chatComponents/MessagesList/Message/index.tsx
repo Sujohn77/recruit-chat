@@ -21,9 +21,7 @@ import { UploadedFile } from "./UploadedFile";
 
 interface IMessageProps {
   message: ILocalMessage;
-  isLastMessage: boolean;
   withoutMargin?: boolean;
-  setShowLoginScreen: (show: boolean) => void;
   index?: number;
 }
 
@@ -31,9 +29,7 @@ export const MS_1000 = 1000;
 
 export const Message: FC<IMessageProps> = ({
   message,
-  isLastMessage,
   withoutMargin,
-  setShowLoginScreen,
   index,
 }) => {
   const subType = message?.content?.subType;
@@ -43,19 +39,12 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.INITIAL_MESSAGE:
       return <S.InitialMessage>{message?.content?.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
-      return (
-        <UploadCV isLastMessage={isLastMessage} withoutMargin={withoutMargin} />
-      );
+      return <UploadCV withoutMargin={withoutMargin} />;
     case MessageType.EMAIL_FORM: {
       return <EmailForm />;
     }
     case MessageType.JOB_POSITIONS: {
-      return (
-        <JobOffers
-          isLastMessage={isLastMessage}
-          setShowLoginScreen={setShowLoginScreen}
-        />
-      );
+      return <JobOffers />;
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;
@@ -63,13 +52,7 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.TEXT:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
-      return (
-        <TextMessage
-          index={index}
-          message={message}
-          isLastMessage={isLastMessage}
-        />
-      );
+      return <TextMessage index={index} message={message} />;
     case MessageType.BUTTON: {
       return <ButtonMessage message={message} />;
     }
@@ -98,7 +81,7 @@ export const Message: FC<IMessageProps> = ({
       );
     }
     case MessageType.SUBMIT_FILE:
-      return <SearchJob message={message} isLastMessage={isLastMessage} />;
+      return <SearchJob message={message} />;
     case MessageType.UPLOADED_CV:
       return <UploadedFile message={message} />;
     default: {

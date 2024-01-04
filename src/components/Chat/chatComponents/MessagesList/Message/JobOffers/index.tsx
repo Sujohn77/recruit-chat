@@ -6,15 +6,7 @@ import * as S from "./styles";
 import { JobOffer } from "./JobOffer";
 import { NotFoundOffer } from "./NotFound";
 
-interface IJobOffersProps {
-  setShowLoginScreen: (show: boolean) => void;
-  isLastMessage: boolean;
-}
-
-export const JobOffers: React.FC<IJobOffersProps> = ({
-  setShowLoginScreen,
-  isLastMessage,
-}) => {
+export const JobOffers: React.FC = () => {
   const { offerJobs } = useChatMessenger();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -35,13 +27,7 @@ export const JobOffers: React.FC<IJobOffersProps> = ({
       >
         {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
           return index < offerJobs.length ? (
-            <JobOffer
-              key={offerJobs[index].id}
-              jobOffer={offerJobs[index]}
-              // isActive={activeIndex === index}
-              // isLastMessage={isLastMessage}
-              // setShowLoginScreen={setShowLoginScreen}
-            />
+            <JobOffer key={offerJobs[index].id} jobOffer={offerJobs[index]} />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />
           );
