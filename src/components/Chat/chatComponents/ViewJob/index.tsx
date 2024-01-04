@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
 import AnimateHeight, { Height } from "react-animate-height";
@@ -8,7 +8,7 @@ import isNull from "lodash/isNull";
 import * as S from "./styles";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
-import { LOG, generateLocalId, getFormattedDate } from "utils/helpers";
+import { generateLocalId, getFormattedDate } from "utils/helpers";
 import { IApplyJobResponse, ISuccessResponse } from "services/types";
 import { apiInstance } from "services/api";
 import { ILocalMessage, MessageType } from "utils/types";
@@ -60,9 +60,15 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   useEffect(() => {
     if (viewJob === null) {
-      setHeight(0);
-      setApplyJobError(null);
+      hideErrorAndShowApplyBtn();
     }
+
+    return () => {
+      lastBtn.current = null;
+      if (viewJob === null) {
+        hideErrorAndShowApplyBtn();
+      }
+    };
   }, [viewJob]);
 
   useEffect(() => {
@@ -71,6 +77,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       setApplyJobError(
         "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com"
       );
+
+      setTimeout(() => {
+        hideErrorAndShowApplyBtn();
+      }, 3000);
     }
   }, [viewJob, jobIdWithoutFlowId]);
 
@@ -92,11 +102,12 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     }
   }, [isClicked, shouldCallAgain]);
 
-  useEffect(() => {
-    return () => {
-      lastBtn.current = null;
-    };
-  }, [viewJob]);
+  const hideErrorAndShowApplyBtn = useCallback(() => {
+    setJobIdWithoutFlowId(undefined);
+    setHeight(0);
+    setShowApplyBtn(true);
+    setApplyJobError(null);
+  }, []);
 
   const interestedInHandler = async (isRecall = false) => {
     lastBtn.current = "interested_in";
@@ -157,7 +168,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             ...prevMessages,
           ]);
         } catch (error) {
-          LOG(error, "ERROR");
+          console.log(error);
         } finally {
           setIsLoading(false);
         }
@@ -259,10 +270,12 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
         </S.ButtonsWrapper>
 
         <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
-          <S.Error>
-            <S.WarningImg src={IMAGES.WARN} alt="" />
-            <S.ErrorText>{applyJobError}</S.ErrorText>
-          </S.Error>
+          {applyJobError && (
+            <S.Error>
+              <S.WarningImg src={IMAGES.WARN} alt="" />
+              <S.ErrorText>{applyJobError}</S.ErrorText>
+            </S.Error>
+          )}
         </AnimateHeight>
       </S.ViewShortInfo>
 
