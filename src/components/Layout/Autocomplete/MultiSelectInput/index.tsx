@@ -4,7 +4,6 @@ import {
   Dispatch,
   FC,
   FocusEvent,
-  MouseEvent,
   SetStateAction,
   useEffect,
 } from "react";
@@ -13,10 +12,10 @@ import filter from "lodash/filter";
 import map from "lodash/map";
 
 import * as S from "./styles";
+import { Tag } from "./tag";
 import { isResultsType } from "utils/helpers";
 import { TextInput } from "components/Layout/Input/styles";
 import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
-import { Tag } from "./tag";
 
 interface IMultiSelectInputProps {
   value: string;
@@ -83,9 +82,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     );
   };
 
-  const onInputClick = (e: MouseEvent<HTMLInputElement>) => {
-    setIsShowResults(true);
-  };
+  const onInputClick = () => setIsShowResults(true);
 
   const onInputFocus = (e: FocusEvent<HTMLInputElement, Element>) => {
     autocompleteInputProps?.onFocus?.(e);
