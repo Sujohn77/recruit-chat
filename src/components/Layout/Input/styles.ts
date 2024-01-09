@@ -1,4 +1,3 @@
-import { TextField } from "@mui/material";
 import styled from "styled-components";
 
 import { COLORS } from "utils/colors";
@@ -18,37 +17,6 @@ export const Wrapper = styled.div`
 `;
 
 export const TextAreaInputWrapper = styled.div``;
-
-export const FormInput = styled(TextField)`
-  input,
-  textarea {
-    background: ${COLORS.CONCRETE};
-    border-radius: 10px;
-
-    padding: 10px;
-    /* font-family: Inter; */
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-    min-height: 38px;
-    box-sizing: border-box;
-  }
-  textarea {
-    min-height: 17px;
-  }
-  fieldset {
-    border: none;
-  }
-  p {
-    position: absolute;
-    top: 7px;
-    right: 8px;
-  }
-
-  .MuiInputBase-multiline {
-    padding: 0 !important;
-  }
-`;
 
 export const TextInput = styled.input`
   color: ${COLORS.SILVER_CHALICE};
