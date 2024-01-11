@@ -14,8 +14,11 @@ export const ButtonMessage: FC<IButtonMessageProps> = memo(({ message }) => {
   const { chooseButtonOption, messages } = useChatMessenger();
 
   const onClick = useCallback(() => {
-    if (message?.content.subType === MessageType.BUTTON) {
-      message?.content?.text && chooseButtonOption(message.content.text);
+    if (
+      message?.content.subType === MessageType.BUTTON &&
+      message?.content?.text
+    ) {
+      chooseButtonOption(message.content.text);
     }
   }, [messages.length]);
 

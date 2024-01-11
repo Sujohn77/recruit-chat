@@ -10,6 +10,7 @@ export const en = {
     find_job: "Find a job",
     ask_questions: "Ask questions",
     searchJobs: "Search jobs with resume",
+    make_referral: "Make a referral",
   },
   placeHolders: {
     default: "Type a message",
@@ -93,6 +94,7 @@ export const en = {
       "Your resume has been attached.\n You can click the X to remove it and re-upload another one or click below to upload and search for jobs",
     botThanks:
       "Thank you for expressing your interest in this job, please check your email for updates.",
+    employeeId: "Please provide EmployeeID",
   },
   chat_item_description: {
     lookingFor: "Hi! Are you looking for a job",

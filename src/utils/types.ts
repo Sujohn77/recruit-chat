@@ -87,6 +87,7 @@ export enum ButtonsOptions {
   HIRING_PROCESS = "What is the hiring process?",
   UPLOADED_CV = "uploaded_cv",
   CANCEL_JOB_SEARCH_WITH_RESUME = "cancel job search with resume",
+  MAKE_REFERRAL = "Make a referral",
 }
 
 export enum CHAT_ACTIONS {
@@ -133,6 +134,8 @@ export enum CHAT_ACTIONS {
   UPDATE_OR_MERGE_CANDIDATE = "UPDATE_OR_MERGE_CANDIDATE",
   SET_ALERT_JOB_LOCATIONS = "SET_ALERT_JOB_LOCATIONS",
   SEND_ALERT_JOB_LOCATIONS = "SEND_ALERT_JOB_LOCATIONS",
+  MAKE_REFERRAL = "MAKE_REFERRAL",
+  VERIFY_REF_DATA = "VERIFY_REF_DATA",
 }
 
 export enum Status {
@@ -280,4 +283,15 @@ export interface IParsedTheme {
   chatbotName?: string;
   chatbotHeaderTextColor?: string;
   messageTextColor?: string;
+}
+
+export interface IReferralData {
+  employeeId: number;
+  lastName: string;
+  yeanOrBirth: string;
+}
+
+export interface IPopMessage {
+  type: MessageType | null;
+  messages: ILocalMessage[];
 }

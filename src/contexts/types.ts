@@ -12,6 +12,7 @@ import {
   ILocalMessage,
   IRequisition,
   IJobAlertData,
+  IReferralData,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
 
@@ -90,6 +91,7 @@ export interface IChatMessengerContext {
   setIsChatInputAvailable: (isAvailable: boolean) => void;
   requisitionsPage: number;
   setRequisitionsPage: (page: number) => void;
+  validateRefDataAndGetWorker: (data: IReferralData) => void;
 }
 
 export interface IFileUploadContext {

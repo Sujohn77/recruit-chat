@@ -592,3 +592,17 @@ export interface ICreateChatResponse extends ISuccessResponse {
   chatId?: number;
   chat?: INewChat;
 }
+
+export interface IValidateRefPayload {
+  candidateId: number;
+  chatId: number;
+  employeeId: number | string;
+  lastName: string;
+  "year-of-birth": string;
+}
+
+export interface IValidateRefResponse {
+  isValid: boolean;
+  candidateID: number;
+  updateChatBotCandidateId: boolean;
+}

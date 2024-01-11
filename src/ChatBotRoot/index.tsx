@@ -9,7 +9,7 @@ import { Content } from "content";
 import { apiInstance } from "services/api";
 import { IApiThemeResponse } from "utils/types";
 import { EventIds, SessionStorage } from "utils/constants";
-import { LOG, postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
+import { postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
 
 export const ChatBotRoot: FC = () => {
   const { setChatBotToken } = useChatMessenger();
@@ -24,10 +24,7 @@ export const ChatBotRoot: FC = () => {
         setChatBotID(event.data.guid);
       }
 
-      LOG(event.data, "event.data");
-
       if (event.data?.style) {
-        LOG(event.data?.style, "event.data?.style");
         setTheme(event.data.style);
       }
       if (event.data?.props) {
@@ -64,15 +61,15 @@ export const ChatBotRoot: FC = () => {
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        {chatBotID && (
-          <ChatProvider chatBotID={chatBotID}>
-            <ThemeContextProvider value={theme}>
-              <FileUploadProvider>
-                <Content />
-              </FileUploadProvider>
-            </ThemeContextProvider>
-          </ChatProvider>
-        )}
+        {/* {chatBotID && ( */}
+        <ChatProvider chatBotID={chatBotID}>
+          <ThemeContextProvider value={theme}>
+            <FileUploadProvider>
+              <Content />
+            </FileUploadProvider>
+          </ThemeContextProvider>
+        </ChatProvider>
+        {/* )} */}
       </AuthProvider>
     </Container>
   );

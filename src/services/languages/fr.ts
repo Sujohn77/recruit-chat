@@ -10,6 +10,7 @@ export const fr = {
     find_job: "Trouver un emploi",
     ask_questions: "Poser des questions",
     searchJobs: "Search jobs with resume",
+    make_referral: "Make a referral",
   },
   placeHolders: {
     default: "Taper un message",
@@ -92,6 +93,7 @@ export const fr = {
       "Votre CV a été joint.\n Vous pouvez cliquer sur le X pour le supprimer et en télécharger un autre ou cliquer ci-dessous pour télécharger et rechercher des offres d'emploi",
     botThanks:
       "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
+    employeeId: "Please provide EmployeeID",
   },
   chat_item_description: {
     title: "Bot de carrière",

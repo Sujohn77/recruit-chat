@@ -36,7 +36,7 @@ export enum ChannelName {
   SMS = "SMS",
 }
 
-export const getChatActionMessages = (
+const getChatActionMessages = (
   type: CHAT_ACTIONS,
   param?: string,
   withoutDefaultQuestions?: boolean
@@ -276,6 +276,13 @@ export const getChatActionMessages = (
         },
       ];
     }
+    case CHAT_ACTIONS.MAKE_REFERRAL:
+      return [
+        {
+          subType: MessageType.TEXT,
+          text: i18n.t("messages:employeeId"),
+        },
+      ];
     default:
       return [];
   }
@@ -294,20 +301,17 @@ export const getReplaceMessageType = (type: CHAT_ACTIONS) => {
   }
 };
 
-export const isPushMessageType = (type: CHAT_ACTIONS) => {
-  return (
-    type !== CHAT_ACTIONS.INTERESTED_IN &&
-    type !== CHAT_ACTIONS.CHANGE_LANG &&
-    type !== CHAT_ACTIONS.SUCCESS_UPLOAD_CV &&
-    type !== CHAT_ACTIONS.SET_LOCATIONS &&
-    type !== CHAT_ACTIONS.REFINE_SEARCH &&
-    type !== CHAT_ACTIONS.APPLY_POSITION &&
-    type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
-    type !== CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL &&
-    type !== CHAT_ACTIONS.SEARCH_WITH_RESUME &&
-    type !== CHAT_ACTIONS.SET_ALERT_CATEGORIES
-  );
-};
+export const isPushMessageType = (type: CHAT_ACTIONS) =>
+  type !== CHAT_ACTIONS.INTERESTED_IN &&
+  type !== CHAT_ACTIONS.CHANGE_LANG &&
+  type !== CHAT_ACTIONS.SUCCESS_UPLOAD_CV &&
+  type !== CHAT_ACTIONS.SET_LOCATIONS &&
+  type !== CHAT_ACTIONS.REFINE_SEARCH &&
+  type !== CHAT_ACTIONS.APPLY_POSITION &&
+  type !== CHAT_ACTIONS.QUESTION_RESPONSE &&
+  type !== CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL &&
+  type !== CHAT_ACTIONS.SEARCH_WITH_RESUME &&
+  type !== CHAT_ACTIONS.SET_ALERT_CATEGORIES;
 
 export const getChatActionResponse = ({
   type,

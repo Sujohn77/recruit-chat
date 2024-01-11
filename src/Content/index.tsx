@@ -64,12 +64,6 @@ export const Content: FC = () => {
       const difference = currentTime.getTime() - firstTime.current.getTime(); // difference in milliseconds
       let resultInMinutes = Math.round(difference / 60000);
 
-      console.log(
-        "%c resultInMinutes",
-        "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;",
-        resultInMinutes
-      );
-
       // when the candidate selects one of the chatbot options (ask a question or find a job)
       // then check how much time the token has left
       // and if it has expired then immediately refresh the token

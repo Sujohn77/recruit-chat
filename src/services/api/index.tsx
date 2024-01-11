@@ -7,6 +7,8 @@ import {
   ISuccessResponse,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
+  IValidateRefPayload,
+  IValidateRefResponse,
 } from "services/types";
 
 import {
@@ -209,7 +211,11 @@ class Api {
       data
     );
   //
-
+  validateAndGetWorker = (data: IValidateRefPayload) =>
+    this.client.post<IValidateRefResponse>(
+      "/api/chatbot/validate-and-get-worker",
+      data
+    );
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);
     delete this.client.headers.Authorization;

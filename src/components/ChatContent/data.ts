@@ -13,6 +13,12 @@ const chatBotSender: IUserSelf = {
 
 export const questions = [
   {
+    text: i18n.t("buttons:make_referral"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+  },
+  {
     text: i18n.t("questions:recruitment_process"),
     subType: MessageType.BUTTON,
     isChatMessage: true,

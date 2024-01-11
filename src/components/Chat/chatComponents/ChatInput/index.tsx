@@ -63,6 +63,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     createJobAlert,
     clearJobFilters,
     isChatInputAvailable,
+    validateRefDataAndGetWorker,
   } = useChatMessenger();
 
   // ---------------------- State --------------------- //
@@ -77,6 +78,10 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
+  // Referral
+  const [employeeId, setEmployeeID] = useState("");
+  const [refLastName, setRefLastName] = useState("");
+  const [referralStep, setReferralStep] = useState(1);
 
   const inputType = getInputType(currentMsgType);
 
@@ -202,86 +207,89 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             payload: { items },
           });
         }
-
-        //
       } else {
-        dispatch({
-          type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
-          payload: { item: draftMessage },
-        });
+        if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL && draftMessage) {
+          const mess: ILocalMessage = {
+            isOwn: true,
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: draftMessage,
+            },
+            _id: generateLocalId(),
+          };
+
+          switch (referralStep) {
+            case 1:
+              const enterNamaMess: ILocalMessage = {
+                isOwn: false,
+                localId: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: "Enter a last name",
+                },
+                _id: generateLocalId(),
+              };
+
+              setEmployeeID(draftMessage);
+              _setMessages((prevMessages) => [
+                enterNamaMess,
+                mess,
+                ...prevMessages,
+              ]);
+              setReferralStep(2);
+
+              break;
+            case 2:
+              const enterBirthMess: ILocalMessage = {
+                isOwn: false,
+                localId: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: "Enter your date or year of birth",
+                },
+                _id: generateLocalId(),
+              };
+              setRefLastName(draftMessage);
+              _setMessages((prevMessages) => [
+                enterBirthMess,
+                mess,
+                ...prevMessages,
+              ]);
+              setReferralStep(3);
+
+              break;
+            case 3:
+              _setMessages((prevMessages) => [...prevMessages]);
+              validateRefDataAndGetWorker({
+                lastName: refLastName,
+                yeanOrBirth: draftMessage,
+                employeeId: +employeeId,
+              });
+
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          dispatch({
+            type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
+            payload: { item: draftMessage },
+          });
+        }
       }
 
       setDraftMessage(null);
     },
-    [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
+    [
+      currentMsgType,
+      matchedItems.length,
+      searchLocations.length,
+      inputValues,
+      referralStep,
+    ]
   );
-
-  // const sendMessage = useCallback(
-  //   (draftMessage: string | null) => {
-  //     const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
-  //     const isSelectedValues =
-  //       matchedSearchItem || inputValues.length || !!draftMessage?.trim();
-  //     const actionType =
-  //       isSelectedValues && currentMsgType
-  //         ? getNextActionType(currentMsgType)
-  //         : CHAT_ACTIONS.NO_MATCH;
-
-  //     if (inputType === TextFieldTypes.MultiSelect && actionType) {
-  //       const items = !!matchedSearchItem
-  //         ? uniq([...inputValues, matchedSearchItem])
-  //         : uniq(inputValues);
-  //       if (
-  //         actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
-  //         currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
-  //       ) {
-  //         const alertEmailMess: ILocalMessage = {
-  //           isOwn: false,
-  //           localId: generateLocalId(),
-  //           content: {
-  //             subType: MessageType.TEXT,
-  //             text: t("messages:alertEmail"),
-  //           },
-  //           _id: null,
-  //         };
-
-  //         const messWithLocations: ILocalMessage = {
-  //           isOwn: true,
-  //           localId: generateLocalId(),
-  //           content: {
-  //             subType: MessageType.TEXT,
-  //             text: items.join("\r"),
-  //             locations: items,
-  //           },
-  //           _id: generateLocalId(),
-  //         };
-
-  //         setSearchLocations(items);
-  //         _setMessages((prevMessages) => [
-  //           alertEmailMess,
-  //           messWithLocations,
-  //           ...prevMessages,
-  //         ]);
-  //         setInputValues([]);
-  //         setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
-  //       } else {
-  //         const action = {
-  //           type: actionType,
-  //           payload: { items },
-  //         };
-
-  //         dispatch(action);
-  //       }
-  //     } else {
-  //       dispatch({
-  //         type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
-  //         payload: { item: draftMessage },
-  //       });
-  //     }
-
-  //     setDraftMessage(null);
-  //   },
-  //   [currentMsgType, matchedItems.length, searchLocations.length, inputValues]
-  // );
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {

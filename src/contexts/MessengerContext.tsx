@@ -24,6 +24,7 @@ import {
   IRequisition,
   IMessageID,
   IJobAlertData,
+  IReferralData,
 } from "utils/types";
 import {
   IAskAQuestionResponse,
@@ -37,6 +38,7 @@ import {
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
   IRequisitionsResponse,
+  IValidateRefPayload,
 } from "services/types";
 import {
   getChatActionResponse,
@@ -144,6 +146,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setIsChatInputAvailable: () => {},
   requisitionsPage: 0,
   setRequisitionsPage: () => {},
+  validateRefDataAndGetWorker: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -228,6 +231,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_CATEGORY:
       case CHAT_ACTIONS.SET_LOCATIONS:
       case CHAT_ACTIONS.SET_ALERT_EMAIL:
+      case CHAT_ACTIONS.MAKE_REFERRAL:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -287,15 +291,15 @@ const ChatProvider = ({
   // useEffect(() => {
   //   LOG(_firebaseMessages, "_firebaseMessages", COLORS.WHITE);
   // }, [_firebaseMessages]);
-  useEffect(() => {
-    LOG(candidateId, "candidateId", COLORS.WHITE);
-  }, [candidateId]);
-  useEffect(() => {
-    LOG(chatId, "chatId", COLORS.WHITE);
-  }, [chatId]);
-  useEffect(() => {
-    LOG(isCandidateAnonym, "isCandidateAnonym", COLORS.WHITE);
-  }, [isCandidateAnonym]);
+  // useEffect(() => {
+  //   LOG(candidateId, "candidateId", COLORS.WHITE);
+  // }, [candidateId]);
+  // useEffect(() => {
+  //   LOG(chatId, "chatId", COLORS.WHITE);
+  // }, [chatId]);
+  // useEffect(() => {
+  //   LOG(isCandidateAnonym, "isCandidateAnonym", COLORS.WHITE);
+  // }, [isCandidateAnonym]);
 
   const createAnonymCandidate = useCallback(async () => {
     setIsLoadedMessages(true);
@@ -659,7 +663,6 @@ const ChatProvider = ({
           }
           break;
         }
-
         case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE: {
           if (chatId) {
             setIsChatLoading(true);
@@ -845,60 +848,24 @@ const ChatProvider = ({
 
       //  Update state with response
       const param = action.payload?.item || "";
-      let responseMessages = getChatActionResponse({
+      const responseMessages = getChatActionResponse({
         type,
         additionalCondition,
         param,
         isQuestion,
       });
 
-      // ----- for filtering messages (if the sample questions are only needed once)  ----- //
-      //
-      // const withPopularQuestions = updatedMessages.some(
-      //   (msg) =>
-      //     msg.content.subType === MessageType.BUTTON &&
-      //     (msg.content.text === t("messages:whatHiring") ||
-      //       msg.content.text === t("messages:howSubmitCV") ||
-      //       msg.content.text === t("messages:howMuchExperience") ||
-      //       msg.content.text === t("messages:popularQuestions"))
-      // );
-
-      // const responseMessWithPopularQuestions = responseMessages.some(
-      //   (msg) =>
-      //     msg.content.subType === MessageType.BUTTON &&
-      //     (msg.content.text === t("messages:whatHiring") ||
-      //       msg.content.text === t("messages:howSubmitCV") ||
-      //       msg.content.text === t("messages:howMuchExperience") ||
-      //       msg.content.text === t("messages:popularQuestions"))
-      // );
-
-      // if (withPopularQuestions && responseMessWithPopularQuestions) {
-      //   responseMessages = responseMessages.filter((msg) => {
-      //     if (
-      //       msg.content.text === t("messages:whatHiring") ||
-      //       msg.content.text === t("messages:howSubmitCV") ||
-      //       msg.content.text === t("messages:howMuchExperience") ||
-      //       msg.content.text === t("messages:popularQuestions")
-      //     ) {
-      //       return false;
-      //     } else {
-      //       return true;
-      //     }
-      //   });
-      // }
-
-      // console.warn("-----------------------------------");
-      // console.log("messages", messages);
-      // console.log("responseMessages", responseMessages);
       // console.log(
-      //   "responseMessWithPopularQuestions",
-      //   responseMessWithPopularQuestions
+      //   "%cresponseMessages",
+      //   "color: green; font-size: 16px;",
+      //   responseMessages
       // );
-      // console.error("updatedMessages", updatedMessages);
-      // console.log("withPopularQuestions", withPopularQuestions);
-      // console.warn("-----------------------------------");
-
-      // --------------------------------------------------------------------------- //
+      // console.log(
+      //   "%cupdatedMessages 1",
+      //   "color: green; font-size: 16px;",
+      //   updatedMessages
+      // );
+      // console.log("%cmessages", "color: green; font-size: 16px;", messages);
 
       updatedMessages = getMessagesOnAction({
         action,
@@ -906,27 +873,17 @@ const ChatProvider = ({
         responseMessages,
       });
 
-      // console.log("responseMessages", responseMessages);
-      // console.log("updatedMessages", updatedMessages);
-
       // console.log(
-      //   "%cupdatedMessages",
+      //   "%cupdatedMessages 2",
       //   "color: green; font-size: 16px;",
       //   updatedMessages
       // );
       // Simulate chat bot reaction
-      setTimeout(() => {
-        updatedMessages?.length && setMessages(updatedMessages);
-        const nextMsgType = getNextActionType(type);
+      updatedMessages?.length && setMessages(updatedMessages);
+      const nextMsgType = getNextActionType(type);
 
-        // console.log("====================================");
-        // console.log("__type", type);
-        // console.log("__nextMsgType", nextMsgType);
-        // console.log("====================================");
-
-        setCurrentMsgType(nextMsgType);
-        setStatus(Status.DONE);
-      }, 0);
+      setCurrentMsgType(nextMsgType);
+      setStatus(Status.DONE);
 
       setError(null);
       setChatAction(null);
@@ -1023,11 +980,6 @@ const ChatProvider = ({
       withoutFiltering: questions.some((q) => q.text === excludeItem),
     });
 
-    // LOG(type, "type", COLORS.PERSIAN_RED);
-    // LOG(excludeItem, "excludeItem", COLORS.PERSIAN);
-    // LOG(updatedMessages, "updatedMessages", COLORS.PERSIAN_RED);
-    // LOG(messages, "messages", COLORS.PERSIAN);
-
     if (type) {
       const responseMessages = getChatActionResponse({
         type,
@@ -1053,6 +1005,11 @@ const ChatProvider = ({
           break;
         case CHAT_ACTIONS.UPLOADED_CV:
           break;
+
+        case CHAT_ACTIONS.MAKE_REFERRAL:
+          setMessages([...responseMessages, ...updatedMessages]);
+          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL);
+          break;
         default:
           setMessages([...responseMessages, ...updatedMessages]);
           break;
@@ -1065,7 +1022,6 @@ const ChatProvider = ({
           currentMsgType === CHAT_ACTIONS.ASK_QUESTION
             ? { type: chatType, payload: { question: excludeItem } }
             : { type: chatType };
-
         getChatBotResponse(action);
       }
       // LOG(updatedMessages, "updatedMessages", COLORS.BLACK, COLORS.WHITE);
@@ -1102,6 +1058,30 @@ const ChatProvider = ({
       }
     }
   };
+
+  const validateRefDataAndGetWorker = useCallback(
+    async (data: IReferralData, successCallback?: Function) => {
+      if (candidateId && chatId) {
+        try {
+          setIsChatLoading(true);
+          const payload: IValidateRefPayload = {
+            employeeId: +data.employeeId,
+            lastName: data.lastName,
+            candidateId: candidateId,
+            chatId: chatId,
+            "year-of-birth": data.yeanOrBirth,
+          };
+
+          const response = await apiInstance.validateAndGetWorker(payload);
+          LOG(response, "response");
+        } catch (error) {
+        } finally {
+          setIsChatLoading(false);
+        }
+      }
+    },
+    [candidateId, chatId]
+  );
 
   const logout = useCallback(() => {
     // firebase logout
@@ -1194,6 +1174,7 @@ const ChatProvider = ({
     setIsChatInputAvailable,
     requisitionsPage,
     setRequisitionsPage,
+    validateRefDataAndGetWorker,
   };
 
   // console.log(
