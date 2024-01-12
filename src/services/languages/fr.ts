@@ -93,7 +93,7 @@ export const fr = {
       "Votre CV a été joint.\n Vous pouvez cliquer sur le X pour le supprimer et en télécharger un autre ou cliquer ci-dessous pour télécharger et rechercher des offres d'emploi",
     botThanks:
       "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
-    employeeId: "Please provide EmployeeID",
+    employeeId: "What is your Employee ID ?",
   },
   chat_item_description: {
     title: "Bot de carrière",

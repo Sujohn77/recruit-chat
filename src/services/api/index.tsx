@@ -9,6 +9,7 @@ import {
   IUpdateOrMergeCandidateResponse,
   IValidateRefPayload,
   IValidateRefResponse,
+  ICreateAndSendPayload,
 } from "services/types";
 
 import {
@@ -210,12 +211,15 @@ class Api {
       "api/chatbot/update-or-merge-candidate".trim(),
       data
     );
-  //
-  validateAndGetWorker = (data: IValidateRefPayload) =>
+  // Referral
+  validateReferral = (data: IValidateRefPayload) =>
     this.client.post<IValidateRefResponse>(
       "/api/chatbot/validate-and-get-worker",
       data
     );
+  submitReferral = (data: ICreateAndSendPayload) =>
+    this.client.post("/api/referral/createandsend", data);
+
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);
     delete this.client.headers.Authorization;

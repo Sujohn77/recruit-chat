@@ -606,3 +606,15 @@ export interface IValidateRefResponse {
   candidateID: number;
   updateChatBotCandidateId: boolean;
 }
+
+export interface ICreateAndSendPayload {
+  referrerSubscriberId: number;
+  jobId?: number;
+  referralSourceTypeId: number;
+  referredCandidate: {
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    mobileNumber: string;
+  };
+}

@@ -24,7 +24,6 @@ import {
   IRequisition,
   IMessageID,
   IJobAlertData,
-  IReferralData,
 } from "utils/types";
 import {
   IAskAQuestionResponse,
@@ -38,7 +37,6 @@ import {
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
   IRequisitionsResponse,
-  IValidateRefPayload,
 } from "services/types";
 import {
   getChatActionResponse,
@@ -146,7 +144,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setIsChatInputAvailable: () => {},
   requisitionsPage: 0,
   setRequisitionsPage: () => {},
-  validateRefDataAndGetWorker: () => {},
+  setIsChatLoading: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -279,9 +277,6 @@ const ChatProvider = ({
 
           setIsApplyJobFlow(true);
           _setFirebaseMessages(processedSnapshots);
-
-          // LOG(messagesSnapshots, "messagesSnapshots");
-          // LOG(processedSnapshots, "processedSnapshots");
         }
       );
     }
@@ -389,14 +384,6 @@ const ChatProvider = ({
             jobCategory: alertCategories?.length ? alertCategories[0] : "",
             candidateId: candidateId,
           });
-
-          // if (chatId) {
-          //   const sendTranscript: ApiResponse<ISendTranscriptResponse> =
-          //     await apiInstance.sendTranscript({
-          //       ChatID: chatId,
-          //     });
-          //   LOG(sendTranscript, "!!sendTranscript RESPONSE!!");
-          // }
         } catch (err) {
           clearAuthConfig();
         } finally {
@@ -917,12 +904,15 @@ const ChatProvider = ({
     setMessages(updatedMessages);
   };
 
-  const setSnapshotMessages = (messagesSnapshots: ISnapshot<IMessage>[]) => {
-    if (!nextMessages.length) {
-      setCurrentMsgType(null);
-      setNextMessages(messagesSnapshots);
-    }
-  };
+  const setSnapshotMessages = useCallback(
+    (messagesSnapshots: ISnapshot<IMessage>[]) => {
+      if (!nextMessages.length) {
+        setCurrentMsgType(null);
+        setNextMessages(messagesSnapshots);
+      }
+    },
+    [nextMessages]
+  );
 
   // for sending answer (after "Apply job")
   const sendPreScreenMessage = async (
@@ -1059,30 +1049,6 @@ const ChatProvider = ({
     }
   };
 
-  const validateRefDataAndGetWorker = useCallback(
-    async (data: IReferralData, successCallback?: Function) => {
-      if (candidateId && chatId) {
-        try {
-          setIsChatLoading(true);
-          const payload: IValidateRefPayload = {
-            employeeId: +data.employeeId,
-            lastName: data.lastName,
-            candidateId: candidateId,
-            chatId: chatId,
-            "year-of-birth": data.yeanOrBirth,
-          };
-
-          const response = await apiInstance.validateAndGetWorker(payload);
-          LOG(response, "response");
-        } catch (error) {
-        } finally {
-          setIsChatLoading(false);
-        }
-      }
-    },
-    [candidateId, chatId]
-  );
-
   const logout = useCallback(() => {
     // firebase logout
     firebase.auth()?.signOut();
@@ -1174,7 +1140,7 @@ const ChatProvider = ({
     setIsChatInputAvailable,
     requisitionsPage,
     setRequisitionsPage,
-    validateRefDataAndGetWorker,
+    setIsChatLoading,
   };
 
   // console.log(

@@ -91,7 +91,7 @@ export interface IChatMessengerContext {
   setIsChatInputAvailable: (isAvailable: boolean) => void;
   requisitionsPage: number;
   setRequisitionsPage: (page: number) => void;
-  validateRefDataAndGetWorker: (data: IReferralData) => void;
+  setIsChatLoading: (isLoading: boolean) => void;
 }
 
 export interface IFileUploadContext {
