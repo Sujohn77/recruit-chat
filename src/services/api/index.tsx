@@ -218,7 +218,7 @@ class Api {
       data
     );
   submitReferral = (data: ICreateAndSendPayload) =>
-    this.client.post("/api/referral/createandsend", data);
+    this.client.post<ISuccessResponse>("/api/referral/createandsend", data);
 
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);

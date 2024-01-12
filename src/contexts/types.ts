@@ -92,6 +92,7 @@ export interface IChatMessengerContext {
   requisitionsPage: number;
   setRequisitionsPage: (page: number) => void;
   setIsChatLoading: (isLoading: boolean) => void;
+  setCandidateId: (candidateId: number) => void;
 }
 
 export interface IFileUploadContext {

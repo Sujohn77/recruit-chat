@@ -601,9 +601,9 @@ export interface IValidateRefPayload {
   "year-of-birth": string;
 }
 
-export interface IValidateRefResponse {
+export interface IValidateRefResponse extends ISuccessResponse {
   isValid: boolean;
-  candidateID: number;
+  candidateId: number;
   updateChatBotCandidateId: boolean;
 }
 

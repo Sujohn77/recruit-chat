@@ -145,6 +145,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   requisitionsPage: 0,
   setRequisitionsPage: () => {},
   setIsChatLoading: () => {},
+  setCandidateId: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -1141,6 +1142,7 @@ const ChatProvider = ({
     requisitionsPage,
     setRequisitionsPage,
     setIsChatLoading,
+    setCandidateId,
   };
 
   // console.log(

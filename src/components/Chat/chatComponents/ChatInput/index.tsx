@@ -82,7 +82,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
   // Referral
-  const [employeeId, setEmployeeID] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
   const [refLastName, setRefLastName] = useState("");
   const [referralStep, setReferralStep] = useState<ReferralSteps>(
     ReferralSteps.EmployeeId
@@ -220,190 +220,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         }
       } else {
         if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL && draftMessage) {
-          const mess: ILocalMessage = {
-            isOwn: true,
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: draftMessage,
-            },
-            _id: generateLocalId(),
-          };
-
-          switch (referralStep) {
-            case ReferralSteps.EmployeeId:
-              const enterNamaMess = getReferralQuestion(
-                ReferralSteps.EmployeeId
-              );
-
-              setEmployeeID(draftMessage);
-              _setMessages((prevMessages) => [
-                enterNamaMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.ReferralLastName);
-
-              break;
-            case ReferralSteps.ReferralLastName:
-              const enterBirthMess = getReferralQuestion(
-                ReferralSteps.ReferralLastName
-              );
-              setRefLastName(draftMessage);
-              _setMessages((prevMessages) => [
-                enterBirthMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.ReferralBirth);
-
-              break;
-            case ReferralSteps.ReferralBirth:
-              const onSuccessCallback = () => {
-                const thanksMess: ILocalMessage = {
-                  isOwn: false,
-                  localId: generateLocalId(),
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
-                  },
-                  _id: generateLocalId(),
-                };
-                const userNameMess = getReferralQuestion(
-                  ReferralSteps.UserFirstName
-                );
-                _setMessages((prevMessages) => [
-                  userNameMess,
-                  thanksMess,
-                  ...prevMessages,
-                ]);
-                setReferralStep(ReferralSteps.UserFirstName);
-              };
-
-              _setMessages((prevMessages) => [mess, ...prevMessages]);
-              onValidateReferral(
-                {
-                  lastName: refLastName,
-                  yeanOrBirth: draftMessage,
-                  employeeId: +employeeId,
-                },
-                onSuccessCallback,
-                onSuccessCallback
-              );
-              break;
-            case ReferralSteps.UserFirstName:
-              setFirstName(draftMessage);
-
-              const userLastNameMess = getReferralQuestion(
-                ReferralSteps.UserLastName
-              );
-              _setMessages((prevMessages) => [
-                userLastNameMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.UserLastName);
-              break;
-            case ReferralSteps.UserLastName:
-              setLastName(draftMessage);
-
-              const userEmailMess = getReferralQuestion(
-                ReferralSteps.UserEmail
-              );
-              _setMessages((prevMessages) => [
-                userEmailMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.UserEmail);
-              break;
-            case ReferralSteps.UserEmail:
-              setEmail(draftMessage);
-
-              const userConfirmMess = getReferralQuestion(
-                ReferralSteps.UserConfirmationEmail
-              );
-              _setMessages((prevMessages) => [
-                userConfirmMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.UserConfirmationEmail);
-              break;
-            case ReferralSteps.UserConfirmationEmail:
-              setConfirmEmail(draftMessage);
-
-              const userMobileMess = getReferralQuestion(
-                ReferralSteps.UserMobileNumber
-              );
-              _setMessages((prevMessages) => [
-                userMobileMess,
-                mess,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.UserMobileNumber);
-              break;
-            case ReferralSteps.UserMobileNumber:
-              setMobileNumber(draftMessage);
-              _setMessages((prevMessages) => [mess, ...prevMessages]);
-              onSubmitReferral(
-                {
-                  referralSourceTypeId: 1, // ask
-                  referrerSubscriberId: 12, //int (from validate endpoint/CHAT-255) - candidateId?
-                  referredCandidate: {
-                    emailAddress: email,
-                    firstName,
-                    lastName,
-                    mobileNumber,
-                  },
-                },
-                () => {
-                  const question: ILocalMessage = {
-                    _id: null,
-                    isOwn: false,
-                    content: {
-                      subType: MessageType.TEXT,
-                      text: "Would you like to refer someone else?",
-                    },
-                    optionList: {
-                      isActive: true,
-                      options: [
-                        {
-                          id: 1,
-                          itemId: 1,
-                          isSelected: false,
-                          name: "Yes",
-                          text: "Yes",
-                        },
-                        {
-                          id: 1,
-                          itemId: 1,
-                          isSelected: false,
-                          name: "No",
-                          text: "No",
-                        },
-                      ],
-                    },
-                  };
-                  _setMessages((prevMessages) => [question, ...prevMessages]);
-                },
-                () => {
-                  const question: ILocalMessage = {
-                    _id: null,
-                    isOwn: false,
-                    content: {
-                      subType: MessageType.TEXT,
-                      text: "Would you like to refer someone else?",
-                    },
-                  };
-                  _setMessages((prevMessages) => [question, ...prevMessages]);
-                }
-              );
-              break;
-
-            default:
-              break;
-          }
+          referralHandle(draftMessage);
         } else {
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
@@ -422,6 +239,194 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       referralStep,
     ]
   );
+
+  const referralHandle = (draftMessage: string) => {
+    const mess: ILocalMessage = {
+      isOwn: true,
+      localId: generateLocalId(),
+      content: {
+        subType: MessageType.TEXT,
+        text: draftMessage,
+      },
+      _id: generateLocalId(),
+    };
+
+    switch (referralStep) {
+      case ReferralSteps.EmployeeId:
+        const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
+
+        setEmployeeId(draftMessage);
+        _setMessages((prevMessages) => [enterNamaMess, mess, ...prevMessages]);
+        setReferralStep(ReferralSteps.ReferralLastName);
+
+        break;
+      case ReferralSteps.ReferralLastName:
+        const enterBirthMess = getReferralQuestion(
+          ReferralSteps.ReferralLastName
+        );
+        setRefLastName(draftMessage);
+        _setMessages((prevMessages) => [enterBirthMess, mess, ...prevMessages]);
+        setReferralStep(ReferralSteps.ReferralBirth);
+
+        break;
+      case ReferralSteps.ReferralBirth:
+        const onSuccessCallback = () => {
+          const thanksMess: ILocalMessage = {
+            isOwn: false,
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
+            },
+            _id: generateLocalId(),
+          };
+          const userNameMess = getReferralQuestion(ReferralSteps.UserFirstName);
+          _setMessages((prevMessages) => [
+            userNameMess,
+            thanksMess,
+            ...prevMessages,
+          ]);
+          setReferralStep(ReferralSteps.UserFirstName);
+        };
+        const onFailure = () => {
+          const invalidData: ILocalMessage = {
+            _id: null,
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: "Data is incorrect",
+            },
+          };
+          const employeeQuestion: ILocalMessage = {
+            _id: generateLocalId(),
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: t("messages:employeeId"),
+            },
+          };
+          _setMessages((prevMessages) => [
+            invalidData,
+            employeeQuestion,
+            ...prevMessages,
+          ]);
+          setReferralStep(ReferralSteps.EmployeeId);
+        };
+
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        onValidateReferral(
+          {
+            lastName: refLastName,
+            yeanOrBirth: draftMessage,
+            employeeId: +employeeId,
+          },
+          onSuccessCallback,
+          onFailure
+        );
+        break;
+      case ReferralSteps.UserFirstName:
+        setFirstName(draftMessage);
+
+        const userLastNameMess = getReferralQuestion(
+          ReferralSteps.UserLastName
+        );
+        _setMessages((prevMessages) => [
+          userLastNameMess,
+          mess,
+          ...prevMessages,
+        ]);
+        setReferralStep(ReferralSteps.UserLastName);
+        break;
+      case ReferralSteps.UserLastName:
+        setLastName(draftMessage);
+
+        const userEmailMess = getReferralQuestion(ReferralSteps.UserEmail);
+        _setMessages((prevMessages) => [userEmailMess, mess, ...prevMessages]);
+        setReferralStep(ReferralSteps.UserEmail);
+        break;
+      case ReferralSteps.UserEmail:
+        setEmail(draftMessage);
+
+        const userConfirmMess = getReferralQuestion(
+          ReferralSteps.UserConfirmationEmail
+        );
+        _setMessages((prevMessages) => [
+          userConfirmMess,
+          mess,
+          ...prevMessages,
+        ]);
+        setReferralStep(ReferralSteps.UserConfirmationEmail);
+        break;
+      case ReferralSteps.UserConfirmationEmail:
+        setConfirmEmail(draftMessage);
+
+        const userMobileMess = getReferralQuestion(
+          ReferralSteps.UserMobileNumber
+        );
+        _setMessages((prevMessages) => [userMobileMess, mess, ...prevMessages]);
+        setReferralStep(ReferralSteps.UserMobileNumber);
+        break;
+      case ReferralSteps.UserMobileNumber:
+        setMobileNumber(draftMessage);
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        onSubmitReferral(
+          {
+            referralSourceTypeId: 1, // ask
+            referredCandidate: {
+              emailAddress: email,
+              firstName,
+              lastName,
+              mobileNumber: draftMessage,
+            },
+          },
+          () => {
+            const question: ILocalMessage = {
+              _id: null,
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                text: "Would you like to refer someone else?",
+              },
+              optionList: {
+                isActive: true,
+                options: [
+                  {
+                    id: 1,
+                    itemId: 1,
+                    isSelected: false,
+                    name: "Yes",
+                    text: "Yes",
+                  },
+                  {
+                    id: 1,
+                    itemId: 1,
+                    isSelected: false,
+                    name: "No",
+                    text: "No",
+                  },
+                ],
+              },
+            };
+            _setMessages((prevMessages) => [question, ...prevMessages]);
+          },
+          () => {
+            const question: ILocalMessage = {
+              _id: null,
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                text: "Would you like to refer someone else?",
+              },
+            };
+            _setMessages((prevMessages) => [question, ...prevMessages]);
+          }
+        );
+        break;
+
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
