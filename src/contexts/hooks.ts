@@ -23,8 +23,13 @@ interface ISubmitReferral {
 }
 
 export const useValidateReferral = () => {
-  const { candidateId, chatId, setIsChatLoading, setCandidateId } =
-    useChatMessenger();
+  const {
+    candidateId,
+    chatId,
+    setIsChatLoading,
+    setCandidateId,
+    setIsCandidateAnonym,
+  } = useChatMessenger();
 
   return useCallback(
     async (data: IReferralData, onSuccess: Function, onFailure: Function) => {
@@ -48,20 +53,17 @@ export const useValidateReferral = () => {
 
           if (res.data?.candidateId && res.data.updateChatBotCandidateId) {
             setCandidateId(res.data.candidateId);
+            setIsCandidateAnonym(false);
           }
 
           if (res.data?.success === false && res.data.errors.length) {
             onFailure();
           }
-          LOG(res, "response");
         } catch (error) {
           onFailure();
         } finally {
           setIsChatLoading(false);
         }
-      } else {
-        // TODO: remove after development
-        onSuccess?.();
       }
     },
     [candidateId, chatId]

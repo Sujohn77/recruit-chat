@@ -93,6 +93,7 @@ export interface IChatMessengerContext {
   setRequisitionsPage: (page: number) => void;
   setIsChatLoading: (isLoading: boolean) => void;
   setCandidateId: (candidateId: number) => void;
+  setIsCandidateAnonym: (isAnonym: boolean) => void;
 }
 
 export interface IFileUploadContext {

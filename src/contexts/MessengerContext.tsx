@@ -146,6 +146,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setRequisitionsPage: () => {},
   setIsChatLoading: () => {},
   setCandidateId: () => {},
+  setIsCandidateAnonym: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -1143,6 +1144,7 @@ const ChatProvider = ({
     setRequisitionsPage,
     setIsChatLoading,
     setCandidateId,
+    setIsCandidateAnonym,
   };
 
   // console.log(
