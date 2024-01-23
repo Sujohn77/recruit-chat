@@ -1,5 +1,9 @@
+import { ReferralResponse } from "utils/constants";
 import { generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
+
+export const REF_OPTION_1 = 1;
+export const REF_OPTION_2 = 2;
 
 export enum ReferralSteps {
   EmployeeId,
@@ -97,5 +101,23 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
 
     default:
       return { _id: null, content: { subType: MessageType.TEXT } };
+  }
+};
+
+export const getReferralResponseMess = (
+  previouslyReferredState: ReferralResponse,
+  refFirstName?: string,
+  refLastName?: string,
+  refCompanyName?: string
+): string => {
+  switch (previouslyReferredState) {
+    case 0:
+      return "Thank you for your referral";
+    case 1:
+      return `You have previously referred ${refFirstName} ${refLastName} to this job`;
+    case 2:
+      return `You have previously referred ${refFirstName} ${refLastName} to ${refCompanyName}`;
+    default:
+      return "";
   }
 };

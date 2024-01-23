@@ -1,5 +1,5 @@
 import { DocumentChangeType } from "@firebase/firestore-types";
-import { IUserLoginDataKeys } from "utils/constants";
+import { IUserLoginDataKeys, MessageOptionTypes } from "utils/constants";
 import { IRequisition, MessageType } from "utils/types";
 
 export type DateType = { seconds: number } | string;
@@ -139,6 +139,7 @@ export interface IMessageOptionItem {
 export interface IMessageOptions {
   isActive: boolean;
   options: IMessageOptionItem[];
+  type?: MessageOptionTypes;
 }
 
 export interface IMessage extends I_id, IMessageContent {
@@ -617,4 +618,9 @@ export interface ICreateAndSendPayload {
     emailAddress: string;
     mobileNumber: string;
   };
+}
+
+export interface ISubmitReferralResponse {
+  previouslyReferredState: number;
+  subscriberReferralId: number | null;
 }

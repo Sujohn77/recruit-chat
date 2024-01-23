@@ -1,14 +1,14 @@
 import { useChatMessenger } from "./MessengerContext";
+import isNumber from "lodash/isNumber";
 import { ApiResponse } from "apisauce";
 import { useCallback } from "react";
 
 import { apiInstance } from "services/api";
 import {
-  ISuccessResponse,
+  ISubmitReferralResponse,
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
-import { LOG } from "utils/helpers";
 import { IReferralData } from "utils/types";
 
 interface ISubmitReferral {
@@ -23,13 +23,8 @@ interface ISubmitReferral {
 }
 
 export const useValidateReferral = () => {
-  const {
-    candidateId,
-    chatId,
-    setIsChatLoading,
-    setCandidateId,
-    setIsCandidateAnonym,
-  } = useChatMessenger();
+  const { candidateId, chatId, setIsChatLoading, setCandidateId } =
+    useChatMessenger();
 
   return useCallback(
     async (data: IReferralData, onSuccess: Function, onFailure: Function) => {
@@ -53,7 +48,7 @@ export const useValidateReferral = () => {
 
           if (res.data?.candidateId && res.data.updateChatBotCandidateId) {
             setCandidateId(res.data.candidateId);
-            setIsCandidateAnonym(false);
+            // setIsCandidateAnonym(false);
           }
 
           if (res.data?.success === false && res.data.errors.length) {
@@ -76,24 +71,23 @@ export const useSubmitReferral = () => {
   return useCallback(
     async (
       payload: ISubmitReferral,
-      onSuccess: Function,
+      onSuccess: (previouslyReferredState: number) => void,
       onFailure: Function
     ) => {
       try {
         setIsChatLoading(true);
 
-        const res: ApiResponse<ISuccessResponse> =
+        const res: ApiResponse<ISubmitReferralResponse> =
           await apiInstance.submitReferral({
             ...payload,
             referrerSubscriberId: candidateId!,
           });
 
-        if (res.data?.success === false) {
-          onFailure();
+        if (res.data && isNumber(res.data?.previouslyReferredState)) {
+          onSuccess(res.data.previouslyReferredState);
         } else {
-          onSuccess();
+          onFailure();
         }
-        LOG(res, "response");
       } catch (error) {
       } finally {
         setIsChatLoading(false);

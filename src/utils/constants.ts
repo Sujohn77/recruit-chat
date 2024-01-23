@@ -391,3 +391,13 @@ export enum EventIds {
   GetChatBotData = "get_chatbot_data",
   HideSpinner = "hide_spinner",
 }
+
+export enum ReferralResponse {
+  NotPreviouslyReferred = 0,
+  PreviouslyReferredToGivenJob = 1,
+  PreviouslyReferredNonJobSpecific = 2,
+}
+
+export enum MessageOptionTypes {
+  Referral = "referral",
+}

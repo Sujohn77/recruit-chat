@@ -16,7 +16,7 @@ import uniqBy from "lodash/uniqBy";
 import "../../../../services/firebase/config";
 import * as S from "./styles";
 import { ICONS } from "assets";
-import { Status, TextFieldTypes } from "utils/constants";
+import { MessageOptionTypes, Status, TextFieldTypes } from "utils/constants";
 import {
   generateLocalId,
   getAccessWriteType,
@@ -32,7 +32,13 @@ import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
 import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
-import { ReferralSteps, getReferralQuestion } from "./data";
+import {
+  REF_OPTION_1,
+  REF_OPTION_2,
+  ReferralSteps,
+  getReferralQuestion,
+  getReferralResponseMess,
+} from "./data";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -306,8 +312,8 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             },
           };
           _setMessages((prevMessages) => [
-            invalidData,
             employeeQuestion,
+            invalidData,
             ...prevMessages,
           ]);
           setReferralStep(ReferralSteps.EmployeeId);
@@ -369,58 +375,76 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       case ReferralSteps.UserMobileNumber:
         setMobileNumber(draftMessage);
         _setMessages((prevMessages) => [mess, ...prevMessages]);
-        onSubmitReferral(
-          {
-            referralSourceTypeId: 1, // ask
-            referredCandidate: {
-              emailAddress: email,
-              firstName,
-              lastName,
-              mobileNumber: draftMessage,
+
+        const payload = {
+          referralSourceTypeId: 3,
+          referredCandidate: {
+            emailAddress: email,
+            firstName,
+            lastName,
+            mobileNumber: draftMessage,
+          },
+        };
+        const onSuccessSubmit = (previouslyReferredState: number) => {
+          const submitResponse: ILocalMessage = {
+            _id: null,
+            isOwn: false,
+            content: {
+              subType: MessageType.TEXT,
+              text: getReferralResponseMess(
+                previouslyReferredState,
+                firstName,
+                lastName
+              ),
             },
-          },
-          () => {
-            const question: ILocalMessage = {
-              _id: null,
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: "Would you like to refer someone else?",
-              },
-              optionList: {
-                isActive: true,
-                options: [
-                  {
-                    id: 1,
-                    itemId: 1,
-                    isSelected: false,
-                    name: "Yes",
-                    text: "Yes",
-                  },
-                  {
-                    id: 1,
-                    itemId: 1,
-                    isSelected: false,
-                    name: "No",
-                    text: "No",
-                  },
-                ],
-              },
-            };
-            _setMessages((prevMessages) => [question, ...prevMessages]);
-          },
-          () => {
-            const question: ILocalMessage = {
-              _id: null,
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: "Would you like to refer someone else?",
-              },
-            };
-            _setMessages((prevMessages) => [question, ...prevMessages]);
-          }
-        );
+          };
+          const question: ILocalMessage = {
+            _id: null,
+            isOwn: false,
+            content: {
+              subType: MessageType.TEXT,
+              text: "Would you like to refer someone else?",
+            },
+            optionList: {
+              type: MessageOptionTypes.Referral,
+              isActive: true,
+              options: [
+                {
+                  id: 1,
+                  itemId: REF_OPTION_1,
+                  isSelected: false,
+                  name: "Yes",
+                  text: "Yes",
+                },
+                {
+                  id: 2,
+                  itemId: REF_OPTION_2,
+                  isSelected: false,
+                  name: "No",
+                  text: "No",
+                },
+              ],
+            },
+          };
+          _setMessages((prevMessages) => [
+            question,
+            submitResponse,
+            ...prevMessages,
+          ]);
+        };
+        const onFailureSubmit = () => {
+          const question: ILocalMessage = {
+            _id: null,
+            isOwn: false,
+            content: {
+              subType: MessageType.TEXT,
+              text: "Would you like to refer someone else?",
+            },
+          };
+          _setMessages((prevMessages) => [question, ...prevMessages]);
+        };
+
+        onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
         break;
 
       default:

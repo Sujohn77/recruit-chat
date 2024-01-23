@@ -10,6 +10,7 @@ import {
   IValidateRefPayload,
   IValidateRefResponse,
   ICreateAndSendPayload,
+  ISubmitReferralResponse,
 } from "services/types";
 
 import {
@@ -218,7 +219,10 @@ class Api {
       data
     );
   submitReferral = (data: ICreateAndSendPayload) =>
-    this.client.post<ISuccessResponse>("/api/referral/createandsend", data);
+    this.client.post<ISubmitReferralResponse>(
+      "/api/referral/createandsend",
+      data
+    );
 
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);
