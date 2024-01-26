@@ -147,6 +147,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setIsChatLoading: () => {},
   setCandidateId: () => {},
   setIsCandidateAnonym: () => {},
+  setEmployeeId: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -224,6 +225,11 @@ const ChatProvider = ({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
+  // ----------------------------- referral state ----------------------------------------------- //
+  const [employeeId, setEmployeeId] = useState<number | undefined>(undefined);
+
+  // -------------------------------------------------------------------------------------------- //
+
   useEffect(() => {
     switch (currentMsgType) {
       case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
@@ -232,6 +238,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_LOCATIONS:
       case CHAT_ACTIONS.SET_ALERT_EMAIL:
       case CHAT_ACTIONS.MAKE_REFERRAL:
+      case CHAT_ACTIONS.MAKE_REFERRAL_FRIED:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -842,6 +849,7 @@ const ChatProvider = ({
         additionalCondition,
         param,
         isQuestion,
+        employeeId,
       });
 
       // console.log(
@@ -977,6 +985,7 @@ const ChatProvider = ({
         type,
         additionalCondition: undefined,
         param,
+        employeeId,
       });
 
       switch (type) {
@@ -1000,7 +1009,12 @@ const ChatProvider = ({
 
         case CHAT_ACTIONS.MAKE_REFERRAL:
           setMessages([...responseMessages, ...updatedMessages]);
-          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL);
+
+          setCurrentMsgType(
+            employeeId
+              ? CHAT_ACTIONS.MAKE_REFERRAL_FRIED
+              : CHAT_ACTIONS.MAKE_REFERRAL
+          );
           break;
         default:
           setMessages([...responseMessages, ...updatedMessages]);
@@ -1145,6 +1159,8 @@ const ChatProvider = ({
     setIsChatLoading,
     setCandidateId,
     setIsCandidateAnonym,
+    setEmployeeId,
+    employeeId,
   };
 
   // console.log(

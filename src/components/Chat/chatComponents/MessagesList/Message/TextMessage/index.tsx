@@ -2,9 +2,10 @@ import { FC, memo, useEffect } from "react";
 import moment from "moment";
 import DOMPurify from "isomorphic-dompurify";
 
+import { ReferralOptionList } from "./ReferralOptionList";
 import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
-import { autolinkerClassName } from "utils/constants";
+import { MessageOptionTypes, autolinkerClassName } from "utils/constants";
 import { ILocalMessage, MessageType } from "utils/types";
 import { OptionList } from "./OptionList";
 import { MS_1000 } from "..";
@@ -104,13 +105,21 @@ export const TextMessage: FC<ITextMessageProps> = memo(({ message, index }) => {
 
         {renderSendingTime(message)}
 
-        {message.optionList && (
-          <OptionList
-            index={index}
-            chatItemId={message.chatItemId}
-            optionList={message.optionList}
-          />
-        )}
+        {message.optionList &&
+          (message.optionList.type === MessageOptionTypes.Referral ? (
+            <ReferralOptionList
+              messageId={message._id}
+              optionList={message.optionList}
+              chatItemId={message.chatItemId}
+              message={message}
+            />
+          ) : (
+            <OptionList
+              index={index}
+              chatItemId={message.chatItemId}
+              optionList={message.optionList}
+            />
+          ))}
       </S.MessageContent>
     </S.MessageBox>
   );

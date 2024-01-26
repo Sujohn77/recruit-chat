@@ -39,7 +39,8 @@ export enum ChannelName {
 const getChatActionMessages = (
   type: CHAT_ACTIONS,
   param?: string,
-  withoutDefaultQuestions?: boolean
+  withoutDefaultQuestions?: boolean,
+  employeeId?: number
 ) => {
   LOG(type, "getChatActionMessages TYPE", COLORS.WHITE);
   switch (type) {
@@ -277,12 +278,14 @@ const getChatActionMessages = (
       ];
     }
     case CHAT_ACTIONS.MAKE_REFERRAL:
-      return [
-        {
-          subType: MessageType.TEXT,
-          text: i18n.t("messages:employeeId"),
-        },
-      ];
+      return employeeId
+        ? []
+        : [
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:employeeId"),
+            },
+          ];
     default:
       return [];
   }
@@ -318,6 +321,7 @@ export const getChatActionResponse = ({
   additionalCondition,
   param,
   isQuestion = false,
+  employeeId,
 }: IGetChatResponseProps): ILocalMessage[] => {
   if (
     additionalCondition !== null &&
@@ -328,10 +332,15 @@ export const getChatActionResponse = ({
       type === CHAT_ACTIONS.SET_WORK_PERMIT
         ? CHAT_ACTIONS.NO_PERMIT_WORK
         : CHAT_ACTIONS.NO_MATCH;
-    return getChatActionResponse({ type: newType });
+    return getChatActionResponse({ type: newType, employeeId });
   }
 
-  const responseMessages = getChatActionMessages(type, param, isQuestion);
+  const responseMessages = getChatActionMessages(
+    type,
+    param,
+    isQuestion,
+    employeeId
+  );
   return getParsedMessages(responseMessages);
 };
 

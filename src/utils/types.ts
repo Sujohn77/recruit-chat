@@ -69,7 +69,7 @@ export interface IContent {
 
 export interface ILocalMessage {
   _id: number | string | null;
-  localId?: string | number;
+  localId: string | number;
   dateCreated?: { seconds: number };
   content: IContent;
   isOwn?: boolean;
@@ -136,6 +136,7 @@ export enum CHAT_ACTIONS {
   SEND_ALERT_JOB_LOCATIONS = "SEND_ALERT_JOB_LOCATIONS",
   MAKE_REFERRAL = "MAKE_REFERRAL",
   SUBMIT_REFERRAL = "SUBMIT_REFERRAL",
+  MAKE_REFERRAL_FRIED = "MAKE_REFERRAL_FRIED",
 }
 
 export enum Status {
@@ -210,6 +211,7 @@ export interface IGetChatResponseProps {
   additionalCondition?: boolean | null;
   param?: string | undefined;
   isQuestion?: boolean;
+  employeeId?: number;
 }
 
 export interface IFilterItemsWithType {

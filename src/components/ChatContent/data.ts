@@ -2,7 +2,7 @@ import moment from "moment";
 
 import i18n from "services/localization";
 import { IMessage, IUserSelf, UserLicenseTypes } from "services/types";
-import { MessageTypeId, getLocalMessage } from "utils/helpers";
+import { MessageTypeId, generateLocalId, getLocalMessage } from "utils/helpers";
 import { ISnapshot, MessageType } from "utils/types";
 
 const chatBotSender: IUserSelf = {
@@ -96,6 +96,7 @@ export const findJobMessages = [
 export const getQnAMessages = (): ISnapshot<IMessage>[] => {
   const questions: IMessage[] = [
     {
+      localId: generateLocalId(),
       text: i18n.t("messages:whatHiring"),
       subType: MessageType.BUTTON,
       isChatMessage: true,
@@ -113,6 +114,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
       chatItemId: 1650294333,
     },
     {
+      localId: generateLocalId(),
       text: i18n.t("messages:howSubmitCV"),
       subType: MessageType.BUTTON,
       isChatMessage: true,
@@ -130,6 +132,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
       chatItemId: 62135596800,
     },
     {
+      localId: generateLocalId(),
       text: i18n.t("messages:howMuchExperience"),
       subType: MessageType.BUTTON,
       isChatMessage: true,
@@ -159,6 +162,7 @@ export const getQnAMessages = (): ISnapshot<IMessage>[] => {
 export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
   const findJobMessages: IMessage[] = [
     {
+      localId: generateLocalId(),
       subType: MessageType.BUTTON,
       text: i18n.t("messages:answerQuestions"),
       isOwn: true,
@@ -176,6 +180,7 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
       chatItemId: 763293000,
     },
     {
+      localId: generateLocalId(),
       subType: MessageType.BUTTON,
       text: i18n.t("messages:uploadCV"),
       isOwn: true,
@@ -193,6 +198,7 @@ export const getFindJobMessages = (): ISnapshot<IMessage>[] => {
       chatItemId: 1659342828,
     },
     {
+      localId: generateLocalId(),
       subType: MessageType.TEXT,
       text: "Please choose one of the following options to begin your job search",
       dateCreated: { seconds: moment.now() },

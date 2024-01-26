@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
+import isNaN from "lodash/isNaN";
 import uniqBy from "lodash/uniqBy";
 
 import "../../../../services/firebase/config";
@@ -71,6 +72,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     createJobAlert,
     clearJobFilters,
     isChatInputAvailable,
+    setEmployeeId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -88,7 +90,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
   // Referral
-  const [employeeId, setEmployeeId] = useState("");
+  const [refEmployeeId, setRefEmployeeId] = useState("");
   const [refLastName, setRefLastName] = useState("");
   const [referralStep, setReferralStep] = useState<ReferralSteps>(
     ReferralSteps.EmployeeId
@@ -145,6 +147,15 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     ) {
       setIsShowResults(true);
     }
+
+    if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIED) {
+      setReferralStep(ReferralSteps.UserFirstName);
+      clearReferralState();
+      _setMessages((prev) => [
+        getReferralQuestion(ReferralSteps.UserFirstName),
+        ...prev,
+      ]);
+    }
   }, [currentMsgType]);
 
   useEffect(() => {
@@ -152,6 +163,14 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       setInputValues([]);
     }
   }, [currentMsgType]);
+
+  const clearReferralState = useCallback(() => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setConfirmEmail("");
+    setMobileNumber("");
+  }, []);
 
   // Callbacks
   const sendMessage = useCallback(
@@ -225,7 +244,11 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
           });
         }
       } else {
-        if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL && draftMessage) {
+        if (
+          (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
+            currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIED) &&
+          draftMessage
+        ) {
           referralHandle(draftMessage);
         } else {
           dispatch({
@@ -261,7 +284,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       case ReferralSteps.EmployeeId:
         const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
 
-        setEmployeeId(draftMessage);
+        setRefEmployeeId(draftMessage);
         _setMessages((prevMessages) => [enterNamaMess, mess, ...prevMessages]);
         setReferralStep(ReferralSteps.ReferralLastName);
 
@@ -292,6 +315,11 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             thanksMess,
             ...prevMessages,
           ]);
+
+          const trimmedEmployeeID = refEmployeeId.trim();
+          trimmedEmployeeID &&
+            !isNaN(trimmedEmployeeID) &&
+            setEmployeeId(+trimmedEmployeeID);
           setReferralStep(ReferralSteps.UserFirstName);
         };
         const onFailure = () => {
@@ -324,7 +352,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
           {
             lastName: refLastName,
             yeanOrBirth: draftMessage,
-            employeeId: +employeeId,
+            employeeId: +refEmployeeId,
           },
           onSuccessCallback,
           onFailure
@@ -397,10 +425,12 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
                 lastName
               ),
             },
+            localId: generateLocalId(),
           };
           const question: ILocalMessage = {
-            _id: null,
             isOwn: false,
+            localId: generateLocalId(),
+            _id: generateLocalId(),
             content: {
               subType: MessageType.TEXT,
               text: "Would you like to refer someone else?",
@@ -431,20 +461,25 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             submitResponse,
             ...prevMessages,
           ]);
+          setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
         };
         const onFailureSubmit = () => {
           const question: ILocalMessage = {
             _id: null,
+            localId: generateLocalId(),
             isOwn: false,
             content: {
               subType: MessageType.TEXT,
-              text: "Would you like to refer someone else?",
+              text: "Something went wrong ...",
             },
           };
           _setMessages((prevMessages) => [question, ...prevMessages]);
         };
+        setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
 
         onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
+        clearReferralState();
+
         break;
 
       default:

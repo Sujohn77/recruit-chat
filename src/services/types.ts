@@ -147,7 +147,7 @@ export interface IMessage extends I_id, IMessageContent {
     seconds: number;
   };
   isOwn?: boolean;
-  localId?: string;
+  localId: string;
   subType?: MessageType;
   text?: string;
   isChatMessage?: boolean;

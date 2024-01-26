@@ -100,7 +100,11 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
       };
 
     default:
-      return { _id: null, content: { subType: MessageType.TEXT } };
+      return {
+        _id: null,
+        content: { subType: MessageType.TEXT },
+        localId: generateLocalId(),
+      };
   }
 };
 

@@ -7,14 +7,12 @@ import * as S from "./option-list-styles";
 interface IOptionListProps {
   optionList: IMessageOptions;
   chatItemId?: number;
-  isLastMessage?: boolean;
   index?: number;
 }
 
 export const OptionList: FC<IOptionListProps> = ({
   optionList,
   chatItemId,
-  isLastMessage,
   index,
 }) => {
   const { sendPreScreenMessage } = useChatMessenger();
