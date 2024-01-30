@@ -129,7 +129,7 @@ export const en = {
     recruitment_process: "What’s the recruitment process?",
   },
   errors: {
-    no_match: "Email addresses do not match",
+    not_match: "Email addresses do not match",
   },
 };
 

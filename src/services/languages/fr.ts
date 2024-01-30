@@ -130,6 +130,6 @@ export const fr = {
     recruitment_process: "Quel est le processus de recrutement ?",
   },
   errors: {
-    no_match: "Email addresses do not match",
+    not_match: "Email addresses do not match",
   },
 };
