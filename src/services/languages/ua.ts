@@ -113,6 +113,7 @@ export const ua = {
     success_interested: "Дякую, що виявили інтерес до цієї вакансії",
     short_success_interested:
       "Thank you for expressing your interest in this job.",
+    try_again: "Спробувати ще",
   },
 
   chat_menu: {

@@ -1,3 +1,4 @@
+import { useChatMessenger } from "contexts/MessengerContext";
 import { FC } from "react";
 
 import * as S from "./styles";
@@ -33,8 +34,10 @@ export const Message: FC<IMessageProps> = ({
   withoutMargin,
   index,
 }) => {
+  const { messages } = useChatMessenger();
   const subType = message?.content?.subType;
   const messageProps = { ...getMessageProps(message) };
+  const messageIndex = messages.findIndex((m) => m.localId === message.localId);
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
@@ -86,7 +89,7 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.UPLOADED_CV:
       return <UploadedFile message={message} />;
     case MessageType.TRY_AGAIN:
-      return <TryAgain message={message} />;
+      return <TryAgain message={message} isLastMessage={messageIndex === 0} />;
     default: {
       return null;
     }

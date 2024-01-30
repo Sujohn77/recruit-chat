@@ -96,6 +96,7 @@ export const en = {
     botThanks:
       "Thank you for expressing your interest in this job, please check your email for updates.",
     employeeId: "What is your Employee ID ?",
+    try_again: "Try again",
   },
   chat_item_description: {
     lookingFor: "Hi! Are you looking for a job",

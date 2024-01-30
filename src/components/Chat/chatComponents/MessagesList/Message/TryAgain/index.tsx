@@ -1,0 +1,27 @@
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
+
+import * as S from "./styles";
+import { DarkButton } from "components/Layout/styles";
+import { ILocalMessage } from "utils/types";
+
+interface ITryAgainProps {
+  message: ILocalMessage;
+  isLastMessage: boolean;
+}
+
+export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
+  const { t } = useTranslation();
+
+  return (
+    <S.Wrapper>
+      <S.MessageText>{message.content.text}</S.MessageText>
+      <DarkButton
+        onClick={() => message.onClickTryAgain?.(message)}
+        disabled={!isLastMessage}
+      >
+        {t("buttons:try_again")}
+      </DarkButton>
+    </S.Wrapper>
+  );
+};

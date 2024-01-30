@@ -325,29 +325,43 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             setEmployeeId(+trimmedEmployeeID);
           setReferralStep(ReferralSteps.UserFirstName);
         };
+
         const onFailure = () => {
-          const invalidData: ILocalMessage = {
-            _id: null,
+          const tryAgainMess: ILocalMessage = {
             localId: generateLocalId(),
             content: {
-              subType: MessageType.TEXT,
-              text: "Data is incorrect",
+              subType: MessageType.TRY_AGAIN,
+              text: "Sorry, there was an error validating you. Please try again.",
             },
-          };
-          const employeeQuestion: ILocalMessage = {
             _id: generateLocalId(),
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: t("messages:employeeId"),
+            onClickTryAgain: () => {
+              const tryAgain: ILocalMessage = {
+                _id: generateLocalId(),
+                localId: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: t("messages:try_again"),
+                },
+                isOwn: true,
+              };
+              const employeeQuestion: ILocalMessage = {
+                _id: generateLocalId(),
+                localId: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: t("messages:employeeId"),
+                },
+              };
+              _setMessages((prevMessages) => [
+                employeeQuestion,
+                tryAgain,
+                ...prevMessages,
+              ]);
+              setReferralStep(ReferralSteps.EmployeeId);
             },
           };
-          _setMessages((prevMessages) => [
-            employeeQuestion,
-            invalidData,
-            ...prevMessages,
-          ]);
-          setReferralStep(ReferralSteps.EmployeeId);
+
+          _setMessages((prevMessages) => [tryAgainMess, ...prevMessages]);
         };
 
         _setMessages((prevMessages) => [mess, ...prevMessages]);
@@ -488,18 +502,38 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
             setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
           };
           const onFailureSubmit = () => {
-            const question: ILocalMessage = {
+            const errorMess: ILocalMessage = {
               _id: null,
               localId: generateLocalId(),
               isOwn: false,
               content: {
-                subType: MessageType.TEXT,
-                text: "Something went wrong ...",
+                subType: MessageType.TRY_AGAIN,
+                text: "Sorry, we were unable to validate you using the details provided. Please check and try again.",
+              },
+              onClickTryAgain: () => {
+                const tryAgain: ILocalMessage = {
+                  _id: generateLocalId(),
+                  localId: generateLocalId(),
+                  content: {
+                    subType: MessageType.TEXT,
+                    text: t("messages:try_again"),
+                  },
+                  isOwn: true,
+                };
+
+                const userLastNameMess = getReferralQuestion(
+                  ReferralSteps.UserLastName
+                );
+                _setMessages((prevMessages) => [
+                  userLastNameMess,
+                  tryAgain,
+                  ...prevMessages,
+                ]);
+                setReferralStep(ReferralSteps.UserFirstName);
               },
             };
-            _setMessages((prevMessages) => [question, ...prevMessages]);
+            _setMessages((prevMessages) => [errorMess, ...prevMessages]);
           };
-          setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
 
           onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
           clearReferralState();

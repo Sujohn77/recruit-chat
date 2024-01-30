@@ -46,12 +46,15 @@ export const useValidateReferral = () => {
             onSuccess();
           }
 
-          if (res.data?.candidateId && res.data.updateChatBotCandidateId) {
+          if (res.data?.candidateId && res?.data?.updateChatBotCandidateId) {
             setCandidateId(res.data.candidateId);
             // setIsCandidateAnonym(false);
           }
 
-          if (res.data?.success === false && res.data.errors.length) {
+          if (
+            (res.data?.success === false && res.data?.errors.length) ||
+            res?.data?.isValid === false
+          ) {
             onFailure();
           }
         } catch (error) {
