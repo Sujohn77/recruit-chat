@@ -129,4 +129,7 @@ export const fr = {
     part_time: "Proposez-vous des postes à temps partiel ?",
     recruitment_process: "Quel est le processus de recrutement ?",
   },
+  errors: {
+    no_match: "Email addresses do not match",
+  },
 };

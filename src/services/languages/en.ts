@@ -128,6 +128,9 @@ export const en = {
     part_time: "Do you offer part-time positions?",
     recruitment_process: "What’s the recruitment process?",
   },
+  errors: {
+    no_match: "Email addresses do not match",
+  },
 };
 
 export type Localization = typeof en;
