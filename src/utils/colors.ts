@@ -29,6 +29,8 @@ export const COLORS = {
   TUNDORA: "#454545",
   WHITE: "#ffffff",
   ZAMBESI: "#5f5f5f",
+  PICTON_BLUE: "#3B96F0",
+  PICTON_BLUE_LIGHT: "#2EB3E8",
 };
 
 // a way to sort COLORS object keys alphabetically

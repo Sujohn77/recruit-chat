@@ -13,7 +13,6 @@ export const DefaultButton = styled(ButtonBase)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  /* font-family: Inter-Medium; */
 `;
 
 export const DarkButton = styled(DefaultButton)<IDarkButtonProps>`

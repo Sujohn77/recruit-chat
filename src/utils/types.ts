@@ -51,6 +51,7 @@ export enum MessageType {
   SUBMIT_FILE = "submit_file",
   THANKS = "thanks",
   UPLOADED_CV = "uploaded_cv",
+  TRY_AGAIN = "try_again",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;

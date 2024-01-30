@@ -11,7 +11,7 @@ import {
 
 import { DefaultInput } from "components/Layout";
 import { isResultsType } from "utils/helpers";
-import { INPUT_TYPES, TextFieldTypes } from "utils/constants";
+import { TextFieldTypes } from "utils/constants";
 import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
 
 interface IAutocompleteProps {
@@ -27,6 +27,7 @@ interface IAutocompleteProps {
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   setHeight: Dispatch<SetStateAction<number>>;
   disabled?: boolean;
+  errorText?: string;
 }
 
 export const Autocomplete: FC<IAutocompleteProps> = ({
@@ -41,6 +42,7 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
   setIsShowResults,
   setHeight,
   disabled = false,
+  errorText,
 }) => {
   const { dispatch, currentMsgType, error } = useChatMessenger();
 
@@ -86,7 +88,7 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
         onChange={onChange}
         placeHolder={placeHolder}
         setIsShowResults={setIsShowResults}
-        error={error}
+        error={error || errorText}
         disabled={disabled}
       />
     </div>

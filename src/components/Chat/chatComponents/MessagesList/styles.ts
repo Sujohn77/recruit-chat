@@ -20,7 +20,6 @@ export const MessagesArea = styled.div`
   overflow: hidden;
   border: ${({ theme: { borderStyle, borderWidth } }) =>
     `${borderWidth} ${borderStyle}  ${COLORS.ALTO}`};
-  border-bottom: 1px solid ${COLORS.ALTO};
   position: relative;
 `;
 
