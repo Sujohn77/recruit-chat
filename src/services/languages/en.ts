@@ -11,6 +11,7 @@ export const en = {
     ask_questions: "Ask questions",
     searchJobs: "Search jobs with resume",
     make_referral: "Make a referral",
+    try_again: "Try again",
   },
   placeHolders: {
     default: "Type a message",
@@ -130,6 +131,7 @@ export const en = {
   },
   errors: {
     not_match: "Email addresses do not match",
+    invalid_phone_number: "Phone number is invalid",
   },
 };
 

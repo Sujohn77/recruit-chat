@@ -10,6 +10,7 @@ export const ua = {
     find_job: "Знайти роботу",
     ask_questions: "Задати питання",
     searchJobs: "Пошук пропозицій по резюме",
+    try_again: "Try again",
   },
   placeHolders: {
     default: "Повідомелння",
@@ -128,5 +129,6 @@ export const ua = {
   },
   errors: {
     not_match: "Email addresses do not match",
+    invalid_phone_number: "Phone number is invalid",
   },
 };
