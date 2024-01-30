@@ -18,6 +18,7 @@ import { SalaryForm } from "./SalaryForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
+import { TryAgain } from "./TryAgain";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -84,6 +85,8 @@ export const Message: FC<IMessageProps> = ({
       return <SearchJob message={message} />;
     case MessageType.UPLOADED_CV:
       return <UploadedFile message={message} />;
+    case MessageType.TRY_AGAIN:
+      return <TryAgain message={message} />;
     default: {
       return null;
     }

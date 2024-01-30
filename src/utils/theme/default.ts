@@ -1,7 +1,7 @@
 import { COLORS } from "utils/colors";
 
 const defaultTheme = {
-  primaryColor: COLORS.BOULDER,
+  primaryColor: COLORS.PICTON_BLUE,
   secondaryColor: COLORS.ALTO,
   imageUrl: null || "",
   headerColor: COLORS.ALTO,
