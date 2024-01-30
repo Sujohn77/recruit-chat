@@ -26,6 +26,7 @@ import {
   getMatchedItem,
   getMatchedItems,
   getNextActionType,
+  isValidNumber,
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
@@ -101,6 +102,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [email, setEmail] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [refError, setRefError] = useState("");
 
   const inputType = getInputType(currentMsgType);
 
@@ -380,106 +382,130 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         setReferralStep(ReferralSteps.UserEmail);
         break;
       case ReferralSteps.UserEmail:
-        setEmail(draftMessage);
+        const emailError = validateEmail(draftMessage);
 
-        const userConfirmMess = getReferralQuestion(
-          ReferralSteps.UserConfirmationEmail
-        );
-        _setMessages((prevMessages) => [
-          userConfirmMess,
-          mess,
-          ...prevMessages,
-        ]);
-        setReferralStep(ReferralSteps.UserConfirmationEmail);
-        break;
-      case ReferralSteps.UserConfirmationEmail:
-        setConfirmEmail(draftMessage);
+        if (emailError) {
+          setRefError(emailError);
+        } else {
+          setEmail(draftMessage.trim());
 
-        const userMobileMess = getReferralQuestion(
-          ReferralSteps.UserMobileNumber
-        );
-        _setMessages((prevMessages) => [userMobileMess, mess, ...prevMessages]);
-        setReferralStep(ReferralSteps.UserMobileNumber);
-        break;
-      case ReferralSteps.UserMobileNumber:
-        setMobileNumber(draftMessage);
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
-
-        const payload = {
-          referralSourceTypeId: 3,
-          referredCandidate: {
-            emailAddress: email,
-            firstName,
-            lastName,
-            mobileNumber: draftMessage,
-          },
-        };
-        const onSuccessSubmit = (previouslyReferredState: number) => {
-          const submitResponse: ILocalMessage = {
-            _id: null,
-            isOwn: false,
-            content: {
-              subType: MessageType.TEXT,
-              text: getReferralResponseMess(
-                previouslyReferredState,
-                firstName,
-                lastName
-              ),
-            },
-            localId: generateLocalId(),
-          };
-          const question: ILocalMessage = {
-            isOwn: false,
-            localId: generateLocalId(),
-            _id: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: "Would you like to refer someone else?",
-            },
-            optionList: {
-              type: MessageOptionTypes.Referral,
-              isActive: true,
-              options: [
-                {
-                  id: 1,
-                  itemId: REF_OPTION_1,
-                  isSelected: false,
-                  name: "Yes",
-                  text: "Yes",
-                },
-                {
-                  id: 2,
-                  itemId: REF_OPTION_2,
-                  isSelected: false,
-                  name: "No",
-                  text: "No",
-                },
-              ],
-            },
-          };
+          const userConfirmMess = getReferralQuestion(
+            ReferralSteps.UserConfirmationEmail
+          );
           _setMessages((prevMessages) => [
-            question,
-            submitResponse,
+            userConfirmMess,
+            mess,
             ...prevMessages,
           ]);
-          setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
-        };
-        const onFailureSubmit = () => {
-          const question: ILocalMessage = {
-            _id: null,
-            localId: generateLocalId(),
-            isOwn: false,
-            content: {
-              subType: MessageType.TEXT,
-              text: "Something went wrong ...",
+          setReferralStep(ReferralSteps.UserConfirmationEmail);
+        }
+        break;
+      case ReferralSteps.UserConfirmationEmail:
+        if (email === draftMessage.trim()) {
+          setConfirmEmail(draftMessage);
+
+          const userMobileMess = getReferralQuestion(
+            ReferralSteps.UserMobileNumber
+          );
+          _setMessages((prevMessages) => [
+            userMobileMess,
+            mess,
+            ...prevMessages,
+          ]);
+          setReferralStep(ReferralSteps.UserMobileNumber);
+        } else {
+          setRefError(t("errors:not_match"));
+        }
+        break;
+      case ReferralSteps.UserMobileNumber:
+        const correctPhoneValue = draftMessage.includes("+")
+          ? draftMessage.replace("-", "")
+          : "+" + draftMessage.replace("-", "");
+
+        const isValid = isValidNumber(correctPhoneValue);
+
+        if (isValid) {
+          setMobileNumber(draftMessage);
+          _setMessages((prevMessages) => [mess, ...prevMessages]);
+
+          const payload = {
+            referralSourceTypeId: 3,
+            referredCandidate: {
+              emailAddress: email,
+              firstName,
+              lastName,
+              mobileNumber: draftMessage,
             },
           };
-          _setMessages((prevMessages) => [question, ...prevMessages]);
-        };
-        setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
+          const onSuccessSubmit = (previouslyReferredState: number) => {
+            const submitResponse: ILocalMessage = {
+              _id: null,
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                text: getReferralResponseMess(
+                  previouslyReferredState,
+                  firstName,
+                  lastName
+                ),
+              },
+              localId: generateLocalId(),
+            };
+            const question: ILocalMessage = {
+              isOwn: false,
+              localId: generateLocalId(),
+              _id: generateLocalId(),
+              content: {
+                subType: MessageType.TEXT,
+                text: "Would you like to refer someone else?",
+              },
+              optionList: {
+                type: MessageOptionTypes.Referral,
+                isActive: true,
+                options: [
+                  {
+                    id: 1,
+                    itemId: REF_OPTION_1,
+                    isSelected: false,
+                    name: "Yes",
+                    text: "Yes",
+                  },
+                  {
+                    id: 2,
+                    itemId: REF_OPTION_2,
+                    isSelected: false,
+                    name: "No",
+                    text: "No",
+                  },
+                ],
+              },
+            };
+            _setMessages((prevMessages) => [
+              question,
+              submitResponse,
+              ...prevMessages,
+            ]);
+            setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
+          };
+          const onFailureSubmit = () => {
+            const question: ILocalMessage = {
+              _id: null,
+              localId: generateLocalId(),
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                text: "Something went wrong ...",
+              },
+            };
+            _setMessages((prevMessages) => [question, ...prevMessages]);
+          };
+          setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
 
-        onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
-        clearReferralState();
+          onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
+          clearReferralState();
+        } else {
+          setRefError(t("errors:invalid_phone_number"));
+        }
 
         break;
 
@@ -507,6 +533,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     setError(null);
+    setRefError("");
 
     if (error) {
       if (currentMsgType === CHAT_ACTIONS.APPLY_AGE && error) {
@@ -531,6 +558,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     e: ChangeEvent<HTMLInputElement>,
     values: string[]
   ) => {
+    setRefError("");
     const newLocation = e?.currentTarget?.textContent;
     let newValues = values.filter(Boolean);
 
@@ -639,6 +667,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
           {...inputProps}
           onChange={onChangeCategory}
           disabled={disabled}
+          errorText={refError}
         />
       )}
 
