@@ -1,14 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import map from "lodash/map";
+import { ApiResponse } from "apisauce";
 
-import { LocationType } from "./types";
+import { IRequisitionsResponse, LocationType } from "./types";
 import { apiInstance } from "services/api";
 import { IRequisition } from "utils/types";
 import { isDevMode } from "utils/constants";
@@ -39,10 +34,11 @@ export const useRequisitions = (
       if (searchRequisitionsTrigger !== 1) {
         setIsChatLoading(true);
         try {
-          const response = await apiInstance.searchRequisitions({
-            ...searchParams,
-            page,
-          });
+          const response: ApiResponse<IRequisitionsResponse> =
+            await apiInstance.searchRequisitions({
+              ...searchParams,
+              page,
+            });
           if (response?.data?.requisitions?.length) {
             if (page !== 0) {
               setRequisitions((prevValue) => [
@@ -126,6 +122,7 @@ export const useRequisitions = (
       });
       if (response?.data?.requisitions?.length) {
         setJobPositions(response.data.requisitions);
+        return response.data.requisitions;
       }
     } catch (err) {
       isDevMode && console.log("searchRequisitions", err);

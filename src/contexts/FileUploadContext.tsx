@@ -98,7 +98,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
 
   useEffect(() => {
     if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
-      setJobPositions([]);
+      setTimeout(() => setJobPositions([]), 3000);
       resetFile();
     }
   }, [currentMsgType]);

@@ -406,7 +406,7 @@ const ChatProvider = ({
 
   // Initiate an action & set state
   const dispatch = useCallback(
-    (action: ITriggerActionProps) => {
+    async (action: ITriggerActionProps) => {
       // Check if there were errors before
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
       const parsedError = apiError && JSON.parse(apiError);
@@ -437,10 +437,38 @@ const ChatProvider = ({
         case CHAT_ACTIONS.SET_CATEGORY: {
           if (payload?.item?.trim()) {
             const searchCategory = payload?.item?.trim()?.toLowerCase();
-            const foundRequisition = find(
+            let foundRequisition = find(
               requisitions,
               (r) => r.title.toLowerCase() === searchCategory
             );
+
+            if (!requisitions.length) {
+              const searchParams = {
+                pageSize: requisitionsPage !== 0 ? requisitionsPage * 25 : 25,
+                keyword: "*",
+                minDatePosted: "2016-11-13T00:00:00",
+                uniqueTitles: true,
+                page: 0,
+              };
+              const requisitionsResponse: ApiResponse<IRequisitionsResponse> =
+                await apiInstance.searchRequisitions(searchParams);
+
+              if (requisitionsResponse.data?.requisitions.length) {
+                foundRequisition = find(
+                  map(
+                    requisitionsResponse?.data?.requisitions,
+                    (c: IRequisition) => ({
+                      title: c.title,
+                      category: c.categories![0],
+                    })
+                  ),
+                  (r) => r.title.toLowerCase() === searchCategory
+                );
+              }
+            }
+
+            LOG(foundRequisition, "!!!!!!foundRequisition");
+            LOG(searchCategory, "!!!!!searchCategory");
             setCategory(foundRequisition?.category || payload?.item?.trim());
             _setCategoryTitle(foundRequisition?.title || payload?.item?.trim());
             payload!.item = foundRequisition?.title || payload?.item?.trim();

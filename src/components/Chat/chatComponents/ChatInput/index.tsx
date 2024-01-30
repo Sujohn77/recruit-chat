@@ -266,6 +266,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       searchLocations.length,
       inputValues,
       referralStep,
+      dispatch,
     ]
   );
 
