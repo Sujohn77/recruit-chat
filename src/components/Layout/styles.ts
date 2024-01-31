@@ -3,26 +3,27 @@ import { ButtonBase } from "@mui/material";
 
 interface IDarkButtonProps {
   fontWeight?: number;
+  backgroundColor?: string;
+  fontColor?: string;
 }
 
-export const DefaultButton = styled(ButtonBase)`
+export const StyledButton = styled(ButtonBase)`
   display: flex;
   align-items: center;
-  height: 40px;
   justify-content: center;
+  height: 40px;
   width: 100%;
   font-size: 14px;
   line-height: 17px;
 `;
 
-export const DarkButton = styled(DefaultButton)<IDarkButtonProps>`
+export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   height: 30px;
   width: calc(50% - 5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${(props) => props.theme.primaryColor}!important;
-  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+  background: ${({ theme, backgroundColor }) =>
+    backgroundColor || theme.primaryColor}!important;
+  color: ${({ theme: { button }, fontColor }) =>
+    fontColor || button.secondaryColor}!important;
   border-radius: 8px !important;
   font-size: 14px;
   line-height: 17px;
@@ -34,7 +35,7 @@ export const DarkButton = styled(DefaultButton)<IDarkButtonProps>`
   }
 `;
 
-export const PrimaryButton = styled(DefaultButton)`
+export const PrimaryButton = styled(StyledButton)`
   display: flex;
   align-items: center;
   height: 40px;

@@ -508,7 +508,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
               isOwn: false,
               content: {
                 subType: MessageType.TRY_AGAIN,
-                text: "Sorry, we were unable to validate you using the details provided. Please check and try again.",
+                text: "Sorry, we were unable to submit that referral. Please try again.",
               },
               onClickTryAgain: () => {
                 const tryAgain: ILocalMessage = {
@@ -522,7 +522,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
                 };
 
                 const userLastNameMess = getReferralQuestion(
-                  ReferralSteps.UserLastName
+                  ReferralSteps.UserFirstName
                 );
                 _setMessages((prevMessages) => [
                   userLastNameMess,

@@ -13,11 +13,10 @@ export const Wrapper = styled.div<IWrapperProps>`
   justify-content: flex-start;
   width: 90%;
   padding: 14px;
-  border: 1px solid
-    ${({ borderColor = COLORS.PICTON_BLUE_LIGHT }) => borderColor};
-  background: ${({ backgroundColor = "rgba(79, 188, 255, 0.3)" }) =>
+  border: 1px solid ${({ borderColor = COLORS.PERSIAN_RED }) => borderColor};
+  background: ${({ backgroundColor = "rgba(255, 0, 0, 0.1)" }) =>
     backgroundColor};
-  color: ${({ fontColor = COLORS.PICTON_BLUE }) => fontColor};
+  color: ${({ fontColor = COLORS.PERSIAN_RED }) => fontColor};
   min-height: 74px;
   margin: 10px auto 0;
   border-radius: 8px;
