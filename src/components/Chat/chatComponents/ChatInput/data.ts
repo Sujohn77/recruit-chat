@@ -112,7 +112,7 @@ export const getReferralResponseMess = (
   previouslyReferredState: ReferralResponse,
   refFirstName?: string,
   refLastName?: string,
-  refCompanyName?: string
+  refCompanyName?: string | null
 ): string => {
   switch (previouslyReferredState) {
     case 0:

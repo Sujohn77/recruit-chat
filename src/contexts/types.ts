@@ -96,6 +96,10 @@ export interface IChatMessengerContext {
   setIsCandidateAnonym: (isAnonym: boolean) => void;
   setEmployeeId: (employeeId: number) => void;
   employeeId?: number;
+  referralCompanyName: string | null;
+  setReferralCompanyName: (name: string) => void;
+  isReferralEnabled: boolean;
+  setIsReferralEnabled: (isEnabled: boolean) => void;
 }
 
 export interface IFileUploadContext {

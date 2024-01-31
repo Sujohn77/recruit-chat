@@ -26,6 +26,7 @@
   let chatBotToken;
   let chatBotStyle;
   let chatBotProps;
+  let chatBotCompanyName;
   let spinner;
 
   // function removeSpinner() {
@@ -42,10 +43,11 @@
   //   spinner?.style?.remove();
   // }
 
-  function appendChatBot(style, token, props) {
+  function appendChatBot(style, token, props, companyName) {
     chatBotStyle = style;
     chatBotProps = props;
     chatBotToken = token;
+    chatBotCompanyName = companyName;
 
     const ifrm = document.createElement("iframe");
     ifrm.setAttribute("src", chatbotSrc);
@@ -68,7 +70,10 @@
 
     ifrm.addEventListener("load", () => {
       // removeSpinner();
-      ifrm.contentWindow.postMessage({ guid, style, token, props }, ifrm.src);
+      ifrm.contentWindow.postMessage(
+        { guid, style, token, props, companyName },
+        ifrm.src
+      );
     });
     ifrm.onerror = () => refreshToken();
   }
@@ -120,7 +125,7 @@
       if (data?.statusCode === 413) {
         refreshToken(getChatBotStyle);
       } else {
-        appendChatBot(data.style, token, data.props);
+        appendChatBot(data.style, token, data.props, data.props.companyName);
       }
     } catch (error) {
       // removeSpinner();
@@ -169,6 +174,7 @@
               style: chatBotStyle,
               token: chatBotToken,
               props: chatBotProps,
+              companyName: chatBotCompanyName,
             },
             chatbotSrc
           );

@@ -47,30 +47,6 @@ export const questions = [
     subType: MessageType.TEXT,
   },
 ];
-// export const questions = [ // previous questions
-//   {
-//     text: i18n.t("messages:whatHiring"),
-//     subType: MessageType.BUTTON,
-//     isChatMessage: true,
-//     isOwn: true,
-//   },
-//   {
-//     text: i18n.t("messages:howSubmitCV"),
-//     subType: MessageType.BUTTON,
-//     isChatMessage: true,
-//     isOwn: true,
-//   },
-//   {
-//     text: i18n.t("messages:howMuchExperience"),
-//     subType: MessageType.BUTTON,
-//     isChatMessage: true,
-//     isOwn: true,
-//   },
-//   {
-//     text: i18n.t("messages:popularQuestions"),
-//     subType: MessageType.TEXT,
-//   },
-// ];
 
 export const findJobMessages = [
   {

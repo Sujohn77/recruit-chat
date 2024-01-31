@@ -74,6 +74,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     clearJobFilters,
     isChatInputAvailable,
     setEmployeeId,
+    referralCompanyName,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -460,7 +461,8 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
                 text: getReferralResponseMess(
                   previouslyReferredState,
                   firstName,
-                  lastName
+                  lastName,
+                  referralCompanyName
                 ),
               },
               localId: generateLocalId(),
