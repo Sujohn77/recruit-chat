@@ -8,7 +8,7 @@ import {
   MessageType,
 } from "./types";
 import { COLORS } from "./colors";
-import { questions } from "components/ChatContent/data";
+import { getQuestions } from "components/ChatContent/data";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 export const isDevMode = process.env.NODE_ENV === "development";
@@ -38,6 +38,8 @@ export enum ChannelName {
 
 const getChatActionMessages = (
   type: CHAT_ACTIONS,
+  withReferralFlow: boolean,
+  referralCompanyName: string | null,
   param?: string,
   withoutDefaultQuestions?: boolean,
   employeeId?: number
@@ -161,7 +163,9 @@ const getChatActionMessages = (
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
-      return withoutDefaultQuestions ? [] : questions;
+      return withoutDefaultQuestions
+        ? []
+        : getQuestions(withReferralFlow, referralCompanyName);
     case CHAT_ACTIONS.GET_USER_NAME:
       return [
         {
@@ -318,6 +322,8 @@ export const isPushMessageType = (type: CHAT_ACTIONS) =>
 
 export const getChatActionResponse = ({
   type,
+  withReferralFlow,
+  referralCompanyName,
   additionalCondition,
   param,
   isQuestion = false,
@@ -332,11 +338,18 @@ export const getChatActionResponse = ({
       type === CHAT_ACTIONS.SET_WORK_PERMIT
         ? CHAT_ACTIONS.NO_PERMIT_WORK
         : CHAT_ACTIONS.NO_MATCH;
-    return getChatActionResponse({ type: newType, employeeId });
+    return getChatActionResponse({
+      type: newType,
+      employeeId,
+      withReferralFlow,
+      referralCompanyName,
+    });
   }
 
   const responseMessages = getChatActionMessages(
     type,
+    withReferralFlow,
+    referralCompanyName,
     param,
     isQuestion,
     employeeId

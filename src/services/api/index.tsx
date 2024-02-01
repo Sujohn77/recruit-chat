@@ -135,9 +135,8 @@ class Api {
 
   setHeader = (key: string, value: string) => this.client.setHeader(key, value);
   removeHeader = (key: string) => this.client.deleteHeader(key);
-  setChatAuthHeader = (token: string) => {
-    return this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
-  };
+  setChatAuthHeader = (token: string) =>
+    this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
 
   setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
 

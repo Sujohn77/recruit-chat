@@ -210,6 +210,8 @@ export interface IPushMessage {
 
 export interface IGetChatResponseProps {
   type: CHAT_ACTIONS;
+  withReferralFlow: boolean;
+  referralCompanyName: string | null;
   additionalCondition?: boolean | null;
   param?: string | undefined;
   isQuestion?: boolean;

@@ -11,13 +11,7 @@ const chatBotSender: IUserSelf = {
   userLicenseTypeId: 1,
 };
 
-export const questions = [
-  {
-    text: i18n.t("buttons:make_referral"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-  },
+const defaultQuestions = [
   {
     text: i18n.t("questions:recruitment_process"),
     subType: MessageType.BUTTON,
@@ -47,6 +41,28 @@ export const questions = [
     subType: MessageType.TEXT,
   },
 ];
+
+export const getReferralMessText = (referralCompanyName: string | null) =>
+  `Can I refer a friend to ${referralCompanyName} ?`;
+
+export const getQuestions = (
+  withReferralFlow: boolean,
+  referralCompanyName: string | null
+) => {
+  if (withReferralFlow && referralCompanyName) {
+    return [
+      {
+        text: getReferralMessText(referralCompanyName),
+        subType: MessageType.BUTTON,
+        isChatMessage: true,
+        isOwn: true,
+      },
+      ...defaultQuestions,
+    ];
+  }
+
+  return defaultQuestions;
+};
 
 export const findJobMessages = [
   {

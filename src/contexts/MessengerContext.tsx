@@ -80,11 +80,14 @@ import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
 import find from "lodash/find";
 import filter from "lodash/filter";
-import { questions } from "components/ChatContent/data";
+import { getQuestions } from "components/ChatContent/data";
 
 interface IChatProviderProps {
   children: React.ReactNode;
-  chatBotID?: string | null;
+  isReferralEnabled: boolean;
+  companyName: string | null;
+  chatBotToken: string;
+  chatBotId?: string | null;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -137,7 +140,6 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setLastName: () => {},
   setSearchLocations: () => {},
   logout: () => {},
-  setChatBotToken: () => {},
   createJobAlert: () => {},
   clearJobFilters: () => {},
   isChatInputAvailable: false,
@@ -148,10 +150,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setCandidateId: () => {},
   setIsCandidateAnonym: () => {},
   setEmployeeId: () => {},
-  referralCompanyName: null,
-  setReferralCompanyName: () => {},
   isReferralEnabled: false,
-  setIsReferralEnabled: () => {},
+  referralCompanyName: null,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -159,8 +159,11 @@ const ChatContext = createContext<IChatMessengerContext>(
 );
 
 const ChatProvider = ({
-  chatBotID: chatBotId = "17",
+  chatBotId = "17",
   children,
+  companyName,
+  isReferralEnabled,
+  chatBotToken,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   // -------------------------------- State -------------------------------- //
@@ -204,9 +207,6 @@ const ChatProvider = ({
   );
   // ----------------------------------------------------------------------------- //
   const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
-  const [chatBotToken, setChatBotToken] = useState(
-    getStorageValue(SessionStorage.Token)
-  );
 
   const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
   const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
@@ -231,12 +231,8 @@ const ChatProvider = ({
 
   // ----------------------------- referral state ----------------------------------------------- //
   const [employeeId, setEmployeeId] = useState<number | undefined>(undefined);
-  const [referralCompanyName, setReferralCompanyName] = useState<null | string>(
-    null
-  );
-  const [isReferralEnabled, setIsReferralEnabled] = useState<boolean>(false);
-  // -------------------------------------------------------------------------------------------- //
 
+  // -------------------------------------------------------------------------------------------- //
   useEffect(() => {
     switch (currentMsgType) {
       case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
@@ -752,22 +748,6 @@ const ChatProvider = ({
           }
           break;
         }
-        case CHAT_ACTIONS.APPLY_ETHNIC: {
-          if (user?.name) {
-            setIsChatLoading(true);
-            try {
-              const createCandidateData = getCreateCandidateData({
-                user,
-                prefferedJob: preferredJob,
-              });
-              await apiInstance.createCandidate(createCandidateData);
-            } catch (error) {
-            } finally {
-              setIsChatLoading(false);
-            }
-          }
-          break;
-        }
         case CHAT_ACTIONS.ASK_QUESTION: {
           if (payload?.question) {
             setIsChatLoading(true);
@@ -883,6 +863,8 @@ const ChatProvider = ({
         param,
         isQuestion,
         employeeId,
+        withReferralFlow: isReferralEnabled,
+        referralCompanyName: companyName,
       });
 
       // console.log(
@@ -1004,13 +986,15 @@ const ChatProvider = ({
   };
 
   const chooseButtonOption = (excludeItem: ButtonsOptions, param?: string) => {
-    const type = getActionTypeByOption(excludeItem);
+    const type = getActionTypeByOption(excludeItem, companyName);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,
       messages,
       excludeItem,
       // for ask questions
-      withoutFiltering: questions.some((q) => q.text === excludeItem),
+      withoutFiltering: getQuestions(isReferralEnabled, companyName).some(
+        (q) => q.text === excludeItem
+      ),
     });
 
     if (type) {
@@ -1019,6 +1003,8 @@ const ChatProvider = ({
         additionalCondition: undefined,
         param,
         employeeId,
+        withReferralFlow: isReferralEnabled,
+        referralCompanyName: companyName,
       });
 
       switch (type) {
@@ -1182,7 +1168,6 @@ const ChatProvider = ({
     setLastName,
     setSearchLocations,
     logout,
-    setChatBotToken,
     createJobAlert,
     clearJobFilters,
     isChatInputAvailable,
@@ -1194,10 +1179,8 @@ const ChatProvider = ({
     setIsCandidateAnonym,
     setEmployeeId,
     employeeId,
-    referralCompanyName,
-    setReferralCompanyName,
+    referralCompanyName: companyName,
     isReferralEnabled,
-    setIsReferralEnabled,
   };
 
   // console.log(

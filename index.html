@@ -88,7 +88,7 @@
         body: JSON.stringify({ ChatbotGuid: guid.trim() }),
       });
 
-      console.log("refreshToken RES", refreshRes);
+      // console.log("refreshToken RES", refreshRes);
       // if request was canceled
       if (refreshRes.status === null) {
         refreshToken(callback);
@@ -96,6 +96,7 @@
 
       const data = await refreshRes.clone().json();
 
+      console.log("refreshToken RES", data);
       if (data?.errors) {
         console.log(data.errors[0]);
         return Promise.reject(data.errors[0]);

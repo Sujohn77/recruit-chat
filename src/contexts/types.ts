@@ -84,7 +84,6 @@ export interface IChatMessengerContext {
   setLastName: (name: string) => void;
   setSearchLocations: (locations: string[]) => void;
   logout: () => void;
-  setChatBotToken: (token: string) => void;
   createJobAlert: (payload: IJobAlertData) => void;
   clearJobFilters: () => void;
   isChatInputAvailable: boolean;
@@ -97,9 +96,7 @@ export interface IChatMessengerContext {
   setEmployeeId: (employeeId: number) => void;
   employeeId?: number;
   referralCompanyName: string | null;
-  setReferralCompanyName: (name: string) => void;
   isReferralEnabled: boolean;
-  setIsReferralEnabled: (isEnabled: boolean) => void;
 }
 
 export interface IFileUploadContext {

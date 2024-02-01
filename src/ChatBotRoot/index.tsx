@@ -1,40 +1,41 @@
 import { AuthProvider } from "contexts/AuthContext";
-import { ChatProvider, useChatMessenger } from "contexts/MessengerContext";
+import { ChatProvider } from "contexts/MessengerContext";
 import { ThemeContextProvider } from "contexts/ThemeContext";
 import { FileUploadProvider } from "contexts/FileUploadContext";
 import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { Content } from "content";
-import { apiInstance } from "services/api";
 import { IApiThemeResponse } from "utils/types";
 import { EventIds, SessionStorage } from "utils/constants";
-import { postMessToParent, regExpJWT, regExpUuid } from "utils/helpers";
+import { LOG, postMessToParent } from "utils/helpers";
 
 export const ChatBotRoot: FC = () => {
-  const { setChatBotToken } = useChatMessenger();
-
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
   const [chatBotID, setChatBotID] = useState<string | null>(null);
-  const [chatBotRootProps, setChatBotRootProps] = useState();
+  const [companyName, setReferralCompanyName] = useState<string | null>(null);
+  const [isReferralEnabled, setIsReferralEnabled] = useState<boolean>(false);
+  const [chatBotToken, setChatBotToken] = useState("");
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      if (regExpUuid.test(event.data?.guid)) {
-        setChatBotID(event.data.guid);
-      }
-
+      LOG(event.data, "event.data");
       if (event.data?.style) {
         setTheme(event.data.style);
       }
       if (event.data?.props) {
-        setChatBotRootProps(event.data.props);
+        setIsReferralEnabled(event.data?.props?.referralEnabled === "true");
+
+        event.data.props?.companyName &&
+          setReferralCompanyName(event.data.props?.companyName);
       }
 
-      if (regExpJWT.test(event.data?.token)) {
+      if (event.data?.token) {
         setChatBotToken(event.data?.token);
         sessionStorage.setItem(SessionStorage.Token, event.data.token);
-        apiInstance.repeatLastRequest(event.data.token);
+      }
+      if (event.data?.guid) {
+        setChatBotID(event.data.guid);
       }
     };
 
@@ -61,15 +62,20 @@ export const ChatBotRoot: FC = () => {
   return (
     <Container id="chat-bot">
       <AuthProvider>
-        {/* {chatBotID && ( */}
-        <ChatProvider chatBotID={chatBotID}>
-          <ThemeContextProvider value={theme}>
-            <FileUploadProvider>
-              <Content />
-            </FileUploadProvider>
-          </ThemeContextProvider>
-        </ChatProvider>
-        {/* )} */}
+        {chatBotID && (
+          <ChatProvider
+            chatBotId={chatBotID}
+            chatBotToken={chatBotToken}
+            companyName={companyName}
+            isReferralEnabled={isReferralEnabled}
+          >
+            <ThemeContextProvider value={theme}>
+              <FileUploadProvider>
+                <Content />
+              </FileUploadProvider>
+            </ThemeContextProvider>
+          </ChatProvider>
+        )}
       </AuthProvider>
     </Container>
   );

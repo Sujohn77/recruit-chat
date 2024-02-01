@@ -89,6 +89,8 @@ export const useChatStore = create<IChatState>((set, get) => ({
         );
         const hiringProcessMessage = getChatActionResponse({
           type: CHAT_ACTIONS.HIRING_PROCESS,
+          withReferralFlow: true, // mock
+          referralCompanyName: "",
         });
         addNewMessages([...hiringProcessMessage, ...answers]);
       } else if (!response.data?.answers.length) {

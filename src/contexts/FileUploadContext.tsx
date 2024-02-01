@@ -51,6 +51,8 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     setJobPositions,
     _setMessages,
     candidateId,
+    isReferralEnabled,
+    referralCompanyName,
   } = useChatMessenger();
 
   // ----------------------------- STATE ----------------------------- //
@@ -157,6 +159,8 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           const responseMessages = getChatActionResponse({
             type: CHAT_ACTIONS.UPLOADED_CV,
             param: resumeData.fileName,
+            withReferralFlow: isReferralEnabled,
+            referralCompanyName,
           });
           _setMessages([...responseMessages, ...updatedMessages]);
           setShowJobTitles(true);
