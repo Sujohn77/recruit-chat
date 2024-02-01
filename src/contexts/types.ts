@@ -97,6 +97,10 @@ export interface IChatMessengerContext {
   employeeId?: number;
   referralCompanyName: string | null;
   isReferralEnabled: boolean;
+  setRefLastName: (lastName: string) => void;
+  setRefBirth: (birth: string) => void;
+  refLastName: string;
+  refBirth: string;
 }
 
 export interface IFileUploadContext {

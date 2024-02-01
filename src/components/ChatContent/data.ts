@@ -57,6 +57,12 @@ export const getQuestions = (
         isChatMessage: true,
         isOwn: true,
       },
+      {
+        text: i18n.t("buttons:make_referral"),
+        subType: MessageType.BUTTON,
+        isChatMessage: true,
+        isOwn: true,
+      },
       ...defaultQuestions,
     ];
   }

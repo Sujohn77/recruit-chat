@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { useCallback, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
@@ -8,15 +8,12 @@ import { IBurgerMenuProps } from "./props";
 import { menuForCandidateWithEmail, menuItems } from "./data";
 import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
-import { LOG } from "utils/helpers";
 import { apiInstance } from "services/api";
 import { CHAT_ACTIONS, IMenuItem } from "utils/types";
 import { ISendTranscriptResponse } from "services/types";
-import { COLORS } from "utils/colors";
+import { useTranslation } from "react-i18next";
 
-export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
-  setIsShowResults,
-}) => {
+export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
   const {
     dispatch,
     chatId,
@@ -26,9 +23,32 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     firstName,
     lastName,
     setViewJob,
+    isReferralEnabled,
+    employeeId,
+    refLastName,
+    refBirth,
   } = useChatMessenger();
+  const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const list = useMemo(() => {
+    let defaultItems = isCandidateWithEmail
+      ? menuForCandidateWithEmail
+      : menuItems;
+
+    if (isReferralEnabled && employeeId) {
+      // if employeeId exist then refBirth and refLastName also exist
+      return [
+        ...defaultItems,
+        {
+          type: CHAT_ACTIONS.SEE_MY_REFERRALS,
+          text: t("chat_menu:see_my_referrals"),
+        },
+      ];
+    }
+    return defaultItems;
+  }, [isReferralEnabled, isCandidateWithEmail, employeeId]);
 
   const handleItemClick = async (item: IMenuItem) => {
     const { type, text } = item;
@@ -37,6 +57,17 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
       setViewJob(null);
+    }
+
+    if (type === CHAT_ACTIONS.SEE_MY_REFERRALS) {
+      const inputString = `ClientAPIKey:${employeeId}:${refLastName}:${refBirth}`;
+      const base64Encoded = btoa(inputString);
+      const myReferralsTab = window.open(
+        `https://client-site/refer/myreferrals/?rvid=${base64Encoded}`,
+        "_blank"
+      );
+      myReferralsTab?.focus();
+      return;
     }
 
     if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && chatId) {
@@ -58,10 +89,9 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
           await apiInstance.sendTranscript({
             ChatID: chatId,
           });
-
-        LOG(sendTranscriptRes, "___Send Transcript Response", COLORS.WHITE);
+        console.log("Send Transcript Response", sendTranscriptRes);
       } catch (error) {
-        LOG(error, "____Send Transcript Response ERROR");
+        console.log("Send Transcript ERROR", error);
       }
     } else {
       dispatch({
@@ -84,16 +114,13 @@ export const BurgerMenu: React.FC<IBurgerMenuProps> = ({
 
       {isOpen && (
         <S.MenuItemsWrapper onMouseLeave={() => setIsOpen(false)}>
-          {map(
-            isCandidateWithEmail ? menuForCandidateWithEmail : menuItems,
-            (item, index) => (
-              <MenuItem
-                key={`menu-item-${index}`}
-                item={item}
-                onClick={handleItemClick}
-              />
-            )
-          )}
+          {map(list, (item, index) => (
+            <MenuItem
+              key={`menu-item-${index}`}
+              item={item}
+              onClick={handleItemClick}
+            />
+          ))}
         </S.MenuItemsWrapper>
       )}
     </S.Wrapper>

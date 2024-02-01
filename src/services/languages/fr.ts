@@ -124,6 +124,7 @@ export const fr = {
     change_lang: "Changer de langue",
     find_job: "Trouver un emploi",
     ask_question: "Poser une question",
+    see_my_referrals: "See my referrals",
   },
   questions: {
     about_company: "Pouvez-vous m'en dire plus sur l'entreprise ?",

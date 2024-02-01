@@ -75,6 +75,9 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     isChatInputAvailable,
     setEmployeeId,
     referralCompanyName,
+    setRefBirth,
+    setRefLastName,
+    refLastName,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -93,7 +96,6 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [isShowResults, setIsShowResults] = useState(false);
   // Referral
   const [refEmployeeId, setRefEmployeeId] = useState("");
-  const [refLastName, setRefLastName] = useState("");
   const [referralStep, setReferralStep] = useState<ReferralSteps>(
     ReferralSteps.EmployeeId
   );
@@ -366,6 +368,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         };
 
         _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setRefBirth(draftMessage);
         onValidateReferral(
           {
             lastName: refLastName,

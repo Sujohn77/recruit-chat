@@ -152,6 +152,10 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmployeeId: () => {},
   isReferralEnabled: false,
   referralCompanyName: null,
+  setRefBirth: () => {},
+  setRefLastName: () => {},
+  refBirth: "",
+  refLastName: "",
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -231,6 +235,8 @@ const ChatProvider = ({
 
   // ----------------------------- referral state ----------------------------------------------- //
   const [employeeId, setEmployeeId] = useState<number | undefined>(undefined);
+  const [refLastName, setRefLastName] = useState("");
+  const [refBirth, setRefBirth] = useState("");
 
   // -------------------------------------------------------------------------------------------- //
   useEffect(() => {
@@ -1181,6 +1187,10 @@ const ChatProvider = ({
     employeeId,
     referralCompanyName: companyName,
     isReferralEnabled,
+    setRefBirth,
+    setRefLastName,
+    refBirth,
+    refLastName,
   };
 
   // console.log(

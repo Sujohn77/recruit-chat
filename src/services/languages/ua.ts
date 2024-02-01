@@ -121,6 +121,7 @@ export const ua = {
     change_lang: "Змінити мову",
     ask_question: "Поставити питання",
     find_job: "Знайти роботу",
+    see_my_referrals: "See my referrals",
   },
   questions: {
     about_company: "Can you tell me more about the company?",

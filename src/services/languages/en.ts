@@ -123,6 +123,7 @@ export const en = {
     change_lang: "Change language",
     ask_question: "Ask questions",
     find_job: "Find a job",
+    see_my_referrals: "See my referrals",
   },
   questions: {
     about_company: "Can you tell me more about the company?",
