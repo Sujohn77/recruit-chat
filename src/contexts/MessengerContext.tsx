@@ -43,6 +43,7 @@ import {
   isDevMode,
   isPushMessageType,
   LocalStorage,
+  REFERRAL_OFFER_TEXT,
   SessionStorage,
   Status,
 } from "utils/constants";
@@ -54,7 +55,6 @@ import {
   getActionTypeByOption,
   getNextActionType,
   getSearchJobsData,
-  getCreateCandidateData,
   pushMessage,
   getStorageValue,
   generateLocalId,
@@ -793,7 +793,10 @@ const ChatProvider = ({
                   response.data?.answers,
                   (answer) => ({
                     content: {
-                      subType: MessageType.TEXT,
+                      subType:
+                        answer === REFERRAL_OFFER_TEXT
+                          ? MessageType.REFERRAL
+                          : MessageType.TEXT,
                       text: answer,
                     },
                     isOwn: false,

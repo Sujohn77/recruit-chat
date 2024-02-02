@@ -52,6 +52,7 @@ export enum MessageType {
   THANKS = "thanks",
   UPLOADED_CV = "uploaded_cv",
   TRY_AGAIN = "try_again",
+  REFERRAL = "referral",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;

@@ -5,6 +5,7 @@ interface IDarkButtonProps {
   fontWeight?: number;
   backgroundColor?: string;
   fontColor?: string;
+  width?: string;
 }
 
 export const StyledButton = styled(ButtonBase)`
@@ -19,7 +20,7 @@ export const StyledButton = styled(ButtonBase)`
 
 export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   height: 30px;
-  width: calc(50% - 5px);
+  width: ${({ width = "calc(50% - 5px)" }) => width};
   background: ${({ theme, backgroundColor }) =>
     backgroundColor || theme.primaryColor}!important;
   color: ${({ theme: { button }, fontColor }) =>

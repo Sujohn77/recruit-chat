@@ -20,6 +20,7 @@ import { ButtonMessage } from "./ButtonMessage";
 import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
+import { MakeReferralMess } from "./MakeReferralMess";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -38,6 +39,7 @@ export const Message: FC<IMessageProps> = ({
   const subType = message?.content?.subType;
   const messageProps = { ...getMessageProps(message) };
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
+  const isLastMess = messageIndex === 0;
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
@@ -89,7 +91,9 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.UPLOADED_CV:
       return <UploadedFile message={message} />;
     case MessageType.TRY_AGAIN:
-      return <TryAgain message={message} isLastMessage={messageIndex === 0} />;
+      return <TryAgain message={message} isLastMessage={isLastMess} />;
+    case MessageType.REFERRAL:
+      return <MakeReferralMess message={message} isLastMessage={isLastMess} />;
     default: {
       return null;
     }
