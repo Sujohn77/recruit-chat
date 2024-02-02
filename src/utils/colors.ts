@@ -31,6 +31,8 @@ export const COLORS = {
   ZAMBESI: "#5f5f5f",
   PICTON_BLUE: "#3B96F0",
   PICTON_BLUE_LIGHT: "#2EB3E8",
+  SILVER_SAND: "#BABCBE",
+  CHINESE_SILVER: "#CCC",
 };
 
 // a way to sort COLORS object keys alphabetically

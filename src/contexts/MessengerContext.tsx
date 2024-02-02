@@ -416,6 +416,7 @@ const ChatProvider = ({
   // Initiate an action & set state
   const dispatch = useCallback(
     async (action: ITriggerActionProps) => {
+      LOG(action.type, "DISPATCH");
       // Check if there were errors before
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
       const parsedError = apiError && JSON.parse(apiError);

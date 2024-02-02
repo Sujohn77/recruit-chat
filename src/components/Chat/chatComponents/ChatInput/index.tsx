@@ -103,8 +103,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [confirmEmail, setConfirmEmail] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [refError, setRefError] = useState("");
 
   const inputType = getInputType(currentMsgType);
@@ -130,8 +129,10 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
   );
 
   const isWriteAccess =
-    getAccessWriteType(currentMsgType) &&
-    (file || draftMessage || !!inputValues.length);
+    file ||
+    draftMessage ||
+    !!inputValues.length ||
+    (referralStep === ReferralSteps.UserMobileNumber && isValidNumber(phone));
 
   const marginTop =
     status !== Status.PENDING && inputType === TextFieldTypes.MultiSelect
@@ -173,8 +174,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     setFirstName("");
     setLastName("");
     setEmail("");
-    setConfirmEmail("");
-    setMobileNumber("");
+    setPhone("");
   }, []);
 
   // Callbacks
@@ -252,9 +252,9 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         if (
           (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
             currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIED) &&
-          draftMessage
+          (draftMessage || phone)
         ) {
-          referralHandle(draftMessage);
+          referralHandle(draftMessage || phone);
         } else {
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
@@ -272,6 +272,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       inputValues,
       referralStep,
       dispatch,
+      phone,
     ]
   );
 
@@ -420,8 +421,6 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         break;
       case ReferralSteps.UserConfirmationEmail:
         if (email === draftMessage.trim()) {
-          setConfirmEmail(draftMessage);
-
           const userMobileMess = getReferralQuestion(
             ReferralSteps.UserMobileNumber
           );
@@ -436,14 +435,9 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         }
         break;
       case ReferralSteps.UserMobileNumber:
-        const correctPhoneValue = draftMessage.includes("+")
-          ? draftMessage.replace("-", "")
-          : "+" + draftMessage.replace("-", "");
-
-        const isValid = isValidNumber(correctPhoneValue);
+        const isValid = isValidNumber(phone);
 
         if (isValid) {
-          setMobileNumber(draftMessage);
           _setMessages((prevMessages) => [mess, ...prevMessages]);
 
           const payload = {
@@ -452,7 +446,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
               emailAddress: email,
               firstName,
               lastName,
-              mobileNumber: draftMessage,
+              mobileNumber: phone,
             },
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
@@ -505,6 +499,8 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
               ...prevMessages,
             ]);
             setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
+            setReferralStep(ReferralSteps.UserFirstName);
+            setPhone("");
           };
           const onFailureSubmit = () => {
             const errorMess: ILocalMessage = {
@@ -638,28 +634,29 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
 
   const onSendMessageHandler = async () => {
     if (!isChatLoading) {
-      try {
-        if (isApplyJobFlow && draftMessage) {
+      if (isApplyJobFlow && draftMessage) {
+        try {
           await sendPreScreenMessage(draftMessage);
           setDraftMessage("");
-        } else {
-          if (
-            currentMsgType !== CHAT_ACTIONS.SET_CATEGORY ||
-            requisitions.length
-          ) {
-            sendMessage(draftMessage);
-            setIsShowResults(false);
-          }
-
-          switch (currentMsgType) {
-            case CHAT_ACTIONS.ASK_QUESTION:
-              draftMessage && chooseButtonOption(draftMessage);
-              break;
-            default:
-              break;
-          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {}
+      } else {
+        const isSendMess =
+          currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length;
+        if (isSendMess) {
+          sendMessage(draftMessage);
+          setIsShowResults(false);
+        }
+
+        switch (currentMsgType) {
+          case CHAT_ACTIONS.ASK_QUESTION:
+            draftMessage && chooseButtonOption(draftMessage);
+            break;
+          default:
+            break;
+        }
+      }
     }
   };
 
@@ -704,9 +701,12 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       ) : (
         <Autocomplete
           {...inputProps}
+          phoneValue={phone}
+          setPhoneValue={setPhone}
           onChange={onChangeCategory}
           disabled={disabled}
           errorText={refError}
+          isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
         />
       )}
 

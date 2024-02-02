@@ -8,11 +8,14 @@ import {
   useCallback,
   useEffect,
 } from "react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 import { DefaultInput } from "components/Layout";
 import { isResultsType } from "utils/helpers";
 import { TextFieldTypes } from "utils/constants";
 import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
+import { PhoneInputWrapper } from "./styles";
 
 interface IAutocompleteProps {
   value: string;
@@ -26,6 +29,9 @@ interface IAutocompleteProps {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   setHeight: Dispatch<SetStateAction<number>>;
+  isPhoneNumberMode: boolean;
+  phoneValue: string;
+  setPhoneValue: Dispatch<SetStateAction<string>>;
   disabled?: boolean;
   errorText?: string;
 }
@@ -41,8 +47,11 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
   isShowResults,
   setIsShowResults,
   setHeight,
-  disabled = false,
+  isPhoneNumberMode,
+  phoneValue,
+  setPhoneValue,
   errorText,
+  disabled = false,
 }) => {
   const { dispatch, currentMsgType, error } = useChatMessenger();
 
@@ -83,14 +92,24 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
         />
       )}
 
-      <DefaultInput
-        value={value}
-        onChange={onChange}
-        placeHolder={placeHolder}
-        setIsShowResults={setIsShowResults}
-        error={error || errorText}
-        disabled={disabled}
-      />
+      {isPhoneNumberMode ? (
+        <PhoneInputWrapper>
+          <PhoneInput
+            defaultCountry="ua"
+            value={phoneValue}
+            onChange={(phone) => setPhoneValue(phone)}
+          />
+        </PhoneInputWrapper>
+      ) : (
+        <DefaultInput
+          value={value}
+          onChange={onChange}
+          placeHolder={placeHolder}
+          setIsShowResults={setIsShowResults}
+          error={error || errorText}
+          disabled={disabled}
+        />
+      )}
     </div>
   );
 };

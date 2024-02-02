@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ISearchRequisition } from "contexts/types";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 import firebase from "firebase";
@@ -113,4 +113,18 @@ export const useFirebaseSignIn = () => {
       // });
     }
   }, [firebaseToken]);
+};
+
+export const useDetectCountry = (): string => {
+  const [country, setCountry] = useState<string>("US");
+
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((response) => response.json())
+      .then((data: { country_code?: string }) => {
+        data.country_code && setCountry(data.country_code);
+      });
+  }, []);
+
+  return country;
 };
