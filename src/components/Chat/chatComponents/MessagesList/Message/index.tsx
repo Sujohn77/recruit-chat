@@ -1,7 +1,9 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC } from "react";
+import moment from "moment";
 
 import * as S from "./styles";
+import { MS_1000 } from "utils/constants";
 import { getMessageProps } from "utils/helpers";
 import { MessageType, ILocalMessage } from "utils/types";
 
@@ -27,8 +29,6 @@ interface IMessageProps {
   withoutMargin?: boolean;
   index?: number;
 }
-
-export const MS_1000 = 1000;
 
 export const Message: FC<IMessageProps> = ({
   message,
@@ -98,4 +98,20 @@ export const Message: FC<IMessageProps> = ({
       return null;
     }
   }
+};
+
+export const renderSendingTime = (message: ILocalMessage) => {
+  const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
+    "HH:mm A"
+  );
+  if (message?.localId !== message._id && message.isOwn) {
+    if (message._id) {
+      return (
+        <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>
+      );
+    }
+    return null;
+  }
+
+  return null;
 };

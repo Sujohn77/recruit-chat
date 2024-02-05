@@ -1,22 +1,22 @@
 import { useFileUploadContext } from "contexts/FileUploadContext";
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, memo, useCallback } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import moment from "moment";
 
-import { IMAGES } from "assets";
 import { ILocalMessage, ButtonsOptions } from "utils/types";
 import { getMessageProps } from "utils/helpers";
 import { resumeElementId } from "utils/constants";
-import { MS_1000 } from "..";
 import * as S from "../styles";
+import { renderSendingTime } from "..";
 
 interface IProps {
   message: ILocalMessage;
   isLastMessage?: boolean;
 }
 
-export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
+//TODO: text isLastMessage
+
+export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
   const { t } = useTranslation();
   const { chooseButtonOption } = useChatMessenger();
   const { resetFile, searchWithResume, isJobSearchingLoading, file } =
@@ -30,20 +30,6 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
       searchWithResume();
     }
   };
-
-  const renderSendingTime = useCallback((message: ILocalMessage) => {
-    if (message?.localId !== message._id && message.isOwn) {
-      return message._id ? (
-        <S.TimeText>
-          {moment(message.dateCreated?.seconds! * MS_1000).format("HH:mm A")}
-        </S.TimeText>
-      ) : (
-        <S.MessageUnsendIcon src={IMAGES.CLOCK} />
-      );
-    }
-
-    return null;
-  }, []);
 
   const onResetResume = () => {
     if (isLastMessage) {
@@ -83,4 +69,4 @@ export const SearchJob: FC<IProps> = memo(({ message, isLastMessage }) => {
       </S.Cancel>
     </S.MessageBox>
   );
-});
+};

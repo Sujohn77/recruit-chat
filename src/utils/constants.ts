@@ -426,3 +426,5 @@ export enum MessageOptionTypes {
 
 export const REFERRAL_OFFER_TEXT =
   "Yes, you can refer as many people as you like to either specific jobs or to the company generally. To begin, click below.";
+
+export const MS_1000 = 1000;

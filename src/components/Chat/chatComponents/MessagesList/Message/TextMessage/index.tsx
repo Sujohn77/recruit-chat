@@ -1,5 +1,4 @@
 import { FC, memo, useEffect } from "react";
-import moment from "moment";
 import DOMPurify from "isomorphic-dompurify";
 
 import { ReferralOptionList } from "./ReferralOptionList";
@@ -7,11 +6,11 @@ import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
 import { MessageOptionTypes, autolinkerClassName } from "utils/constants";
 import { ILocalMessage, MessageType } from "utils/types";
+import { LocationList, LocationItem } from "./styles";
 import { OptionList } from "./OptionList";
-import { MS_1000 } from "..";
+import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
-import { LocationList, LocationItem } from "./styles";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -23,10 +22,6 @@ export const TextMessage: FC<ITextMessageProps> = memo(({ message, index }) => {
   const messageProps = { ...getMessageProps(message) };
 
   const isFile = subType === MessageType.FILE;
-  const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
-    "HH:mm A"
-  );
-
   useEffect(() => {
     // for a clickable link in message text
     let listeners: undefined | NodeListOf<Element>;
@@ -57,20 +52,6 @@ export const TextMessage: FC<ITextMessageProps> = memo(({ message, index }) => {
       }
     };
   }, []);
-
-  const renderSendingTime = (message: ILocalMessage) => {
-    if (message?.localId !== message._id && message.isOwn) {
-      if (message._id) {
-        return (
-          <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>
-        );
-      }
-      // return <S.MessageUnsendIcon src={IMAGES.CLOCK} />;
-      return null;
-    }
-
-    return null;
-  };
 
   // TODO: fix
   const wrongMess = !!message.isOwn && !!message.optionList;
