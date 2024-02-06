@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { COLORS } from "utils/colors";
 
 interface IWrapperProps {
   borderColor?: string;
@@ -13,15 +12,14 @@ export const Wrapper = styled.div<IWrapperProps>`
   justify-content: flex-start;
   width: 90%;
   padding: 14px;
-  border: 1px solid ${({ borderColor = COLORS.PERSIAN_RED }) => borderColor};
-  background: ${({ backgroundColor = "rgba(255, 0, 0, 0.1)" }) =>
-    backgroundColor};
-  color: ${({ fontColor = COLORS.PERSIAN_RED }) => fontColor};
+  border: 1px solid ${({ borderColor = "#efc8c7" }) => borderColor};
+  background: ${({ backgroundColor = "#ffe7e7" }) => backgroundColor};
   min-height: 74px;
   margin: 10px auto 0;
   border-radius: 8px;
 `;
 
 export const MessageText = styled.span`
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  color: "#d68282";
 `;

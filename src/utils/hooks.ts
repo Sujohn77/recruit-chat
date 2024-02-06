@@ -115,8 +115,8 @@ export const useFirebaseSignIn = () => {
   }, [firebaseToken]);
 };
 
-export const useDetectCountry = (): string => {
-  const [country, setCountry] = useState<string>("US");
+export const useDetectCountry = (lowerCase = true): string => {
+  const [country, setCountry] = useState<string>("us");
 
   useEffect(() => {
     fetch("https://ipapi.co/json/")
@@ -126,5 +126,5 @@ export const useDetectCountry = (): string => {
       });
   }, []);
 
-  return country;
+  return lowerCase ? country.toLowerCase() : country;
 };

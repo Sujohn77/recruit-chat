@@ -1,21 +1,14 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  MouseEvent,
-  SetStateAction,
-  useCallback,
-  useEffect,
-} from "react";
+import React, { ChangeEvent, MouseEvent, useCallback, useEffect } from "react";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
-import { DefaultInput } from "components/Layout";
+import { PhoneInputWrapper } from "./styles";
 import { isResultsType } from "utils/helpers";
 import { TextFieldTypes } from "utils/constants";
+import { useDetectCountry } from "utils/hooks";
+import { DefaultInput } from "components/Layout";
 import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
-import { PhoneInputWrapper } from "./styles";
 
 interface IAutocompleteProps {
   value: string;
@@ -27,16 +20,16 @@ interface IAutocompleteProps {
   type: TextFieldTypes;
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  setIsShowResults: Dispatch<SetStateAction<boolean>>;
-  setHeight: Dispatch<SetStateAction<number>>;
+  setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
+  setHeight: React.Dispatch<React.SetStateAction<number>>;
   isPhoneNumberMode: boolean;
   phoneValue: string;
-  setPhoneValue: Dispatch<SetStateAction<string>>;
+  setPhoneValue: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
   errorText?: string;
 }
 
-export const Autocomplete: FC<IAutocompleteProps> = ({
+export const Autocomplete: React.FC<IAutocompleteProps> = ({
   matchedItems,
   value,
   headerName,
@@ -54,6 +47,7 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
   disabled = false,
 }) => {
   const { dispatch, currentMsgType, error } = useChatMessenger();
+  const detectedCountry = useDetectCountry();
 
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
@@ -95,7 +89,9 @@ export const Autocomplete: FC<IAutocompleteProps> = ({
       {isPhoneNumberMode ? (
         <PhoneInputWrapper>
           <PhoneInput
-            defaultCountry="ua"
+            autoFocus
+            style={{ width: "260px" }}
+            defaultCountry={detectedCountry}
             value={phoneValue}
             onChange={(phone) => setPhoneValue(phone)}
           />
