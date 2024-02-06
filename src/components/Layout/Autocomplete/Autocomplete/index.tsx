@@ -46,7 +46,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   errorText,
   disabled = false,
 }) => {
-  const { dispatch, currentMsgType, error } = useChatMessenger();
+  const { dispatch, currentMsgType, error, isChatLoading } = useChatMessenger();
   const detectedCountry = useDetectCountry();
 
   const isResults =
@@ -86,7 +86,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
         />
       )}
 
-      {isPhoneNumberMode ? (
+      {isPhoneNumberMode && !isChatLoading ? (
         <PhoneInputWrapper>
           <PhoneInput
             autoFocus
@@ -100,10 +100,10 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
         <DefaultInput
           value={value}
           onChange={onChange}
-          placeHolder={placeHolder}
+          placeHolder={isChatLoading ? "" : placeHolder}
           setIsShowResults={setIsShowResults}
           error={error || errorText}
-          disabled={disabled}
+          disabled={disabled || isChatLoading}
         />
       )}
     </div>
