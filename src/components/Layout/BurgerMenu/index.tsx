@@ -27,6 +27,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
     employeeId,
     refLastName,
     refBirth,
+    refURL,
+    clientApiToken,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -53,53 +55,54 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
   const handleItemClick = async (item: IMenuItem) => {
     const { type, text } = item;
 
-    // cancels sending messages related to Apply Job
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
       setViewJob(null);
     }
 
-    if (type === CHAT_ACTIONS.SEE_MY_REFERRALS) {
-      const inputString = `ClientAPIKey:${employeeId}:${refLastName}:${refBirth}`;
-      const base64Encoded = btoa(inputString);
-      const myReferralsTab = window.open(
-        `https://client-site/refer/myreferrals/?rvid=${base64Encoded}`,
-        "_blank"
-      );
-      myReferralsTab?.focus();
-      return;
-    }
+    switch (type) {
+      case CHAT_ACTIONS.SEE_MY_REFERRALS:
+        const inputString = `${clientApiToken}:${employeeId}:${refLastName}:${refBirth}`;
+        const base64Encoded = btoa(inputString);
+        const myReferralsTab = window.open(
+          `https://${refURL}/refer/myreferrals/?rvid=${base64Encoded}&staging=true`,
+          "_blank"
+        );
+        myReferralsTab?.focus();
+        break;
+      case CHAT_ACTIONS.SAVE_TRANSCRIPT:
+        if (chatId) {
+          try {
+            if (emailAddress) {
+              dispatch({
+                type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+                payload: {
+                  candidateData: {
+                    emailAddress,
+                    firstName,
+                    lastName,
+                  },
+                },
+              });
+            }
 
-    if (type === CHAT_ACTIONS.SAVE_TRANSCRIPT && chatId) {
-      try {
-        if (emailAddress) {
-          dispatch({
-            type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
-            payload: {
-              candidateData: {
-                emailAddress,
-                firstName,
-                lastName,
-              },
-            },
-          });
+            const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+              await apiInstance.sendTranscript({
+                ChatID: chatId,
+              });
+            console.log("Send Transcript Response", sendTranscriptRes);
+          } catch (error) {
+            console.log("Send Transcript ERROR", error);
+          }
         }
-
-        const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-          await apiInstance.sendTranscript({
-            ChatID: chatId,
-          });
-        console.log("Send Transcript Response", sendTranscriptRes);
-      } catch (error) {
-        console.log("Send Transcript ERROR", error);
-      }
-    } else {
-      dispatch({
-        type,
-        payload: { item: text, isChatMessage: true },
-      });
-      setIsOpen(true);
-      setIsShowResults(false);
+        break;
+      default:
+        dispatch({
+          type,
+          payload: { item: text, isChatMessage: true },
+        });
+        setIsOpen(true);
+        setIsShowResults(false);
     }
   };
 

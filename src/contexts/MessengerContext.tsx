@@ -88,6 +88,8 @@ interface IChatProviderProps {
   companyName: string | null;
   chatBotToken: string;
   chatBotId?: string | null;
+  chatBotRefBaseURL: string;
+  clientApiToken?: string;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -156,6 +158,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setRefLastName: () => {},
   refBirth: "",
   refLastName: "",
+  refURL: "",
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -168,6 +171,8 @@ const ChatProvider = ({
   companyName,
   isReferralEnabled,
   chatBotToken,
+  chatBotRefBaseURL,
+  clientApiToken,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   // -------------------------------- State -------------------------------- //
@@ -237,7 +242,7 @@ const ChatProvider = ({
   const [employeeId, setEmployeeId] = useState<number | undefined>(undefined);
   const [refLastName, setRefLastName] = useState("");
   const [refBirth, setRefBirth] = useState("");
-
+  const [refURL] = useState(chatBotRefBaseURL);
   // -------------------------------------------------------------------------------------------- //
   useEffect(() => {
     switch (currentMsgType) {
@@ -1207,6 +1212,8 @@ const ChatProvider = ({
     setRefLastName,
     refBirth,
     refLastName,
+    refURL,
+    clientApiToken,
   };
 
   // console.log(

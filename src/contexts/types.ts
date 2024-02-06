@@ -101,6 +101,8 @@ export interface IChatMessengerContext {
   setRefBirth: (birth: string) => void;
   refLastName: string;
   refBirth: string;
+  refURL: string;
+  clientApiToken?: string;
 }
 
 export interface IFileUploadContext {
