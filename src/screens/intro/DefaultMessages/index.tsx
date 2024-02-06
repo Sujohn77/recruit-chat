@@ -5,32 +5,22 @@ import { useTheme } from "styled-components";
 import map from "lodash/map";
 
 import * as S from "./styles";
-import { messages } from "./data";
-import { LocalStorage } from "utils/constants";
+import { optionWithReferral, options } from "./data";
 import { ThemeType } from "utils/theme/default";
-import { CHAT_ACTIONS } from "utils/types";
-import { ChatScreens, useAppStore } from "store/app.store";
-
-export interface IOption {
-  icon: string;
-  message: string;
-  type: CHAT_ACTIONS;
-  size: string;
-}
+import { IScreenOption } from "utils/types";
 
 export const DefaultMessages: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { dispatch } = useChatMessenger();
-  const { setChatScreen } = useAppStore();
+  const { dispatch, isReferralEnabled, setChatScreen } = useChatMessenger();
 
-  const onClick = useCallback(({ message, type }: IOption) => {
-    setChatScreen(
-      ChatScreens[type === CHAT_ACTIONS.FIND_JOB ? "FindAJob" : "QnA"]
-    );
-    dispatch({ type, payload: { item: message, isChatMessage: true } });
-    localStorage.setItem(LocalStorage.InitChatActionType, JSON.stringify(type));
-  }, []);
+  const onSelectOption = useCallback(
+    ({ message, type, screen }: IScreenOption) => {
+      setChatScreen(screen);
+      dispatch({ type, payload: { item: message, isChatMessage: true } });
+    },
+    []
+  );
 
   return (
     <S.Wrapper>
@@ -40,15 +30,18 @@ export const DefaultMessages: FC = () => {
         <S.Question>{t("messages:initialMessage")}</S.Question>
 
         <S.Options>
-          {map(messages.options, (opt, index) => (
-            <S.Message
-              key={`chat-option-${index}`}
-              onClick={() => onClick(opt)}
-            >
-              <S.Image src={opt.icon} size={opt.size} alt={""} />
-              <S.Text>{opt.message}</S.Text>
-            </S.Message>
-          ))}
+          {map(
+            isReferralEnabled ? optionWithReferral : options,
+            (opt, index) => (
+              <S.Message
+                key={`chat-option-${index}`}
+                onClick={() => onSelectOption(opt)}
+              >
+                <S.Image src={opt.icon} size={opt.size} alt={""} />
+                <S.Text>{opt.message}</S.Text>
+              </S.Message>
+            )
+          )}
         </S.Options>
       </S.InfoContent>
     </S.Wrapper>

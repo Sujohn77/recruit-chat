@@ -43,7 +43,7 @@ export const ReferralOptionList: FC<IOptionListProps> = ({
               text: "Yes", // TODO: add translation
             },
           };
-          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIED);
+          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
           _setMessages((prev) => [
             answer1,
             ...prev.map((m) =>
@@ -77,7 +77,7 @@ export const ReferralOptionList: FC<IOptionListProps> = ({
               m._id === messageId ? { ...m, optionList: undefined } : m
             ),
           ]);
-          setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
+          setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
           break;
         default:
           break;

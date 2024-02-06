@@ -154,7 +154,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       setIsShowResults(true);
     }
 
-    if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIED) {
+    if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) {
       setReferralStep(ReferralSteps.UserFirstName);
       clearReferralState();
       _setMessages((prev) => [
@@ -251,7 +251,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
       } else {
         if (
           (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
-            currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIED) &&
+            currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) &&
           (draftMessage || phone)
         ) {
           referralHandle(draftMessage || phone);
@@ -498,7 +498,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
               submitResponse,
               ...prevMessages,
             ]);
-            setCurrentMsgType(CHAT_ACTIONS.SUBMIT_REFERRAL);
+            setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
             setReferralStep(ReferralSteps.UserFirstName);
             setPhone("");
           };

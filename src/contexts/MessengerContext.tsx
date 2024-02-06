@@ -39,6 +39,7 @@ import {
   IRequisitionsResponse,
 } from "services/types";
 import {
+  ChatScreens,
   getChatActionResponse,
   isDevMode,
   isPushMessageType,
@@ -159,6 +160,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   refBirth: "",
   refLastName: "",
   refURL: "",
+  chatScreen: null,
+  setChatScreen: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -176,8 +179,11 @@ const ChatProvider = ({
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   // -------------------------------- State -------------------------------- //
+
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
+
+  const [chatScreen, setChatScreen] = useState<ChatScreens | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [_categoryTitle, _setCategoryTitle] = useState<string | null>(null);
   const [searchLocations, setSearchLocations] = useState<string[]>([]);
@@ -252,7 +258,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_LOCATIONS:
       case CHAT_ACTIONS.SET_ALERT_EMAIL:
       case CHAT_ACTIONS.MAKE_REFERRAL:
-      case CHAT_ACTIONS.MAKE_REFERRAL_FRIED:
+      case CHAT_ACTIONS.MAKE_REFERRAL_FRIEND:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -1058,7 +1064,7 @@ const ChatProvider = ({
 
           setCurrentMsgType(
             employeeId
-              ? CHAT_ACTIONS.MAKE_REFERRAL_FRIED
+              ? CHAT_ACTIONS.MAKE_REFERRAL_FRIEND
               : CHAT_ACTIONS.MAKE_REFERRAL
           );
           break;
@@ -1214,6 +1220,8 @@ const ChatProvider = ({
     refLastName,
     refURL,
     clientApiToken,
+    chatScreen,
+    setChatScreen,
   };
 
   // console.log(

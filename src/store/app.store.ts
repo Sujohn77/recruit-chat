@@ -1,10 +1,5 @@
+import { ChatScreens } from "utils/constants";
 import { create } from "zustand";
-
-export enum ChatScreens {
-  Default = "Default",
-  QnA = "AskAQuestion",
-  FindAJob = "FindAJob",
-}
 
 export interface AppStore {
   isLoading: boolean;

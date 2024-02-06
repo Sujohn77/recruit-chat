@@ -5,14 +5,13 @@ import {
   ISnapshot,
   LocationType,
 } from "services/types";
-import { Status } from "utils/constants";
+import { ChatScreens, Status } from "utils/constants";
 import {
   CHAT_ACTIONS,
   MessageType,
   ILocalMessage,
   IRequisition,
   IJobAlertData,
-  IReferralData,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
 
@@ -103,6 +102,9 @@ export interface IChatMessengerContext {
   refBirth: string;
   refURL: string;
   clientApiToken?: string;
+
+  chatScreen: ChatScreens | null;
+  setChatScreen: (status: ChatScreens | null) => void;
 }
 
 export interface IFileUploadContext {

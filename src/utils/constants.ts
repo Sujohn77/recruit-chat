@@ -19,6 +19,16 @@ export const REFRESH_APP_TIMEOUT = 20 * 60 * 1000;
 export const _TIMEOUT = 5 * 60 * 1000; // for testing
 export const REFRESH_TOKEN_TIMEOUT = 29 * 60 * 1000;
 export const APP_VERSION = "1.0.3";
+export const MS_1000 = 1000;
+export const REFERRAL_OFFER_TEXT =
+  "Yes, you can refer as many people as you like to either specific jobs or to the company generally. To begin, click below.";
+
+export enum ChatScreens {
+  Default = "Default",
+  QnA = "AskAQuestion",
+  FindAJob = "FindAJob",
+  MakeReferral = "MakeReferral",
+}
 
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
@@ -423,8 +433,3 @@ export enum ReferralResponse {
 export enum MessageOptionTypes {
   Referral = "referral",
 }
-
-export const REFERRAL_OFFER_TEXT =
-  "Yes, you can refer as many people as you like to either specific jobs or to the company generally. To begin, click below.";
-
-export const MS_1000 = 1000;

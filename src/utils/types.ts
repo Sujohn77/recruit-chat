@@ -2,7 +2,7 @@ import { ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
 
-import { CHAT_OPTIONS } from "./constants";
+import { CHAT_OPTIONS, ChatScreens } from "./constants";
 import {
   IChatRoomID,
   IMessage,
@@ -138,8 +138,8 @@ export enum CHAT_ACTIONS {
   SET_ALERT_JOB_LOCATIONS = "SET_ALERT_JOB_LOCATIONS",
   SEND_ALERT_JOB_LOCATIONS = "SEND_ALERT_JOB_LOCATIONS",
   MAKE_REFERRAL = "MAKE_REFERRAL",
-  SUBMIT_REFERRAL = "SUBMIT_REFERRAL",
-  MAKE_REFERRAL_FRIED = "MAKE_REFERRAL_FRIED",
+  REFERRAL_IS_SUBMITTED = "REFERRAL_IS_SUBMITTED",
+  MAKE_REFERRAL_FRIEND = "MAKE_REFERRAL_FRIEND",
   SEE_MY_REFERRALS = "SEE_MY_REFERRALS",
 }
 
@@ -302,4 +302,12 @@ export interface IReferralData {
 export interface IPopMessage {
   type: MessageType | null;
   messages: ILocalMessage[];
+}
+
+export interface IScreenOption {
+  icon?: string;
+  message: string;
+  type: CHAT_ACTIONS;
+  size: string;
+  screen: ChatScreens;
 }

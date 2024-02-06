@@ -3,10 +3,8 @@ import { Dispatch, FC, SetStateAction, useCallback } from "react";
 import { PopUp } from "..";
 import * as S from "./styles";
 import { DarkButton } from "components/Layout/styles";
-// import { useChatMessenger } from "contexts/MessengerContext";
 import { EventIds } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
-// import { ChatScreens, useAppStore } from "store/app.store";
 
 interface ILogoutProps {
   showLogoutScreen: boolean;
