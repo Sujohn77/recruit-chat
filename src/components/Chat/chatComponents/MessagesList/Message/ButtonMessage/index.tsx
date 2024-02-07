@@ -4,7 +4,7 @@ import { FC, memo, useCallback } from "react";
 
 import * as S from "../styles";
 import { getMessageProps } from "utils/helpers";
-import { ILocalMessage, MessageType } from "utils/types";
+import { ButtonsOptions, ILocalMessage, MessageType } from "utils/types";
 
 interface IButtonMessageProps {
   message: ILocalMessage;
@@ -18,7 +18,7 @@ export const ButtonMessage: FC<IButtonMessageProps> = memo(({ message }) => {
       message?.content.subType === MessageType.BUTTON &&
       message?.content?.text
     ) {
-      chooseButtonOption(message.content.text);
+      chooseButtonOption(message.content.text as ButtonsOptions);
     }
   }, [messages.length]);
 

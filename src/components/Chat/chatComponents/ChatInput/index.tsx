@@ -30,7 +30,12 @@ import {
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
-import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import {
+  ButtonsOptions,
+  CHAT_ACTIONS,
+  ILocalMessage,
+  MessageType,
+} from "utils/types";
 import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
@@ -640,7 +645,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
 
         switch (currentMsgType) {
           case CHAT_ACTIONS.ASK_QUESTION:
-            draftMessage && chooseButtonOption(draftMessage);
+            draftMessage && chooseButtonOption(draftMessage as ButtonsOptions);
             break;
           default:
             break;

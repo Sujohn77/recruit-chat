@@ -1,7 +1,14 @@
+import { useChatMessenger } from "contexts/MessengerContext";
 import React, { FC, useState } from "react";
 
 import * as S from "./styles";
-import { ChatHeader, ChatInput, MessagesList, ViewJob } from "./chatComponents";
+import {
+  ChatHeader,
+  ChatInput,
+  MessagesList,
+  ReferralViewJob,
+  ViewJob,
+} from "./chatComponents";
 import { Login } from "./chatComponents/Login";
 import { Logout } from "./chatComponents/Logout";
 interface IChatProps {
@@ -10,6 +17,8 @@ interface IChatProps {
 }
 
 export const Chat: FC<IChatProps> = ({ isShowChat }) => {
+  const { isReferralEnabled } = useChatMessenger();
+
   const [height, setHeight] = useState(480);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -35,9 +44,13 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
       />
-      <ViewJob setShowLoginScreen={setShowLoginScreen} />
-      {/* ------------------------------------------------------------- */}
 
+      {isReferralEnabled ? (
+        <ReferralViewJob />
+      ) : (
+        <ViewJob setShowLoginScreen={setShowLoginScreen} />
+      )}
+      {/* ------------------------------------------------------------- */}
       <ChatInput setHeight={setHeight} />
     </S.Wrapper>
   );

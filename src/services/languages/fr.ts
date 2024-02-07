@@ -12,6 +12,7 @@ export const fr = {
     searchJobs: "Search jobs with resume",
     make_referral: "Make a referral",
     try_again: "Try again",
+    refer_friend: "Refer a friend",
   },
   placeHolders: {
     default: "Taper un message",

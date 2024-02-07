@@ -11,6 +11,7 @@ export const ua = {
     ask_questions: "Задати питання",
     searchJobs: "Пошук пропозицій по резюме",
     try_again: "Try again",
+    refer_friend: "Refer a friend",
   },
   placeHolders: {
     default: "Повідомелння",

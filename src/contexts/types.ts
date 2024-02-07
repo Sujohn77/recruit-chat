@@ -12,6 +12,7 @@ import {
   ILocalMessage,
   IRequisition,
   IJobAlertData,
+  ButtonsOptions,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
 
@@ -26,7 +27,7 @@ export interface IChatMessengerContext {
   category: string | null;
   user: IUser | null;
   status: Status | null;
-  chooseButtonOption: (text: string, param?: string) => void;
+  chooseButtonOption: (text: ButtonsOptions, param?: string) => void;
   dispatch: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];

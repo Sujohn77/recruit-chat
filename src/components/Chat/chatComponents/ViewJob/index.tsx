@@ -1,18 +1,18 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
+import AnimateHeight, { Height } from "react-animate-height";
+import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
-import AnimateHeight, { Height } from "react-animate-height";
 import isNull from "lodash/isNull";
 
 import * as S from "./styles";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
-import { generateLocalId, getFormattedDate } from "utils/helpers";
-import { IApplyJobResponse, ISuccessResponse } from "services/types";
 import { apiInstance } from "services/api";
 import { ILocalMessage, MessageType } from "utils/types";
-import { useTranslation } from "react-i18next";
+import { generateLocalId, getFormattedDate } from "utils/helpers";
+import { IApplyJobResponse, ISuccessResponse } from "services/types";
 import { DarkButton } from "components/Layout/styles";
 
 const ANIMATION_ID = "VIEW_JOB_ANIMATION_ID";
