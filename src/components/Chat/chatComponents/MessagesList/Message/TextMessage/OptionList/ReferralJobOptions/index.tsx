@@ -62,7 +62,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
           disabled={!isLastMess}
           fontWeight={500}
           width="100%"
-          margin="0 0 8px"
+          marginBottom="8px"
           height="35px"
         >
           {option.text}

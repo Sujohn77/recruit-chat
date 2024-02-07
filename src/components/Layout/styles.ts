@@ -8,7 +8,7 @@ interface IDarkButtonProps {
   width?: string;
   isSelected?: boolean;
   height?: string;
-  margin?: string;
+  marginBottom?: string;
 }
 
 export const StyledButton = styled(ButtonBase)`
@@ -32,7 +32,7 @@ export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   font-size: 14px;
   line-height: 17px;
   font-weight: ${({ fontWeight = 700 }) => fontWeight};
-  margin: ${({ margin }) => margin};
+  margin-bottom: ${({ marginBottom }) => marginBottom}!important;
 
   &:disabled {
     ${({ isSelected }) => (isSelected ? "" : "opacity: 0.3; cursor: default;")}

@@ -2,6 +2,36 @@ import i18n from "services/localization";
 import { languages } from "utils/constants";
 import { CHAT_ACTIONS } from "utils/types";
 
+export const baseItems = [
+  {
+    type: CHAT_ACTIONS.CHANGE_LANG,
+    text: i18n.t("chat_menu:change_lang"),
+    isDropdown: true,
+    options: languages,
+  },
+  {
+    type: CHAT_ACTIONS.ASK_QUESTION,
+    text: i18n.t("chat_menu:ask_question"),
+  },
+];
+
+export const baseWithRef = [
+  {
+    type: CHAT_ACTIONS.CHANGE_LANG,
+    text: i18n.t("chat_menu:change_lang"),
+    isDropdown: true,
+    options: languages,
+  },
+  {
+    type: CHAT_ACTIONS.SEE_MY_REFERRALS,
+    text: i18n.t("chat_menu:see_my_referrals"),
+  },
+  {
+    type: CHAT_ACTIONS.ASK_QUESTION,
+    text: i18n.t("chat_menu:ask_question"),
+  },
+];
+
 export const menuItems = [
   {
     type: CHAT_ACTIONS.CHANGE_LANG,

@@ -1,17 +1,24 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
+import { CHAT_ACTIONS, IMenuItem } from "utils/types";
+import { ISendTranscriptResponse } from "services/types";
 import * as S from "./styles";
-import { IBurgerMenuProps } from "./props";
-import { menuForCandidateWithEmail, menuItems } from "./data";
 import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
 import { apiInstance } from "services/api";
-import { CHAT_ACTIONS, IMenuItem } from "utils/types";
-import { ISendTranscriptResponse } from "services/types";
-import { useTranslation } from "react-i18next";
+import {
+  baseItems,
+  baseWithRef,
+  menuForCandidateWithEmail,
+  menuItems,
+} from "./data";
+
+interface IBurgerMenuProps {
+  setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
   const {
@@ -30,24 +37,17 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
     refURL,
     clientApiToken,
   } = useChatMessenger();
-  const { t } = useTranslation();
-
   const [isOpen, setIsOpen] = useState(false);
 
   const list = useMemo(() => {
     let defaultItems = isCandidateWithEmail
       ? menuForCandidateWithEmail
       : menuItems;
-
-    if (isReferralEnabled && employeeId) {
-      // if employeeId exist then refBirth and refLastName also exist
-      return [
-        ...defaultItems,
-        {
-          type: CHAT_ACTIONS.SEE_MY_REFERRALS,
-          text: t("chat_menu:see_my_referrals"),
-        },
-      ];
+    if (isReferralEnabled && !!employeeId) {
+      return baseWithRef;
+    }
+    if (isReferralEnabled) {
+      return baseItems;
     }
     return defaultItems;
   }, [isReferralEnabled, isCandidateWithEmail, employeeId]);
