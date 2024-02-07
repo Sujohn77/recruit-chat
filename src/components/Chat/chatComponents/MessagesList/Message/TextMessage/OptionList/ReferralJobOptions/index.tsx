@@ -1,64 +1,53 @@
-import { FC, useCallback, useMemo } from "react";
 import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useCallback } from "react";
 import map from "lodash/map";
 
-import * as S from "./styles";
-import { IMessageOptionItem, IMessageOptions } from "services/types";
-import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import * as S from "../styles";
+import { IMessageOptionItem } from "services/types";
 import { generateLocalId } from "utils/helpers";
+import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import { DarkButton } from "components/Layout/styles";
 
-interface IOptionListProps {
-  optionList: IMessageOptions;
-  chatItemId?: number;
-  messageId: string | number | null;
+interface IReferralJobOptionsProps {
   message: ILocalMessage;
+  isLastMess: boolean;
 }
 
-export const ReferralOptionList: FC<IOptionListProps> = ({
-  optionList,
-  chatItemId,
-  messageId,
+export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   message,
+  isLastMess,
 }) => {
-  const { _setMessages, setCurrentMsgType, messages } = useChatMessenger();
-
-  const isActive = useMemo(() => {
-    const currentMessageIndex = messages.findIndex(
-      (mess) => mess._id === messageId
-    );
-
-    return currentMessageIndex === 0;
-  }, [messages, messageId]);
+  const { _setMessages, setCurrentMsgType, dispatch } = useChatMessenger();
 
   const onSelectOption = useCallback((option: IMessageOptionItem) => {
-    if (isActive) {
-      switch (option.text?.toLowerCase()) {
-        case "yes":
+    if (isLastMess) {
+      switch (option.id) {
+        case 1:
           const answer1: ILocalMessage = {
             localId: generateLocalId(),
             _id: generateLocalId(),
             isOwn: true,
             content: {
               subType: MessageType.TEXT,
-              text: "Yes", // TODO: add translation
+              text: option.text,
             },
           };
-          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
           _setMessages((prev) => [
             answer1,
             ...prev.map((m) =>
-              m._id === messageId ? { ...m, optionList: undefined } : m
+              m._id === message._id ? { ...m, optionList: undefined } : m
             ),
           ]);
+          dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
           break;
-        case "no":
+        case 2:
           const mess: ILocalMessage = {
             _id: null,
             localId: generateLocalId(),
             isOwn: false,
             content: {
               subType: MessageType.TEXT,
-              text: "ok, thank you", // TODO: add translation
+              text: "ok, thank you",
             },
           };
           const answer2: ILocalMessage = {
@@ -67,14 +56,14 @@ export const ReferralOptionList: FC<IOptionListProps> = ({
             isOwn: true,
             content: {
               subType: MessageType.TEXT,
-              text: "No", // TODO: add translation
+              text: option.text,
             },
           };
           _setMessages((prev) => [
             mess,
             answer2,
             ...prev.map((m) =>
-              m._id === messageId ? { ...m, optionList: undefined } : m
+              m._id === message._id ? { ...m, optionList: undefined } : m
             ),
           ]);
           setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
@@ -87,15 +76,22 @@ export const ReferralOptionList: FC<IOptionListProps> = ({
 
   return (
     <S.List>
-      {map(optionList.options, (option) => (
-        <S.Option
-          key={`${option.id}-${option.text}-${option.name}`}
+      {map(message.optionList?.options, (option) => (
+        <DarkButton
           onClick={() => onSelectOption(option)}
-          isActive={isActive}
-          disabled={!isActive}
+          disabled={!isLastMess}
+          fontWeight={500}
         >
-          <S.OptionText>{option.text}</S.OptionText>
-        </S.Option>
+          {option.text}
+        </DarkButton>
+        // <S.Option
+        //   key={`${option.id}-${option.text}-${option.name}`}
+        //   onClick={() => onSelectOption(option)}
+        //   isActive={isActive}
+        //   disabled={!isActive}
+        // >
+        //   <S.OptionText>{option.text}</S.OptionText>
+        // </S.Option>
       ))}
     </S.List>
   );

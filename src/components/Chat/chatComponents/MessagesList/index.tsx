@@ -72,7 +72,6 @@ export const MessagesList: FC<IMessagesListProps> = ({
             }
             return (
               <Message
-                index={index}
                 key={`${message?.localId}-${message.dateCreated}`}
                 message={message}
                 withoutMargin={withoutMargin}

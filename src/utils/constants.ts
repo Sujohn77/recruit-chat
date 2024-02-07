@@ -432,4 +432,5 @@ export enum ReferralResponse {
 
 export enum MessageOptionTypes {
   Referral = "referral",
+  AvailableJobs = "available_job",
 }

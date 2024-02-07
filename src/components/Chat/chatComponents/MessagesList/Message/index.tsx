@@ -27,14 +27,9 @@ import { MakeReferralMess } from "./MakeReferralMess";
 interface IMessageProps {
   message: ILocalMessage;
   withoutMargin?: boolean;
-  index?: number;
 }
 
-export const Message: FC<IMessageProps> = ({
-  message,
-  withoutMargin,
-  index,
-}) => {
+export const Message: FC<IMessageProps> = ({ message, withoutMargin }) => {
   const { messages } = useChatMessenger();
   const subType = message?.content?.subType;
   const messageProps = { ...getMessageProps(message) };
@@ -58,7 +53,7 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.TEXT:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
-      return <TextMessage index={index} message={message} />;
+      return <TextMessage message={message} isLastMess={isLastMess} />;
     case MessageType.BUTTON: {
       return <ButtonMessage message={message} />;
     }

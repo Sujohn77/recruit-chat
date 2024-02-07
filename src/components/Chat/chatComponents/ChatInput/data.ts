@@ -1,9 +1,10 @@
-import { ReferralResponse } from "utils/constants";
+import {
+  ChatScreens,
+  MessageOptionTypes,
+  ReferralResponse,
+} from "utils/constants";
 import { generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
-
-export const REF_OPTION_1 = 1;
-export const REF_OPTION_2 = 2;
 
 export enum ReferralSteps {
   EmployeeId,
@@ -124,4 +125,60 @@ export const getReferralResponseMess = (
     default:
       return "";
   }
+};
+
+export const getValidationRefResponse = (
+  screen: ChatScreens | null,
+  userLastName: string
+): ILocalMessage => {
+  const isMakeReferralScreen = screen === ChatScreens.MakeReferral;
+  return {
+    isOwn: false,
+    localId: generateLocalId(),
+    content: {
+      subType: MessageType.TEXT,
+      text: isMakeReferralScreen
+        ? `Hi ${userLastName}, thanks for validating!
+          
+      \nTo refer a friend to a job, firstly choose one of thr following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`
+        : "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
+    },
+    _id: generateLocalId(),
+    optionList: isMakeReferralScreen
+      ? {
+          type: MessageOptionTypes.AvailableJobs,
+          isActive: true,
+          options: [
+            {
+              id: 1,
+              itemId: 1,
+              isSelected: false,
+              name: "Jobs in my area",
+              text: "Jobs in my area",
+            },
+            {
+              id: 2,
+              itemId: 2,
+              isSelected: false,
+              name: "Engineering jobs",
+              text: "Engineering jobs",
+            },
+            {
+              id: 3,
+              itemId: 3,
+              isSelected: false,
+              name: "Any job",
+              text: "Any job",
+            },
+            {
+              id: 4,
+              itemId: 4,
+              isSelected: false,
+              name: "General Referral",
+              text: "General Referral",
+            },
+          ],
+        }
+      : null,
+  };
 };

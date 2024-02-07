@@ -35,11 +35,10 @@ import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
 import {
-  REF_OPTION_1,
-  REF_OPTION_2,
   ReferralSteps,
   getReferralQuestion,
   getReferralResponseMess,
+  getValidationRefResponse,
 } from "./data";
 
 interface IChatInputProps {
@@ -78,6 +77,7 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
     setRefBirth,
     setRefLastName,
     refLastName,
+    chatScreen,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -307,21 +307,10 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
         break;
       case ReferralSteps.ReferralBirth:
         const onSuccessCallback = () => {
-          const thanksMess: ILocalMessage = {
-            isOwn: false,
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
-            },
-            _id: generateLocalId(),
-          };
-          const userNameMess = getReferralQuestion(ReferralSteps.UserFirstName);
-          _setMessages((prevMessages) => [
-            userNameMess,
-            thanksMess,
-            ...prevMessages,
-          ]);
+          const resMess = getValidationRefResponse(chatScreen, refLastName);
+          // TODO: remove userNameMess
+          // const userNameMess = getReferralQuestion(ReferralSteps.UserFirstName);
+          _setMessages((prevMessages) => [resMess, ...prevMessages]);
 
           const trimmedEmployeeID = refEmployeeId.trim();
           trimmedEmployeeID &&
@@ -478,14 +467,14 @@ export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
                 options: [
                   {
                     id: 1,
-                    itemId: REF_OPTION_1,
+                    itemId: 1,
                     isSelected: false,
                     name: "Yes",
                     text: "Yes",
                   },
                   {
                     id: 2,
-                    itemId: REF_OPTION_2,
+                    itemId: 2,
                     isSelected: false,
                     name: "No",
                     text: "No",
