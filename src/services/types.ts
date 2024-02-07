@@ -105,7 +105,7 @@ export interface I_id {
 }
 export interface IMessageContent {
   content: IMessageContentInnerInfo;
-  options?: IMessageOptionItem[];
+  options?: IMessageOption[];
 }
 
 export interface IMessageContentInnerInfo {
@@ -128,7 +128,7 @@ export enum ServerMessageType {
   Date = "date",
 }
 
-export interface IMessageOptionItem {
+export interface IMessageOption {
   id: number;
   itemId: number;
   isSelected?: boolean;
@@ -138,7 +138,7 @@ export interface IMessageOptionItem {
 
 export interface IMessageOptions {
   isActive: boolean;
-  options: IMessageOptionItem[];
+  options: IMessageOption[];
   type?: MessageOptionTypes;
 }
 

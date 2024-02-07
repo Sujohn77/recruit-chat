@@ -25,6 +25,10 @@ export const List = styled.div`
   margin-top: 10px;
 `;
 
+export const ReferralOptionList = styled(List)`
+  width: 100%;
+`;
+
 export const Option = styled(Button)<IOptionProps>`
   margin: 0 5px 16px !important;
   color: ${(props) => props.theme.primaryColor} !important;

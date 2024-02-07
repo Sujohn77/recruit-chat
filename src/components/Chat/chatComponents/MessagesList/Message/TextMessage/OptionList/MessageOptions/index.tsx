@@ -1,7 +1,7 @@
+import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback } from "react";
 
-import { IMessageOptionItem } from "services/types";
-import { useChatMessenger } from "contexts/MessengerContext";
+import { IMessageOption } from "services/types";
 import { ILocalMessage } from "utils/types";
 import * as S from "../styles";
 
@@ -16,15 +16,18 @@ export const MessageOptions: FC<IOptionListProps> = ({
 }) => {
   const { sendPreScreenMessage } = useChatMessenger();
 
-  const onSelectOption = useCallback(async (option: IMessageOptionItem) => {
-    if (option.text && isLastMess) {
-      try {
-        await sendPreScreenMessage(option.text, option.id, message.chatItemId);
-      } catch (error) {
-        // TODO: add error handler
+  const onSelectOption = useCallback(
+    async ({ text, id }: IMessageOption) => {
+      if (text && isLastMess) {
+        try {
+          await sendPreScreenMessage(text, id, message.chatItemId);
+        } catch (error) {
+          // TODO: add error handler
+        }
       }
-    }
-  }, []);
+    },
+    [isLastMess]
+  );
 
   return (
     <S.OptionList>

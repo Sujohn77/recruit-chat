@@ -6,6 +6,9 @@ interface IDarkButtonProps {
   backgroundColor?: string;
   fontColor?: string;
   width?: string;
+  isSelected?: boolean;
+  height?: string;
+  margin?: string;
 }
 
 export const StyledButton = styled(ButtonBase)`
@@ -19,7 +22,7 @@ export const StyledButton = styled(ButtonBase)`
 `;
 
 export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
-  height: 30px;
+  height: ${({ height = "30px" }) => height};
   width: ${({ width = "calc(50% - 5px)" }) => width};
   background: ${({ theme, backgroundColor }) =>
     backgroundColor || theme.primaryColor}!important;
@@ -29,10 +32,10 @@ export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   font-size: 14px;
   line-height: 17px;
   font-weight: ${({ fontWeight = 700 }) => fontWeight};
+  margin: ${({ margin }) => margin};
 
   &:disabled {
-    opacity: 0.3;
-    cursor: default;
+    ${({ isSelected }) => (isSelected ? "" : "opacity: 0.3; cursor: default;")}
   }
 `;
 
