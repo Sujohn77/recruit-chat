@@ -6,6 +6,7 @@ import * as S from "../styles";
 import { generateLocalId } from "utils/helpers";
 import { IMessageOption } from "services/types";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import { getValidationRefResponse } from "components/Chat/chatComponents/ChatInput/data";
 
 interface IOptionListProps {
   message: ILocalMessage;
@@ -16,14 +17,15 @@ export const ReferralOptions: FC<IOptionListProps> = ({
   message,
   isLastMess,
 }) => {
-  const { _setMessages, setCurrentMsgType } = useChatMessenger();
+  const { _setMessages, setCurrentMsgType, chatScreen, refLastName } =
+    useChatMessenger();
 
   const onSelectOption = useCallback(
     (option: IMessageOption) => {
       if (isLastMess) {
         switch (option.text?.toLowerCase()) {
           case "yes":
-            const answer1: ILocalMessage = {
+            const mess: ILocalMessage = {
               localId: generateLocalId(),
               _id: generateLocalId(),
               isOwn: true,
@@ -32,16 +34,18 @@ export const ReferralOptions: FC<IOptionListProps> = ({
                 text: "Yes", // TODO: add translation
               },
             };
-            setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
+            const newRefer = getValidationRefResponse(chatScreen, refLastName);
+            // setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
             _setMessages((prev) => [
-              answer1,
+              newRefer,
+              mess,
               ...prev.map((m) =>
                 m._id === message._id ? { ...m, optionList: undefined } : m
               ),
             ]);
             break;
           case "no":
-            const mess: ILocalMessage = {
+            const answer: ILocalMessage = {
               _id: null,
               localId: generateLocalId(),
               isOwn: false,
@@ -60,7 +64,7 @@ export const ReferralOptions: FC<IOptionListProps> = ({
               },
             };
             _setMessages((prev) => [
-              mess,
+              answer,
               answer2,
               ...prev.map((m) =>
                 m._id === message._id ? { ...m, optionList: undefined } : m

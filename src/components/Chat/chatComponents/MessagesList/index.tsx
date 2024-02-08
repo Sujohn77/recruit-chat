@@ -14,13 +14,9 @@ const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
 interface IMessagesListProps {
   resultsHeight: number;
-  setShowLoginScreen: (show: boolean) => void;
 }
 
-export const MessagesList: FC<IMessagesListProps> = ({
-  resultsHeight,
-  setShowLoginScreen,
-}) => {
+export const MessagesList: FC<IMessagesListProps> = ({ resultsHeight }) => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();

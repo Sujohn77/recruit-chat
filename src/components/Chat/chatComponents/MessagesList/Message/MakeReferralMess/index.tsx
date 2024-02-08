@@ -7,6 +7,7 @@ import * as S from "../styles";
 import { getMessageProps } from "utils/helpers";
 import { ButtonsOptions, ILocalMessage } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
+import { getValidationRefResponse } from "components/Chat/chatComponents/ChatInput/data";
 
 interface IMakeReferralProps {
   message: ILocalMessage;
@@ -18,8 +19,22 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
   isLastMessage,
 }) => {
   const { t } = useTranslation();
-  const { chooseButtonOption } = useChatMessenger();
-  const onMakeReferral = () => chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
+  const {
+    chatScreen,
+    chooseButtonOption,
+    _setMessages,
+    refLastName,
+    employeeId,
+  } = useChatMessenger();
+
+  const onMakeReferral = () => {
+    if (employeeId) {
+      const resMess = getValidationRefResponse(chatScreen, refLastName);
+      _setMessages((prevMessages) => [resMess, ...prevMessages]);
+    } else {
+      chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
+    }
+  };
 
   return (
     <S.MessageBox {...getMessageProps(message)}>

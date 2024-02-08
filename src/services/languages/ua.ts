@@ -92,7 +92,8 @@ export const ua = {
       "Ваше резюме прикріплено.\nВи можете натиснути X, щоб видалити його та завантажити інший, або клацнути нижче, щоб завантажити та шукати вакансії",
     botThanks:
       "Дякуємо, що висловили інтерес до цієї вакансії, перевіряйте свою електронну пошту на наявність оновлень.",
-    employeeId: "What is your Employee ID ?",
+    employeeId:
+      "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
   },
   chat_item_description: {
     transcript_sent: "Стенограма надіслана на вашу пошту ",

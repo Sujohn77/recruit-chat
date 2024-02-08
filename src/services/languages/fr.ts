@@ -95,7 +95,8 @@ export const fr = {
       "Votre CV a été joint.\n Vous pouvez cliquer sur le X pour le supprimer et en télécharger un autre ou cliquer ci-dessous pour télécharger et rechercher des offres d'emploi",
     botThanks:
       "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
-    employeeId: "What is your Employee ID ?",
+    employeeId:
+      "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
     try_again: "Try again",
   },
   chat_item_description: {

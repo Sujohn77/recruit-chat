@@ -96,7 +96,8 @@ export const en = {
       "Your resume has been attached.\n You can click the X to remove it and re-upload another one or click below to upload and search for jobs",
     botThanks:
       "Thank you for expressing your interest in this job, please check your email for updates.",
-    employeeId: "What is your Employee ID ?",
+    employeeId:
+      "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
     try_again: "Try again",
   },
   chat_item_description: {

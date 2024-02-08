@@ -1,15 +1,5 @@
-import moment from "moment";
-
 import i18n from "services/localization";
-import { IMessage, IUserSelf, UserLicenseTypes } from "services/types";
-import { MessageTypeId, generateLocalId, getLocalMessage } from "utils/helpers";
-import { ISnapshot, MessageType } from "utils/types";
-
-const chatBotSender: IUserSelf = {
-  id: -2,
-  userLicenseType: UserLicenseTypes.Standard,
-  userLicenseTypeId: 1,
-};
+import { MessageType } from "utils/types";
 
 const defaultQuestions = [
   {

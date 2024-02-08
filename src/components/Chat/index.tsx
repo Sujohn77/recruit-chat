@@ -33,10 +33,7 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
       />
-      <MessagesList
-        setShowLoginScreen={setShowLoginScreen}
-        resultsHeight={height}
-      />
+      <MessagesList resultsHeight={height} />
 
       {/* -------------------------- PopUp's -------------------------- */}
       <Login
