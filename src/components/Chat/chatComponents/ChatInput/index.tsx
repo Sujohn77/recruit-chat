@@ -48,7 +48,9 @@ import {
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedReferralJobId: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
   selectedReferralJobId?: number;
 }
 
@@ -168,10 +170,10 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) {
       setReferralStep(ReferralSteps.UserFirstName);
       clearReferralState();
-      _setMessages((prev) => [
-        getReferralQuestion(ReferralSteps.UserFirstName),
-        ...prev,
-      ]);
+      // _setMessages((prev) => [
+      //   getReferralQuestion(ReferralSteps.UserFirstName),
+      //   ...prev,
+      // ]);
     }
   }, [currentMsgType]);
 
@@ -448,8 +450,10 @@ export const ChatInput: FC<IChatInputProps> = ({
               lastName,
               mobileNumber: phone,
             },
+            jobId: selectedReferralJobId,
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
+            setSelectedReferralJobId(undefined);
             const submitResponse: ILocalMessage = {
               _id: null,
               isOwn: false,

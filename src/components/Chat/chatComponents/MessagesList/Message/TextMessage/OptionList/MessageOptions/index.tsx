@@ -8,17 +8,22 @@ import * as S from "../styles";
 interface IOptionListProps {
   message: ILocalMessage;
   isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 export const MessageOptions: FC<IOptionListProps> = ({
   message,
   isLastMess,
+  setSelectedReferralJobId,
 }) => {
   const { sendPreScreenMessage } = useChatMessenger();
 
   const onSelectOption = useCallback(
     async ({ text, id }: IMessageOption) => {
       if (text && isLastMess) {
+        setSelectedReferralJobId(undefined);
         try {
           await sendPreScreenMessage(text, id, message.chatItemId);
         } catch (error) {

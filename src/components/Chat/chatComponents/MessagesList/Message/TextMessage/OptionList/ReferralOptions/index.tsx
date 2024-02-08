@@ -11,11 +11,15 @@ import { getValidationRefResponse } from "components/Chat/chatComponents/ChatInp
 interface IOptionListProps {
   message: ILocalMessage;
   isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 export const ReferralOptions: FC<IOptionListProps> = ({
   message,
   isLastMess,
+  setSelectedReferralJobId,
 }) => {
   const { _setMessages, setCurrentMsgType, chatScreen, refLastName } =
     useChatMessenger();
@@ -25,6 +29,7 @@ export const ReferralOptions: FC<IOptionListProps> = ({
       if (isLastMess) {
         switch (option.text?.toLowerCase()) {
           case "yes":
+            setSelectedReferralJobId(undefined);
             const mess: ILocalMessage = {
               localId: generateLocalId(),
               _id: generateLocalId(),
@@ -45,6 +50,7 @@ export const ReferralOptions: FC<IOptionListProps> = ({
             ]);
             break;
           case "no":
+            setSelectedReferralJobId(undefined);
             const answer: ILocalMessage = {
               _id: null,
               localId: generateLocalId(),

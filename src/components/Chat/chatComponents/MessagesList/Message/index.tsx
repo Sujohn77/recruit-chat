@@ -27,9 +27,16 @@ import { MakeReferralMess } from "./MakeReferralMess";
 interface IMessageProps {
   message: ILocalMessage;
   withoutMargin?: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
-export const Message: FC<IMessageProps> = ({ message, withoutMargin }) => {
+export const Message: FC<IMessageProps> = ({
+  message,
+  withoutMargin,
+  setSelectedReferralJobId,
+}) => {
   const { messages } = useChatMessenger();
   const subType = message?.content?.subType;
   const messageProps = { ...getMessageProps(message) };
@@ -53,7 +60,13 @@ export const Message: FC<IMessageProps> = ({ message, withoutMargin }) => {
     case MessageType.TEXT:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
-      return <TextMessage message={message} isLastMess={isLastMess} />;
+      return (
+        <TextMessage
+          message={message}
+          isLastMess={isLastMess}
+          setSelectedReferralJobId={setSelectedReferralJobId}
+        />
+      );
     case MessageType.BUTTON: {
       return <ButtonMessage message={message} />;
     }

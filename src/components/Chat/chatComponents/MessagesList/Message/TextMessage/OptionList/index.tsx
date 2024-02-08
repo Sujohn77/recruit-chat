@@ -9,6 +9,9 @@ import { MessageOptions } from "./MessageOptions";
 interface IOptionListProps {
   message: ILocalMessage;
   isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 export const OptionList: FC<IOptionListProps> = (props) => {

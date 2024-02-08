@@ -14,10 +14,13 @@ import { OptionList } from "./OptionList";
 interface ITextMessageProps {
   message: ILocalMessage;
   isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 export const TextMessage: FC<ITextMessageProps> = memo(
-  ({ message, isLastMess }) => {
+  ({ message, isLastMess, setSelectedReferralJobId }) => {
     const subType = message?.content.subType;
     const messageProps = { ...getMessageProps(message) };
 
@@ -86,7 +89,11 @@ export const TextMessage: FC<ITextMessageProps> = memo(
 
           {renderSendingTime(message)}
 
-          <OptionList message={message} isLastMess={isLastMess} />
+          <OptionList
+            setSelectedReferralJobId={setSelectedReferralJobId}
+            message={message}
+            isLastMess={isLastMess}
+          />
         </S.MessageContent>
       </S.MessageBox>
     );

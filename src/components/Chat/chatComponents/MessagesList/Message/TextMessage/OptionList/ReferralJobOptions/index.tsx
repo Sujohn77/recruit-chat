@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback } from "react";
+import React, { FC, useCallback } from "react";
 import map from "lodash/map";
 
 import * as S from "../styles";
@@ -10,11 +10,15 @@ import { ButtonsOptions, CHAT_ACTIONS, ILocalMessage } from "utils/types";
 interface IReferralJobOptionsProps {
   message: ILocalMessage;
   isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   message,
   isLastMess,
+  setSelectedReferralJobId,
 }) => {
   const { _setMessages, dispatch, chooseButtonOption } = useChatMessenger();
 
@@ -44,6 +48,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
             break;
           case 4:
+            setSelectedReferralJobId(undefined);
             chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
             break;
           default:

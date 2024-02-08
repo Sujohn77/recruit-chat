@@ -14,9 +14,15 @@ const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
 interface IMessagesListProps {
   resultsHeight: number;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
-export const MessagesList: FC<IMessagesListProps> = ({ resultsHeight }) => {
+export const MessagesList: FC<IMessagesListProps> = ({
+  resultsHeight,
+  setSelectedReferralJobId,
+}) => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
@@ -71,6 +77,7 @@ export const MessagesList: FC<IMessagesListProps> = ({ resultsHeight }) => {
                 key={`${message?.localId}-${message.dateCreated}`}
                 message={message}
                 withoutMargin={withoutMargin}
+                setSelectedReferralJobId={setSelectedReferralJobId}
               />
             );
           })}
