@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import * as S from "./styles";
-import { DefaultMessages } from "./DefaultMessages";
+import { Initialization } from "./Initialization";
 
 interface IIntroScreenProps {
   isSelectedOption: boolean | null;
@@ -9,6 +9,6 @@ interface IIntroScreenProps {
 
 export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => (
   <S.Wrapper isClosed={!!isSelectedOption}>
-    <DefaultMessages />
+    <Initialization />
   </S.Wrapper>
 );

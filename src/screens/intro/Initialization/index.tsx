@@ -9,7 +9,7 @@ import { optionWithReferral, options } from "./data";
 import { ThemeType } from "utils/theme/default";
 import { IScreenOption } from "utils/types";
 
-export const DefaultMessages: FC = () => {
+export const Initialization: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
   const { dispatch, isReferralEnabled, setChatScreen } = useChatMessenger();

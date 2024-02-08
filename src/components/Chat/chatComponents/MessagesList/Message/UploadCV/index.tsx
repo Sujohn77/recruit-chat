@@ -9,7 +9,7 @@ import { DragAndDrop } from "components";
 import { ButtonsOptions } from "utils/types";
 import { ThemeType } from "utils/theme/default";
 import { resumeElementId } from "utils/constants";
-import { Close } from "screens/Intro/DefaultMessages/styles";
+import { Close } from "screens/Intro/Initialization/styles";
 import * as S from "./styles";
 import * as ChatStyles from "../../../../styles";
 
