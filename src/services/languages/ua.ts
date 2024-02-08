@@ -36,6 +36,7 @@ export const ua = {
   },
   messages: {
     initialMessage: "Привіт! Ви шукаєте роботу?",
+    refInitialMessage: "Hi! I'm here to help with referrals!",
     uploadCV: "Завантажити CV",
     dragAndDrop: "Перетяніть своє резюме сюди",
     answerQuestions: "Відповісти на запитання",

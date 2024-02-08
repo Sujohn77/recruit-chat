@@ -27,7 +27,13 @@ export const DefaultMessages: FC = () => {
       <S.IntroImage src={theme?.imageUrl} size="34px" alt="" isRounded />
 
       <S.InfoContent>
-        <S.Question>{t("messages:initialMessage")}</S.Question>
+        <S.Question>
+          {t(
+            `messages:${
+              isReferralEnabled ? "refInitialMessage" : "initialMessage"
+            }`
+          )}
+        </S.Question>
 
         <S.Options>
           {map(

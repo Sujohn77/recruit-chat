@@ -22,6 +22,7 @@ export const options: IScreenOption[] = [
 
 export const optionWithReferral: IScreenOption[] = [
   {
+    icon: ICONS.SEARCH_ICON,
     message: i18n.t("buttons:make_referral"),
     type: CHAT_ACTIONS.MAKE_REFERRAL,
     size: "16px",

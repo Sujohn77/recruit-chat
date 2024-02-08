@@ -293,7 +293,12 @@ const getChatActionMessages = (
     }
     case CHAT_ACTIONS.MAKE_REFERRAL:
       return employeeId
-        ? []
+        ? [
+            {
+              subType: MessageType.TEXT,
+              text: "What is your friend's first name?",
+            },
+          ]
         : [
             {
               subType: MessageType.TEXT,

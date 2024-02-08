@@ -55,7 +55,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your Referral's First Name?",
+          text: "What is your friend's first name?",
         },
         _id: generateLocalId(),
       };
@@ -65,7 +65,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your Referral's Last Name?",
+          text: "What is your friend's last name?",
         },
         _id: generateLocalId(),
       };
@@ -75,7 +75,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your Referral's Email Address?",
+          text: "What is your friend's  email address?",
         },
         _id: generateLocalId(),
       };
@@ -85,7 +85,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "Please confirm your Referral's Email Address",
+          text: "Please confirm your friend's email address",
         },
         _id: generateLocalId(),
       };
@@ -95,7 +95,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your Referral's Mobile Number?",
+          text: "What is your friend's mobile number?",
         },
         _id: generateLocalId(),
       };

@@ -31,6 +31,7 @@ export const fr = {
   },
   messages: {
     initialMessage: "Un salut! Vous cherchent un travail?",
+    refInitialMessage: "Hi! I'm here to help with referrals!",
     uploadCV: "Upload un prix conventionnel",
     dragAndDrop: "Faites glisser et déposez un fichier CV ici",
     answerQeustions: "Répondent un questionss",
