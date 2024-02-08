@@ -23,6 +23,9 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
 
+  // Referral
+  const [selectedReferralJobId, setSelectedReferralJobId] = useState<number>();
+
   return (
     <S.Wrapper isOpened={isShowChat}>
       <ChatHeader
@@ -46,12 +49,16 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
       />
 
       {isReferralEnabled ? (
-        <ReferralViewJob />
+        <ReferralViewJob setJobId={setSelectedReferralJobId} />
       ) : (
         <ViewJob setShowLoginScreen={setShowLoginScreen} />
       )}
       {/* ------------------------------------------------------------- */}
-      <ChatInput setHeight={setHeight} />
+      <ChatInput
+        setHeight={setHeight}
+        selectedReferralJobId={selectedReferralJobId}
+        setSelectedReferralJobId={setSelectedReferralJobId}
+      />
     </S.Wrapper>
   );
 };

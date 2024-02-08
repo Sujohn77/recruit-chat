@@ -131,7 +131,8 @@ export const getValidationRefResponse = (
   screen: ChatScreens | null,
   userLastName: string
 ): ILocalMessage => {
-  const isMakeReferralScreen = screen === ChatScreens.MakeReferral;
+  // const isMakeReferralScreen = screen === ChatScreens.MakeReferral;
+  const isMakeReferralScreen = true;
   return {
     isOwn: false,
     localId: generateLocalId(),

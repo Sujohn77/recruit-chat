@@ -48,9 +48,15 @@ import {
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedReferralJobId: React.Dispatch<React.SetStateAction<number>>;
+  selectedReferralJobId?: number;
 }
 
-export const ChatInput: FC<IChatInputProps> = ({ setHeight }) => {
+export const ChatInput: FC<IChatInputProps> = ({
+  setHeight,
+  setSelectedReferralJobId,
+  selectedReferralJobId,
+}) => {
   useFirebaseSignIn();
   const { t } = useTranslation();
   const { file, setNotification, showJobTitles } = useFileUploadContext();

@@ -5,7 +5,7 @@ import map from "lodash/map";
 import * as S from "../styles";
 import { DarkButton } from "components/Layout/styles";
 import { IMessageOption } from "services/types";
-import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
+import { ButtonsOptions, CHAT_ACTIONS, ILocalMessage } from "utils/types";
 
 interface IReferralJobOptionsProps {
   message: ILocalMessage;
@@ -16,7 +16,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   message,
   isLastMess,
 }) => {
-  const { _setMessages, dispatch } = useChatMessenger();
+  const { _setMessages, dispatch, chooseButtonOption } = useChatMessenger();
 
   const onSelectOption = useCallback(
     (option: IMessageOption) => {
@@ -43,7 +43,8 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
           case 1:
             dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
             break;
-          case 2:
+          case 4:
+            chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
             break;
           default:
             break;
