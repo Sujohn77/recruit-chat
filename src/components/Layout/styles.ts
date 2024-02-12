@@ -9,6 +9,7 @@ interface IDarkButtonProps {
   isSelected?: boolean;
   height?: string;
   marginBottom?: string;
+  fontSize?: number;
 }
 
 export const StyledButton = styled(ButtonBase)`
@@ -29,7 +30,7 @@ export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   color: ${({ theme: { button }, fontColor }) =>
     fontColor || button.secondaryColor}!important;
   border-radius: 8px !important;
-  font-size: 14px;
+  font-size: ${({ fontSize = 14 }) => fontSize}px;
   line-height: 17px;
   font-weight: ${({ fontWeight = 700 }) => fontWeight};
   margin-bottom: ${({ marginBottom }) => marginBottom}!important;

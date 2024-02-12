@@ -20,8 +20,10 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
       <DarkButton
         onClick={() => message.onClickTryAgain?.(message)}
         disabled={!isLastMessage}
-        backgroundColor={COLORS.PERSIAN_RED}
+        width="35%"
         fontWeight={500}
+        fontColor={COLORS.WHITE}
+        backgroundColor={COLORS.VIVID_TANGERINE}
       >
         {t("buttons:try_again")}
       </DarkButton>
