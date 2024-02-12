@@ -162,6 +162,11 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   refURL: "",
   chatScreen: null,
   setChatScreen: () => {},
+  employeeLocation: "",
+  employeeJobCategory: "",
+  setEmployeeJobCategory: () => {},
+  setEmployeeLocation: () => {},
+  searchRequisitions: () => Promise.resolve(null),
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -249,6 +254,9 @@ const ChatProvider = ({
   const [refLastName, setRefLastName] = useState("");
   const [refBirth, setRefBirth] = useState("");
   const [refURL] = useState(chatBotRefBaseURL);
+
+  const [employeeLocation, setEmployeeLocation] = useState("");
+  const [employeeJobCategory, setEmployeeJobCategory] = useState("");
   // -------------------------------------------------------------------------------------------- //
   useEffect(() => {
     switch (currentMsgType) {
@@ -521,28 +529,6 @@ const ChatProvider = ({
           setUser({ ...user, name: payload?.item! });
           break;
         }
-        case CHAT_ACTIONS.APPLY_AGE: {
-          const age = Number(payload?.item);
-          if (age < 15 || age > 80) {
-            setError("Incorrect age");
-            isErrors = true;
-          } else {
-            setError(null);
-          }
-          setUser({ ...user, age: payload?.item! });
-          break;
-        }
-        case CHAT_ACTIONS.SET_SALARY: {
-          if (payload?.item) {
-            const salaryInfo = payload?.item.split(" ");
-            setUser({
-              ...user,
-              wishSalary: Number(salaryInfo[0]),
-              salaryCurrency: salaryInfo[1],
-            });
-          }
-          break;
-        }
         case CHAT_ACTIONS.CHANGE_LANG: {
           if (payload?.item) {
             i18n.changeLanguage(payload.item.toLowerCase());
@@ -586,7 +572,7 @@ const ChatProvider = ({
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
-          pushMessage({ action, messages, setMessages });
+          pushMessage({ action, messages, setMessages, isReferralEnabled });
         }
 
         setChatAction(action);
@@ -601,6 +587,57 @@ const ChatProvider = ({
     }
   }, [chatAction]);
 
+  const searchRequisitions = useCallback(
+    async (
+      searchCategory?: string,
+      searchLocation?: string,
+      searchCountry?: string
+    ): Promise<null | boolean> => {
+      const payload = getSearchJobsData(
+        searchCategory,
+        searchLocation,
+        searchCountry
+      );
+      setIsChatLoading(true);
+      try {
+        const res: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions(payload);
+        if (res.data?.requisitions.length) {
+          const offersWithSelectedTitle = filter(
+            res.data.requisitions,
+            (r) => r.title === _categoryTitle
+          );
+          const restOffers = filter(
+            res.data.requisitions,
+            (r) => r.title !== _categoryTitle
+          );
+
+          setOfferJobs([...offersWithSelectedTitle, ...restOffers]);
+          setSearchLocations([]);
+          setCategory(null);
+          _setCategoryTitle(null);
+        } else {
+          dispatch({ type: CHAT_ACTIONS.NO_MATCH });
+        }
+        return !!res.data?.requisitions.length;
+      } catch (err) {
+        isDevMode &&
+          console.log(
+            "%c getChatBotResponse (searchRequisitions) error ",
+            err,
+            `color: #ff8c00;`
+          );
+        return null;
+      } finally {
+        setCategory(null);
+        _setCategoryTitle(null);
+        setSearchLocations([]);
+        setIsChatLoading(false);
+      }
+    },
+    []
+  );
+
   // Callbacks
   const getChatBotResponse = useCallback(
     async (action: ITriggerActionProps) => {
@@ -613,48 +650,23 @@ const ChatProvider = ({
       switch (type) {
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
-            const data = getSearchJobsData(
-              category,
-              searchLocations[0]?.split(",")[0] || searchLocations[0]
-            );
-            setIsChatLoading(true);
             try {
-              const res: ApiResponse<IRequisitionsResponse> =
-                await apiInstance.searchRequisitions(data);
-
-              additionalCondition = !!res.data?.requisitions.length;
-
-              if (res.data?.requisitions.length) {
-                const offersWithSelectedTitle = filter(
-                  res.data.requisitions,
-                  (r) => r.title === _categoryTitle
-                );
-                const restOffers = filter(
-                  res.data.requisitions,
-                  (r) => r.title !== _categoryTitle
-                );
-
-                setOfferJobs([...offersWithSelectedTitle, ...restOffers]);
-                setSearchLocations([]);
-                setCategory(null);
-                _setCategoryTitle(null);
-              } else {
-                dispatch({ type: CHAT_ACTIONS.NO_MATCH });
-              }
-            } catch (err) {
-              isDevMode &&
-                console.log(
-                  "%c getChatBotResponse (searchRequisitions) error ",
-                  err,
-                  `color: #ff8c00;`
-                );
-            } finally {
-              setCategory(null);
-              _setCategoryTitle(null);
-              setSearchLocations([]);
-              setIsChatLoading(false);
-            }
+              additionalCondition = await searchRequisitions(
+                category,
+                searchLocations[0]?.split(",")[0] || searchLocations[0]
+              );
+            } catch {}
           }
+          break;
+        }
+        case CHAT_ACTIONS.SEND_REFERRAL_LOCATIONS: {
+          try {
+            additionalCondition = await searchRequisitions(
+              undefined,
+              employeeLocation
+            );
+          } catch {}
+
           break;
         }
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
@@ -888,29 +900,13 @@ const ChatProvider = ({
         referralCompanyName: companyName,
       });
 
-      // console.log(
-      //   "%cresponseMessages",
-      //   "color: green; font-size: 16px;",
-      //   responseMessages
-      // );
-      // console.log(
-      //   "%cupdatedMessages 1",
-      //   "color: green; font-size: 16px;",
-      //   updatedMessages
-      // );
-      // console.log("%cmessages", "color: green; font-size: 16px;", messages);
-
       updatedMessages = getMessagesOnAction({
         action,
         messages: updatedMessages,
         responseMessages,
+        isReferralEnabled,
       });
 
-      // console.log(
-      //   "%cupdatedMessages 2",
-      //   "color: green; font-size: 16px;",
-      //   updatedMessages
-      // );
       // Simulate chat bot reaction
       updatedMessages?.length && setMessages(updatedMessages);
       const nextMsgType = getNextActionType(type);
@@ -1006,7 +1002,10 @@ const ChatProvider = ({
     }
   };
 
-  const chooseButtonOption = (excludeItem: ButtonsOptions, param?: string) => {
+  const chooseButtonOption = (
+    excludeItem: ButtonsOptions | null,
+    param?: string
+  ) => {
     const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,
@@ -1073,16 +1072,15 @@ const ChatProvider = ({
           break;
       }
     } else {
-      const chatType = getNextActionType(currentMsgType);
+      const chatType = getNextActionType(currentMsgType, excludeItem);
 
       if (chatType) {
         const action: ITriggerActionProps =
-          currentMsgType === CHAT_ACTIONS.ASK_QUESTION
+          currentMsgType === CHAT_ACTIONS.ASK_QUESTION && excludeItem
             ? { type: chatType, payload: { question: excludeItem } }
             : { type: chatType };
         getChatBotResponse(action);
       }
-      // LOG(updatedMessages, "updatedMessages", COLORS.BLACK, COLORS.WHITE);
       setMessages(updatedMessages);
     }
   };
@@ -1222,6 +1220,11 @@ const ChatProvider = ({
     clientApiToken,
     chatScreen,
     setChatScreen,
+    employeeJobCategory,
+    setEmployeeJobCategory,
+    employeeLocation,
+    setEmployeeLocation,
+    searchRequisitions,
   };
 
   // console.log(

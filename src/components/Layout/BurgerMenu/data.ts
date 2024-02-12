@@ -2,12 +2,16 @@ import i18n from "services/localization";
 import { languages } from "utils/constants";
 import { CHAT_ACTIONS } from "utils/types";
 
-export const baseItems = [
+export const baseWithRfItems = [
   {
     type: CHAT_ACTIONS.CHANGE_LANG,
     text: i18n.t("chat_menu:change_lang"),
     isDropdown: true,
     options: languages,
+  },
+  {
+    type: CHAT_ACTIONS.MAKE_REFERRAL,
+    text: i18n.t("buttons:make_referral"),
   },
   {
     type: CHAT_ACTIONS.ASK_QUESTION,
@@ -21,6 +25,10 @@ export const baseWithRef = [
     text: i18n.t("chat_menu:change_lang"),
     isDropdown: true,
     options: languages,
+  },
+  {
+    type: CHAT_ACTIONS.MAKE_REFERRAL,
+    text: i18n.t("buttons:make_referral"),
   },
   {
     type: CHAT_ACTIONS.SEE_MY_REFERRALS,

@@ -16,18 +16,18 @@ interface IOptionListProps {
   >;
 }
 
-export const ReferralOptions: FC<IOptionListProps> = ({
+export const ReferralQuestion: FC<IOptionListProps> = ({
   message,
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { _setMessages, setCurrentMsgType, chatScreen, refLastName } =
+  const { _setMessages, setCurrentMsgType, refLastName, employeeJobCategory } =
     useChatMessenger();
 
-  const onSelectOption = useCallback(
-    (option: IMessageOption) => {
+  const onSelectAnswer = useCallback(
+    (answer: IMessageOption) => {
       if (isLastMess) {
-        switch (option.text?.toLowerCase()) {
+        switch (answer.text?.toLowerCase()) {
           case "yes":
             setSelectedReferralJobId(undefined);
             const mess: ILocalMessage = {
@@ -39,7 +39,10 @@ export const ReferralOptions: FC<IOptionListProps> = ({
                 text: "Yes", // TODO: add translation
               },
             };
-            const newRefer = getValidationRefResponse(chatScreen, refLastName);
+            const newRefer = getValidationRefResponse(
+              employeeJobCategory,
+              refLastName
+            );
             // setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
             _setMessages((prev) => [
               newRefer,
@@ -83,7 +86,7 @@ export const ReferralOptions: FC<IOptionListProps> = ({
         }
       }
     },
-    [isLastMess]
+    [isLastMess, employeeJobCategory]
   );
 
   return (
@@ -91,7 +94,7 @@ export const ReferralOptions: FC<IOptionListProps> = ({
       {map(message.optionList?.options, (option) => (
         <S.Option
           key={`${option.id}-${option.text}-${option.name}`}
-          onClick={() => onSelectOption(option)}
+          onClick={() => onSelectAnswer(option)}
           isActive={isLastMess}
           disabled={!isLastMess}
         >

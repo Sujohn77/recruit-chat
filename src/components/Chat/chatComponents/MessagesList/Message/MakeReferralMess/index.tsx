@@ -20,16 +20,19 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
 }) => {
   const { t } = useTranslation();
   const {
-    chatScreen,
     chooseButtonOption,
     _setMessages,
     refLastName,
     employeeId,
+    employeeJobCategory,
   } = useChatMessenger();
 
   const onMakeReferral = () => {
     if (employeeId) {
-      const resMess = getValidationRefResponse(chatScreen, refLastName);
+      const resMess = getValidationRefResponse(
+        employeeJobCategory,
+        refLastName
+      );
       _setMessages((prevMessages) => [resMess, ...prevMessages]);
     } else {
       chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);

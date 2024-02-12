@@ -90,7 +90,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setRefBirth,
     setRefLastName,
     refLastName,
-    chatScreen,
+    employeeJobCategory,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -320,7 +320,10 @@ export const ChatInput: FC<IChatInputProps> = ({
         break;
       case ReferralSteps.ReferralBirth:
         const onSuccessCallback = () => {
-          const resMess = getValidationRefResponse(chatScreen, refLastName);
+          const resMess = getValidationRefResponse(
+            employeeJobCategory,
+            refLastName
+          );
           // TODO: remove userNameMess
           // const userNameMess = getReferralQuestion(ReferralSteps.UserFirstName);
           _setMessages((prevMessages) => [resMess, ...prevMessages]);
@@ -668,6 +671,22 @@ export const ChatInput: FC<IChatInputProps> = ({
     !isChatInputAvailable ||
     (!!messages[0].optionList && !!messages[0].optionList.options.length);
 
+  const getPlaceholder = (): string => {
+    if (inputType === TextFieldTypes.Select && disabled) {
+      return "";
+    }
+    if (messages[0].optionList) {
+      return t("placeHolders:selectOption");
+    }
+    if (currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE) {
+      return t("placeHolders:default");
+    }
+    if (messages[0].content.text === t("messages:employeeId")) {
+      return "enter your employee ID";
+    }
+    return "";
+  };
+
   const inputProps = {
     type: inputType,
     headerName: headerName,
@@ -675,14 +694,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     matchedItems: uniqBy(matchedItems, (i) => i),
     matchedPart,
     value: draftMessage || "",
-    placeHolder:
-      inputType === TextFieldTypes.Select && disabled
-        ? ""
-        : messages[0].optionList
-        ? t("placeHolders:selectOption")
-        : currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE
-        ? t("placeHolders:default")
-        : placeHolder || t("placeHolders:bot_typing"),
+    placeHolder: getPlaceholder(),
     setIsShowResults,
     isShowResults,
     setHeight,

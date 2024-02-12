@@ -222,7 +222,7 @@ export interface ISearchJobsPayload {
   codeVersion?: string;
   categories?: string[];
   location?: {
-    city: string;
+    city?: string;
     state: null;
     postalCode: null;
     country: null | string;
@@ -603,8 +603,10 @@ export interface IValidateRefPayload {
 }
 
 export interface IValidateRefResponse extends ISuccessResponse {
-  isValid: boolean;
   candidateId: number;
+  isValid: boolean;
+  employeeJobCategory: string;
+  employeeLocation: string;
   updateChatBotCandidateId: boolean;
 }
 

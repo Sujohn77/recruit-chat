@@ -23,8 +23,14 @@ interface ISubmitReferral {
 }
 
 export const useValidateReferral = () => {
-  const { candidateId, chatId, setIsChatLoading, setCandidateId } =
-    useChatMessenger();
+  const {
+    candidateId,
+    chatId,
+    setIsChatLoading,
+    setCandidateId,
+    setEmployeeJobCategory,
+    setEmployeeLocation,
+  } = useChatMessenger();
 
   return useCallback(
     async (data: IReferralData, onSuccess: Function, onFailure: Function) => {
@@ -46,9 +52,15 @@ export const useValidateReferral = () => {
             onSuccess();
           }
 
-          if (res.data?.candidateId && res?.data?.updateChatBotCandidateId) {
-            setCandidateId(res.data.candidateId);
-            // setIsCandidateAnonym(false);
+          if (res.data) {
+            if (res.data?.candidateId && res.data?.updateChatBotCandidateId) {
+              setCandidateId(res.data.candidateId);
+              // setIsCandidateAnonym(false);
+            }
+            res.data.employeeLocation &&
+              setEmployeeLocation(res.data.employeeLocation);
+            res.data.employeeJobCategory &&
+              setEmployeeJobCategory(res.data.employeeJobCategory);
           }
 
           if (

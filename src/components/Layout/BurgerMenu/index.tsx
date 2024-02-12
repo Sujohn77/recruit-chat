@@ -10,7 +10,7 @@ import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
 import { apiInstance } from "services/api";
 import {
-  baseItems,
+  baseWithRfItems,
   baseWithRef,
   menuForCandidateWithEmail,
   menuItems,
@@ -47,7 +47,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
       return baseWithRef;
     }
     if (isReferralEnabled) {
-      return baseItems;
+      return baseWithRfItems;
     }
     return defaultItems;
   }, [isReferralEnabled, isCandidateWithEmail, employeeId]);

@@ -5,7 +5,13 @@ import map from "lodash/map";
 import * as S from "../styles";
 import { DarkButton } from "components/Layout/styles";
 import { IMessageOption } from "services/types";
-import { ButtonsOptions, CHAT_ACTIONS, ILocalMessage } from "utils/types";
+import {
+  ButtonsOptions,
+  CHAT_ACTIONS,
+  ILocalMessage,
+  MessageType,
+} from "utils/types";
+import { generateLocalId } from "utils/helpers";
 
 interface IReferralJobOptionsProps {
   message: ILocalMessage;
@@ -20,10 +26,17 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { _setMessages, dispatch, chooseButtonOption } = useChatMessenger();
+  const {
+    dispatch,
+    _setMessages,
+    chooseButtonOption,
+    searchRequisitions,
+    employeeJobCategory,
+    employeeLocation,
+  } = useChatMessenger();
 
   const onSelectOption = useCallback(
-    (option: IMessageOption) => {
+    async (option: IMessageOption) => {
       if (isLastMess) {
         _setMessages((prev) =>
           map(prev, (m) =>
@@ -43,8 +56,35 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
           )
         );
 
+        let withJobs = null;
         switch (option.id) {
           case 1:
+            withJobs = await searchRequisitions(undefined, employeeLocation);
+            if (withJobs) {
+              const messWithJobs: ILocalMessage = {
+                _id: null,
+                localId: generateLocalId(),
+                content: { subType: MessageType.JOB_POSITIONS },
+                isOwn: false,
+              };
+              _setMessages((prev) => [messWithJobs, ...prev]);
+            }
+            break;
+          case 2:
+            searchRequisitions(employeeJobCategory, undefined);
+
+            withJobs = await searchRequisitions(employeeJobCategory, undefined);
+            if (withJobs) {
+              const messWithJobs: ILocalMessage = {
+                _id: null,
+                localId: generateLocalId(),
+                content: { subType: MessageType.JOB_POSITIONS },
+                isOwn: false,
+              };
+              _setMessages((prev) => [messWithJobs, ...prev]);
+            }
+            break;
+          case 3:
             dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
             break;
           case 4:
@@ -56,12 +96,12 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
         }
       }
     },
-    [isLastMess]
+    [isLastMess, searchRequisitions]
   );
 
   return (
     <S.ReferralOptionList>
-      {map(message.optionList?.options, (option) => (
+      {map(message.optionList?.options, (option, index) => (
         <DarkButton
           onClick={() => onSelectOption(option)}
           isSelected={option.isSelected}
@@ -71,7 +111,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
           marginBottom="8px"
           height="35px"
         >
-          {option.text}
+          {index === 1 ? employeeJobCategory + " jobs" : option.text}
         </DarkButton>
       ))}
     </S.ReferralOptionList>

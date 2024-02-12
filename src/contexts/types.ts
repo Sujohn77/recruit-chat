@@ -27,7 +27,7 @@ export interface IChatMessengerContext {
   category: string | null;
   user: IUser | null;
   status: Status | null;
-  chooseButtonOption: (text: ButtonsOptions, param?: string) => void;
+  chooseButtonOption: (text: ButtonsOptions | null, param?: string) => void;
   dispatch: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
@@ -106,6 +106,16 @@ export interface IChatMessengerContext {
 
   chatScreen: ChatScreens | null;
   setChatScreen: (status: ChatScreens | null) => void;
+
+  employeeJobCategory: string;
+  employeeLocation: string;
+  setEmployeeJobCategory: (category: string) => void;
+  setEmployeeLocation: (location: string) => void;
+  searchRequisitions: (
+    searchCategory?: string,
+    searchLocation?: string,
+    searchCountry?: string
+  ) => Promise<null | boolean>;
 }
 
 export interface IFileUploadContext {

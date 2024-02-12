@@ -3,7 +3,7 @@ import { FC } from "react";
 import { ILocalMessage } from "utils/types";
 import { MessageOptionTypes } from "utils/constants";
 import { ReferralJobOptions } from "./ReferralJobOptions";
-import { ReferralOptions } from "./ReferralOptions";
+import { ReferralQuestion } from "./ReferralQuestion";
 import { MessageOptions } from "./MessageOptions";
 
 interface IOptionListProps {
@@ -23,7 +23,7 @@ export const OptionList: FC<IOptionListProps> = (props) => {
     case MessageOptionTypes.AvailableJobs:
       return <ReferralJobOptions {...props} />;
     case MessageOptionTypes.Referral:
-      return <ReferralOptions {...props} />;
+      return <ReferralQuestion {...props} />;
     default:
       return <MessageOptions {...props} />;
   }

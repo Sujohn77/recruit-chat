@@ -85,12 +85,11 @@ export enum ButtonsOptions {
   ASK_QUESTION = "Ask a question",
   UPLOAD_CV = "Upload resume",
   ANSWER_QUESTIONS = "Answer questions",
-  HOW_MUCH_EXPERIENCE = "How much work experience do I need for your company?",
-  HOW_SUBMIT_CV = "Can I submit my CV",
   HIRING_PROCESS = "What is the hiring process?",
   UPLOADED_CV = "uploaded_cv",
   CANCEL_JOB_SEARCH_WITH_RESUME = "cancel job search with resume",
   MAKE_REFERRAL = "Make a referral",
+  JOBS_IN_MY_AREA = "JOBS_IN_MY_AREA",
 }
 
 export enum CHAT_ACTIONS {
@@ -98,6 +97,7 @@ export enum CHAT_ACTIONS {
   SET_CATEGORY = "set_category",
   SET_LOCATIONS = "set_location",
   SEND_LOCATIONS = "send_locations",
+  SEND_REFERRAL_LOCATIONS = "send_referral_locations",
   REFINE_SEARCH = "refine_search",
   NO_MATCH = "no_match",
   SEND_MESSAGE = "send_message",
@@ -141,6 +141,7 @@ export enum CHAT_ACTIONS {
   REFERRAL_IS_SUBMITTED = "REFERRAL_IS_SUBMITTED",
   MAKE_REFERRAL_FRIEND = "MAKE_REFERRAL_FRIEND",
   SEE_MY_REFERRALS = "SEE_MY_REFERRALS",
+  JOB_IN_MY_AREA = "JOB_IN_MY_AREA",
 }
 
 export enum Status {
@@ -202,12 +203,14 @@ export interface IGetUpdatedMessages {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   responseMessages: ILocalMessage[];
+  isReferralEnabled: boolean;
 }
 
 export interface IPushMessage {
   action: ITriggerActionProps;
   messages: ILocalMessage[];
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
+  isReferralEnabled: boolean;
 }
 
 export interface IGetChatResponseProps {
@@ -223,7 +226,7 @@ export interface IGetChatResponseProps {
 export interface IFilterItemsWithType {
   type: MessageType;
   messages: ILocalMessage[];
-  excludeItem: string;
+  excludeItem: string | null;
   withoutFiltering?: boolean; // for ask questions
 }
 
