@@ -103,6 +103,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
             onClick={() => onSelectAnswer(option)}
             isActive={isLastMess}
             disabled={!isLastMess}
+            height="35px"
           >
             <S.OptionText>{option.text}</S.OptionText>
           </S.Option>

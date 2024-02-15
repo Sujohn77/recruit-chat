@@ -5,6 +5,7 @@ import { COLORS } from "utils/colors";
 interface IOptionProps {
   isLast?: boolean;
   isActive: boolean;
+  height?: string;
 }
 
 export const OptionList = styled.div`
@@ -23,6 +24,7 @@ export const List = styled.div`
   justify-content: space-between;
   flex-direction: row;
   margin-top: 10px;
+  width: 100%;
 `;
 
 export const ReferralOptionList = styled(List)`
@@ -31,13 +33,14 @@ export const ReferralOptionList = styled(List)`
 `;
 
 export const Option = styled(Button)<IOptionProps>`
-  margin: 0 5px 16px !important;
-  color: ${(props) => props.theme.primaryColor} !important;
-  border: 1px solid ${(props) => props.theme.primaryColor} !important;
-  border-radius: 10px !important;
-  text-transform: initial !important;
+  height: ${({ height }) => height};
+  color: ${({ theme }) => theme.primaryColor} !important;
+  border: 1px solid ${({ theme }) => theme.primaryColor} !important;
   background-color: ${({ isLast }) =>
     isLast ? COLORS.SILVER_DARK : COLORS.WHITE} !important;
+  margin: 0 5px 16px !important;
+  border-radius: 10px !important;
+  text-transform: initial !important;
   opacity: ${({ isActive }) => (isActive ? 1 : 0.7)};
   width: 45%;
 `;
