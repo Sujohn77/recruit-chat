@@ -34,7 +34,11 @@ export const useValidateReferral = () => {
   } = useChatMessenger();
 
   return useCallback(
-    async (data: IReferralData, onSuccess: Function, onFailure: Function) => {
+    async (
+      data: IReferralData,
+      onSuccess: (fullName?: string) => void,
+      onFailure: () => void
+    ) => {
       if (candidateId && chatId) {
         const payload: IValidateRefPayload = {
           employeeId: +data.employeeId,
@@ -49,10 +53,6 @@ export const useValidateReferral = () => {
           const res: ApiResponse<IValidateRefRes> =
             await apiInstance.validateReferral(payload);
 
-          if (res?.data?.isValid) {
-            onSuccess();
-          }
-
           if (res.data) {
             if (res.data?.candidateId && res.data?.updateChatBotCandidateId) {
               setCandidateId(res.data.candidateId);
@@ -64,6 +64,10 @@ export const useValidateReferral = () => {
               setEmployeeJobCategory(res.data.employeeJobCategory);
             res.data.employeeFullName &&
               setEmployeeFullName(res.data.employeeFullName);
+          }
+
+          if (res?.data?.isValid) {
+            onSuccess(res.data.employeeFullName);
           }
 
           if (

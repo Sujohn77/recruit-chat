@@ -92,7 +92,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
         }
       }
     },
-    [isLastMess, employeeJobCategory]
+    [isLastMess, employeeJobCategory, employeeFullName]
   );
 
   return (

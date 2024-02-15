@@ -326,7 +326,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         break;
       case ReferralSteps.ReferralBirth:
-        const onSuccessCallback = () => {
+        const onSuccessCallback = (employeeFullName: string) => {
           const resMess = getValidationRefResponse(
             employeeJobCategory,
             employeeFullName || refLastName

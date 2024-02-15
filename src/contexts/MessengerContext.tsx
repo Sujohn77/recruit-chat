@@ -169,7 +169,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmployeeLocation: () => {},
   searchRequisitions: () => Promise.resolve(null),
   employeeFullName: "",
-  setEmployeeFullName: (name) => {},
+  setEmployeeFullName: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
