@@ -1,3 +1,4 @@
+import i18n from "services/localization";
 import { MessageOptionTypes, ReferralResponse } from "utils/constants";
 import { generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
@@ -21,7 +22,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your last name?",
+          text: i18n.t("referral:lastname"),
         },
         _id: generateLocalId(),
       };
@@ -31,7 +32,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your year of birth?",
+          text: i18n.t("referral:birth"),
         },
         _id: generateLocalId(),
       };
@@ -41,7 +42,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
+          text: i18n.t("referral:thanks"),
         },
         _id: generateLocalId(),
       };
@@ -51,7 +52,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your friend's first name?",
+          text: i18n.t("referral:friend_firstname"),
         },
         _id: generateLocalId(),
       };
@@ -61,7 +62,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your friend's last name?",
+          text: i18n.t("referral:friend_lastname"),
         },
         _id: generateLocalId(),
       };
@@ -71,7 +72,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your friend's  email address?",
+          text: i18n.t("referral:friend_email"),
         },
         _id: generateLocalId(),
       };
@@ -81,7 +82,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "Please confirm your friend's email address",
+          text: i18n.t("referral:confirm_email"),
         },
         _id: generateLocalId(),
       };
@@ -91,7 +92,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         localId: generateLocalId(),
         content: {
           subType: MessageType.TEXT,
-          text: "What is your friend's mobile number?",
+          text: i18n.t("referral:friend_mobile_number"),
         },
         _id: generateLocalId(),
       };
@@ -113,11 +114,18 @@ export const getReferralResponseMess = (
 ): string => {
   switch (previouslyReferredState) {
     case 0:
-      return "Thank you for your referral";
+      return i18n.t("referral:thanks_you");
     case 1:
-      return `You have previously referred ${refFirstName} ${refLastName} to this job`;
+      return i18n.t("referral:previously_referred", {
+        refFirstName,
+        refLastName,
+      });
     case 2:
-      return `You have previously referred ${refFirstName} ${refLastName} to ${refCompanyName}`;
+      return i18n.t("referral:previously_referred_to_company", {
+        refFirstName,
+        refLastName,
+        refCompanyName,
+      });
     default:
       return "";
   }
@@ -131,9 +139,7 @@ export const getValidationRefResponse = (
   localId: generateLocalId(),
   content: {
     subType: MessageType.TEXT,
-    text: `Hi ${userLastName}, thanks for validating!
-          
-      \nTo refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
+    text: i18n.t("referral:referral_options", { userLastName: userLastName }),
   },
   _id: generateLocalId(),
   optionList: {
@@ -144,29 +150,29 @@ export const getValidationRefResponse = (
         id: 1,
         itemId: 1,
         isSelected: false,
-        name: "Jobs in my area",
-        text: "Jobs in my area",
+        name: i18n.t("referral:job_in_my_area"),
+        text: i18n.t("referral:job_in_my_area"),
       },
       {
         id: 2,
         itemId: 2,
         isSelected: false,
-        name: `${searchCategory} jobs`,
-        text: `${searchCategory} jobs`,
+        name: i18n.t("referral:job_in_my_area", { title: searchCategory }),
+        text: i18n.t("referral:job_in_my_area", { title: searchCategory }),
       },
       {
         id: 3,
         itemId: 3,
         isSelected: false,
-        name: "Any job",
-        text: "Any job",
+        name: i18n.t("referral:any_job"),
+        text: i18n.t("referral:any_job"),
       },
       {
         id: 4,
         itemId: 4,
         isSelected: false,
-        name: "General Referral",
-        text: "General Referral",
+        name: i18n.t("referral:general_referral"),
+        text: i18n.t("referral:general_referral"),
       },
     ],
   },

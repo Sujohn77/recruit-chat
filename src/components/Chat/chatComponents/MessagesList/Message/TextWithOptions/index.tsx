@@ -53,8 +53,6 @@ export const TextWithOptions: FC<ITextWithOptionsProps> = ({
 
 const getMessageOptions = (type: CHAT_ACTIONS) => {
   switch (type) {
-    // case CHAT_ACTIONS.SET_ALERT_PERIOD:
-    //   return ['Daily', 'Weekly', 'Monthly'];
     case CHAT_ACTIONS.SET_WORK_PERMIT:
       return ["Yes", "No"];
     default:

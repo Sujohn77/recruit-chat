@@ -14,8 +14,6 @@ interface IProps {
   isLastMessage?: boolean;
 }
 
-//TODO: text isLastMessage
-
 export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
   const { t } = useTranslation();
   const { chooseButtonOption } = useChatMessenger();

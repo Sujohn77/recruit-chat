@@ -17,7 +17,6 @@ export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
 
   const onClick = () => {
     // TODO: add redirect link (from 'api/chatbot/style?ChatBotGuid=ID')
-    // dispatch({ type: CHAT_ACTIONS.HELP });
   };
 
   return (

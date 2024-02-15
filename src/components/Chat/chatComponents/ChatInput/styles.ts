@@ -56,17 +56,6 @@ export const SearchHeader = styled.div`
   justify-content: space-between;
 `;
 
-export const SubHeader = styled.div`
-  background: ${(props) => props.theme.headerColor};
-  padding: 10px 16px;
-  height: 45px;
-  box-sizing: border-box;
-  font-size: 14px;
-  line-height: 17px;
-  display: flex;
-  align-items: center;
-`;
-
 export const SearchBody = styled.ul`
   background-color: ${({ theme }) => theme.searchResultsColor};
   display: flex;

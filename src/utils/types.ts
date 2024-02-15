@@ -45,7 +45,6 @@ export enum MessageType {
   TEXT_WITH_CHOICE = "text_with_choice",
   INTERESTED_IN = "interested_in",
   HIRING_PROCESS = "hiring_process",
-  SALARY_FORM = "salary_form",
   QUESTION_FORM = "question_form",
   MULTIPLE_OPTIONS = "MULTIPLE_OPTIONS",
   SUBMIT_FILE = "submit_file",

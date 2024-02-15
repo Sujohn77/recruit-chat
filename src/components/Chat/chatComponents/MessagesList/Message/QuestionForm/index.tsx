@@ -56,7 +56,7 @@ export const QuestionForm: FC = () => {
           type={INPUT_TYPES.TEXT}
           value={email}
           onChange={onChangeEmail}
-          placeholder={"Email"}
+          placeholder={t("placeHolders:email")}
           error={!!emailError}
           helperText={emailError}
         />

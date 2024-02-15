@@ -324,8 +324,6 @@ export const ChatInput: FC<IChatInputProps> = ({
             employeeJobCategory,
             refLastName
           );
-          // TODO: remove userNameMess
-          // const userNameMess = getReferralQuestion(ReferralSteps.UserFirstName);
           _setMessages((prevMessages) => [resMess, ...prevMessages]);
 
           const trimmedEmployeeID = refEmployeeId.trim();
@@ -340,7 +338,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             localId: generateLocalId(),
             content: {
               subType: MessageType.TRY_AGAIN,
-              text: "Sorry, there was an error validating you. Please try again.",
+              text: t("errors:referral_validation"),
             },
             _id: generateLocalId(),
             onClickTryAgain: () => {
@@ -477,7 +475,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               _id: generateLocalId(),
               content: {
                 subType: MessageType.TEXT,
-                text: "Would you like to refer someone else?",
+                text: t("referral:refer_someone_else"),
               },
               optionList: {
                 type: MessageOptionTypes.Referral,
@@ -487,15 +485,15 @@ export const ChatInput: FC<IChatInputProps> = ({
                     id: 1,
                     itemId: 1,
                     isSelected: false,
-                    name: "Yes",
-                    text: "Yes",
+                    name: t("labels:yes"),
+                    text: t("labels:yes"),
                   },
                   {
                     id: 2,
                     itemId: 2,
                     isSelected: false,
-                    name: "No",
-                    text: "No",
+                    name: t("labels:no"),
+                    text: t("labels:no"),
                   },
                 ],
               },
@@ -516,7 +514,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               isOwn: false,
               content: {
                 subType: MessageType.TRY_AGAIN,
-                text: "Sorry, we were unable to submit that referral. Please try again.",
+                text: t("errors:submit_referral_error"),
               },
               onClickTryAgain: () => {
                 const tryAgain: ILocalMessage = {
@@ -682,7 +680,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       return t("placeHolders:default");
     }
     if (messages[0].content.text === t("messages:employeeId")) {
-      return "enter your employee ID";
+      return t("placeHolders:enter_employee_id");
     }
     return "";
   };

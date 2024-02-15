@@ -4,8 +4,12 @@ import { useTranslation } from "react-i18next";
 import parse from "html-react-parser";
 
 import * as S from "./styles";
-import { IJobOfferProps } from "./props";
+import { IRequisition } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
+
+interface IJobOfferProps {
+  jobOffer: IRequisition;
+}
 
 export const JobOffer: React.FC<IJobOfferProps> = ({ jobOffer }) => {
   const { t } = useTranslation();

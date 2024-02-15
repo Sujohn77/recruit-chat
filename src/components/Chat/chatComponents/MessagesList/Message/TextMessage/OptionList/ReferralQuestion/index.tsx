@@ -1,5 +1,6 @@
-import { FC, useCallback } from "react";
 import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
 import * as S from "../styles";
@@ -23,12 +24,13 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
 }) => {
   const { _setMessages, setCurrentMsgType, refLastName, employeeJobCategory } =
     useChatMessenger();
+  const { t } = useTranslation();
 
   const onSelectAnswer = useCallback(
     (answer: IMessageOption) => {
       if (isLastMess) {
-        switch (answer.text?.toLowerCase()) {
-          case "yes":
+        switch (answer.id) {
+          case 1:
             setSelectedReferralJobId(undefined);
             const mess: ILocalMessage = {
               localId: generateLocalId(),
@@ -36,14 +38,13 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               isOwn: true,
               content: {
                 subType: MessageType.TEXT,
-                text: "Yes", // TODO: add translation
+                text: t("labels:yes"),
               },
             };
             const newRefer = getValidationRefResponse(
               employeeJobCategory,
               refLastName
             );
-            // setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL_FRIEND);
             _setMessages((prev) => [
               newRefer,
               mess,
@@ -52,7 +53,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               ),
             ]);
             break;
-          case "no":
+          case 2:
             setSelectedReferralJobId(undefined);
             const answer: ILocalMessage = {
               _id: null,
@@ -60,7 +61,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               isOwn: false,
               content: {
                 subType: MessageType.TEXT,
-                text: "ok, thank you", // TODO: add translation
+                text: t("labels:ok"),
               },
             };
             const answer2: ILocalMessage = {
@@ -69,7 +70,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               isOwn: true,
               content: {
                 subType: MessageType.TEXT,
-                text: "No", // TODO: add translation
+                text: t("labels:no"),
               },
             };
             _setMessages((prev) => [

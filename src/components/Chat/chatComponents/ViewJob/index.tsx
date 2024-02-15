@@ -74,10 +74,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   useEffect(() => {
     if (viewJob?.id && +viewJob?.id === jobIdWithoutFlowId) {
       setShowApplyBtn(false);
-      setApplyJobError(
-        "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com"
-      );
-
+      setApplyJobError(t("errors:not_possible_to_start"));
       setTimeout(() => {
         hideErrorAndShowApplyBtn();
       }, 3000);
@@ -142,9 +139,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               isOwn: false,
               content: {
                 subType: MessageType.TEXT,
-                // TODO: add translation
-                // text: "Already registered themselves for this job",
-                text: "You have already expressed interest in this job",
+                text: t("errors:already_expressed"),
               },
             };
           } else if (response.data?.statusCode === 105) {
@@ -202,8 +197,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           } else {
             setShowApplyBtn(false);
             setApplyJobError(
-              res.data?.errors[0]?.trim() ||
-                "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com"
+              res.data?.errors[0]?.trim() || t("errors:not_possible_to_start")
             );
 
             if (res.data?.FlowID === 0) {
@@ -212,7 +206,9 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           }
 
           if (res.data?.statusCode === 105) {
-            setApplyJobError(res.data?.errors[0] || "Something went wrong...");
+            setApplyJobError(
+              res.data?.errors[0] || t("errors:something_went_wrong")
+            );
           }
         } catch (error) {
           error.message && setApplyJobError(error.message);
@@ -249,7 +245,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
                   <Loader showLoader absolutePosition={false} />
                 </S.LoaderWrapper>
               ) : (
-                "Apply"
+                t("labels:apply")
               )}
             </DarkButton>
           )}
@@ -282,19 +278,19 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       <S.ViewText>
         {viewJob.company && (
           <p>
-            <b>Company: </b>
+            <b>{t("labels:company")}</b>
             {viewJob.company}
           </p>
         )}
 
         {viewJob?.status && (
           <p>
-            <b>Status: </b>
+            <b>{t("labels:status")}</b>
             {viewJob.status}
           </p>
         )}
       </S.ViewText>
-      <S.TextTitle>Job description: </S.TextTitle>
+      <S.TextTitle>{t("labels:job_description")} </S.TextTitle>
       <S.ViewDescription>{parse(viewJob.description)}</S.ViewDescription>
 
       {showApplyBtn && (
@@ -307,7 +303,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               <Loader showLoader absolutePosition={false} />
             </S.LoaderWrapper>
           ) : (
-            "Apply"
+            t("labels:apply")
           )}
         </S.SubmitButton>
       )}

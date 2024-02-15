@@ -1,24 +1,26 @@
 import styled from "styled-components";
 import { COLORS } from "utils/colors";
 
-const animationDuration = "0.35s";
+const duration = "0.35s";
 
-export const Wrapper = styled.div`
-  background: ${COLORS.WHITE};
+interface IWrapperProps {
+  isOpened: boolean;
+}
+
+export const Wrapper = styled.div<IWrapperProps>`
   position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 1;
-  height: 0;
-
-  animation: ${({ isOpened }: { isOpened: boolean }) =>
-    isOpened
-      ? `open ${animationDuration} ease-in`
-      : `close ${animationDuration} ease-in`};
-  animation-fill-mode: forwards;
-  margin-left: auto;
   display: flex;
   flex-direction: column;
+  background: ${COLORS.WHITE};
+  border-radius: 10px;
+  overflow: hidden;
+  height: 0;
+  z-index: 1;
+
+  animation: ${({ isOpened }) =>
+    isOpened ? `open ${duration} ease-in` : `close ${duration} ease-in`};
+  animation-fill-mode: forwards;
+  margin-left: auto;
 
   @keyframes open {
     0% {
@@ -61,10 +63,6 @@ export const Wrapper = styled.div`
       width: 0;
     }
   }
-`;
-
-export const InputMessage = styled.span`
-  color: ${({ theme: { input } }) => input.color};
 `;
 
 export const Notification = styled.div`

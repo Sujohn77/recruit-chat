@@ -33,7 +33,7 @@ const defaultQuestions = [
 ];
 
 export const getReferralMessText = (referralCompanyName: string | null) =>
-  `Can I refer a friend to ${referralCompanyName} ?`;
+  i18n.t("questions:refer_friend", { referralCompanyName });
 
 export const getQuestions = (
   withReferralFlow: boolean,

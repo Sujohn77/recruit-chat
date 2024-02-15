@@ -9,6 +9,7 @@ import "firebase/auth";
 import { CHAT_ACTIONS } from "./types";
 import { searchAlertCategories } from "components/Chat/mockData";
 import { useChatMessenger } from "contexts/MessengerContext";
+import i18n from "services/localization";
 
 interface IUseTextField {
   lastActionType: CHAT_ACTIONS | null;
@@ -17,7 +18,6 @@ interface IUseTextField {
   requisitions: ISearchRequisition[];
 }
 
-// TODO: refactor/test
 export const useTextField = ({
   lastActionType,
   requisitions,
@@ -58,9 +58,7 @@ export const useTextField = ({
             : lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
             ? t("placeHolders:startTyping")
             : t("placeHolders:default"),
-        // TODO: add translation =)
-        subHeaderName:
-          "We have processed your resume and found the following jobs",
+        subHeaderName: i18n.t("messages:processed_your_resume"),
       };
     },
     []

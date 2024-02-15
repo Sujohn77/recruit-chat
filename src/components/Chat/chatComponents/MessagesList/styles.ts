@@ -11,10 +11,6 @@ export const infiniteScrollStyle: CSSProperties = {
   flexDirection: "column-reverse",
 };
 
-export const Wrapper = styled.div`
-  background: ${COLORS.WHITE};
-`;
-
 export const MessagesArea = styled.div`
   max-height: calc(100% - 120px);
   overflow: hidden;

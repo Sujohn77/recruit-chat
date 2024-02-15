@@ -219,12 +219,6 @@ const getChatActionMessages = (
           subType: MessageType.TEXT_WITH_CHOICE,
         },
       ];
-    case CHAT_ACTIONS.SET_WORK_PERMIT: {
-      return [
-        { subType: MessageType.SALARY_FORM },
-        { text: i18n.t("messages:desireSalary") },
-      ];
-    }
     case CHAT_ACTIONS.NO_PERMIT_WORK: {
       return [
         { subType: MessageType.REFINE_SEARCH },
@@ -282,8 +276,7 @@ const getChatActionMessages = (
       return [
         {
           subType: MessageType.TEXT,
-          // TODO: add translation
-          text: "We have processed your resume and found the following jobs",
+          text: i18n.t("messages:processed_your_resume"),
         },
         {
           subType: MessageType.UPLOADED_CV,
@@ -296,7 +289,7 @@ const getChatActionMessages = (
         ? [
             {
               subType: MessageType.TEXT,
-              text: "What is your friend's first name?",
+              text: i18n.t("referral:friend_first_name"),
             },
           ]
         : [

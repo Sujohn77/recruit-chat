@@ -17,7 +17,6 @@ import { TranscriptSent } from "./TranscriptSent";
 
 import { TextMessage } from "./TextMessage";
 import { InterestedIn } from "./InterestedIn";
-import { SalaryForm } from "./SalaryForm";
 import { ButtonMessage } from "./ButtonMessage";
 import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
@@ -84,9 +83,6 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.QUESTION_FORM: {
       return null;
       // return <QuestionForm />; // for phase 2
-    }
-    case MessageType.SALARY_FORM: {
-      return <SalaryForm message={message} />;
     }
     case MessageType.NO_MATCH:
     case MessageType.REFINE_SEARCH: {

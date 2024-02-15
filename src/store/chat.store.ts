@@ -8,6 +8,7 @@ import { generateLocalId } from "utils/helpers";
 import { IAskAQuestionResponse } from "services/types";
 import { getChatActionResponse } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import i18n from "services/localization";
 
 export interface IChatState {
   isLoading: boolean;
@@ -39,8 +40,7 @@ export const useChatStore = create<IChatState>((set, get) => ({
       isOwn: false,
       content: {
         subType: MessageType.TEXT,
-        // TODO: add translate
-        text: "Sorry, I don't have an answer to that question yet...",
+        text: i18n.t("messages:dont_have_answer"),
       },
       localId: generateLocalId(),
       _id: null,

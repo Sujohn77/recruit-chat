@@ -82,6 +82,7 @@ import { COLORS } from "utils/colors";
 import find from "lodash/find";
 import filter from "lodash/filter";
 import { getQuestions } from "components/ChatContent/data";
+import { useTranslation } from "react-i18next";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -183,6 +184,7 @@ const ChatProvider = ({
   clientApiToken,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
+  const { t } = useTranslation();
   // -------------------------------- State -------------------------------- //
 
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -839,8 +841,7 @@ const ChatProvider = ({
                   isOwn: false,
                   content: {
                     subType: MessageType.TEXT,
-                    // TODO: add translate
-                    text: "Sorry, I don't have an answer to that question yet...",
+                    text: t("messages:dont_have_answer"),
                   },
                   localId: generateLocalId(),
                   _id: generateLocalId(),
@@ -859,8 +860,7 @@ const ChatProvider = ({
                 isOwn: false,
                 content: {
                   subType: MessageType.TEXT,
-                  // TODO: add translate
-                  text: "Sorry, I don't have an answer to that question yet...",
+                  text: t("messages:dont_have_answer"),
                 },
                 localId: generateLocalId(),
                 _id: generateLocalId(),

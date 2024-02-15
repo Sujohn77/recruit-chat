@@ -43,19 +43,19 @@ export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
       <S.ViewText>
         {viewJob.company && (
           <p>
-            <b>Company: </b>
+            <b>{t("labels:company")}</b>
             {viewJob.company}
           </p>
         )}
 
         {viewJob?.status && (
           <p>
-            <b>Status: </b>
+            <b>{t("labels:status")} </b>
             {viewJob.status}
           </p>
         )}
       </S.ViewText>
-      <S.TextTitle>Job description: </S.TextTitle>
+      <S.TextTitle>{t("labels:job_description")} </S.TextTitle>
       <S.ViewDescription>{parse(viewJob.description)}</S.ViewDescription>
     </S.ViewBody>
   );
