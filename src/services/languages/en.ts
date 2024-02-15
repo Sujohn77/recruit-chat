@@ -23,12 +23,22 @@ export const en = {
     alert_category: "Reply to choose category...",
     startTyping: "Start typing to select a job title...",
     selectOption: "Please select one of the options",
+    enter_employee_id: "enter your employee ID",
   },
   labels: {
     required: "Required",
     email_invalid: "Email is invalid",
     max_length: "File may be no larger than 2MB",
     email_or_phone_invalid: "Email or phone is invalid",
+    yes: "Yes",
+    cancel: "Cancel",
+    no: "No",
+    ok: "ok, thank you",
+    company: "Company: ",
+    status: "Status: ",
+    job_description: "Job description: ",
+    apply: "Apply",
+    drop_here: "drop here",
   },
   languages: {
     en: "English",
@@ -100,6 +110,10 @@ export const en = {
     employeeId:
       "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
     try_again: "Try again",
+    logout: "Do you really want to finish the session?",
+    processed_your_resume:
+      "We have processed your resume and found the following jobs",
+    dont_have_answer: "Sorry, I don't have an answer to that question yet",
   },
   chat_item_description: {
     lookingFor: "Hi! Are you looking for a job",
@@ -133,10 +147,44 @@ export const en = {
     flexible_work: "Does GMS offer flexible work schedules?",
     part_time: "Do you offer part-time positions?",
     recruitment_process: "What’s the recruitment process?",
+    refer_friend: "Can I refer a friend to {{referralCompanyName}} ?",
   },
   errors: {
     not_match: "Email addresses do not match",
     invalid_phone_number: "Phone number is invalid",
+    not_possible_to_start:
+      "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com",
+    already_expressed: "You have already expressed interest in this job",
+    something_went_wrong: "Something went wrong...",
+    referral_validation:
+      "Sorry, there was an error validating you. Please try again.",
+    submit_referral_error:
+      "Sorry, we were unable to submit that referral. Please try again",
+  },
+  referral: {
+    job_in_my_area: "Jobs in my area",
+    jobs: "{{title}} jobs",
+    any_job: "Any job",
+    general_referral: "General Referral",
+    friend_first_name: "What is your friend's first name?",
+    refer_someone_else: "Would you like to refer someone else?",
+    referral_options: `Hi {{userLastName}}, thanks for validating!
+          
+    \nTo refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
+    lastname: "What is your last name?",
+    birth: "What is your year of birth?",
+    thanks:
+      "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
+    friend_firstname: "What is your friend's first name?",
+    friend_lastname: "What is your friend's last name?",
+    friend_email: "What is your friend's  email address?",
+    confirm_email: "Please confirm your friend's email address",
+    friend_mobile_number: "What is your friend's mobile number?",
+    thanks_you: "Thank you for your referral",
+    previously_referred:
+      "You have previously referred {{refFirstName}} {{refLastName}} to this job",
+    previously_referred_to_company:
+      "You have previously referred {{refFirstName}} {{refLastName}} to {{refCompanyName}}",
   },
 };
 
