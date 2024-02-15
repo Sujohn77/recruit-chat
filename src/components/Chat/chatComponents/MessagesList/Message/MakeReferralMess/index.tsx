@@ -25,13 +25,14 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     refLastName,
     employeeId,
     employeeJobCategory,
+    employeeFullName,
   } = useChatMessenger();
 
   const onMakeReferral = () => {
     if (employeeId) {
       const resMess = getValidationRefResponse(
         employeeJobCategory,
-        refLastName
+        employeeFullName || refLastName
       );
       _setMessages((prevMessages) => [resMess, ...prevMessages]);
     } else {

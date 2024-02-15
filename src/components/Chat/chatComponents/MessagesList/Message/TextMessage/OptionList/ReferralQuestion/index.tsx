@@ -22,8 +22,13 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { _setMessages, setCurrentMsgType, refLastName, employeeJobCategory } =
-    useChatMessenger();
+  const {
+    _setMessages,
+    setCurrentMsgType,
+    refLastName,
+    employeeJobCategory,
+    employeeFullName,
+  } = useChatMessenger();
   const { t } = useTranslation();
 
   const onSelectAnswer = useCallback(
@@ -43,7 +48,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
             };
             const newRefer = getValidationRefResponse(
               employeeJobCategory,
-              refLastName
+              employeeFullName || refLastName
             );
             _setMessages((prev) => [
               newRefer,
