@@ -1,5 +1,9 @@
 import { DocumentChangeType } from "@firebase/firestore-types";
-import { IUserLoginDataKeys, MessageOptionTypes } from "utils/constants";
+import {
+  IUserLoginDataKeys,
+  MessageOptionTypes,
+  MessageStatuses,
+} from "utils/constants";
 import { IRequisition, MessageType } from "utils/types";
 
 export type DateType = { seconds: number } | string;
@@ -140,6 +144,8 @@ export interface IMessageOptions {
   isActive: boolean;
   options: IMessageOption[];
   type?: MessageOptionTypes;
+  status?: MessageStatuses;
+  text?: string;
 }
 
 export interface IMessage extends I_id, IMessageContent {

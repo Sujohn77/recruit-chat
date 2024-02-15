@@ -91,17 +91,23 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
   );
 
   return (
-    <S.List>
-      {map(message.optionList?.options, (option) => (
-        <S.Option
-          key={`${option.id}-${option.text}-${option.name}`}
-          onClick={() => onSelectAnswer(option)}
-          isActive={isLastMess}
-          disabled={!isLastMess}
-        >
-          <S.OptionText>{option.text}</S.OptionText>
-        </S.Option>
-      ))}
-    </S.List>
+    <>
+      {message.optionList?.text && (
+        <S.MessageText>{message.optionList?.text}</S.MessageText>
+      )}
+
+      <S.List>
+        {map(message.optionList?.options, (option) => (
+          <S.Option
+            key={`${option.id}-${option.text}-${option.name}`}
+            onClick={() => onSelectAnswer(option)}
+            isActive={isLastMess}
+            disabled={!isLastMess}
+          >
+            <S.OptionText>{option.text}</S.OptionText>
+          </S.Option>
+        ))}
+      </S.List>
+    </>
   );
 };

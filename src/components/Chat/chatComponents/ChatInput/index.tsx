@@ -17,7 +17,12 @@ import uniqBy from "lodash/uniqBy";
 import "../../../../services/firebase/config";
 import * as S from "./styles";
 import { ICONS } from "assets";
-import { MessageOptionTypes, Status, TextFieldTypes } from "utils/constants";
+import {
+  MessageOptionTypes,
+  MessageStatuses,
+  Status,
+  TextFieldTypes,
+} from "utils/constants";
 import {
   generateLocalId,
   getAccessWriteType,
@@ -457,31 +462,28 @@ export const ChatInput: FC<IChatInputProps> = ({
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
             setSelectedReferralJobId(undefined);
-            const submitResponse: ILocalMessage = {
-              _id: null,
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: getReferralResponseMess(
-                  previouslyReferredState,
-                  firstName,
-                  lastName,
-                  referralCompanyName
-                ),
-              },
-              localId: generateLocalId(),
-            };
             const question: ILocalMessage = {
               isOwn: false,
               localId: generateLocalId(),
               _id: generateLocalId(),
               content: {
                 subType: MessageType.TEXT,
-                text: t("referral:refer_someone_else"),
+                text: `${getReferralResponseMess(
+                  previouslyReferredState,
+                  firstName,
+                  lastName,
+                  referralCompanyName
+                )}  \n  
+                  ${t("referral:refer_someone_else")}
+                `,
               },
               optionList: {
                 type: MessageOptionTypes.Referral,
                 isActive: true,
+                status:
+                  MessageStatuses[
+                    previouslyReferredState === 0 ? "ok" : "warning"
+                  ],
                 options: [
                   {
                     id: 1,
@@ -500,11 +502,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                 ],
               },
             };
-            _setMessages((prevMessages) => [
-              question,
-              submitResponse,
-              ...prevMessages,
-            ]);
+            _setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
             setReferralStep(ReferralSteps.UserFirstName);
             setPhone("");

@@ -432,3 +432,9 @@ export enum MessageOptionTypes {
   Referral = "referral",
   AvailableJobs = "available_job",
 }
+
+export enum MessageStatuses {
+  ok = "ok",
+  warning = "warning",
+  error = "error",
+}

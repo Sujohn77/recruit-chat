@@ -15,7 +15,12 @@ interface IMessageContentProps {
   isOwn?: boolean;
 }
 
-export const MessageBox = styled.div<IMessageProps>`
+interface IMessageBoxProps extends IMessageProps {
+  border?: string | null;
+  isWarningMess?: boolean;
+}
+
+export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
   min-height: 41px;
@@ -31,11 +36,17 @@ export const MessageBox = styled.div<IMessageProps>`
       : message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ isOwn, theme }) =>
-    isOwn ? theme.primaryColor : theme.message.chat.backgroundColor};
+  margin-bottom: 24px;
+  background: ${({ isOwn, theme, backgroundColor: backColor }) =>
+    backColor || isOwn
+      ? theme.primaryColor
+      : theme.message.chat.backgroundColor};
 
-  ${({ isOwn = false, theme }) => `
-        margin-bottom: 24px;
+  ${({ border }) => border && `border: ${border};`}
+
+  ${({ isOwn = false, theme, backgroundColor: backColor, isWarningMess }) =>
+    !isWarningMess &&
+    `
         &:after {
             content: '';
             width: 0; 
@@ -45,7 +56,9 @@ export const MessageBox = styled.div<IMessageProps>`
             border-style: solid;
             border-width: 20px 20px 0 0;
             border-color: ${
-              isOwn ? theme.primaryColor : theme.message.chat.backgroundColor
+              backColor || isOwn
+                ? theme.primaryColor
+                : theme.message.chat.backgroundColor
             } transparent transparent transparent;
             position: absolute;
             bottom: -12px;
@@ -69,7 +82,6 @@ export const Cancel = styled.div<ICancelProps>`
 
 export const MessageButton = styled.div<IMessageProps>`
   position: relative;
-  border-radius: 10px;
   min-height: 41px;
   font-size: 14px;
   line-height: 17px;
