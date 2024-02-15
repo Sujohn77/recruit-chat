@@ -71,8 +71,6 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             }
             break;
           case 2:
-            searchRequisitions(employeeJobCategory, undefined);
-
             withJobs = await searchRequisitions(employeeJobCategory, undefined);
             if (withJobs) {
               const messWithJobs: ILocalMessage = {
