@@ -116,6 +116,8 @@ export interface IChatMessengerContext {
     searchLocation?: string,
     searchCountry?: string
   ) => Promise<null | boolean>;
+  employeeFullName: string;
+  setEmployeeFullName: (name: string) => void;
 }
 
 export interface IFileUploadContext {

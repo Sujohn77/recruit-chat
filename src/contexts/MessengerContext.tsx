@@ -168,6 +168,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmployeeJobCategory: () => {},
   setEmployeeLocation: () => {},
   searchRequisitions: () => Promise.resolve(null),
+  employeeFullName: "",
+  setEmployeeFullName: (name) => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -254,6 +256,7 @@ const ChatProvider = ({
   // ----------------------------- referral state ----------------------------------------------- //
   const [employeeId, setEmployeeId] = useState<number | undefined>(undefined);
   const [refLastName, setRefLastName] = useState("");
+  const [employeeFullName, setEmployeeFullName] = useState("");
   const [refBirth, setRefBirth] = useState("");
   const [refURL] = useState(chatBotRefBaseURL);
 
@@ -1225,6 +1228,8 @@ const ChatProvider = ({
     employeeLocation,
     setEmployeeLocation,
     searchRequisitions,
+    employeeFullName,
+    setEmployeeFullName,
   };
 
   // console.log(

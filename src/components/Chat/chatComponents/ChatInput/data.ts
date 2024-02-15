@@ -133,13 +133,13 @@ export const getReferralResponseMess = (
 
 export const getValidationRefResponse = (
   searchCategory: string,
-  userLastName: string
+  fullName: string
 ): ILocalMessage => ({
   isOwn: false,
   localId: generateLocalId(),
   content: {
     subType: MessageType.TEXT,
-    text: i18n.t("referral:referral_options", { userLastName: userLastName }),
+    text: i18n.t("referral:referral_options", { userLastName: fullName }),
   },
   _id: generateLocalId(),
   optionList: {

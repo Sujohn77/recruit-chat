@@ -30,6 +30,7 @@ export const useValidateReferral = () => {
     setCandidateId,
     setEmployeeJobCategory,
     setEmployeeLocation,
+    setEmployeeFullName,
   } = useChatMessenger();
 
   return useCallback(
@@ -61,6 +62,8 @@ export const useValidateReferral = () => {
               setEmployeeLocation(res.data.employeeLocation);
             res.data.employeeJobCategory &&
               setEmployeeJobCategory(res.data.employeeJobCategory);
+            res.data.employeeFullName &&
+              setEmployeeFullName(res.data.employeeFullName);
           }
 
           if (

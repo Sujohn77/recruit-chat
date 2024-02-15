@@ -608,6 +608,7 @@ export interface IValidateRefResponse extends ISuccessResponse {
   employeeJobCategory: string;
   employeeLocation: string;
   updateChatBotCandidateId: boolean;
+  employeeFullName: string;
 }
 
 export interface ICreateAndSendPayload {
