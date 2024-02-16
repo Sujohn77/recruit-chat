@@ -50,6 +50,7 @@ import {
   getReferralResponseMess,
   getValidationRefResponse,
 } from "./data";
+import { COLORS } from "utils/colors";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -501,6 +502,10 @@ export const ChatInput: FC<IChatInputProps> = ({
                   },
                 ],
               },
+              background:
+                previouslyReferredState === 0
+                  ? COLORS.CORNFLOWER_BLUE
+                  : undefined,
             };
             _setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);

@@ -77,6 +77,7 @@ export interface ILocalMessage {
   optionList?: null | IMessageOptions;
   chatItemId?: number;
   onClickTryAgain?: (message?: ILocalMessage) => void;
+  background?: string;
 }
 
 export enum ButtonsOptions {
