@@ -97,14 +97,12 @@ export const ChatInput: FC<IChatInputProps> = ({
     setRefLastName,
     refLastName,
     employeeJobCategory,
-    employeeFullName,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
 
   // ---------------------- State --------------------- //
   const formattedLocations = getFormattedLocations(locations);
-  // TODO: посмотреть как было placeHolder
   const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
     locations: formattedLocations,
     requisitions,
