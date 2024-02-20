@@ -463,6 +463,8 @@ export const ChatInput: FC<IChatInputProps> = ({
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
             setSelectedReferralJobId(undefined);
+            const isOk = previouslyReferredState === 0;
+
             const question: ILocalMessage = {
               isOwn: false,
               localId: generateLocalId(),
@@ -481,10 +483,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               optionList: {
                 type: MessageOptionTypes.Referral,
                 isActive: true,
-                status:
-                  MessageStatuses[
-                    previouslyReferredState === 0 ? "ok" : "warning"
-                  ],
+                status: MessageStatuses[isOk ? "ok" : "warning"],
                 options: [
                   {
                     id: 1,
@@ -502,10 +501,8 @@ export const ChatInput: FC<IChatInputProps> = ({
                   },
                 ],
               },
-              background:
-                previouslyReferredState === 0
-                  ? COLORS.CORNFLOWER_BLUE
-                  : undefined,
+              background: isOk ? COLORS.HAWKES_BLUE : undefined,
+              border: `1px solid ${COLORS[isOk ? "ONAHAU" : "BEAUTY_BUSH"]}`,
             };
             _setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
@@ -581,12 +578,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setRefError("");
 
     if (error) {
-      if (currentMsgType === CHAT_ACTIONS.APPLY_AGE && error) {
-        const age = Number(value);
-        if (age < 15 || age > 80) {
-          setError(null);
-        }
-      } else if (currentMsgType === CHAT_ACTIONS.GET_USER_NAME) {
+      if (currentMsgType === CHAT_ACTIONS.GET_USER_NAME) {
         const isPhone = currentMsgType === CHAT_ACTIONS.GET_USER_NAME;
         const isError = isPhone
           ? validateEmailOrPhone(value)
@@ -687,7 +679,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (messages[0].content.text === t("messages:employeeId")) {
       return t("placeHolders:enter_employee_id");
     }
-    return "";
+    return placeHolder || t("placeHolders:bot_typing");
   };
 
   const inputProps = {

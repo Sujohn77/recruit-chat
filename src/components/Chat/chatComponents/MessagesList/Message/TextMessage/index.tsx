@@ -77,9 +77,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
     <S.MessageBox
       {...messageProps}
       isWarningMess={isWarningMess || !!message.background}
-      border={isWarningMess ? `1px solid ${COLORS.BEAUTY_BUSH}` : null}
       style={{
         background: message.background || backgroundColor,
+        border: message.border,
       }}
     >
       <S.MessageContent

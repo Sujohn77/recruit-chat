@@ -64,7 +64,10 @@ export const UploadCV: FC<IUploadCVProps> = ({
         <S.Text>{t("messages:uploadCV")}</S.Text>
 
         <S.Text>or</S.Text>
-        <S.Button htmlFor={isLastMessage ? resumeElementId : ""}>
+        <S.Button
+          onClick={onHandleUpload}
+          htmlFor={isLastMessage ? resumeElementId : ""}
+        >
           {t("buttons:browse")}
         </S.Button>
 

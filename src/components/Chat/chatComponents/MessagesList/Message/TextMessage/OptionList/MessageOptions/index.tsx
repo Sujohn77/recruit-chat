@@ -37,14 +37,14 @@ export const MessageOptions: FC<IOptionListProps> = ({
   return (
     <S.OptionList>
       {message.optionList?.options.map((option) => (
-        <S.Option
+        <S.MessageOption
           key={option.id}
           isActive={isLastMess}
           disabled={!isLastMess}
           onClick={() => onSelectOption(option)}
         >
           <S.Text>{option.text}</S.Text>
-        </S.Option>
+        </S.MessageOption>
       ))}
     </S.OptionList>
   );

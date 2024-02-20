@@ -210,39 +210,10 @@ const getChatActionMessages = (
       return [{ text: i18n.t("messages:whatJobTitle") }];
     case CHAT_ACTIONS.APPLY_NAME:
       return [{ text: i18n.t("messages:provideEmail") }];
-    case CHAT_ACTIONS.APPLY_EMAIL:
-      return [{ text: i18n.t("messages:provideAge") }];
-    case CHAT_ACTIONS.APPLY_AGE:
-      return [
-        {
-          text: i18n.t("messages:permitWork"),
-          subType: MessageType.TEXT_WITH_CHOICE,
-        },
-      ];
     case CHAT_ACTIONS.NO_PERMIT_WORK: {
       return [
         { subType: MessageType.REFINE_SEARCH },
         { text: i18n.t("messages:noPermitWork") },
-      ];
-    }
-    case CHAT_ACTIONS.SET_SALARY: {
-      return [
-        {
-          text: i18n.t("messages:ethnicHispanic"),
-          subType: MessageType.BUTTON,
-          isOwn: true,
-        },
-        {
-          text: i18n.t("messages:ethnicWhite"),
-          subType: MessageType.BUTTON,
-          isOwn: true,
-        },
-        {
-          text: i18n.t("messages:wishNotSay"),
-          subType: MessageType.BUTTON,
-          isOwn: true,
-        },
-        { text: i18n.t("messages:ethnic") },
       ];
     }
     case CHAT_ACTIONS.HELP: {

@@ -78,6 +78,7 @@ export interface ILocalMessage {
   chatItemId?: number;
   onClickTryAgain?: (message?: ILocalMessage) => void;
   background?: string;
+  border?: string;
 }
 
 export enum ButtonsOptions {
@@ -120,10 +121,7 @@ export enum CHAT_ACTIONS {
   SET_WORK_PERMIT = "SET_WORK_PERMIT",
   APPLY_NAME = "apply_name",
   APPLY_EMAIL = "apply_email",
-  APPLY_AGE = "apply_age",
   APPLY_PERMIT = "apply_permit",
-  APPLY_ETHNIC = "apply_ethnic",
-  SET_SALARY = "set_salary",
   NO_PERMIT_WORK = "no_permit_work",
   HELP = "help",
   QUESTION_RESPONSE = "question_response",

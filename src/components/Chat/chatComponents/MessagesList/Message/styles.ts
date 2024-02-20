@@ -46,26 +46,24 @@ export const MessageBox = styled.div<IMessageBoxProps>`
 
   ${({ isOwn = false, theme, backgroundColor: backColor, isWarningMess }) =>
     !isWarningMess &&
-    `
-        &:after {
-            content: '';
-            width: 0; 
-            height: 0; 
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 20px 20px 0 0;
-            border-color: ${
-              backColor || isOwn
-                ? theme.primaryColor
-                : theme.message.chat.backgroundColor
-            } transparent transparent transparent;
-            position: absolute;
-            bottom: -12px;
-            transform:  ${isOwn && "matrix(-1, 0, 0, 1, 0, 0)"} ;
-            left:  ${isOwn ? "calc(100% - 20px)" : "0"} ;
-        }   
-    `};
+    `&:after {
+      content: '';
+      width: 0; 
+      height: 0; 
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 20px 20px 0 0;
+      border-color: ${
+        backColor || isOwn
+          ? theme.primaryColor
+          : theme.message.chat.backgroundColor
+      } transparent transparent transparent;
+      position: absolute;
+      bottom: -12px;
+      transform:  ${isOwn && "matrix(-1, 0, 0, 1, 0, 0)"} ;
+      left:  ${isOwn ? "calc(100% - 20px)" : "0"} ;
+    }`};
 `;
 
 export const Cancel = styled.div<ICancelProps>`

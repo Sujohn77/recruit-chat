@@ -37,6 +37,8 @@ export const COLORS = {
   BEAUTY_BUSH: "#efc8c7",
   PIPPIN: "#ffe7e7",
   VIVID_TANGERINE: "#ff8583",
+  HAWKES_BLUE: "#f0f6fe",
+  ONAHAU: "#c8e8ff",
 };
 
 // a way to sort COLORS object keys alphabetically

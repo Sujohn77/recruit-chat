@@ -28,7 +28,7 @@ export const en = {
   labels: {
     required: "Required",
     email_invalid: "Email is invalid",
-    max_length: "File may be no larger than 2MB",
+    max_length: "File size must not exceed 2MB",
     email_or_phone_invalid: "Email or phone is invalid",
     yes: "Yes",
     cancel: "Cancel",
@@ -55,7 +55,7 @@ export const en = {
       "What's your preferred job title? We'll try finding similar jobs.",
     botMessageYou:
       "Where do you want to work? This can be your current location or a list of preferred locations.",
-    whatCategoryJob: "What's your preferred job category title?",
+    whatCategoryJob: "What's your preferred job category?",
     setJobAlert: "Set Job Alert",
     interestedCategories:
       "Which of our job categories are you interested in? \n \n ⁠You can select a single category or multiple.",
@@ -64,9 +64,9 @@ export const en = {
     weekly: "Weekly",
     daily: "Daily",
     alertEmail:
-      "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities",
+      "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities.",
     emailAlreadyProvided:
-      "You've successfully subscribed to job alerts using the email address that you've already provided",
+      "You've successfully subscribed to job alerts using the email address that you already provided",
     successSubscribed: "You've successfully subscribed to job alerts.",
     thanks: "Thanks!",
     contactLater: "We will only contact you for potential job opportunities.",
@@ -77,31 +77,27 @@ export const en = {
     fewQuestions:
       "We have a few questions about your background and experience to get your application started.",
     jobRecommendations:
-      "Thanks Here are your job recommendations based on the information you provided.",
-    notFoundJob: "Didn’t find the right job? \n \n Here’s what you can do",
+      "Thanks. Here are your job recommendations based on the information you provided.",
+    notFoundJob: "Didn’t find the right job? \n \n Here’s what you can do:",
     applyThanks: "Thanks for applying for this position",
     provideName: "Please provide your name",
     provideEmail: "Please provide your email",
-    provideAge: "Please provide your age",
-    permitWork: "Are you allowed to work in US?",
     yes: "Yes",
     no: "No",
-    desireSalary: "Great, what sort of salary are you looking for?",
-    ethnic: "What’s your ethnic background?",
     wishNotSay: "Do not wish to say",
     ethnicWhite: "White",
     ethnicHispanic: "Hispanic",
     noPermitWork:
-      "Sorry, you can not apply for this position, since your don’t have work permit",
+      "Sorry, you cannot apply for this position, since you do not have the required work permit",
     changeLang: "You changed the \n  language to {{lang}}",
     howMuchExperience: "How much work experience do I need for your company?",
     howSubmitCV: "Can I submit my CV",
     whatHiring: "What is the hiring process?",
     popularQuestions:
       "OK! Here are a few popular questions to help you get started.",
-    emailAnswer: "Thanks! We will send you an answer on email",
+    emailAnswer: "Thanks! We will send you an answer via email.",
     noMatchMessage:
-      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take.",
+      "Sorry, we couldn't find a match for personal job recommendations. Below are the actions that you can take next.",
     wantContinue: "Do you want to continue?",
     submitFile:
       "Your resume has been attached.\n You can click the X to remove it and re-upload another one or click below to upload and search for jobs",
@@ -116,16 +112,16 @@ export const en = {
     dont_have_answer: "Sorry, I don't have an answer to that question yet",
   },
   chat_item_description: {
-    lookingFor: "Hi! Are you looking for a job",
+    lookingFor: "Hi! Are you looking for a job?",
     title: "Career bot",
     view_job_title: "View job",
-    no_match: "Sorry, No match yet",
+    no_match: "Sorry, no match yet",
     enter_email_title: "Please enter your email and we will send you an email",
     transcript_sent: "Your transcript has been sent to your email",
     categories_title: "Select or Type a Job Title",
     locations_title: "Searched location",
     all_categories: "All Categories",
-    hiring_help_title: "Check out our help section to learn more .",
+    hiring_help_title: "Check out our help section to learn more",
     hiring_help_text: "Help",
     hiring_helpful_text: "Has this reply has been helpful?",
     interested_in: "I’m interested",

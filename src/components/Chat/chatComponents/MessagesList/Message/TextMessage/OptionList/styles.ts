@@ -14,6 +14,7 @@ export const OptionList = styled.div`
   justify-content: center;
   flex-direction: column;
   margin-top: 10px;
+  width: 100%;
 `;
 
 export const Text = styled.span``;
@@ -43,6 +44,10 @@ export const Option = styled(Button)<IOptionProps>`
   text-transform: initial !important;
   opacity: ${({ isActive }) => (isActive ? 1 : 0.7)};
   width: 45%;
+`;
+
+export const MessageOption = styled(Option)`
+  width: 100%;
 `;
 
 export const OptionText = styled.span``;
