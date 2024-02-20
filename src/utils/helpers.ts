@@ -1,13 +1,19 @@
 import { profile } from "contexts/mockData";
 import { IUser } from "contexts/types";
+import { CSSProperties } from "react";
+import { Buffer } from "buffer";
 import moment from "moment";
 import randomString from "random-string";
 import capitalize from "lodash/capitalize";
+import findIndex from "lodash/findIndex";
 import unionBy from "lodash/unionBy";
+import sortBy from "lodash/sortBy";
 import filter from "lodash/filter";
+import remove from "lodash/remove";
+import some from "lodash/some";
 import find from "lodash/find";
 import map from "lodash/map";
-import { Buffer } from "buffer";
+import libPhoneNumber from "google-libphonenumber";
 
 import {
   MessageType,
@@ -22,6 +28,7 @@ import {
   ISnapshot,
   IParsedTheme,
   IApiThemeResponse,
+  IPopMessage,
 } from "./types";
 import { COLORS } from "./colors";
 import {
@@ -44,16 +51,8 @@ import {
   SnapshotType,
 } from "services/types";
 import i18n from "services/localization";
-import sortBy from "lodash/sortBy";
-import findIndex from "lodash/findIndex";
-import remove from "lodash/remove";
 
 window.Buffer = Buffer;
-
-interface IIsMatches {
-  item: string;
-  compareItem: string;
-}
 
 interface IGetMatchedItems {
   message: string | null;
@@ -69,10 +68,11 @@ interface IIsResultType {
 }
 
 export interface IMessageProps {
-  backColor?: string;
+  backgroundColor?: string;
   isOwn?: boolean;
   padding?: string;
   cursor?: string;
+  flexDirection?: CSSProperties["flexDirection"];
 }
 
 interface IUserContact {
@@ -90,22 +90,12 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 
   if (!msg.isOwn) {
     return {
-      // color: COLORS.DUSTY_GRAY,
-      backColor: COLORS.ALTO,
       isOwn: !!msg.isOwn,
       padding,
       cursor,
     };
   } else {
     return {
-      // color:
-      //   msg?.content.subType === MessageType.BUTTON
-      //     ? COLORS.TUNDORA
-      //     : COLORS.WHITE,
-      backColor:
-        msg?.content.subType === MessageType.BUTTON
-          ? COLORS.ALTO
-          : COLORS.BOULDER,
       padding,
       isOwn: !!msg.isOwn,
       cursor,
@@ -113,14 +103,14 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   }
 };
 
-export const getActionTypeByOption = (option: ButtonsOptions) => {
-  switch (option.toLowerCase()) {
-    case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
-      return CHAT_ACTIONS.UPLOAD_CV;
-    }
+export const getActionTypeByOption = (option: ButtonsOptions | null) => {
+  switch (option?.toLowerCase()) {
     // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
     //   return CHAT_ACTIONS.HIRING_PROCESS;
     // }
+    case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
+      return CHAT_ACTIONS.UPLOAD_CV;
+    }
     case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
@@ -129,7 +119,8 @@ export const getActionTypeByOption = (option: ButtonsOptions) => {
     }
     case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
-
+    case ButtonsOptions.MAKE_REFERRAL.toLowerCase():
+      return CHAT_ACTIONS.MAKE_REFERRAL;
     default: {
       return null;
     }
@@ -191,7 +182,8 @@ export const getLocalMessage = (
 
   return {
     chatItemId: chatBotMessage?.chatItemId || -1,
-    localId: requestMessage?.localId || chatBotMessage?.localId,
+    localId:
+      requestMessage?.localId || chatBotMessage?.localId || generateLocalId(),
     content: {
       typeId: MessageTypeId.text,
       subTypeId: null,
@@ -244,16 +236,6 @@ export const validateEmailOrPhone = (value: string) => {
   return "";
 };
 
-const isMatches = ({ item, compareItem }: IIsMatches) => {
-  const compareWord = compareItem.toLowerCase();
-  const searchItem = item.toLowerCase();
-
-  return (
-    searchItem.slice(0, compareWord.length) === compareWord &&
-    searchItem.includes(compareItem)
-  );
-};
-
 export const getMatchedItems = ({
   message,
   searchItems,
@@ -261,34 +243,52 @@ export const getMatchedItems = ({
   alertCategories,
 }: IGetMatchedItems) => {
   const compareItem = message?.toLowerCase() || "";
-  const matchedPositions = filter(searchItems, (item) =>
-    isMatches({ item, compareItem })
-  );
+  const compareWord = compareItem.toLowerCase();
+  const matchedPositions = filter(searchItems, (item) => {
+    const searchItem = item.toLowerCase();
+
+    const isMatch = some(
+      searchItem.split(" "),
+      (word) => word.slice(0, compareWord.length) === compareWord
+    );
+
+    return isMatch && searchItem.includes(compareItem);
+  });
 
   const matchedPart =
     matchedPositions.length && message?.length
-      ? matchedPositions[0].slice(0, message.length)
+      ? compareItem[0].toUpperCase() + compareItem.slice(1, compareItem.length)
       : "";
 
-  let matchedItems = map(
-    filter(matchedPositions, (p) => {
-      return !searchLocations.includes(p);
-    }),
-    (item) => item.slice(message?.length, item.length)
+  // matched items without search substring
+  const matchedItemsWithoutSearchString = map(
+    filter(matchedPositions, (p) =>
+      alertCategories?.length
+        ? !alertCategories.includes(p)
+        : !searchLocations.includes(p)
+    ),
+    (item) => {
+      const words = item.split(" ");
+      const index = words.findIndex(
+        (word) => word.slice(0, compareWord.length) === compareWord
+      );
+
+      if (index !== -1) {
+        return words
+          .map((w, i) =>
+            index === i ? w.slice(message?.length, item.length) : w
+          )
+          .join(" ");
+      } else {
+        return item.slice(message?.length, item.length);
+      }
+    }
   );
 
-  if (alertCategories?.length) {
-    matchedItems = map(
-      filter(matchedPositions, (p) => {
-        return !alertCategories.includes(p);
-      }),
-      (item) => item.slice(message?.length, item.length)
-    );
-  }
-
   return {
-    matchedItems,
+    matchedItems: matchedPositions,
     matchedPart,
+    matchedItemsWithoutSearchString,
   };
 };
 
@@ -329,7 +329,7 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
       dateCreated: msg.dateCreated,
       content,
       isOwn: msg.sender.id === profile.id,
-      localId: msg?.localId,
+      localId: msg.localId,
       _id: msg.chatItemId,
     };
   });
@@ -344,6 +344,7 @@ export const getMessagesOnAction = ({
   action,
   messages,
   responseMessages,
+  isReferralEnabled,
 }: IGetUpdatedMessages) => {
   const { type } = action;
   let updatedMessages = messages;
@@ -356,7 +357,7 @@ export const getMessagesOnAction = ({
     updatedMessages = popMessage({
       type: getReplaceMessageType(type),
       messages: !updatedMessages.length
-        ? [...updatedMessages, ...initialMessages]
+        ? [...updatedMessages, ...initialMessages(isReferralEnabled)]
         : updatedMessages,
     });
   }
@@ -370,17 +371,21 @@ export const getMessagesOnAction = ({
   return [...responseMessages, ...updatedMessages];
 };
 
-const initialMessages = getParsedMessages([
-  {
-    text: i18n.t("messages:initialMessage"),
-    isChatMessage: true,
-  },
-]);
+const initialMessages = (isReferralEnabled: boolean) =>
+  getParsedMessages([
+    {
+      text: i18n.t(
+        `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
+      ),
+      isChatMessage: true,
+    },
+  ]);
 
 export const pushMessage = ({
   action,
   messages,
   setMessages,
+  isReferralEnabled,
 }: IPushMessage) => {
   const { type, payload } = action;
   const text = payload?.item
@@ -398,43 +403,26 @@ export const pushMessage = ({
 
   const updatedMessages = popMessage({
     type: getReplaceMessageType(type),
-    messages: !messages.length ? [...messages, ...initialMessages] : messages,
+    messages: !messages.length
+      ? [...messages, ...initialMessages(isReferralEnabled)]
+      : messages,
   });
 
-  if (message?.content.subType !== MessageType.TEXT || !!text)
+  if (message?.content.subType !== MessageType.TEXT || !!text) {
     setMessages([message, ...updatedMessages]);
-
-  if (message?.content.text) {
-    // Push initial message
-    // TODO: uncomment when backend is ready
-    // const isInitialMessage = !messages.length;
-    // const serverMessage = {
-    //     ...defaultServerMessage,
-    //     msg: isInitialMessage ? initialMessages[0].content.text : message.content.text,
-    //     // subType: isInitialMessage ? initialMessages[0].content.subType : message.content.subType,
-    //     // msg: initialMessages[0].content.text || '',
-    //     localId: `${initialMessages[0].localId}`,
-    // };
-    // sendMessage(serverMessage);
   }
 
   return updatedMessages;
 };
 
-export const popMessage = ({
-  type,
-  messages,
-}: {
-  type: MessageType | null;
-  messages: ILocalMessage[];
-}) => {
+const popMessage = ({ type, messages }: IPopMessage) => {
   if (!type) {
     return messages;
   }
 
   const updatedMessages = !type
     ? messages
-    : messages.filter((msg) => msg?.content.subType !== type);
+    : filter(messages, (msg) => msg?.content.subType !== type);
 
   !type && updatedMessages.shift();
 
@@ -469,11 +457,17 @@ export const replaceItemsWithType = ({
   return updatedMessages;
 };
 
-export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
+export const getNextActionType = (
+  chatMsgType: CHAT_ACTIONS | null,
+  excludeItem?: ButtonsOptions | null
+): CHAT_ACTIONS | null => {
+  if (excludeItem === ButtonsOptions.JOBS_IN_MY_AREA) {
+    return CHAT_ACTIONS.SEND_REFERRAL_LOCATIONS;
+  }
+
   switch (chatMsgType) {
     case CHAT_ACTIONS.REFINE_SEARCH:
     case CHAT_ACTIONS.ANSWER_QUESTIONS:
-    case CHAT_ACTIONS.APPLY_ETHNIC:
     case CHAT_ACTIONS.GET_USER_EMAIL:
     case CHAT_ACTIONS.SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.SET_CATEGORY;
@@ -483,29 +477,13 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
       return CHAT_ACTIONS.GET_USER_NAME;
     case CHAT_ACTIONS.GET_USER_NAME:
       return CHAT_ACTIONS.GET_USER_EMAIL;
-    case CHAT_ACTIONS.APPLY_POSITION:
-      return CHAT_ACTIONS.APPLY_NAME;
-    case CHAT_ACTIONS.APPLY_NAME:
-      return CHAT_ACTIONS.APPLY_EMAIL;
-    case CHAT_ACTIONS.APPLY_EMAIL:
-      return CHAT_ACTIONS.APPLY_AGE;
-    case CHAT_ACTIONS.APPLY_AGE:
-      return CHAT_ACTIONS.SET_WORK_PERMIT;
-    case CHAT_ACTIONS.SET_SALARY:
-      return CHAT_ACTIONS.APPLY_ETHNIC;
 
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return CHAT_ACTIONS.SET_ALERT_CATEGORIES;
-
     case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
       return CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
-
-    // case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
-    //   return CHAT_ACTIONS.SEND_ALERT_JOB_LOCATIONS
-
     case CHAT_ACTIONS.SEND_ALERT_JOB_LOCATIONS:
       return CHAT_ACTIONS.SET_ALERT_EMAIL;
-
     case CHAT_ACTIONS.SET_CATEGORY:
       return CHAT_ACTIONS.SET_LOCATIONS;
     case CHAT_ACTIONS.SET_LOCATIONS:
@@ -518,8 +496,8 @@ export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
 };
 
 export const getSearchJobsData = (
-  category: string,
-  city: string,
+  category?: string,
+  city?: string,
   country?: string
 ): ISearchJobsPayload => {
   return {
@@ -528,18 +506,19 @@ export const getSearchJobsData = (
     keyword: "*",
     minDatePosted: "2016-11-13T00:00:00",
     uniqueTitles: true,
-    categories: [category],
-    location: {
-      city,
-      state: null,
-      postalCode: null,
-      country: country?.trim() || null,
-      latitude: null,
-      longitude: null,
-      radius: null,
-      radiusUnit: "km",
-    },
-    // externalSystemId: 789,
+    categories: category ? [category] : undefined,
+    location: city
+      ? {
+          city: city,
+          state: null,
+          postalCode: null,
+          country: country?.trim() || null,
+          latitude: null,
+          longitude: null,
+          radius: null,
+          radiusUnit: "km",
+        }
+      : undefined,
   };
 };
 
@@ -571,7 +550,6 @@ export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
   switch (type) {
     // case CHAT_ACTIONS.APPLY_AGE:
     case CHAT_ACTIONS.SET_WORK_PERMIT:
-    case CHAT_ACTIONS.SET_SALARY:
       return false; // TODO: test
     default:
       return true;
@@ -877,4 +855,26 @@ export const isValidColor = (strColor?: string): boolean => {
   } else {
     return false;
   }
+};
+
+const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
+
+const parse = (number: string, iso2?: string) => {
+  try {
+    return phoneUtil.parse(number, iso2);
+  } catch (err) {
+    // @ts-ignore
+    console.log(`Exception was thrown: ${err.toString()}`);
+    return null;
+  }
+};
+
+export const isValidNumber = (number: string, iso2?: string) => {
+  const phoneInfo = parse(number, iso2);
+
+  if (phoneInfo) {
+    return phoneUtil.isValidNumber(phoneInfo);
+  }
+
+  return false;
 };

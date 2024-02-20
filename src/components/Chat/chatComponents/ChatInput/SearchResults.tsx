@@ -56,11 +56,8 @@ export const SearchResults: FC<ISearchResultsProps> = ({
 
   const onClose = () => setIsShowResults(false);
 
-  const onLoadMore = () => {
-    if (isSingleSelection) {
-      setRequisitionsPage(requisitionsPage + 1);
-    }
-  };
+  const onLoadMore = () =>
+    isSingleSelection && setRequisitionsPage(requisitionsPage + 1);
 
   return (
     <S.SearchWrapper searchOptionsHeight={searchOptionsHeight}>
@@ -80,6 +77,7 @@ export const SearchResults: FC<ISearchResultsProps> = ({
             {map(matchedItems, (option, index) => {
               const optionProps =
                 getOptionProps && getOptionProps({ option, index });
+              const startIndex = option.indexOf(matchedPart);
 
               return (
                 <S.SearchPosition
@@ -90,8 +88,18 @@ export const SearchResults: FC<ISearchResultsProps> = ({
                     optionProps?.onClick?.(event);
                   }}
                 >
-                  <span>{matchedPart}</span>
-                  {option}
+                  {matchedPart ? (
+                    <>
+                      {/* first part of option  */}
+                      {option.substring(0, startIndex)}
+                      {/* search substring */}
+                      <span>{matchedPart}</span>
+                      {/* second part of option (without search substring) */}
+                      {option.substring(startIndex + matchedPart.length)}
+                    </>
+                  ) : (
+                    option
+                  )}
                 </S.SearchPosition>
               );
             })}

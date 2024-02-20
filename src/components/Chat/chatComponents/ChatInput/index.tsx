@@ -32,6 +32,7 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
+  LOG,
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
@@ -660,9 +661,9 @@ export const ChatInput: FC<IChatInputProps> = ({
     }
   };
 
-  const disabled =
-    !isChatInputAvailable ||
-    (!!messages[0].optionList && !!messages[0].optionList.options.length);
+  const isLastMessageWithOptions =
+    !!messages[0].optionList && !!messages[0].optionList.options.length;
+  const disabled = !isChatInputAvailable || isLastMessageWithOptions;
 
   const getPlaceholder = (): string => {
     if (inputType === TextFieldTypes.Select && disabled) {
