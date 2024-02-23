@@ -6,36 +6,21 @@ import { CHAT_ACTIONS } from "utils/types";
 import { COLORS } from "utils/colors";
 import * as S from "./styles";
 
-interface INoMatchJobProps {
-  isRefineOnly?: boolean;
-}
-
-export const NoMatchJob: FC<INoMatchJobProps> = ({ isRefineOnly = false }) => {
+export const NoMatchJob: FC = () => {
   const { t } = useTranslation();
-  const { dispatch } = useChatMessenger();
-
-  if (isRefineOnly) {
-    return (
-      <S.Wrapper isRefineOnly>
-        <S.RefineJobSearch
-          onClick={() => dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH })}
-        >
-          {t("buttons:refine_search")}
-        </S.RefineJobSearch>
-      </S.Wrapper>
-    );
-  }
+  const { dispatch, isReferralEnabled } = useChatMessenger();
 
   return (
     <S.Wrapper>
       <S.Title>{t("chat_item_description:no_match")}</S.Title>
-
-      <S.SetJobAlert
-        style={{ backgroundColor: COLORS.WHITE }}
-        onClick={() => dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
-      >
-        {t("buttons:set_job_alert")}
-      </S.SetJobAlert>
+      {!isReferralEnabled && (
+        <S.SetJobAlert
+          style={{ backgroundColor: COLORS.WHITE }}
+          onClick={() => dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT })}
+        >
+          {t("buttons:set_job_alert")}
+        </S.SetJobAlert>
+      )}
 
       <S.RefineJobSearch
         onClick={() => dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH })}

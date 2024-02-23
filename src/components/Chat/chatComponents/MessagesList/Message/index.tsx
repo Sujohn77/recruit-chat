@@ -91,9 +91,7 @@ export const Message: FC<IMessageProps> = ({
     }
     case MessageType.NO_MATCH:
     case MessageType.REFINE_SEARCH: {
-      return (
-        <NoMatchJob isRefineOnly={subType === MessageType.REFINE_SEARCH} />
-      );
+      return <NoMatchJob />;
     }
     case MessageType.SUBMIT_FILE:
       return <SearchJob message={message} />;
