@@ -6,7 +6,7 @@ export const en = {
     cancel: "Cancel",
     browse: "Browse",
     set_job_alert: "Set Job Alert",
-    refine_search: "Refine Job Search",
+    refine_search: "Search Again",
     find_job: "Find a job",
     ask_questions: "Ask questions",
     searchJobs: "Search jobs with resume",
