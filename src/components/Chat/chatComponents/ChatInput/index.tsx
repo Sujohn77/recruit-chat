@@ -98,8 +98,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setRefLastName,
     refLastName,
     employeeJobCategory,
-    chatId,
-    candidateId,
+    setIsChatLoading,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -335,19 +334,29 @@ export const ChatInput: FC<IChatInputProps> = ({
 
     switch (referralStep) {
       case ReferralSteps.EmployeeId:
-        const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
-
         setRefEmployeeId(draftMessage);
-        _setMessages((prevMessages) => [enterNamaMess, mess, ...prevMessages]);
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setIsChatLoading(true);
+        setTimeout(() => {
+          const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
+          setIsChatLoading(false);
+          _setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
+        }, 500);
         setReferralStep(ReferralSteps.ReferralLastName);
 
         break;
       case ReferralSteps.ReferralLastName:
-        const enterBirthMess = getReferralQuestion(
-          ReferralSteps.ReferralLastName
-        );
-        setRefLastName(draftMessage);
-        _setMessages((prevMessages) => [enterBirthMess, mess, ...prevMessages]);
+        draftMessage?.trim() && setRefLastName(draftMessage);
+
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setIsChatLoading(true);
+        setTimeout(() => {
+          const enterBirthMess = getReferralQuestion(
+            ReferralSteps.ReferralLastName
+          );
+          setIsChatLoading(false);
+          _setMessages((prevMessages) => [enterBirthMess, ...prevMessages]);
+        }, 500);
         setReferralStep(ReferralSteps.ReferralBirth);
 
         break;
@@ -417,24 +426,33 @@ export const ChatInput: FC<IChatInputProps> = ({
         );
         break;
       case ReferralSteps.UserFirstName:
-        setFirstName(draftMessage);
+        draftMessage?.trim() && setFirstName(draftMessage);
 
-        const userLastNameMess = getReferralQuestion(
-          ReferralSteps.UserLastName
-        );
-        _setMessages((prevMessages) => [
-          userLastNameMess,
-          mess,
-          ...prevMessages,
-        ]);
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setIsChatLoading(true);
+        setTimeout(() => {
+          const userLastNameMess = getReferralQuestion(
+            ReferralSteps.UserLastName
+          );
+
+          setIsChatLoading(false);
+          _setMessages((prevMessages) => [userLastNameMess, ...prevMessages]);
+        }, 500);
         setReferralStep(ReferralSteps.UserLastName);
+
         break;
       case ReferralSteps.UserLastName:
-        setLastName(draftMessage);
+        draftMessage?.trim() && setLastName(draftMessage);
 
-        const userEmailMess = getReferralQuestion(ReferralSteps.UserEmail);
-        _setMessages((prevMessages) => [userEmailMess, mess, ...prevMessages]);
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setIsChatLoading(true);
+        setTimeout(() => {
+          const userEmailMess = getReferralQuestion(ReferralSteps.UserEmail);
+          setIsChatLoading(false);
+          _setMessages((prevMessages) => [userEmailMess, ...prevMessages]);
+        }, 500);
         setReferralStep(ReferralSteps.UserEmail);
+
         break;
       case ReferralSteps.UserEmail:
         const emailError = validateEmail(draftMessage);
@@ -457,14 +475,15 @@ export const ChatInput: FC<IChatInputProps> = ({
         break;
       case ReferralSteps.UserConfirmationEmail:
         if (email === draftMessage.trim()) {
-          const userMobileMess = getReferralQuestion(
-            ReferralSteps.UserMobileNumber
-          );
-          _setMessages((prevMessages) => [
-            userMobileMess,
-            mess,
-            ...prevMessages,
-          ]);
+          _setMessages((prevMessages) => [mess, ...prevMessages]);
+          setIsChatLoading(true);
+          setTimeout(() => {
+            const userMobileMess = getReferralQuestion(
+              ReferralSteps.UserMobileNumber
+            );
+            setIsChatLoading(false);
+            _setMessages((prevMessages) => [userMobileMess, ...prevMessages]);
+          }, 500);
           setReferralStep(ReferralSteps.UserMobileNumber);
         } else {
           setRefError(t("errors:not_match"));
@@ -740,7 +759,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           phoneValue={phone}
           setPhoneValue={setPhone}
           onChange={onChangeCategory}
-          disabled={disabled}
+          disabled={isChatLoading || disabled}
           errorText={refError}
           isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
         />

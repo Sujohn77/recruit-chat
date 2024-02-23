@@ -1,5 +1,11 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { ChangeEvent, MouseEvent, useCallback, useEffect } from "react";
+import React, {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
@@ -48,6 +54,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
 }) => {
   const { dispatch, currentMsgType, error, isChatLoading } = useChatMessenger();
   const detectedCountry = useDetectCountry();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
@@ -55,6 +62,10 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   useEffect(() => {
     !isResults && setHeight(0);
   }, [isResults]);
+
+  useEffect(() => {
+    !isChatLoading && inputRef.current?.focus();
+  }, [isChatLoading]);
 
   const onClick = useCallback(
     (e: MouseEvent<HTMLLIElement>) => {
@@ -98,6 +109,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
         </PhoneInputWrapper>
       ) : (
         <DefaultInput
+          ref={inputRef}
           value={value}
           onChange={onChange}
           placeHolder={isChatLoading ? "" : placeHolder}
