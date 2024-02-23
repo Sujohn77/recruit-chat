@@ -8,7 +8,7 @@ import { isResultsType } from "utils/helpers";
 import { TextFieldTypes } from "utils/constants";
 import { useDetectCountry } from "utils/hooks";
 import { DefaultInput } from "components/Layout";
-import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
+import { SearchResults } from "components/Chat/ChatComponents/ChatInput/SearchResults";
 
 interface IAutocompleteProps {
   value: string;

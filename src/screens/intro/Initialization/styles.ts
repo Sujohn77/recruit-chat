@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MessageBox } from "components/Chat/chatComponents/MessagesList/Message/styles";
+import { MessageBox } from "components/Chat/ChatComponents/MessagesList/Message/styles";
 
 const borderWidth = "1.5px";
 

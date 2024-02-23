@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import isNull from "lodash/isNull";
 
 import { Chat } from "components";
@@ -12,12 +12,19 @@ import {
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
 import { StorePersist } from "./Persist";
+import { Loader } from "components/Layout";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages, chatScreen } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
 
+  const [showLoader, setShowLoader] = useState(true);
+
   const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
+
+  useEffect(() => {
+    setTimeout(() => setShowLoader(false), 1000);
+  }, []);
 
   useEffect(() => {
     // for parent iframe height size
@@ -117,8 +124,14 @@ export const Content: FC = () => {
 
   return (
     <StorePersist>
-      {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
-      <Intro isSelectedOption={isSelectedOption} />
+      {showLoader ? (
+        <Loader showLoader />
+      ) : (
+        <>
+          {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
+          <Intro isSelectedOption={isSelectedOption} />
+        </>
+      )}
     </StorePersist>
   );
 };

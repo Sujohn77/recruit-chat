@@ -8,9 +8,9 @@ import {
   MessagesList,
   ReferralViewJob,
   ViewJob,
-} from "./chatComponents";
-import { Login } from "./chatComponents/Login";
-import { Logout } from "./chatComponents/Logout";
+} from "./ChatComponents";
+import { Login } from "./ChatComponents/Login";
+import { Logout } from "./ChatComponents/Logout";
 interface IChatProps {
   isShowChat: boolean;
   children?: React.ReactNode | React.ReactNode[];

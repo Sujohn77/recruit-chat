@@ -15,7 +15,7 @@ import * as S from "./styles";
 import { Tag } from "./tag";
 import { isResultsType } from "utils/helpers";
 import { TextInput } from "components/Layout/Input/styles";
-import { SearchResults } from "components/Chat/chatComponents/ChatInput/SearchResults";
+import { SearchResults } from "components/Chat/ChatComponents/ChatInput/SearchResults";
 
 interface IMultiSelectInputProps {
   value: string;

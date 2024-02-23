@@ -7,7 +7,7 @@ import * as S from "../styles";
 import { generateLocalId } from "utils/helpers";
 import { IMessageOption } from "services/types";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
-import { getValidationRefResponse } from "components/Chat/chatComponents/ChatInput/data";
+import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IOptionListProps {
   message: ILocalMessage;

@@ -7,7 +7,7 @@ import * as S from "../styles";
 import { getMessageProps } from "utils/helpers";
 import { ButtonsOptions, ILocalMessage } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
-import { getValidationRefResponse } from "components/Chat/chatComponents/ChatInput/data";
+import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IMakeReferralProps {
   message: ILocalMessage;
