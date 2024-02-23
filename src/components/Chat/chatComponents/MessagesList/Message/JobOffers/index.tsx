@@ -6,7 +6,17 @@ import * as S from "./styles";
 import { JobOffer } from "./JobOffer";
 import { NotFoundOffer } from "./NotFound";
 
-export const JobOffers: React.FC = () => {
+interface IJobOffersProps {
+  isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+}
+
+export const JobOffers: React.FC<IJobOffersProps> = ({
+  isLastMess,
+  setSelectedReferralJobId,
+}) => {
   const { offerJobs } = useChatMessenger();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -27,7 +37,12 @@ export const JobOffers: React.FC = () => {
       >
         {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
           return index < offerJobs.length ? (
-            <JobOffer key={offerJobs[index].id} jobOffer={offerJobs[index]} />
+            <JobOffer
+              key={offerJobs[index].id}
+              jobOffer={offerJobs[index]}
+              isLastMess={isLastMess}
+              setSelectedReferralJobId={setSelectedReferralJobId}
+            />
           ) : (
             <NotFoundOffer key={`not-found-offer-${index}`} />
           );

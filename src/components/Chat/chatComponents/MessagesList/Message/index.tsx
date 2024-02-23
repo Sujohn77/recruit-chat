@@ -51,7 +51,12 @@ export const Message: FC<IMessageProps> = ({
       return <EmailForm />;
     }
     case MessageType.JOB_POSITIONS: {
-      return <JobOffers />;
+      return (
+        <JobOffers
+          isLastMess={isLastMess}
+          setSelectedReferralJobId={setSelectedReferralJobId}
+        />
+      );
     }
     case MessageType.TRANSCRIPT: {
       return <TranscriptSent />;

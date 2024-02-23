@@ -35,3 +35,8 @@ export const Description = styled.p`
   opacity: 0.4;
   margin-bottom: 25px;
 `;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
