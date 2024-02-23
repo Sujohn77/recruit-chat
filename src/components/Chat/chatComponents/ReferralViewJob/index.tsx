@@ -20,6 +20,7 @@ export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
     viewJob?.id && setJobId(+viewJob.id);
     chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
     setViewJob(null);
+    sessionStorage.removeItem("viewJob");
   }, [viewJob]);
 
   return !viewJob ? null : (

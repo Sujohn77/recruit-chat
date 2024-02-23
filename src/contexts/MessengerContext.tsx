@@ -1177,6 +1177,8 @@ const ChatProvider = ({
     _setCategoryTitle(null);
     // create new anonym user
     createAnonymCandidate();
+
+    sessionStorage.clear();
   }, []);
 
   const chatState: IChatMessengerContext = {

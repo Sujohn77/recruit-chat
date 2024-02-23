@@ -33,6 +33,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
       setShowLoginScreen(false);
     } else {
       setViewJob(null);
+      sessionStorage.removeItem("viewJob");
     }
   }, [showLoginScreen]);
 

@@ -58,6 +58,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
       setViewJob(null);
+      sessionStorage.removeItem("viewJob");
     }
 
     switch (type) {
