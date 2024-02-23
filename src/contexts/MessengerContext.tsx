@@ -124,7 +124,6 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setShowJobAutocompleteBox: () => {},
   _setMessages: () => {},
   isAnonym: true,
-  chatId: 0,
   shouldCallAgain: false,
   isCandidateWithEmail: false,
   firebaseToken: null,
@@ -170,6 +169,14 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   searchRequisitions: () => Promise.resolve(null),
   employeeFullName: "",
   setEmployeeFullName: () => {},
+  setUser: () => {},
+  setRequisitions: () => {},
+  setFirebaseToken: () => {},
+  setAlertCategories: () => {},
+  setOfferJobs: (offers: IRequisition[]) => {},
+  setChatId: () => {},
+  setLocations: () => {},
+  setCategory: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -223,21 +230,27 @@ const ChatProvider = ({
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
 
   const { clearAuthConfig } = useAuthContext();
-  const { requisitions, locations, setJobPositions } = useRequisitions(
+  const {
+    requisitions,
+    locations,
+    setJobPositions,
+    setRequisitions,
+    setLocations,
+  } = useRequisitions(
     searchRequisitionsTrigger,
     setIsChatLoading,
     requisitionsPage,
     setRequisitionsPage
   );
   // ----------------------------------------------------------------------------- //
-  const [firebaseToken, _setFirebaseToken] = useState<string | null>(null);
+  const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
 
   const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
   const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
 
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
-  const [chatId, setChatID] = useState<number | undefined>();
+  const [chatId, setChatId] = useState<number | undefined>();
   const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
   const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
 
@@ -262,8 +275,23 @@ const ChatProvider = ({
 
   const [employeeLocation, setEmployeeLocation] = useState("");
   const [employeeJobCategory, setEmployeeJobCategory] = useState("");
-  // -------------------------------------------------------------------------------------------- //
+
   useEffect(() => {
+    employeeId && sessionStorage.setItem("employeeId", employeeId.toString());
+    refLastName && sessionStorage.setItem("refLastName", refLastName);
+  }, [refLastName, employeeId]);
+
+  useEffect(() => {
+    const storedEmployeeId = sessionStorage.getItem("employeeId");
+    const storedRefLastName = sessionStorage.getItem("refLastName");
+
+    storedEmployeeId && setEmployeeId(+storedEmployeeId);
+    storedRefLastName && setRefLastName(storedRefLastName);
+  }, []);
+  // -------------------------------------------------------------------------------------------- //
+
+  useEffect(() => {
+    LOG(currentMsgType, "currentMsgType");
     switch (currentMsgType) {
       case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
       case CHAT_ACTIONS.ASK_QUESTION:
@@ -359,14 +387,14 @@ const ChatProvider = ({
           await userAPI.getFirebaseAccessToken(res.data?.id);
 
         if (firebaseTokenResponse.data) {
-          _setFirebaseToken(firebaseTokenResponse.data);
+          setFirebaseToken(firebaseTokenResponse.data);
         }
 
         const chatRes: ApiResponse<ICreateChatResponse> =
           await userAPI.createChatByAnonymUser(res.data.id);
 
         if (chatRes.data?.chatId) {
-          setChatID(chatRes.data?.chatId);
+          setChatId(chatRes.data?.chatId);
         }
       }
     } catch (error) {
@@ -440,7 +468,8 @@ const ChatProvider = ({
   // Initiate an action & set state
   const dispatch = useCallback(
     async (action: ITriggerActionProps) => {
-      LOG(action.type, "DISPATCH");
+      LOG(action.type, "DISPATCH", "#ff8c00");
+      LOG(action.payload, "DISPATCH payload", "#ff8c00");
       // Check if there were errors before
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
       const parsedError = apiError && JSON.parse(apiError);
@@ -1181,7 +1210,7 @@ const ChatProvider = ({
     showJobAutocompleteBox,
     isAnonym: isCandidateAnonym,
     candidateId,
-    chatId: chatId,
+    chatId,
     shouldCallAgain,
     isCandidateWithEmail,
     chatBotToken,
@@ -1230,6 +1259,14 @@ const ChatProvider = ({
     searchRequisitions,
     employeeFullName,
     setEmployeeFullName,
+    setUser,
+    setRequisitions,
+    setFirebaseToken,
+    setAlertCategories,
+    setOfferJobs,
+    setChatId,
+    setLocations,
+    setCategory,
   };
 
   // console.log(
@@ -1237,6 +1274,9 @@ const ChatProvider = ({
   //   `color: ${COLORS.PASTEL_GRIN}; font-size: 14px; background-color: ${COLORS.BLACK};`,
   //   chatState
   // );
+
+  // @ts-ignore
+  window.__store__ = chatState;
 
   return (
     <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>

@@ -98,6 +98,8 @@ export const ChatInput: FC<IChatInputProps> = ({
     setRefLastName,
     refLastName,
     employeeJobCategory,
+    chatId,
+    candidateId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -127,6 +129,29 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [refError, setRefError] = useState("");
 
   const inputType = getInputType(currentMsgType);
+
+  useEffect(() => {
+    referralStep &&
+      sessionStorage.setItem("referralStep", referralStep.toString());
+    refEmployeeId && sessionStorage.setItem("refEmployeeId", refEmployeeId);
+    firstName && sessionStorage.setItem("firstName", firstName);
+    lastName && sessionStorage.setItem("lastName", lastName);
+    email && sessionStorage.setItem("email", email);
+    phone && sessionStorage.setItem("phone", phone);
+  }, [referralStep, refEmployeeId]);
+
+  useEffect(() => {
+    const storedReferralStep = sessionStorage.getItem("referralStep");
+    if (storedReferralStep) {
+      setTimeout(() => setReferralStep(Number(storedReferralStep)), 1000);
+    }
+
+    setRefEmployeeId(sessionStorage.getItem("refEmployeeId") || "");
+    setFirstName(sessionStorage.getItem("firstName") || "");
+    setLastName(sessionStorage.getItem("lastName") || "");
+    setEmail(sessionStorage.getItem("email") || "");
+    setPhone(sessionStorage.getItem("phone") || "");
+  }, []);
 
   const { matchedPart, matchedItems } = useMemo(
     () =>
@@ -191,10 +216,11 @@ export const ChatInput: FC<IChatInputProps> = ({
   }, [currentMsgType]);
 
   const clearReferralState = useCallback(() => {
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPhone("");
+    // TODO: test
+    // setFirstName("");
+    // setLastName("");
+    // setEmail("");
+    // setPhone("");
   }, []);
 
   // Callbacks
@@ -662,14 +688,14 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   const isLastMessageWithOptions =
-    !!messages[0].optionList && !!messages[0].optionList.options.length;
+    !!messages[0]?.optionList && !!messages[0]?.optionList.options.length;
   const disabled = !isChatInputAvailable || isLastMessageWithOptions;
 
   const getPlaceholder = (): string => {
     if (inputType === TextFieldTypes.Select && disabled) {
       return "";
     }
-    if (messages[0].optionList) {
+    if (messages[0]?.optionList) {
       return t("placeHolders:selectOption");
     }
     if (currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE) {
@@ -720,7 +746,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         />
       )}
 
-      {isWriteAccess && !messages[0].optionList && (
+      {isWriteAccess && !messages[0]?.optionList && (
         <S.PlaneIcon
           onClick={onSendMessageHandler}
           disabled={isChatLoading}

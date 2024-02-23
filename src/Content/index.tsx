@@ -11,6 +11,7 @@ import {
   REFRESH_TOKEN_TIMEOUT,
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
+import { StorePersist } from "./Persist";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages, chatScreen } = useChatMessenger();
@@ -115,9 +116,9 @@ export const Content: FC = () => {
   }, [chatScreen]);
 
   return (
-    <>
+    <StorePersist>
       {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
       <Intro isSelectedOption={isSelectedOption} />
-    </>
+    </StorePersist>
   );
 };

@@ -102,7 +102,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
       )}
 
       <S.List>
-        {map(message.optionList?.options, (option) => (
+        {map(message?.optionList?.options, (option) => (
           <S.Option
             key={`${option.id}-${option.text}-${option.name}`}
             onClick={() => onSelectAnswer(option)}

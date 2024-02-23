@@ -137,5 +137,7 @@ export const useRequisitions = (
     setJobPositions,
     searchRequisitions,
     setPage,
+    setRequisitions,
+    setLocations,
   };
 };

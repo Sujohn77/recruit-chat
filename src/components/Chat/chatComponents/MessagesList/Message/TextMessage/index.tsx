@@ -66,7 +66,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
   // TODO: fix
   const wrongMess = !!message.isOwn && !!message.optionList;
 
-  const isWarningMess = message.optionList?.status === MessageStatuses.warning;
+  const isWarningMess = message?.optionList?.status === MessageStatuses.warning;
   const backgroundColor = isWarningMess
     ? COLORS.PIPPIN
     : messageProps.isOwn
@@ -84,7 +84,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
     >
       <S.MessageContent
         isFile={isFile}
-        withOptions={!!message.optionList}
+        withOptions={!!message?.optionList}
         isOwn={message.isOwn}
       >
         {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
