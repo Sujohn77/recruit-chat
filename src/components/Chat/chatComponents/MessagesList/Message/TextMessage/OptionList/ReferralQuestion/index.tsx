@@ -28,6 +28,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
     refLastName,
     employeeJobCategory,
     employeeFullName,
+    employeeId,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -48,7 +49,8 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
             };
             const newRefer = getValidationRefResponse(
               employeeJobCategory,
-              employeeFullName || refLastName
+              employeeFullName || refLastName,
+              !!employeeId
             );
             _setMessages((prev) => [
               newRefer,
@@ -60,15 +62,12 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
             break;
           case 2:
             setSelectedReferralJobId(undefined);
-            const answer: ILocalMessage = {
-              _id: null,
-              localId: generateLocalId(),
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: t("labels:ok"),
-              },
-            };
+            const newReferWithRefHistory = getValidationRefResponse(
+              employeeJobCategory,
+              employeeFullName || refLastName,
+              !!employeeId,
+              true
+            );
             const answer2: ILocalMessage = {
               localId: generateLocalId(),
               _id: generateLocalId(),
@@ -79,7 +78,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               },
             };
             _setMessages((prev) => [
-              answer,
+              newReferWithRefHistory,
               answer2,
               ...prev.map((m) =>
                 m._id === message._id ? { ...m, optionList: undefined } : m

@@ -133,47 +133,98 @@ export const getReferralResponseMess = (
 
 export const getValidationRefResponse = (
   searchCategory: string,
-  fullName: string
+  fullName: string,
+  isValidation: boolean,
+  withReferralsHistoryBtn = false
 ): ILocalMessage => ({
   isOwn: false,
   localId: generateLocalId(),
   content: {
     subType: MessageType.TEXT,
-    text: i18n.t("referral:referral_options", { userLastName: fullName }),
+    text: withReferralsHistoryBtn
+      ? i18n.t("referral:ok") + i18n.t("referral:referral_options")
+      : isValidation
+      ? i18n.t("referral:successful_validation", { userLastName: fullName }) +
+        i18n.t("referral:referral_options")
+      : i18n.t("referral:referral_options"),
   },
   _id: generateLocalId(),
   optionList: {
     type: MessageOptionTypes.AvailableJobs,
     isActive: true,
-    options: [
-      {
-        id: 1,
-        itemId: 1,
-        isSelected: false,
-        name: i18n.t("referral:job_in_my_area"),
-        text: i18n.t("referral:job_in_my_area"),
-      },
-      {
-        id: 2,
-        itemId: 2,
-        isSelected: false,
-        name: i18n.t("referral:job_in_my_area", { title: searchCategory }),
-        text: i18n.t("referral:job_in_my_area", { title: searchCategory }),
-      },
-      {
-        id: 3,
-        itemId: 3,
-        isSelected: false,
-        name: i18n.t("referral:any_job"),
-        text: i18n.t("referral:any_job"),
-      },
-      {
-        id: 4,
-        itemId: 4,
-        isSelected: false,
-        name: i18n.t("referral:general_referral"),
-        text: i18n.t("referral:general_referral"),
-      },
-    ],
+    options: getReferralOptions(searchCategory, withReferralsHistoryBtn),
   },
 });
+
+const getReferralOptions = (
+  searchCategory: string,
+  withReferralHistoryBtn = false
+) =>
+  withReferralHistoryBtn
+    ? [
+        {
+          id: 1,
+          itemId: 1,
+          isSelected: false,
+          name: i18n.t("referral:job_in_my_area"),
+          text: i18n.t("referral:job_in_my_area"),
+        },
+        {
+          id: 2,
+          itemId: 2,
+          isSelected: false,
+          name: i18n.t("referral:jobs", { title: searchCategory }),
+          text: i18n.t("referral:jobs", { title: searchCategory }),
+        },
+        {
+          id: 3,
+          itemId: 3,
+          isSelected: false,
+          name: i18n.t("referral:any_job"),
+          text: i18n.t("referral:any_job"),
+        },
+        {
+          id: 4,
+          itemId: 4,
+          isSelected: false,
+          name: i18n.t("referral:general_referral"),
+          text: i18n.t("referral:general_referral"),
+        },
+        {
+          id: 5,
+          itemId: 5,
+          isSelected: false,
+          name: i18n.t("chat_menu:see_my_referrals"),
+          text: i18n.t("chat_menu:see_my_referrals"),
+        },
+      ]
+    : [
+        {
+          id: 1,
+          itemId: 1,
+          isSelected: false,
+          name: i18n.t("referral:job_in_my_area"),
+          text: i18n.t("referral:job_in_my_area"),
+        },
+        {
+          id: 2,
+          itemId: 2,
+          isSelected: false,
+          name: i18n.t("referral:jobs", { title: searchCategory }),
+          text: i18n.t("referral:jobs", { title: searchCategory }),
+        },
+        {
+          id: 3,
+          itemId: 3,
+          isSelected: false,
+          name: i18n.t("referral:any_job"),
+          text: i18n.t("referral:any_job"),
+        },
+        {
+          id: 4,
+          itemId: 4,
+          isSelected: false,
+          name: i18n.t("referral:general_referral"),
+          text: i18n.t("referral:general_referral"),
+        },
+      ];

@@ -99,6 +99,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     refLastName,
     employeeJobCategory,
     setIsChatLoading,
+    offerJobs,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -364,7 +365,8 @@ export const ChatInput: FC<IChatInputProps> = ({
         const onSuccessCallback = (employeeFullName: string) => {
           const resMess = getValidationRefResponse(
             employeeJobCategory,
-            employeeFullName || refLastName
+            employeeFullName || refLastName,
+            true
           );
           _setMessages((prevMessages) => [resMess, ...prevMessages]);
 
@@ -506,6 +508,9 @@ export const ChatInput: FC<IChatInputProps> = ({
             jobId: selectedReferralJobId,
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
+            const jobOffer = offerJobs.find(
+              (o) => o.id === selectedReferralJobId?.toString()
+            );
             setSelectedReferralJobId(undefined);
             const isOk = previouslyReferredState === 0;
 
@@ -521,7 +526,15 @@ export const ChatInput: FC<IChatInputProps> = ({
                   lastName,
                   referralCompanyName
                 )}  \n  
-                  ${t("referral:refer_someone_else")}
+                  ${
+                    jobOffer
+                      ? t("referral:refer_someone_else_to", {
+                          name: jobOffer.title || referralCompanyName,
+                        })
+                      : t("referral:refer_someone_else_to", {
+                          name: referralCompanyName,
+                        })
+                  }
                 `,
               },
               optionList: {

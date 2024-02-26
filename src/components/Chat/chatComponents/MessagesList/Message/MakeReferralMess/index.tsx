@@ -32,7 +32,8 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     if (employeeId) {
       const resMess = getValidationRefResponse(
         employeeJobCategory,
-        employeeFullName || refLastName
+        employeeFullName || refLastName,
+        true
       );
       _setMessages((prevMessages) => [resMess, ...prevMessages]);
     } else {

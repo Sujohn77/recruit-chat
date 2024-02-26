@@ -33,6 +33,11 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
     searchRequisitions,
     employeeJobCategory,
     employeeLocation,
+    clientApiToken,
+    employeeId,
+    refLastName,
+    refBirth,
+    refURL,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
@@ -88,6 +93,16 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
           case 4:
             setSelectedReferralJobId(undefined);
             chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
+            break;
+
+          case 5:
+            const inputString = `${clientApiToken}:${employeeId}:${refLastName}:${refBirth}`;
+            const base64Encoded = btoa(inputString);
+            const myReferralsTab = window.open(
+              `https://${refURL}/refer/myreferrals/?rvid=${base64Encoded}&staging=true`,
+              "_blank"
+            );
+            myReferralsTab?.focus();
             break;
           default:
             break;
