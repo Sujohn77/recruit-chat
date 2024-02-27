@@ -707,9 +707,10 @@ export const LOG = (
   logObj: any,
   description?: string,
   color = COLORS.PURPLE,
-  background = COLORS.BLACK
+  background = COLORS.BLACK,
+  log = false
 ) => {
-  if (description) {
+  if (description && log) {
     console.log(
       `%c   ${description}   `,
       `color: ${color}; font-size: 14px; background-color: ${background};`,
@@ -741,7 +742,7 @@ export const parseFirebaseMessages = (
         content: mess.content,
         isOwn: mess.sender.id === -2 ? false : true,
         localId: mess.localId,
-        optionList: mess.optionList,
+        optionList: mess?.optionList,
         _id: mess.chatItemId,
         chatItemId: mess.chatItemId,
       })

@@ -20,6 +20,10 @@ interface IMessageBoxProps extends IMessageProps {
   isWarningMess?: boolean;
 }
 
+interface IMessageTextProps {
+  fontWeight?: number;
+}
+
 export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
@@ -132,13 +136,13 @@ export const MessageContent = styled.div<IMessageContentProps>`
     `}
 `;
 
-export const MessageText = styled.p`
+export const MessageText = styled.span<IMessageTextProps>`
   margin: 0;
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 218px;
   white-space: pre-line;
-  font-weight: 500;
+  font-weight: ${({ fontWeight = 500 }) => fontWeight};
 `;
 
 export const InitialMessage = styled.div`

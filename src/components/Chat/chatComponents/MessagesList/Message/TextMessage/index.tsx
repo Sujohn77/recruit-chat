@@ -1,18 +1,18 @@
-import { FC, useEffect } from "react";
-import DOMPurify from "isomorphic-dompurify";
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useMemo } from "react";
 import { useTheme } from "styled-components";
 
-import { ICONS } from "assets";
-import { getMessageProps } from "utils/helpers";
-import { MessageStatuses, autolinkerClassName } from "utils/constants";
-import { COLORS } from "utils/colors";
-import { ILocalMessage, MessageType } from "utils/types";
-import { ThemeType } from "utils/theme/default";
+import { OptionList } from "./OptionList";
 import { LocationList, LocationItem } from "./styles";
 import { renderSendingTime } from "..";
 import * as S from "../styles";
-import { OptionList } from "./OptionList";
 import { Icon } from "../../styles";
+import { ICONS } from "assets";
+import { getMessageProps } from "utils/helpers";
+import { MessageStatuses } from "utils/constants";
+import { COLORS } from "utils/colors";
+import { ThemeType } from "utils/theme/default";
+import { ILocalMessage, MessageType } from "utils/types";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -28,44 +28,47 @@ export const TextMessage: FC<ITextMessageProps> = ({
   setSelectedReferralJobId,
 }) => {
   const theme = useTheme() as ThemeType;
-  const subType = message?.content.subType;
-  const messageProps = { ...getMessageProps(message) };
+  const { referralCompanyName, offerJobs } = useChatMessenger();
 
-  const isFile = subType === MessageType.FILE;
-  useEffect(() => {
-    // for a clickable link in message text
-    let listeners: undefined | NodeListOf<Element>;
-    const listenersClones: Node[] = [];
+  const messageText = useMemo(() => {
+    const jobOffer = offerJobs.find(
+      (o) => o.id.toString() === message.jobId?.toString()
+    );
 
-    if (message?.content.text?.includes(autolinkerClassName)) {
-      listeners = document.querySelectorAll(`.${autolinkerClassName}`);
-      for (let i = 0; i < listeners.length; i++) {
-        listenersClones.push(listeners[i].cloneNode(true));
-        const listener = listeners[i];
-
-        if (listener.innerHTML) {
-          listener.addEventListener("click", () => {
-            const newTab = window.open(listener.innerHTML, "_blank");
-            newTab?.focus?.();
-          });
-        }
-      }
+    if (jobOffer?.title && message?.content?.text?.includes(jobOffer?.title)) {
+      const index = message.content.text.indexOf(jobOffer?.title);
+      return (
+        <S.MessageText>
+          {message?.content?.text.substring(0, index)}
+          <S.MessageText fontWeight={700}>{jobOffer?.title}</S.MessageText>
+          {message.content.text.substring(index + jobOffer?.title.length)}
+        </S.MessageText>
+      );
     }
 
-    return () => {
-      // remove listeners
-      if (message?.content.text?.includes(autolinkerClassName)) {
-        listeners = document.querySelectorAll(`.${autolinkerClassName}`);
-        for (let i = 0; i < listeners.length; i++) {
-          listeners[i].replaceChild(listenersClones[i], listeners[i]);
-        }
-      }
-    };
+    if (
+      referralCompanyName &&
+      message?.content?.text?.includes(referralCompanyName)
+    ) {
+      const index = message.content.text.indexOf(referralCompanyName);
+
+      return (
+        <S.MessageText>
+          {message?.content?.text.substring(0, index)}
+          <S.MessageText fontWeight={700}>{referralCompanyName}</S.MessageText>
+          {message.content.text.substring(index + referralCompanyName.length)}
+        </S.MessageText>
+      );
+    } else {
+      return <S.MessageText>{message?.content?.text} </S.MessageText>;
+    }
   }, []);
 
+  const messageProps = { ...getMessageProps(message) };
+  const subType = message?.content.subType;
+  const isFile = subType === MessageType.FILE;
   // TODO: fix
   const wrongMess = !!message.isOwn && !!message.optionList;
-
   const isWarningMess = message?.optionList?.status === MessageStatuses.warning;
   const backgroundColor = isWarningMess
     ? COLORS.PIPPIN
@@ -95,17 +98,8 @@ export const TextMessage: FC<ITextMessageProps> = ({
               <LocationItem key={`${l}-${i}`}>{l}</LocationItem>
             ))}
           </LocationList>
-        ) : message?.content.text?.includes(autolinkerClassName) ? (
-          <S.MessageText
-            dangerouslySetInnerHTML={{
-              // DOMPurify DOMPurify sanitizes HTML and prevents XSS attacks. (converts a "dirty" HTML string to a clean HTML string)
-              __html: DOMPurify.sanitize(message?.content.text),
-            }}
-          />
         ) : (
-          <S.MessageText>
-            {message?.content?.text || message?.content.subType}
-          </S.MessageText>
+          messageText
         )}
 
         {renderSendingTime(message)}
