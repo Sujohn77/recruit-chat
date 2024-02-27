@@ -457,23 +457,28 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         break;
       case ReferralSteps.UserEmail:
-        const emailError = validateEmail(draftMessage);
+        setIsChatLoading(true);
+        setTimeout(() => {
+          const emailError = validateEmail(draftMessage);
 
-        if (emailError) {
-          setRefError(emailError);
-        } else {
-          setEmail(draftMessage.trim());
+          if (emailError) {
+            setRefError(emailError);
+          } else {
+            setEmail(draftMessage.trim());
 
-          const userConfirmMess = getReferralQuestion(
-            ReferralSteps.UserConfirmationEmail
-          );
-          _setMessages((prevMessages) => [
-            userConfirmMess,
-            mess,
-            ...prevMessages,
-          ]);
-          setReferralStep(ReferralSteps.UserConfirmationEmail);
-        }
+            const userConfirmMess = getReferralQuestion(
+              ReferralSteps.UserConfirmationEmail
+            );
+            _setMessages((prevMessages) => [
+              userConfirmMess,
+              mess,
+              ...prevMessages,
+            ]);
+            setReferralStep(ReferralSteps.UserConfirmationEmail);
+          }
+          setIsChatLoading(false);
+        }, 500);
+
         break;
       case ReferralSteps.UserConfirmationEmail:
         if (email === draftMessage.trim()) {
