@@ -37,7 +37,10 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
       );
       _setMessages((prevMessages) => [resMess, ...prevMessages]);
     } else {
-      chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
+      chooseButtonOption(
+        ButtonsOptions.MAKE_REFERRAL,
+        t("buttons:make_referral")
+      );
     }
   };
 

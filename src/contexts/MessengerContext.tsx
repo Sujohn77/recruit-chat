@@ -1079,19 +1079,23 @@ const ChatProvider = ({
           break;
 
         case CHAT_ACTIONS.MAKE_REFERRAL:
-          setMessages([
-            ...responseMessages,
-            {
-              _id: generateLocalId(),
-              localId: generateLocalId(),
-              content: {
-                subType: MessageType.TEXT,
-                text: i18n.t("buttons:make_referral"),
-              },
-              isOwn: true,
-            },
-            ...updatedMessages,
-          ]);
+          setMessages(
+            param
+              ? [
+                  ...responseMessages,
+                  {
+                    _id: generateLocalId(),
+                    localId: generateLocalId(),
+                    content: {
+                      subType: MessageType.TEXT,
+                      text: param,
+                    },
+                    isOwn: true,
+                  },
+                  ...updatedMessages,
+                ]
+              : [...responseMessages, ...updatedMessages]
+          );
 
           setCurrentMsgType(
             employeeId

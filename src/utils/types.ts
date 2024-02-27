@@ -79,6 +79,7 @@ export interface ILocalMessage {
   onClickTryAgain?: (message?: ILocalMessage) => void;
   background?: string;
   border?: string;
+  jobId?: string | number;
 }
 
 export enum ButtonsOptions {

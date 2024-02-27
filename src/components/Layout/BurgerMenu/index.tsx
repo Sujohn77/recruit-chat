@@ -18,9 +18,15 @@ import {
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
-export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
+export const BurgerMenu: FC<IBurgerMenuProps> = ({
+  setIsShowResults,
+  setSelectedReferralJobId,
+}) => {
   const {
     dispatch,
     chatId,
@@ -59,6 +65,13 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({ setIsShowResults }) => {
       setIsApplyJobFlow(false);
       setViewJob(null);
       sessionStorage.removeItem("viewJob");
+    }
+
+    if (
+      type === CHAT_ACTIONS.ASK_QUESTION ||
+      type === CHAT_ACTIONS.MAKE_REFERRAL
+    ) {
+      setSelectedReferralJobId(undefined);
     }
 
     switch (type) {

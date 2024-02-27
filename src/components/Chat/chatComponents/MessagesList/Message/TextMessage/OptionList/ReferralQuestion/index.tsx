@@ -6,7 +6,12 @@ import map from "lodash/map";
 import * as S from "../styles";
 import { generateLocalId } from "utils/helpers";
 import { IMessageOption } from "services/types";
-import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
+import {
+  ButtonsOptions,
+  CHAT_ACTIONS,
+  ILocalMessage,
+  MessageType,
+} from "utils/types";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IOptionListProps {
@@ -29,6 +34,8 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
     employeeJobCategory,
     employeeFullName,
     employeeId,
+    chooseButtonOption,
+    setViewJob,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -37,35 +44,21 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
       if (isLastMess) {
         switch (answer.id) {
           case 1:
-            setSelectedReferralJobId(undefined);
-            const mess: ILocalMessage = {
-              localId: generateLocalId(),
-              _id: generateLocalId(),
-              isOwn: true,
-              content: {
-                subType: MessageType.TEXT,
-                text: t("labels:yes"),
-              },
-            };
-            const newRefer = getValidationRefResponse(
-              employeeJobCategory,
-              employeeFullName || refLastName,
-              !!employeeId
-            );
+            setViewJob(null);
+            chooseButtonOption(ButtonsOptions.MAKE_REFERRAL, t("labels:yes"));
             _setMessages((prev) => [
-              newRefer,
-              mess,
               ...prev.map((m) =>
                 m._id === message._id ? { ...m, optionList: undefined } : m
               ),
             ]);
+            sessionStorage.removeItem("viewJob");
             break;
           case 2:
             setSelectedReferralJobId(undefined);
             const newReferWithRefHistory = getValidationRefResponse(
               employeeJobCategory,
               employeeFullName || refLastName,
-              !!employeeId,
+              false,
               true
             );
             const answer2: ILocalMessage = {
@@ -91,7 +84,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
         }
       }
     },
-    [isLastMess, employeeJobCategory, employeeFullName]
+    [isLastMess, employeeJobCategory, employeeFullName, employeeId]
   );
 
   return (

@@ -50,10 +50,10 @@ export const Content: FC = () => {
     let timeout: NodeJS.Timeout | undefined;
 
     if (!isNull(chatScreen)) {
-      timeout = setTimeout(
-        () => postMessToParent(EventIds.RefreshChatbot),
-        REFRESH_APP_TIMEOUT
-      );
+      timeout = setTimeout(() => {
+        sessionStorage.clear();
+        postMessToParent(EventIds.RefreshChatbot);
+      }, REFRESH_APP_TIMEOUT);
     }
 
     return () => timeout && clearTimeout(timeout);

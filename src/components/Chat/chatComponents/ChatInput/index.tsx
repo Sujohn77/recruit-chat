@@ -16,6 +16,12 @@ import uniqBy from "lodash/uniqBy";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
+import {
+  ReferralSteps,
+  getReferralQuestion,
+  getReferralResponseMess,
+  getValidationRefResponse,
+} from "./data";
 import { ICONS } from "assets";
 import {
   MessageOptionTypes,
@@ -32,7 +38,6 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
-  LOG,
   validateEmail,
   validateEmailOrPhone,
 } from "utils/helpers";
@@ -42,16 +47,10 @@ import {
   ILocalMessage,
   MessageType,
 } from "utils/types";
-import { useFirebaseSignIn, useTextField } from "utils/hooks";
-import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
-import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
-import {
-  ReferralSteps,
-  getReferralQuestion,
-  getReferralResponseMess,
-  getValidationRefResponse,
-} from "./data";
 import { COLORS } from "utils/colors";
+import { useFirebaseSignIn, useTextField } from "utils/hooks";
+import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
+import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -202,10 +201,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) {
       setReferralStep(ReferralSteps.UserFirstName);
       clearReferralState();
-      // _setMessages((prev) => [
-      //   getReferralQuestion(ReferralSteps.UserFirstName),
-      //   ...prev,
-      // ]);
     }
   }, [currentMsgType]);
 
@@ -457,7 +452,9 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         break;
       case ReferralSteps.UserEmail:
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
+
         setTimeout(() => {
           const emailError = validateEmail(draftMessage);
 
@@ -469,11 +466,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             const userConfirmMess = getReferralQuestion(
               ReferralSteps.UserConfirmationEmail
             );
-            _setMessages((prevMessages) => [
-              userConfirmMess,
-              mess,
-              ...prevMessages,
-            ]);
+            _setMessages((prevMessages) => [userConfirmMess, ...prevMessages]);
             setReferralStep(ReferralSteps.UserConfirmationEmail);
           }
           setIsChatLoading(false);
@@ -484,6 +477,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         if (email === draftMessage.trim()) {
           _setMessages((prevMessages) => [mess, ...prevMessages]);
           setIsChatLoading(true);
+
           setTimeout(() => {
             const userMobileMess = getReferralQuestion(
               ReferralSteps.UserMobileNumber
@@ -514,9 +508,9 @@ export const ChatInput: FC<IChatInputProps> = ({
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
             const jobOffer = offerJobs.find(
-              (o) => o.id === selectedReferralJobId?.toString()
+              (o) => o.id.toString() === selectedReferralJobId?.toString()
             );
-            setSelectedReferralJobId(undefined);
+
             const isOk = previouslyReferredState === 0;
 
             const question: ILocalMessage = {
@@ -532,9 +526,9 @@ export const ChatInput: FC<IChatInputProps> = ({
                   referralCompanyName
                 )}  \n  
                   ${
-                    jobOffer
-                      ? t("referral:refer_someone_else_to", {
-                          name: jobOffer.title || referralCompanyName,
+                    jobOffer?.title
+                      ? t("referral:refer_someone_else_to_job", {
+                          jobName: jobOffer.title,
                         })
                       : t("referral:refer_someone_else_to", {
                           name: referralCompanyName,
@@ -565,6 +559,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               },
               background: isOk ? COLORS.HAWKES_BLUE : undefined,
               border: `1px solid ${COLORS[isOk ? "ONAHAU" : "BEAUTY_BUSH"]}`,
+              jobId: jobOffer?.id,
             };
             _setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
@@ -763,7 +758,10 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   return (
     <S.MessagesInput marginTop={marginTop}>
-      <BurgerMenu setIsShowResults={setIsShowResults} />
+      <BurgerMenu
+        setIsShowResults={setIsShowResults}
+        setSelectedReferralJobId={setSelectedReferralJobId}
+      />
 
       {inputType === TextFieldTypes.MultiSelect ? (
         <MultiSelectInput

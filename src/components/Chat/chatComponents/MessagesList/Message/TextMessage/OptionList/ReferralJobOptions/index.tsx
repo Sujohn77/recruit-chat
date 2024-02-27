@@ -1,5 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import React, { FC, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
 import * as S from "../styles";
@@ -26,6 +27,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
+  const { t } = useTranslation();
   const {
     dispatch,
     _setMessages,
@@ -92,7 +94,10 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             break;
           case 4:
             setSelectedReferralJobId(undefined);
-            chooseButtonOption(ButtonsOptions.MAKE_REFERRAL);
+            chooseButtonOption(
+              ButtonsOptions.MAKE_REFERRAL,
+              t("referral:general_referral")
+            );
             break;
 
           case 5:

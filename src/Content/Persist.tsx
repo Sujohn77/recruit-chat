@@ -272,7 +272,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     }, 100);
   }, []);
 
-  LOG(chatId, "chatId PERSIST", undefined, undefined, true);
+  // LOG(chatId, "chatId PERSIST", undefined, undefined, true);
   // LOG(candidateId, "candidateId", undefined, undefined, true);
   // LOG(currentMsgType, "currentMsgType", undefined, undefined, true);
   // LOG(employeeId, "employeeId", undefined, undefined, true);
