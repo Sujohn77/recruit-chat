@@ -1,7 +1,7 @@
 import i18n from "services/localization";
 import { MessageType } from "utils/types";
 
-const defaultQuestions = [
+const defaultQuestions = (referralCompanyName: string | null) => [
   {
     text: i18n.t("questions:recruitment_process"),
     subType: MessageType.BUTTON,
@@ -15,7 +15,9 @@ const defaultQuestions = [
     isOwn: true,
   },
   {
-    text: i18n.t("questions:flexible_work"),
+    text: i18n.t("questions:flexible_work", {
+      companyName: referralCompanyName,
+    }),
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
@@ -47,11 +49,11 @@ export const getQuestions = (
         isChatMessage: true,
         isOwn: true,
       },
-      ...defaultQuestions,
+      ...defaultQuestions(referralCompanyName),
     ];
   }
 
-  return defaultQuestions;
+  return defaultQuestions(referralCompanyName);
 };
 
 export const findJobMessages = [

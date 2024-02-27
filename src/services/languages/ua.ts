@@ -101,7 +101,7 @@ export const ua = {
     botThanks:
       "Дякуємо, що висловили інтерес до цієї вакансії, перевіряйте свою електронну пошту на наявність оновлень.",
     employeeId:
-      "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
+      "To start the process we need to validate your {{companyName}} employee details. What is your Employee ID ?",
   },
   chat_item_description: {
     transcript_sent: "Стенограма надіслана на вашу пошту ",
@@ -142,7 +142,7 @@ export const ua = {
     flexible_work: "Does GMS offer flexible work schedules?",
     part_time: "Do you offer part-time positions?",
     recruitment_process: "What’s the recruitment process?",
-    refer_friend: "Can I refer a friend to {{referralCompanyName}} ?",
+    refer_friend: "Can I refer a friend to {{referralCompanyName}}?",
   },
   errors: {
     not_match: "Email addresses do not match",

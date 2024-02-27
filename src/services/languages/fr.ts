@@ -95,7 +95,7 @@ export const fr = {
     botThanks:
       "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
     employeeId:
-      "To start the process we need to validate your GMS employee details. What is your Employee ID ?",
+      "To start the process we need to validate your {{companyName}} employee details. What is your Employee ID ?",
     try_again: "Try again",
     logout: "Do you really want to finish the session?",
     processed_your_resume:
@@ -136,7 +136,7 @@ export const fr = {
     flexible_work: "GMS propose-t-il des horaires de travail flexibles ?",
     part_time: "Proposez-vous des postes à temps partiel ?",
     recruitment_process: "Quel est le processus de recrutement ?",
-    refer_friend: "Can I refer a friend to {{referralCompanyName}} ?",
+    refer_friend: "Can I refer a friend to {{referralCompanyName}}?",
   },
   errors: {
     not_match: "Email addresses do not match",

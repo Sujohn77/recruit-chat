@@ -140,10 +140,10 @@ export const en = {
   },
   questions: {
     about_company: "Can you tell me more about the company?",
-    flexible_work: "Does GMS offer flexible work schedules?",
+    flexible_work: "Does {{companyName}} offer flexible work schedules?",
     part_time: "Do you offer part-time positions?",
     recruitment_process: "What’s the recruitment process?",
-    refer_friend: "Can I refer a friend to {{referralCompanyName}} ?",
+    refer_friend: "Can I refer a friend to {{referralCompanyName}}?",
   },
   errors: {
     not_match: "Email addresses do not match",
