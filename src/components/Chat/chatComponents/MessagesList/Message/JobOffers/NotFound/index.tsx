@@ -19,8 +19,10 @@ export const NotFoundOffer: FC = () => {
   }, []);
 
   return (
-    <S.NoFound>
-      <S.Title>{t("messages:notFoundJob")}</S.Title>
+    <S.NoFound withReferral={isReferralEnabled}>
+      <S.Title withMargin={!isReferralEnabled}>
+        {t("messages:notFoundJob")}
+      </S.Title>
 
       {!isReferralEnabled && (
         <S.SetJobAlert

@@ -2,7 +2,15 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import { COLORS } from "utils/colors";
 
-export const NoFound = styled.div<{ isRefineOnly?: boolean }>`
+interface INoFoundProps {
+  withReferral: boolean;
+}
+
+interface ITitleProps {
+  withMargin: boolean;
+}
+
+export const NoFound = styled.div<INoFoundProps>`
   background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 24px 28px;
@@ -12,16 +20,19 @@ export const NoFound = styled.div<{ isRefineOnly?: boolean }>`
   max-width: 306px;
   box-sizing: border-box;
   margin-bottom: 24px;
-  min-height: 245px;
+
+  ${({ withReferral }) =>
+    withReferral ? "margin: 0px;" : "min-height: 245px;"}
 `;
 
-export const Title = styled.p`
-  margin: 0 0 46px;
+export const Title = styled.p<ITitleProps>`
   white-space: pre-line;
   font-size: 14px;
   line-height: 17px;
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
+
+  ${({ withMargin }) => withMargin && "margin: 0 0 46px;"}
 `;
 
 export const SetJobAlert = styled(Button)`
