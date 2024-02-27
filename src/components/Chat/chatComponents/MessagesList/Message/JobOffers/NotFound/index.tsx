@@ -22,7 +22,7 @@ export const NotFoundOffer: FC = () => {
     <S.NoFound>
       <S.Title>{t("messages:notFoundJob")}</S.Title>
 
-      {isReferralEnabled && (
+      {!isReferralEnabled && (
         <S.SetJobAlert
           style={{ backgroundColor: COLORS.WHITE }}
           onClick={setJobAlert}
