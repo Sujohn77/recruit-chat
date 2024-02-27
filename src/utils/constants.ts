@@ -266,7 +266,9 @@ const getChatActionMessages = (
         : [
             {
               subType: MessageType.TEXT,
-              text: i18n.t("messages:employeeId"),
+              text: i18n.t("messages:employeeId", {
+                companyName: referralCompanyName,
+              }),
             },
           ];
     default:

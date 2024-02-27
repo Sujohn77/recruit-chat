@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { IRequisitionType } from "services/hooks";
 import {
   IMessage,
   IQuestionOptions,
@@ -21,6 +22,13 @@ export interface ISearchRequisition {
   category: string;
 }
 
+export enum ChatStoreKeys {
+  messages = "messages",
+  requisitions = "requisitions",
+  category = "category",
+  user = "user",
+}
+
 export interface IChatMessengerContext {
   messages: ILocalMessage[];
   requisitions: ISearchRequisition[];
@@ -31,6 +39,7 @@ export interface IChatMessengerContext {
   dispatch: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
+  setLocations: (locations: LocationType[]) => void;
   setSnapshotMessages: (messageSnapshots: ISnapshot<IMessage>[]) => void;
   setCurrentMsgType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
   currentMsgType: CHAT_ACTIONS | null;
@@ -118,7 +127,16 @@ export interface IChatMessengerContext {
   ) => Promise<null | boolean>;
   employeeFullName: string;
   setEmployeeFullName: (name: string) => void;
+  setUser: (user: IUser | null) => void;
+  setRequisitions: (requisition: IRequisitionType[]) => void;
+  setFirebaseToken: (token: string) => void;
+  setAlertCategories: (categories: string[] | null) => void;
+  setOfferJobs: (offers: IRequisition[]) => void;
+  setChatId: (chatId: number) => void;
+  setCategory: (category: string | null) => void;
 }
+
+export type ChatMessengerContextKeys = keyof IChatMessengerContext;
 
 export interface IFileUploadContext {
   file: File | null;

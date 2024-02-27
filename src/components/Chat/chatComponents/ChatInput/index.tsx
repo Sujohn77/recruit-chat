@@ -395,7 +395,9 @@ export const ChatInput: FC<IChatInputProps> = ({
                 localId: generateLocalId(),
                 content: {
                   subType: MessageType.TEXT,
-                  text: t("messages:employeeId"),
+                  text: t("messages:employeeId", {
+                    companyName: referralCompanyName,
+                  }),
                 },
               };
               _setMessages((prevMessages) => [
@@ -733,7 +735,12 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE) {
       return t("placeHolders:default");
     }
-    if (messages[0].content.text === t("messages:employeeId")) {
+    if (
+      messages[0].content.text ===
+      t("messages:employeeId", {
+        companyName: referralCompanyName,
+      })
+    ) {
       return t("placeHolders:enter_employee_id");
     }
     return placeHolder || t("placeHolders:bot_typing");
