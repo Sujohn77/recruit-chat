@@ -41,11 +41,7 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
 
       {isReferralEnabled ? (
         <S.ButtonsWrapper>
-          <DarkButton
-            disabled={!isLastMess}
-            onClick={handleReadMore}
-            style={{ margin: "0px auto" }}
-          >
+          <DarkButton disabled={!isLastMess} onClick={handleReadMore}>
             {t("chat_item_description:read_more")}
           </DarkButton>
           <DarkButton

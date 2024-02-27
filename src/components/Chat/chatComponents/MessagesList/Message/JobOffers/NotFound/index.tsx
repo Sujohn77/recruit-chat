@@ -8,7 +8,7 @@ import { CHAT_ACTIONS } from "utils/types";
 
 export const NotFoundOffer: FC = () => {
   const { t } = useTranslation();
-  const { dispatch } = useChatMessenger();
+  const { dispatch, isReferralEnabled } = useChatMessenger();
 
   const setJobAlert = useCallback(() => {
     dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT });
@@ -22,12 +22,14 @@ export const NotFoundOffer: FC = () => {
     <S.NoFound>
       <S.Title>{t("messages:notFoundJob")}</S.Title>
 
-      <S.SetJobAlert
-        style={{ backgroundColor: COLORS.WHITE }}
-        onClick={setJobAlert}
-      >
-        {t("buttons:set_job_alert")}
-      </S.SetJobAlert>
+      {isReferralEnabled && (
+        <S.SetJobAlert
+          style={{ backgroundColor: COLORS.WHITE }}
+          onClick={setJobAlert}
+        >
+          {t("buttons:set_job_alert")}
+        </S.SetJobAlert>
+      )}
 
       <S.RefineJobSearch onClick={refineJobSearch}>
         {t("buttons:refine_search")}
