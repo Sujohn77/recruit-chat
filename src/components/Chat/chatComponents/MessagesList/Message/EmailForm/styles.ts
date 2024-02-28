@@ -23,7 +23,8 @@ export const Title = styled.p`
 `;
 
 export const FormButton = styled(Button)`
-  background: ${(props) => props.theme.primaryColor}!important;
+  background: ${({ theme }) =>
+    theme.buttonPrimaryColor || theme.primaryColor}!important;
   border-radius: 100px !important;
   font-weight: 500 !important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;

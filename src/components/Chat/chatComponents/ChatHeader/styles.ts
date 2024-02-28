@@ -36,6 +36,8 @@ export const ViewTitle = styled.h3`
   font-size: 14px;
   line-height: 17px;
   font-weight: 500;
+
+  color: ${({ theme }) => theme.chatbotHeaderTextColor};
 `;
 
 export const CloseChat = styled(Close)`
@@ -46,6 +48,7 @@ export const CloseChat = styled(Close)`
   top: initial;
   right: 10px;
   cursor: pointer;
+  color: ${({ theme }) => theme.chatbotHeaderTextColor} !important;
 `;
 
 export const ViewHeader = styled(Flex)``;

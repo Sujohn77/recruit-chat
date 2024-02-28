@@ -42,7 +42,7 @@ export const BackButton = styled(Slide)`
 
   &:before,
   &:after {
-    border-color: #000;
+    border-color: ${({ theme }) => theme.chatbotHeaderTextColor};
   }
 `;
 

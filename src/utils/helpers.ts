@@ -646,6 +646,7 @@ export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
   chatbotName: theme.chatbot_name,
   chatbotHeaderTextColor: theme.chatbot_header_text_colour,
   messageTextColor: theme.chatbot_bubble_text_color,
+  buttonPrimaryColor: theme.chat_button_primary_colour,
 });
 
 export const getStorageValue = (

@@ -20,20 +20,23 @@ export const StyledButton = styled(ButtonBase)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
+  background: ${({ theme }) => theme.buttonPrimaryColor || theme.primaryColor};
 `;
 
 export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   height: ${({ height = "30px" }) => height};
   width: ${({ width = "calc(50% - 5px)" }) => width};
   background: ${({ theme, backgroundColor }) =>
-    backgroundColor || theme.primaryColor}!important;
+    theme.buttonPrimaryColor ||
+    backgroundColor ||
+    theme.primaryColor} !important;
   color: ${({ theme: { button }, fontColor }) =>
-    fontColor || button.secondaryColor}!important;
+    fontColor || button.secondaryColor} !important;
   border-radius: 8px !important;
   font-size: ${({ fontSize = 14 }) => fontSize}px;
   line-height: 17px;
   font-weight: ${({ fontWeight = 700 }) => fontWeight};
-  margin-bottom: ${({ marginBottom }) => marginBottom}!important;
+  margin-bottom: ${({ marginBottom }) => marginBottom} !important;
 
   &:disabled {
     ${({ isSelected }) => (isSelected ? "" : "opacity: 0.3; cursor: default;")}
