@@ -158,7 +158,7 @@ export const en = {
       "Sorry, we were unable to submit that referral. Please try again",
   },
   referral: {
-    ok: "Ok, sure!",
+    ok: "OK! Here's what else you can do:",
     job_in_my_area: "Jobs in my area",
     jobs: "{{title}} jobs",
     any_job: "Any job",
