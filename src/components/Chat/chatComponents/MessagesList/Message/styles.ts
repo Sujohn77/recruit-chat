@@ -89,7 +89,6 @@ export const MessageButton = styled.div<IMessageProps>`
   line-height: 17px;
   box-sizing: border-box;
   width: fit-content;
-  max-width: 270px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
   color: ${({
     theme: {
