@@ -22,7 +22,7 @@ export const NoFound = styled.div<INoFoundProps>`
   margin-bottom: 24px;
 
   ${({ withReferral }) =>
-    withReferral ? "margin: 0px;" : "min-height: 245px;"}
+    withReferral ? "margin: 0px 18px;" : "min-height: 245px;"}
 `;
 
 export const Title = styled.p<ITitleProps>`
