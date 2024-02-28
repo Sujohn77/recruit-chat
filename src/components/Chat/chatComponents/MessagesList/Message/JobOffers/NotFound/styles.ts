@@ -32,7 +32,7 @@ export const Title = styled.p<ITitleProps>`
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
 
-  ${({ withMargin }) => withMargin && "margin: 0 0 46px;"}
+  ${({ withMargin }) => (withMargin ? "margin: 0 0 46px;" : "margin-top: 0;")}
 `;
 
 export const SetJobAlert = styled(Button)`
