@@ -27,8 +27,8 @@ export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   height: ${({ height = "30px" }) => height};
   width: ${({ width = "calc(50% - 5px)" }) => width};
   background: ${({ theme, backgroundColor }) =>
-    theme.buttonPrimaryColor ||
     backgroundColor ||
+    theme.buttonPrimaryColor ||
     theme.primaryColor} !important;
   color: ${({ theme: { button }, fontColor }) =>
     fontColor || button.secondaryColor} !important;
