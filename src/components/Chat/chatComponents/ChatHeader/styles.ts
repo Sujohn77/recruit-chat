@@ -48,7 +48,6 @@ export const CloseChat = styled(Close)`
   top: initial;
   right: 10px;
   cursor: pointer;
-  color: ${({ theme }) => theme.chatbotHeaderTextColor} !important;
 `;
 
 export const ViewHeader = styled(Flex)``;

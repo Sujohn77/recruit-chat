@@ -103,11 +103,7 @@ export const Login: FC<ILoginProps> = ({
   return !showLoginScreen ? null : (
     <PopUp>
       <S.Wrapper>
-        <S.CloseLogin
-          height="25px"
-          onClick={() => setShowLoginScreen(false)}
-          color={COLORS.BLACK}
-        />
+        <S.CloseLogin height="25px" onClick={() => setShowLoginScreen(false)} />
 
         <S.HeaderTitle>{t("messages:provideName")}</S.HeaderTitle>
 

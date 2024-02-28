@@ -12,7 +12,7 @@ export function Tag({ label, onDelete }: TagProps) {
   return (
     <S.TagWrapper>
       <span>{label}</span>
-      <Close onClick={onDelete} color={COLORS.GRAY} />
+      <Close onClick={onDelete} backgroundColor={COLORS.GRAY} />
     </S.TagWrapper>
   );
 }

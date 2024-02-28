@@ -31,7 +31,7 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const Close = styled.div<{ height?: string; color?: string }>`
+export const Close = styled.div<{ height?: string; backgroundColor?: string }>`
   position: absolute;
   right: 16px;
   top: 10px;
@@ -44,7 +44,8 @@ export const Close = styled.div<{ height?: string; color?: string }>`
     content: "";
     height: ${({ height = "17px" }) => height};
     width: ${borderWidth};
-    background: ${({ color }) => color};
+    background: ${({ backgroundColor, theme }) =>
+      theme.chatbotHeaderTextColor || backgroundColor};
     display: inline-block;
     position: absolute;
     top: 1px;
