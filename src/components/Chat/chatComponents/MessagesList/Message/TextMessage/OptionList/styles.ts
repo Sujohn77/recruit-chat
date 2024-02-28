@@ -56,7 +56,6 @@ export const MessageText = styled.p`
   margin: 0;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 218px;
   white-space: pre-line;
   font-weight: 500;
 `;

@@ -228,3 +228,43 @@ const getReferralOptions = (
           text: i18n.t("referral:general_referral"),
         },
       ];
+
+export const getAlertJobMessage = (
+  firstName: string,
+  lastName: string,
+  emailAddress: string
+): ILocalMessage => {
+  if (!firstName) {
+    return {
+      isOwn: false,
+      localId: generateLocalId(),
+      _id: null,
+      content: {
+        subType: MessageType.TEXT,
+        text: i18n.t("messages:provide_firstname"),
+      },
+    };
+  } else if (!lastName) {
+    return {
+      isOwn: false,
+      localId: generateLocalId(),
+      _id: null,
+      content: {
+        subType: MessageType.TEXT,
+        text: i18n.t("messages:provide_lastname"),
+      },
+    };
+  } else {
+    return {
+      isOwn: false,
+      localId: generateLocalId(),
+      content: {
+        subType: MessageType.TEXT,
+        text: i18n.t(
+          `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`
+        ),
+      },
+      _id: null,
+    };
+  }
+};

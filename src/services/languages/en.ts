@@ -110,6 +110,8 @@ export const en = {
     processed_your_resume:
       "We have processed your resume and found the following jobs",
     dont_have_answer: "Sorry, I don't have an answer to that question yet",
+    provide_firstname: "What's your first name?",
+    provide_lastname: "What's your last name?",
   },
   chat_item_description: {
     lookingFor: "Hi! Are you looking for a job?",
