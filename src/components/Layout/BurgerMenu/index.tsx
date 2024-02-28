@@ -1,20 +1,28 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import React, { FC, useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
-import { CHAT_ACTIONS, IMenuItem } from "utils/types";
-import { ISendTranscriptResponse } from "services/types";
 import * as S from "./styles";
 import { MenuItem } from "./MenuItem";
 import { BurgerIcon } from "./BurgerIcon";
-import { apiInstance } from "services/api";
 import {
-  baseWithRfItems,
+  baseWithRefItems,
   baseWithRef,
   menuForCandidateWithEmail,
   menuItems,
 } from "./data";
+import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
+import { ISendTranscriptResponse } from "services/types";
+import { apiInstance } from "services/api";
+import { generateLocalId } from "utils/helpers";
+import {
+  CHAT_ACTIONS,
+  ILocalMessage,
+  IMenuItem,
+  MessageType,
+} from "utils/types";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +35,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   setIsShowResults,
   setSelectedReferralJobId,
 }) => {
+  const { t } = useTranslation();
   const {
     dispatch,
     chatId,
@@ -42,6 +51,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     refBirth,
     refURL,
     clientApiToken,
+    _setMessages,
+    employeeJobCategory,
   } = useChatMessenger();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +64,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       return baseWithRef;
     }
     if (isReferralEnabled) {
-      return baseWithRfItems;
+      return baseWithRefItems;
     }
     return defaultItems;
   }, [isReferralEnabled, isCandidateWithEmail, employeeId]);
@@ -72,6 +83,26 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       type === CHAT_ACTIONS.MAKE_REFERRAL
     ) {
       setSelectedReferralJobId(undefined);
+    }
+
+    if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
+      const resMess = getValidationRefResponse(
+        employeeJobCategory,
+        refLastName,
+        false
+      );
+      const makeRefMess: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        content: {
+          subType: MessageType.TEXT,
+          text,
+        },
+        isOwn: true,
+      };
+
+      _setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
+      return;
     }
 
     switch (type) {
@@ -110,6 +141,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           }
         }
         break;
+
       default:
         dispatch({
           type,

@@ -2,7 +2,7 @@ import i18n from "services/localization";
 import { languages } from "utils/constants";
 import { CHAT_ACTIONS } from "utils/types";
 
-export const baseWithRfItems = [
+export const baseWithRefItems = [
   {
     type: CHAT_ACTIONS.CHANGE_LANG,
     text: i18n.t("chat_menu:change_lang"),
