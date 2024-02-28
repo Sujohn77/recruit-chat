@@ -155,7 +155,7 @@ export const fr = {
     job_in_my_area: "Jobs in my area",
     jobs: "{{title}} jobs",
     any_job: "Any job",
-    general_referral: "General Referral",
+    general_referral: "General referral",
     friend_first_name: "What is your friend's first name?",
     refer_someone_else: "Would you like to refer someone else?",
     successful_validation: `Hi {{userLastName}}, thanks for validating!`,
