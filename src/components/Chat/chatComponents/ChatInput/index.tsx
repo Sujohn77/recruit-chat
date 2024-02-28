@@ -618,7 +618,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       const isWriteAccess = getAccessWriteType(currentMsgType) || file;
-      if (draftMessage && event.key === "Enter" && isWriteAccess) {
+      if ((draftMessage || phone) && event.key === "Enter" && isWriteAccess) {
         event.preventDefault();
         onSendMessageHandler();
       }
