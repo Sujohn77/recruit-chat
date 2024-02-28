@@ -166,9 +166,9 @@ export const ua = {
     general_referral: "General referral",
     friend_first_name: "What is your friend's first name?",
     refer_someone_else: "Would you like to refer someone else?",
-    successful_validation: `Hi {{userLastName}}, thanks for validating!`,
-    referral_options: `
-    \nTo refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
+    successful_validation: `Hi {{userLastName}}, thanks for validating!     
+    \n`,
+    referral_options: `To refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
     lastname: "What is your last name?",
     birth: "What is your year of birth?",
     thanks:
