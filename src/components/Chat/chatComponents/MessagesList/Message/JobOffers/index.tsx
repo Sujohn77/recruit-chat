@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 
 import * as S from "./styles";
@@ -24,29 +24,35 @@ export const JobOffers: React.FC<IJobOffersProps> = ({
     setActiveIndex(current);
   }, []);
 
+  const offers = useMemo(
+    () =>
+      Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
+        return index < offerJobs.length ? (
+          <JobOffer
+            key={offerJobs[index].id}
+            jobOffer={offerJobs[index]}
+            isLastMess={isLastMess}
+            setSelectedReferralJobId={setSelectedReferralJobId}
+          />
+        ) : (
+          <NotFoundOffer key={`not-found-offer-${index}`} />
+        );
+      }),
+    [offerJobs]
+  );
+
   return (
     <S.Wrapper>
       <Carousel
+        swipe
+        height={242}
         index={activeIndex}
         onChange={handleChange}
-        animation={undefined}
         indicators={false}
         autoPlay={false}
-        swipe
         className="my-carousel"
       >
-        {Array.from({ length: offerJobs.length + 1 }).map((item, index) => {
-          return index < offerJobs.length ? (
-            <JobOffer
-              key={offerJobs[index].id}
-              jobOffer={offerJobs[index]}
-              isLastMess={isLastMess}
-              setSelectedReferralJobId={setSelectedReferralJobId}
-            />
-          ) : (
-            <NotFoundOffer key={`not-found-offer-${index}`} />
-          );
-        })}
+        {offers}
       </Carousel>
 
       {activeIndex !== 0 && (

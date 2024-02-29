@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-// const MARGIN = "0 12px";
-
 export const JobOfferWrapper = styled.div`
   background: ${({ theme: { message } }) => message.backgroundColor};
   color: ${({ theme: { message } }) => message.jobOffer.color};
@@ -14,6 +12,7 @@ export const JobOfferWrapper = styled.div`
   min-height: 200px;
   display: flex;
   flex-direction: column;
+  height: 242px;
 `;
 
 export const OfferTitle = styled.p`

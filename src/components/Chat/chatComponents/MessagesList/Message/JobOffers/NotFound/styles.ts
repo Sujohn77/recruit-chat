@@ -10,19 +10,26 @@ interface ITitleProps {
   withMargin: boolean;
 }
 
+export const Wrapper = styled.div`
+  background: transparent;
+  width: 100%;
+`;
+
 export const NoFound = styled.div<INoFoundProps>`
   background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
   padding: 24px 28px;
-  margin: 0 auto;
   display: flex;
   flex-flow: column;
   max-width: 306px;
   box-sizing: border-box;
   margin-bottom: 24px;
+  height: 145px;
 
   ${({ withReferral }) =>
-    withReferral ? "margin: 0px 18px;" : "min-height: 245px;"}
+    withReferral ? "margin: 0px 18px;" : "min-height: 242px;"}
+
+  margin-top: 40px;
 `;
 
 export const Title = styled.p<ITitleProps>`
