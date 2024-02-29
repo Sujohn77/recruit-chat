@@ -22,6 +22,7 @@ interface IMessageBoxProps extends IMessageProps {
 
 interface IMessageTextProps {
   fontWeight?: number;
+  withMaxWidth?: boolean;
 }
 
 export const MessageBox = styled.div<IMessageBoxProps>`
@@ -140,7 +141,7 @@ export const MessageText = styled.span<IMessageTextProps>`
   margin: 0;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 218px;
+  ${({ withMaxWidth = true }) => withMaxWidth && "max-width: 218px;"}
   white-space: pre-line;
   font-weight: ${({ fontWeight = 500 }) => fontWeight};
 `;

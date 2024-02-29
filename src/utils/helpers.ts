@@ -498,7 +498,8 @@ export const getNextActionType = (
 export const getSearchJobsData = (
   category?: string,
   city?: string,
-  country?: string
+  country?: string,
+  employeeLocationID?: string
 ): ISearchJobsPayload => {
   return {
     page: 0,
@@ -507,17 +508,21 @@ export const getSearchJobsData = (
     minDatePosted: "2016-11-13T00:00:00",
     uniqueTitles: true,
     categories: category ? [category] : undefined,
-    location: city
-      ? {
-          city: city,
-          state: null,
-          postalCode: null,
-          country: country?.trim() || null,
-          latitude: null,
-          longitude: null,
-          radius: null,
-          radiusUnit: "km",
-        }
+    location:
+      !employeeLocationID && city
+        ? {
+            city: city,
+            state: null,
+            postalCode: null,
+            country: country?.trim() || null,
+            latitude: null,
+            longitude: null,
+            radius: null,
+            radiusUnit: "km",
+          }
+        : undefined,
+    customData: employeeLocationID
+      ? [{ name: "Custom2", value: employeeLocationID }]
       : undefined,
   };
 };

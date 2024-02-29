@@ -177,6 +177,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setChatId: () => {},
   setLocations: () => {},
   setCategory: () => {},
+  employeeLocationID: "",
+  setEmployeeLocationID: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -275,6 +277,7 @@ const ChatProvider = ({
 
   const [employeeLocation, setEmployeeLocation] = useState("");
   const [employeeJobCategory, setEmployeeJobCategory] = useState("");
+  const [employeeLocationID, setEmployeeLocationID] = useState("");
 
   useEffect(() => {
     employeeId && sessionStorage.setItem("employeeId", employeeId.toString());
@@ -446,6 +449,36 @@ const ChatProvider = ({
   const createJobAlert = useCallback(
     async ({ email, type }: IJobAlertData) => {
       if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
+        if (
+          isCandidateAnonym &&
+          chatId &&
+          firstName &&
+          lastName &&
+          emailAddress
+        ) {
+          const candidateData: IUpdateOrMergeCandidateRequest = {
+            firstName,
+            lastName,
+            emailAddress,
+            candidateId: candidateId,
+            chatId: chatId,
+          };
+
+          const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+            await apiInstance.updateOrMargeCandidate(candidateData);
+
+          const res = candidateRes?.data;
+
+          if (
+            res?.success &&
+            res?.updateChatBotCandidateId &&
+            res?.candidateId
+          ) {
+            setCandidateId(res.candidateId);
+            setIsCandidateAnonym(false);
+          }
+        }
+
         setIsChatLoading(true);
         try {
           await apiInstance.createJobAlert({
@@ -462,7 +495,14 @@ const ChatProvider = ({
         }
       }
     },
-    [searchLocations, alertCategories, candidateId]
+    [
+      searchLocations,
+      alertCategories,
+      candidateId,
+      firstName,
+      lastName,
+      emailAddress,
+    ]
   );
 
   // Initiate an action & set state
@@ -625,13 +665,16 @@ const ChatProvider = ({
     async (
       searchCategory?: string,
       searchLocation?: string,
-      searchCountry?: string
+      searchCountry?: string,
+      employeeLocationID?: string
     ): Promise<null | boolean> => {
       const payload = getSearchJobsData(
         searchCategory,
         searchLocation,
-        searchCountry
+        searchCountry,
+        employeeLocationID
       );
+
       setIsChatLoading(true);
       try {
         const res: ApiResponse<IRequisitionsResponse> =
@@ -1273,6 +1316,8 @@ const ChatProvider = ({
     setChatId,
     setLocations,
     setCategory,
+    employeeLocationID,
+    setEmployeeLocationID,
   };
 
   // console.log(
@@ -1280,9 +1325,6 @@ const ChatProvider = ({
   //   `color: ${COLORS.PASTEL_GRIN}; font-size: 14px; background-color: ${COLORS.BLACK};`,
   //   chatState
   // );
-
-  // @ts-ignore
-  window.__store__ = chatState;
 
   return (
     <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>

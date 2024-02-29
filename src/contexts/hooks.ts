@@ -31,6 +31,7 @@ export const useValidateReferral = () => {
     setEmployeeJobCategory,
     setEmployeeLocation,
     setEmployeeFullName,
+    setEmployeeLocationID,
   } = useChatMessenger();
 
   return useCallback(
@@ -58,12 +59,14 @@ export const useValidateReferral = () => {
               setCandidateId(res.data.candidateId);
               // setIsCandidateAnonym(false);
             }
-            res.data.employeeLocation &&
-              setEmployeeLocation(res.data.employeeLocation);
+            res.data.employeeLocationCity &&
+              setEmployeeLocation(res.data.employeeLocationCity);
             res.data.employeeJobCategory &&
               setEmployeeJobCategory(res.data.employeeJobCategory);
             res.data.employeeFullName &&
               setEmployeeFullName(res.data.employeeFullName);
+            res.data.employeeLocationID &&
+              setEmployeeLocationID(res.data.employeeLocationID);
           }
 
           if (res?.data?.isValid) {

@@ -9,7 +9,7 @@ import * as S from "../styles";
 import { Icon } from "../../styles";
 import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
-import { MessageStatuses } from "utils/constants";
+import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { ILocalMessage, MessageType } from "utils/types";
@@ -29,6 +29,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
 }) => {
   const theme = useTheme() as ThemeType;
   const { referralCompanyName, offerJobs } = useChatMessenger();
+
+  const withMaxTextWidth =
+    message.optionList?.type !== MessageOptionTypes.AvailableJobs;
 
   const messageText = useMemo(() => {
     const jobOffer = offerJobs.find(
@@ -53,14 +56,18 @@ export const TextMessage: FC<ITextMessageProps> = ({
       const index = message.content.text.indexOf(referralCompanyName);
 
       return (
-        <S.MessageText>
+        <S.MessageText withMaxWidth={withMaxTextWidth}>
           {message?.content?.text.substring(0, index)}
           <S.MessageText fontWeight={700}>{referralCompanyName}</S.MessageText>
           {message.content.text.substring(index + referralCompanyName.length)}
         </S.MessageText>
       );
     } else {
-      return <S.MessageText>{message?.content?.text} </S.MessageText>;
+      return (
+        <S.MessageText withMaxWidth={withMaxTextWidth}>
+          {message?.content?.text}
+        </S.MessageText>
+      );
     }
   }, []);
 

@@ -218,9 +218,9 @@ export enum SnapshotType {
 // Loop
 
 export interface ISearchJobsPayload {
-  pageSize: number;
   // page?: number;
-  keyword: string;
+  pageSize: number;
+  keyword?: string;
   page?: number;
   companyId?: string;
   minDatePosted?: string;
@@ -239,6 +239,7 @@ export interface ISearchJobsPayload {
   };
   externalSystemId?: number;
   uniqueTitles?: boolean;
+  customData?: { name: string; value: string }[];
 }
 
 export interface IResumeDataPayload {
@@ -612,9 +613,10 @@ export interface IValidateRefResponse extends ISuccessResponse {
   candidateId: number;
   isValid: boolean;
   employeeJobCategory: string;
-  employeeLocation: string;
   updateChatBotCandidateId: boolean;
   employeeFullName: string;
+  employeeLocationCity: string;
+  employeeLocationID: string;
 }
 
 export interface ICreateAndSendPayload {

@@ -123,7 +123,8 @@ export interface IChatMessengerContext {
   searchRequisitions: (
     searchCategory?: string,
     searchLocation?: string,
-    searchCountry?: string
+    searchCountry?: string,
+    employeeLocationID?: string
   ) => Promise<null | boolean>;
   employeeFullName: string;
   setEmployeeFullName: (name: string) => void;
@@ -134,6 +135,8 @@ export interface IChatMessengerContext {
   setOfferJobs: (offers: IRequisition[]) => void;
   setChatId: (chatId: number) => void;
   setCategory: (category: string | null) => void;
+  employeeLocationID: string;
+  setEmployeeLocationID: (id: string) => void;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;
