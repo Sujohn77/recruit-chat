@@ -4,15 +4,14 @@ import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
 import * as S from "../styles";
-import { DarkButton } from "components/Layout/styles";
 import { IMessageOption } from "services/types";
+import { generateLocalId } from "utils/helpers";
 import {
   ButtonsOptions,
   CHAT_ACTIONS,
   ILocalMessage,
   MessageType,
 } from "utils/types";
-import { generateLocalId } from "utils/helpers";
 
 interface IReferralJobOptionsProps {
   message: ILocalMessage;
@@ -125,18 +124,16 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
 
   return (
     <S.ReferralOptionList>
-      {map(message.optionList?.options, (option, index) => (
-        <DarkButton
-          onClick={() => onSelectOption(option)}
-          isSelected={option.isSelected}
+      {map(message.optionList?.options, (o, i) => (
+        <S.OptionButton
+          onClick={() => onSelectOption(o)}
+          isSelected={o.isSelected}
           disabled={!isLastMess}
-          fontWeight={500}
-          width="100%"
-          marginBottom="8px"
-          height="35px"
         >
-          {index === 1 ? employeeJobCategory + " jobs" : option.text}
-        </DarkButton>
+          {i === 1
+            ? t("referral:jobs", { title: employeeJobCategory })
+            : o.text}
+        </S.OptionButton>
       ))}
     </S.ReferralOptionList>
   );

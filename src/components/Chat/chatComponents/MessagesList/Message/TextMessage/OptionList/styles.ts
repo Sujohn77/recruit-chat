@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
+
 import { COLORS } from "utils/colors";
+import { DarkButton } from "components/Layout/styles";
 
 interface IOptionProps {
   isLast?: boolean;
@@ -58,4 +60,13 @@ export const MessageText = styled.p`
   overflow: hidden;
   white-space: pre-line;
   font-weight: 500;
+`;
+
+export const OptionButton = styled(DarkButton)`
+  font-weight: 500 !important;
+  margin-bottom: 8px !important;
+  min-height: 35px !important;
+  padding: 8px 0 !important;
+  width: 100%;
+  height: auto;
 `;
