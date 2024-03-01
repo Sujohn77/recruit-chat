@@ -91,7 +91,7 @@ export const useValidateReferral = () => {
 };
 
 export const useSubmitReferral = () => {
-  const { setIsChatLoading, candidateId } = useChatMessenger();
+  const { setIsChatLoading, candidateId, jobSourceID } = useChatMessenger();
 
   return useCallback(
     async (
@@ -106,6 +106,7 @@ export const useSubmitReferral = () => {
           await apiInstance.submitReferral({
             ...payload,
             referrerSubscriberId: candidateId!,
+            jobSourceId: jobSourceID,
           });
 
         if (res.data && isNumber(res.data?.previouslyReferredState)) {

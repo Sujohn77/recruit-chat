@@ -221,13 +221,7 @@ const getChatActionMessages = (
       // return [{ subType: MessageType.QUESTION_FORM }]; // for phase 2
     }
     case CHAT_ACTIONS.NO_MATCH: {
-      return [
-        { subType: MessageType.NO_MATCH },
-        {
-          subType: MessageType.TEXT,
-          text: i18n.t("messages:noMatchMessage"),
-        },
-      ];
+      return [{ subType: MessageType.NO_MATCH }];
     }
     case CHAT_ACTIONS.QUESTION_RESPONSE: {
       return [{ text: i18n.t("messages:emailAnswer") }];

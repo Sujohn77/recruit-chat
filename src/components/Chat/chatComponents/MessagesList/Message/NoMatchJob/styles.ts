@@ -45,3 +45,15 @@ export const RefineJobSearch = styled(Button)`
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
   text-transform: initial !important;
 `;
+
+export const Text = styled.span`
+  margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: pre-line;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: ${({ theme }) => theme.message?.chat.color};
+  margin-bottom: 18px;
+`;

@@ -137,6 +137,7 @@ export interface IChatMessengerContext {
   setCategory: (category: string | null) => void;
   employeeLocationID: string;
   setEmployeeLocationID: (id: string) => void;
+  jobSourceID: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

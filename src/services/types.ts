@@ -620,7 +620,6 @@ export interface IValidateRefResponse extends ISuccessResponse {
 
 export interface ICreateAndSendPayload {
   referrerSubscriberId: number;
-  jobId?: number;
   referralSourceTypeId: number;
   referredCandidate: {
     firstName: string;
@@ -628,6 +627,8 @@ export interface ICreateAndSendPayload {
     emailAddress: string;
     mobileNumber: string;
   };
+  jobSourceId: string;
+  jobId?: number;
 }
 
 export interface ISubmitReferralResponse {

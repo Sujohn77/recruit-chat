@@ -2,9 +2,9 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CHAT_ACTIONS } from "utils/types";
-import { COLORS } from "utils/colors";
 import * as S from "./styles";
+import { COLORS } from "utils/colors";
+import { CHAT_ACTIONS } from "utils/types";
 
 export const NoMatchJob: FC = () => {
   const { t } = useTranslation();
@@ -12,7 +12,8 @@ export const NoMatchJob: FC = () => {
 
   return (
     <S.Wrapper>
-      <S.Title>{t("chat_item_description:no_match")}</S.Title>
+      <S.Text>{t("messages:noMatchMessage")}</S.Text>
+
       {!isReferralEnabled && (
         <S.SetJobAlert
           style={{ backgroundColor: COLORS.WHITE }}

@@ -18,6 +18,7 @@ export const ChatBotRoot: FC = () => {
   const [chatBotToken, setChatBotToken] = useState("");
   const [chatBotRefBaseURL, setChatBotRefBaseURL] = useState("");
   const [clientApiToken, setClientApiToken] = useState("");
+  const [jobSourceId, setJobSourceId] = useState("");
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -36,6 +37,9 @@ export const ChatBotRoot: FC = () => {
 
         event.data.props?.clientApiToken &&
           setClientApiToken(event.data.props?.clientApiToken);
+
+        event.data.props.jobSourceId &&
+          setJobSourceId(event.data.props.jobSourceId);
       }
 
       if (event.data?.token) {
@@ -77,6 +81,7 @@ export const ChatBotRoot: FC = () => {
             companyName={companyName}
             chatBotRefBaseURL={chatBotRefBaseURL}
             isReferralEnabled={isReferralEnabled}
+            jobSourceID={jobSourceId}
           >
             <ThemeContextProvider value={theme}>
               <FileUploadProvider>

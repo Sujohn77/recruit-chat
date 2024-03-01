@@ -89,8 +89,9 @@ interface IChatProviderProps {
   isReferralEnabled: boolean;
   companyName: string | null;
   chatBotToken: string;
-  chatBotId?: string | null;
   chatBotRefBaseURL: string;
+  jobSourceID: string;
+  chatBotId?: string | null;
   clientApiToken?: string;
 }
 
@@ -179,6 +180,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setCategory: () => {},
   employeeLocationID: "",
   setEmployeeLocationID: () => {},
+  jobSourceID: "",
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -193,6 +195,7 @@ const ChatProvider = ({
   chatBotToken,
   chatBotRefBaseURL,
   clientApiToken,
+  jobSourceID,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
@@ -1330,6 +1333,7 @@ const ChatProvider = ({
     setCategory,
     employeeLocationID,
     setEmployeeLocationID,
+    jobSourceID,
   };
 
   // console.log(
