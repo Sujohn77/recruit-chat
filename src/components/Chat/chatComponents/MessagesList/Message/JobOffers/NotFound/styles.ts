@@ -10,11 +10,6 @@ interface ITitleProps {
   withMargin: boolean;
 }
 
-export const Wrapper = styled.div`
-  background: transparent;
-  width: 100%;
-`;
-
 export const NoFound = styled.div<INoFoundProps>`
   background: ${({ theme: { message } }) => message.backgroundColor};
   border-radius: 10px;
@@ -23,13 +18,12 @@ export const NoFound = styled.div<INoFoundProps>`
   flex-flow: column;
   max-width: 306px;
   box-sizing: border-box;
-  margin-bottom: 24px;
-  height: 145px;
+  margin: 0px 18px;
 
   ${({ withReferral }) =>
-    withReferral ? "margin: 0px 18px;" : "min-height: 242px;"}
-
-  margin-top: 40px;
+    withReferral
+      ? "height: 145px; margin-top: 40px;"
+      : "min-height: 242px; width: 285px;"}
 `;
 
 export const Title = styled.p<ITitleProps>`
