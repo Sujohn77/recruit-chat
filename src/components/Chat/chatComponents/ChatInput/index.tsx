@@ -18,6 +18,7 @@ import "../../../../services/firebase/config";
 import * as S from "./styles";
 import {
   ReferralSteps,
+  getAlertJobMessage,
   getReferralQuestion,
   getReferralResponseMess,
   getValidationRefResponse,
@@ -99,6 +100,8 @@ export const ChatInput: FC<IChatInputProps> = ({
     employeeJobCategory,
     setIsChatLoading,
     offerJobs,
+    firstName: userFName,
+    lastName: userLName,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -111,6 +114,11 @@ export const ChatInput: FC<IChatInputProps> = ({
     category,
     lastActionType: currentMsgType,
   });
+
+  // user
+  const [userFirstName, setUserFirstName] = useState(userFName);
+  const [userLastName, setUserLastName] = useState(userLName);
+  const [userEmail, setUserEmail] = useState(emailAddress);
 
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<string[]>([]);
@@ -220,7 +228,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   // Callbacks
   const sendMessage = useCallback(
-    (draftMessage: string | null) => {
+    async (draftMessage: string | null) => {
       const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
       const isSelectedValues =
         matchedSearchItem || inputValues.length || draftMessage;
@@ -228,6 +236,26 @@ export const ChatInput: FC<IChatInputProps> = ({
         isSelectedValues && currentMsgType
           ? getNextActionType(currentMsgType)
           : CHAT_ACTIONS.NO_MATCH;
+
+      const createAlertHandle = (successText: string) => {
+        clearJobFilters();
+        createJobAlert({
+          email: emailAddress || draftMessage!,
+          type: CHAT_ACTIONS.SET_ALERT_EMAIL,
+          successText,
+        });
+        setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+      };
+
+      const message: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        isOwn: true,
+        content: {
+          subType: MessageType.TEXT,
+          text: draftMessage || "",
+        },
+      };
 
       if (inputType === TextFieldTypes.MultiSelect && actionType) {
         const items = !!matchedSearchItem
@@ -238,19 +266,11 @@ export const ChatInput: FC<IChatInputProps> = ({
           actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
           currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
         ) {
-          const alertEmailMess: ILocalMessage = {
-            isOwn: false,
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: t(
-                `messages:${
-                  emailAddress ? "emailAlreadyProvided" : "alertEmail"
-                }`
-              ),
-            },
-            _id: null,
-          };
+          const alertEmailMess: ILocalMessage = getAlertJobMessage(
+            userFName || userFirstName,
+            userLName || userLastName,
+            emailAddress
+          );
 
           const messWithLocations: ILocalMessage = {
             isOwn: true,
@@ -264,20 +284,28 @@ export const ChatInput: FC<IChatInputProps> = ({
           };
 
           setSearchLocations(items.length ? items : [draftMessage!]);
-          _setMessages((prevMessages) => [
-            alertEmailMess,
-            messWithLocations,
-            ...prevMessages,
-          ]);
           setInputValues([]);
-          setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
 
-          if (emailAddress) {
-            clearJobFilters();
-            createJobAlert({
-              email: emailAddress,
-              type: CHAT_ACTIONS.SET_ALERT_EMAIL,
-            });
+          if (!emailAddress) {
+            _setMessages((prevMessages) => [
+              alertEmailMess,
+              messWithLocations,
+              ...prevMessages,
+            ]);
+
+            if (!userFName) {
+              setCurrentMsgType(CHAT_ACTIONS.SET_USER_FIRST_NAME);
+            } else if (!userLName) {
+              setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
+            } else if (!userEmail) {
+              setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
+            }
+          } else {
+            _setMessages((prevMessages) => [
+              messWithLocations,
+              ...prevMessages,
+            ]);
+            createAlertHandle(t("messages:emailAlreadyProvided"));
           }
         } else {
           if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
@@ -296,6 +324,47 @@ export const ChatInput: FC<IChatInputProps> = ({
           (draftMessage || phone)
         ) {
           referralHandle(draftMessage || phone);
+        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_FIRST_NAME) {
+          setUserFirstName(draftMessage!);
+          _setMessages((prev) => [
+            getAlertJobMessage(draftMessage!, userLName, emailAddress),
+            message,
+            ...prev,
+          ]);
+          setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
+        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_LAST_NAME) {
+          setUserLastName(draftMessage!);
+          _setMessages((prev) => [
+            getAlertJobMessage(
+              userFName || userFirstName,
+              draftMessage!,
+              emailAddress
+            ),
+            message,
+            ...prev,
+          ]);
+          setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
+        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_EMAIL) {
+          const emailError = validateEmail(draftMessage!);
+          if (emailError) {
+            setError(emailError);
+          } else {
+            setUserEmail(draftMessage!);
+            _setMessages((prev) => [message, ...prev]);
+            dispatch({
+              type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+              payload: {
+                candidateData: {
+                  emailAddress: emailAddress || draftMessage!,
+                  firstName: userFName || userFirstName,
+                  lastName: userLName || userLastName,
+                  callback: () => {
+                    createAlertHandle(t("messages:successSubscribed"));
+                  },
+                },
+              },
+            });
+          }
         } else {
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
@@ -314,6 +383,10 @@ export const ChatInput: FC<IChatInputProps> = ({
       referralStep,
       dispatch,
       phone,
+      emailAddress,
+      userFirstName,
+      userLastName,
+      userEmail,
     ]
   );
 

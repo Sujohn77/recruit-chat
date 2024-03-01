@@ -429,8 +429,6 @@ export interface IJobAlertRequest {
   location: string;
   jobCategory: string | null;
   candidateId: number;
-  // subscriberID: number | null;
-  // chatBotID: string | null;
 }
 
 // Responses
@@ -438,6 +436,7 @@ export interface IJobAlertRequest {
 export interface IJobAlertResponse {
   success: string;
   message: string;
+  data: string;
 }
 
 export interface ISuccessResponse {

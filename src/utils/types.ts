@@ -141,6 +141,10 @@ export enum CHAT_ACTIONS {
   MAKE_REFERRAL_FRIEND = "MAKE_REFERRAL_FRIEND",
   SEE_MY_REFERRALS = "SEE_MY_REFERRALS",
   JOB_IN_MY_AREA = "JOB_IN_MY_AREA",
+  SET_USER_FIRST_NAME = "SET_USER_FIRST_NAME",
+  SET_USER_LAST_NAME = "SET_USER_LAST_NAME",
+  SET_USER_EMAIL = "SET_USER_EMAIL",
+  CREATED_JOB_ALERT = "CREATED_JOB_ALERT",
 }
 
 export enum Status {
@@ -261,6 +265,7 @@ export interface IMenuItem {
 export interface IJobAlertData {
   email: string;
   type: CHAT_ACTIONS;
+  successText?: string;
 }
 
 export interface IApiThemeResponse {

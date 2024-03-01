@@ -303,6 +303,9 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_ALERT_EMAIL:
       case CHAT_ACTIONS.MAKE_REFERRAL:
       case CHAT_ACTIONS.MAKE_REFERRAL_FRIEND:
+      case CHAT_ACTIONS.SET_USER_FIRST_NAME:
+      case CHAT_ACTIONS.SET_USER_LAST_NAME:
+      case CHAT_ACTIONS.SET_USER_EMAIL:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -447,48 +450,57 @@ const ChatProvider = ({
   }, [serverMessages.length, isInitialized]);
 
   const createJobAlert = useCallback(
-    async ({ email, type }: IJobAlertData) => {
+    async ({ email, type, successText }: IJobAlertData) => {
       if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
-        // if (
-        //   isCandidateAnonym &&
-        //   chatId &&
-        //   firstName &&
-        //   lastName &&
-        //   emailAddress
-        // ) {
-        //   const candidateData: IUpdateOrMergeCandidateRequest = {
-        //     firstName,
-        //     lastName,
-        //     emailAddress,
-        //     candidateId: candidateId,
-        //     chatId: chatId,
-        //   };
-
-        //   const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
-        //     await apiInstance.updateOrMargeCandidate(candidateData);
-
-        //   const res = candidateRes?.data;
-
-        //   if (
-        //     res?.success &&
-        //     res?.updateChatBotCandidateId &&
-        //     res?.candidateId
-        //   ) {
-        //     setCandidateId(res.candidateId);
-        //     setIsCandidateAnonym(false);
-        //   }
-        // }
-
         setIsChatLoading(true);
         try {
-          await apiInstance.createJobAlert({
+          const res = await apiInstance.createJobAlert({
             email: email,
             location: searchLocations.join(" "),
             jobCategory: alertCategories?.length ? alertCategories[0] : "",
             candidateId: candidateId,
           });
+
+          if (typeof res.data === "string") {
+            const responseMessage: ILocalMessage = {
+              content: {
+                subType: MessageType.TEXT,
+                text: successText || res.data,
+              },
+              isOwn: false,
+              localId: generateLocalId(),
+              _id: generateLocalId(),
+            };
+            setMessages((prev) => [responseMessage, ...prev]);
+            setCurrentMsgType(CHAT_ACTIONS.CREATED_JOB_ALERT);
+          } else if (res.status !== 200) {
+            setMessages((prev) => [
+              {
+                _id: generateLocalId(),
+                localId: generateLocalId(),
+                isOwn: false,
+                content: {
+                  subType: MessageType.TEXT,
+                  text: t("errors:something_went_wrong"),
+                },
+              },
+              ...prev,
+            ]);
+          }
         } catch (err) {
           clearAuthConfig();
+          setMessages((prev) => [
+            {
+              _id: generateLocalId(),
+              localId: generateLocalId(),
+              isOwn: false,
+              content: {
+                subType: MessageType.TEXT,
+                text: t("errors:something_went_wrong"),
+              },
+            },
+            ...prev,
+          ]);
         } finally {
           setIsChatLoading(false);
           setSearchLocations([]);
