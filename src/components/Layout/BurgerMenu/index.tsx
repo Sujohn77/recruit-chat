@@ -83,6 +83,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       type === CHAT_ACTIONS.MAKE_REFERRAL
     ) {
       setSelectedReferralJobId(undefined);
+      setViewJob(null);
     }
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
