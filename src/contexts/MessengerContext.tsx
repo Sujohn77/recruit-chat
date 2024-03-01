@@ -449,35 +449,35 @@ const ChatProvider = ({
   const createJobAlert = useCallback(
     async ({ email, type }: IJobAlertData) => {
       if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
-        if (
-          isCandidateAnonym &&
-          chatId &&
-          firstName &&
-          lastName &&
-          emailAddress
-        ) {
-          const candidateData: IUpdateOrMergeCandidateRequest = {
-            firstName,
-            lastName,
-            emailAddress,
-            candidateId: candidateId,
-            chatId: chatId,
-          };
+        // if (
+        //   isCandidateAnonym &&
+        //   chatId &&
+        //   firstName &&
+        //   lastName &&
+        //   emailAddress
+        // ) {
+        //   const candidateData: IUpdateOrMergeCandidateRequest = {
+        //     firstName,
+        //     lastName,
+        //     emailAddress,
+        //     candidateId: candidateId,
+        //     chatId: chatId,
+        //   };
 
-          const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
-            await apiInstance.updateOrMargeCandidate(candidateData);
+        //   const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+        //     await apiInstance.updateOrMargeCandidate(candidateData);
 
-          const res = candidateRes?.data;
+        //   const res = candidateRes?.data;
 
-          if (
-            res?.success &&
-            res?.updateChatBotCandidateId &&
-            res?.candidateId
-          ) {
-            setCandidateId(res.candidateId);
-            setIsCandidateAnonym(false);
-          }
-        }
+        //   if (
+        //     res?.success &&
+        //     res?.updateChatBotCandidateId &&
+        //     res?.candidateId
+        //   ) {
+        //     setCandidateId(res.candidateId);
+        //     setIsCandidateAnonym(false);
+        //   }
+        // }
 
         setIsChatLoading(true);
         try {
