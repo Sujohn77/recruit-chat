@@ -664,19 +664,6 @@ export const getStorageValue = (
   return value || defaultValue;
 };
 
-export const generateOtp = ({ length = 6 }: { length?: number }) => {
-  const digits = "0123456789";
-  let otp = "";
-
-  for (let i = 1; i <= length; i++) {
-    const index = Math.floor(Math.random() * digits.length);
-
-    otp = otp + digits[index];
-  }
-
-  return otp;
-};
-
 export const validateFields = (email: string, text: string) => {
   const errors = [];
   const emailError = validateEmail(email);
@@ -700,12 +687,6 @@ export const validationUserContacts = ({
 
   return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
 };
-
-// ----------------------------------- regex ----------------------------------- //
-export const regExpUuid =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-export const regExpJWT = /^[\w-]*\.[\w-]*\.[\w-]*$/i;
 
 // ---------------------------------------------------------------------------- //
 

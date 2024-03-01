@@ -147,7 +147,7 @@ export const ua = {
     refer_friend: "Can I refer a friend to {{referralCompanyName}}?",
   },
   errors: {
-    not_match: "Email addresses do not match",
+    not_match: "Email addresses do not match - please re-enter",
     invalid_phone_number: "Phone number is invalid",
     not_possible_to_start:
       "Sorry, it’s not been possible to start your application for this job. Please try again or contact support@loopworks.com",
