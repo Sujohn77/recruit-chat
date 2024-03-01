@@ -19,7 +19,7 @@ export const Logout: FC<ILogoutProps> = ({
   const { t } = useTranslation();
 
   const logoutHandle = useCallback(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     postMessToParent(EventIds.RefreshChatbot);
   }, []);
 

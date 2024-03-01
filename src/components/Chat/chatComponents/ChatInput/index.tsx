@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
 import isNaN from "lodash/isNaN";
 import uniqBy from "lodash/uniqBy";
+import isNull from "lodash/isNull";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
@@ -60,6 +61,8 @@ interface IChatInputProps {
   >;
   selectedReferralJobId?: number;
 }
+
+const INPUT_KEY = "input-value";
 
 export const ChatInput: FC<IChatInputProps> = ({
   setHeight,
@@ -139,25 +142,42 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   useEffect(() => {
     referralStep &&
-      sessionStorage.setItem("referralStep", referralStep.toString());
-    refEmployeeId && sessionStorage.setItem("refEmployeeId", refEmployeeId);
-    firstName && sessionStorage.setItem("firstName", firstName);
-    lastName && sessionStorage.setItem("lastName", lastName);
-    email && sessionStorage.setItem("email", email);
-    phone && sessionStorage.setItem("phone", phone);
+      localStorage.setItem("referralStep", referralStep.toString());
+    refEmployeeId && localStorage.setItem("refEmployeeId", refEmployeeId);
+    firstName && localStorage.setItem("firstName", firstName);
+    lastName && localStorage.setItem("lastName", lastName);
+    email && localStorage.setItem("email", email);
+    phone && localStorage.setItem("phone", phone);
   }, [referralStep, refEmployeeId]);
 
   useEffect(() => {
-    const storedReferralStep = sessionStorage.getItem("referralStep");
+    const storedReferralStep = localStorage.getItem("referralStep");
     if (storedReferralStep) {
       setTimeout(() => setReferralStep(Number(storedReferralStep)), 1000);
     }
 
-    setRefEmployeeId(sessionStorage.getItem("refEmployeeId") || "");
-    setFirstName(sessionStorage.getItem("firstName") || "");
-    setLastName(sessionStorage.getItem("lastName") || "");
-    setEmail(sessionStorage.getItem("email") || "");
-    setPhone(sessionStorage.getItem("phone") || "");
+    setRefEmployeeId(localStorage.getItem("refEmployeeId") || "");
+    setFirstName(localStorage.getItem("firstName") || "");
+    setLastName(localStorage.getItem("lastName") || "");
+    setEmail(localStorage.getItem("email") || "");
+    setPhone(localStorage.getItem("phone") || "");
+  }, []);
+
+  useEffect(() => {
+    !isNull(draftMessage) && localStorage.setItem(INPUT_KEY, draftMessage);
+  }, [draftMessage]);
+
+  useEffect(() => {
+    const onPersistInputValue = ({ key, newValue }: StorageEvent) => {
+      if (key === INPUT_KEY) {
+        setDraftMessage(newValue);
+      }
+    };
+
+    window.addEventListener("storage", onPersistInputValue);
+    return () => {
+      window.removeEventListener("storage", onPersistInputValue);
+    };
   }, []);
 
   const { matchedPart, matchedItems } = useMemo(

@@ -283,13 +283,13 @@ const ChatProvider = ({
   const [employeeLocationID, setEmployeeLocationID] = useState("");
 
   useEffect(() => {
-    employeeId && sessionStorage.setItem("employeeId", employeeId.toString());
-    refLastName && sessionStorage.setItem("refLastName", refLastName);
+    employeeId && localStorage.setItem("employeeId", employeeId.toString());
+    refLastName && localStorage.setItem("refLastName", refLastName);
   }, [refLastName, employeeId]);
 
   useEffect(() => {
-    const storedEmployeeId = sessionStorage.getItem("employeeId");
-    const storedRefLastName = sessionStorage.getItem("refLastName");
+    const storedEmployeeId = localStorage.getItem("employeeId");
+    const storedRefLastName = localStorage.getItem("refLastName");
 
     storedEmployeeId && setEmployeeId(+storedEmployeeId);
     storedRefLastName && setRefLastName(storedRefLastName);
@@ -1240,7 +1240,7 @@ const ChatProvider = ({
     // create new anonym user
     createAnonymCandidate();
 
-    sessionStorage.clear();
+    localStorage.clear();
   }, []);
 
   const chatState: IChatMessengerContext = {

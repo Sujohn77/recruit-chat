@@ -158,7 +158,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           }
 
           setViewJob(null);
-          sessionStorage.removeItem("viewJob");
+          localStorage.removeItem("viewJob");
           _setMessages((prevMessages) => [
             interestedInResMess,
             ...prevMessages,
@@ -195,7 +195,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             setFlowId(res.data.FlowID);
             setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
             setViewJob(null);
-            sessionStorage.removeItem("viewJob");
+            localStorage.removeItem("viewJob");
           } else {
             setShowApplyBtn(false);
             setApplyJobError(

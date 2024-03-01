@@ -51,7 +51,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
                 m._id === message._id ? { ...m, optionList: undefined } : m
               ),
             ]);
-            sessionStorage.removeItem("viewJob");
+            localStorage.removeItem("viewJob");
             break;
           case 2:
             setSelectedReferralJobId(undefined);
