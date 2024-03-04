@@ -27,7 +27,7 @@ interface IInputProps {
   error?: string | null;
   style?: CSSProperties;
   ref?: ForwardedRef<HTMLInputElement>;
-  isErrorIcon?: boolean;
+  withErrorIcon?: boolean;
   disabled?: boolean;
 }
 
@@ -36,14 +36,14 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
     {
       value,
       onChange,
-      type = INPUT_TYPES.TEXT,
       placeHolder,
       setIsShowResults,
-      rows = 3,
-      theme = InputTheme.Secondary,
       error,
       style,
-      isErrorIcon = false,
+      rows = 3,
+      type = INPUT_TYPES.TEXT,
+      theme = InputTheme.Secondary,
+      withErrorIcon = false,
       disabled = false,
     },
     ref
@@ -85,11 +85,11 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
           onBlur={() => setIsFocus(false)}
         />
 
-        {error !== null && (
+        {!!error?.trim() && (
           <S.ErrorText>
             {error}
 
-            {isErrorIcon && (
+            {withErrorIcon && (
               <Image
                 src={IMAGES.WARN}
                 style={{ marginLeft: "5px", width: "12px", height: "12px" }}
