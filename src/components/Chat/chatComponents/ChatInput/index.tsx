@@ -867,6 +867,8 @@ export const ChatInput: FC<IChatInputProps> = ({
             ReferralSteps[employeeId ? "UserFirstName" : "EmployeeId"]
           );
           setDraftMessage("");
+          setRefError("");
+          setError("");
         }}
       />
 
