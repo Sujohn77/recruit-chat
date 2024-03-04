@@ -861,6 +861,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       <BurgerMenu
         setIsShowResults={setIsShowResults}
         setSelectedReferralJobId={setSelectedReferralJobId}
+        cleanInputValue={() => setDraftMessage("")}
       />
 
       {inputType === TextFieldTypes.MultiSelect ? (

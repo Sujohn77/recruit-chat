@@ -1,6 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import React, { FC, useCallback, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
@@ -29,13 +28,14 @@ interface IBurgerMenuProps {
   setSelectedReferralJobId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
+  cleanInputValue: () => void;
 }
 
 export const BurgerMenu: FC<IBurgerMenuProps> = ({
   setIsShowResults,
   setSelectedReferralJobId,
+  cleanInputValue,
 }) => {
-  const { t } = useTranslation();
   const {
     dispatch,
     chatId,
@@ -76,6 +76,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       setIsApplyJobFlow(false);
       setViewJob(null);
       sessionStorage.removeItem("viewJob");
+      cleanInputValue();
     }
 
     if (
@@ -84,6 +85,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     ) {
       setSelectedReferralJobId(undefined);
       setViewJob(null);
+      cleanInputValue();
     }
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
@@ -117,6 +119,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         myReferralsTab?.focus();
         break;
       case CHAT_ACTIONS.SAVE_TRANSCRIPT:
+        cleanInputValue();
         if (chatId) {
           try {
             if (emailAddress) {
