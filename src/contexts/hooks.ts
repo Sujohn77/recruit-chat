@@ -32,6 +32,7 @@ export const useValidateReferral = () => {
     setEmployeeLocation,
     setEmployeeFullName,
     setEmployeeLocationID,
+    setEmployeeJobFamilyNames,
   } = useChatMessenger();
 
   return useCallback(
@@ -55,18 +56,26 @@ export const useValidateReferral = () => {
             await apiInstance.validateReferral(payload);
 
           if (res.data) {
-            if (res.data?.candidateId && res.data?.updateChatBotCandidateId) {
-              setCandidateId(res.data.candidateId);
+            const {
+              candidateId,
+              employeeLocationCity,
+              employeeJobTitle,
+              employeeFullName,
+              employeeLocationID,
+              employeeJobFamilyNames,
+              updateChatBotCandidateId,
+            } = res.data;
+
+            if (candidateId && updateChatBotCandidateId) {
+              setCandidateId(candidateId);
               // setIsCandidateAnonym(false);
             }
-            res.data.employeeLocationCity &&
-              setEmployeeLocation(res.data.employeeLocationCity);
-            res.data.employeeJobCategory &&
-              setEmployeeJobCategory(res.data.employeeJobCategory);
-            res.data.employeeFullName &&
-              setEmployeeFullName(res.data.employeeFullName);
-            res.data.employeeLocationID &&
-              setEmployeeLocationID(res.data.employeeLocationID);
+            employeeLocationCity && setEmployeeLocation(employeeLocationCity);
+            employeeJobTitle && setEmployeeJobCategory(employeeJobTitle);
+            employeeFullName && setEmployeeFullName(employeeFullName);
+            employeeLocationID && setEmployeeLocationID(employeeLocationID);
+            employeeJobFamilyNames.length &&
+              setEmployeeJobFamilyNames(employeeJobFamilyNames);
           }
 
           if (res?.data?.isValid) {

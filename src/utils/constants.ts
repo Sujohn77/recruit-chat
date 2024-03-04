@@ -218,7 +218,6 @@ const getChatActionMessages = (
     }
     case CHAT_ACTIONS.HELP: {
       return [];
-      // return [{ subType: MessageType.QUESTION_FORM }]; // for phase 2
     }
     case CHAT_ACTIONS.NO_MATCH: {
       return [{ subType: MessageType.NO_MATCH }];

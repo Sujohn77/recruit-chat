@@ -611,11 +611,13 @@ export interface IValidateRefPayload {
 export interface IValidateRefResponse extends ISuccessResponse {
   candidateId: number;
   isValid: boolean;
-  employeeJobCategory: string;
   updateChatBotCandidateId: boolean;
   employeeFullName: string;
   employeeLocationCity: string;
   employeeLocationID: string;
+  employeeJobFamilyNames: string[];
+  employeeJobTitle: string;
+  employeeJobCategory?: string;
 }
 
 export interface ICreateAndSendPayload {

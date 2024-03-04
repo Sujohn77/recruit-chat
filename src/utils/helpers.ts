@@ -68,7 +68,7 @@ interface IIsResultType {
 }
 
 export interface IMessageProps {
-  backgroundColor?: string;
+  backgroundColor?: string | null;
   isOwn?: boolean;
   padding?: string;
   cursor?: string;
@@ -496,7 +496,7 @@ export const getNextActionType = (
 };
 
 export const getSearchJobsData = (
-  category?: string,
+  category?: string | string[],
   city?: string,
   country?: string,
   employeeLocationID?: string
@@ -507,7 +507,7 @@ export const getSearchJobsData = (
     keyword: "*",
     minDatePosted: "2016-11-13T00:00:00",
     uniqueTitles: true,
-    categories: category ? [category] : undefined,
+    categories: typeof category === "string" ? [category] : category,
     location:
       !employeeLocationID && city
         ? {

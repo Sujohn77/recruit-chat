@@ -85,10 +85,6 @@ export const Message: FC<IMessageProps> = ({
       // return <HiringHelp message={message} />; // for phase 2
       return null;
     }
-    case MessageType.QUESTION_FORM: {
-      return null;
-      // return <QuestionForm />; // for phase 2
-    }
     case MessageType.NO_MATCH:
     case MessageType.REFINE_SEARCH: {
       return <NoMatchJob />;

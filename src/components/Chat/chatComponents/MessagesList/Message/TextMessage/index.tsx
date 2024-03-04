@@ -30,10 +30,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
   const theme = useTheme() as ThemeType;
   const { referralCompanyName, offerJobs } = useChatMessenger();
 
-  const withMaxTextWidth =
-    message.optionList?.type !== MessageOptionTypes.AvailableJobs;
-
   const messageText = useMemo(() => {
+    const withMaxTextWidth =
+      message.optionList?.type !== MessageOptionTypes.AvailableJobs;
     const jobOffer = offerJobs.find(
       (o) => o.id.toString() === message.jobId?.toString()
     );
@@ -71,28 +70,32 @@ export const TextMessage: FC<ITextMessageProps> = ({
     }
   }, []);
 
+  const isErrorMessage = message.content.isError;
   const messageProps = { ...getMessageProps(message) };
   const subType = message?.content.subType;
   const isFile = subType === MessageType.FILE;
   // TODO: fix
   const wrongMess = !!message.isOwn && !!message.optionList;
   const isWarningMess = message?.optionList?.status === MessageStatuses.warning;
-  const backgroundColor = isWarningMess
-    ? COLORS.PIPPIN
-    : messageProps.isOwn
-    ? theme.primaryColor
-    : theme.message.chat.backgroundColor;
+  const backgroundColor =
+    isWarningMess || isErrorMessage
+      ? COLORS.PIPPIN
+      : messageProps.isOwn
+      ? theme.primaryColor
+      : theme.message.chat.backgroundColor;
 
   return wrongMess ? null : (
     <S.MessageBox
       {...messageProps}
       isWarningMess={isWarningMess || !!message.background}
+      isError={isErrorMessage}
       style={{
         background: message.background || backgroundColor,
         border: message.border,
       }}
     >
       <S.MessageContent
+        isError={isErrorMessage}
         isFile={isFile}
         withOptions={!!message?.optionList}
         isOwn={message.isOwn}

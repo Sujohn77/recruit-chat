@@ -45,7 +45,6 @@ export enum MessageType {
   TEXT_WITH_CHOICE = "text_with_choice",
   INTERESTED_IN = "interested_in",
   HIRING_PROCESS = "hiring_process",
-  QUESTION_FORM = "question_form",
   MULTIPLE_OPTIONS = "MULTIPLE_OPTIONS",
   SUBMIT_FILE = "submit_file",
   THANKS = "thanks",
@@ -66,12 +65,12 @@ export interface IContent {
   subType: MessageType;
   text?: string;
   locations?: string[];
+  isError?: boolean;
 }
 
 export interface ILocalMessage {
   _id: number | string | null;
   localId: string | number;
-  dateCreated?: { seconds: number };
   content: IContent;
   isOwn?: boolean;
   optionList?: null | IMessageOptions;
@@ -80,6 +79,7 @@ export interface ILocalMessage {
   background?: string;
   border?: string;
   jobId?: string | number;
+  dateCreated?: { seconds: number };
 }
 
 export enum ButtonsOptions {

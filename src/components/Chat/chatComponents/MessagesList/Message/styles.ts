@@ -10,6 +10,7 @@ interface ICancelProps {
 }
 
 interface IMessageContentProps {
+  isError?: boolean;
   isFile?: boolean;
   withOptions?: boolean;
   isOwn?: boolean;
@@ -18,6 +19,7 @@ interface IMessageContentProps {
 interface IMessageBoxProps extends IMessageProps {
   border?: string | null;
   isWarningMess?: boolean;
+  isError?: boolean;
 }
 
 interface IMessageTextProps {
@@ -49,7 +51,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
 
   ${({ border }) => border && `border: ${border};`}
 
-  ${({ isOwn = false, theme, backgroundColor: backColor, isWarningMess }) =>
+  ${({ isOwn = false, theme, backgroundColor, isWarningMess, isError }) =>
     !isWarningMess &&
     `&:after {
       content: '';
@@ -60,7 +62,9 @@ export const MessageBox = styled.div<IMessageBoxProps>`
       border-style: solid;
       border-width: 20px 20px 0 0;
       border-color: ${
-        backColor || isOwn
+        isError
+          ? COLORS.PIPPIN
+          : backgroundColor || isOwn
           ? theme.primaryColor
           : theme.message.chat.backgroundColor
       } transparent transparent transparent;
@@ -110,8 +114,10 @@ export const MessageContent = styled.div<IMessageContentProps>`
   display: flex;
   gap: 8px;
   flex-direction: ${({ withOptions }) => (withOptions ? "column" : "row")};
-  color: ${({ color, isOwn, theme }) =>
-    isOwn
+  color: ${({ color, isOwn, theme, isError }) =>
+    isError
+      ? COLORS.NEW_YORK_PINK
+      : isOwn
       ? (isValidColor(color) && COLORS.WHITE) || theme.message?.own.color
       : theme.message?.chat.color};
 

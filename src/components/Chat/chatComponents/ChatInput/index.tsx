@@ -555,7 +555,16 @@ export const ChatInput: FC<IChatInputProps> = ({
           const emailError = validateEmail(draftMessage);
 
           if (emailError) {
-            setRefError(emailError);
+            const errorMessage: ILocalMessage = {
+              _id: generateLocalId(),
+              localId: generateLocalId(),
+              content: {
+                subType: MessageType.TEXT,
+                text: emailError,
+                isError: true,
+              },
+            };
+            _setMessages((prev) => [errorMessage, ...prev]);
           } else {
             setEmail(draftMessage.trim());
 
@@ -583,15 +592,23 @@ export const ChatInput: FC<IChatInputProps> = ({
           }, 500);
           setReferralStep(ReferralSteps.UserMobileNumber);
         } else {
-          setRefError(t("errors:not_match"));
+          const errorMessage: ILocalMessage = {
+            _id: generateLocalId(),
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: t("errors:not_match"),
+              isError: true,
+            },
+          };
+          _setMessages((prev) => [errorMessage, ...prev]);
         }
         break;
       case ReferralSteps.UserMobileNumber:
+        _setMessages((prevMessages) => [mess, ...prevMessages]);
         const isValid = isValidNumber(phone);
 
         if (isValid) {
-          _setMessages((prevMessages) => [mess, ...prevMessages]);
-
           const payload = {
             referralSourceTypeId: 3,
             referredCandidate: {
@@ -697,9 +714,18 @@ export const ChatInput: FC<IChatInputProps> = ({
           };
 
           onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
-          clearReferralState();
+          cleanInputState();
         } else {
-          setRefError(t("errors:invalid_phone_number"));
+          const errorMessage: ILocalMessage = {
+            _id: generateLocalId(),
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: t("errors:invalid_phone_number"),
+              isError: true,
+            },
+          };
+          _setMessages((prev) => [errorMessage, ...prev]);
         }
 
         break;

@@ -40,6 +40,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
     refBirth,
     refURL,
     employeeLocationID,
+    employeeJobFamilyNames,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
@@ -83,7 +84,10 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             }
             break;
           case 2:
-            withJobs = await searchRequisitions(employeeJobCategory, undefined);
+            withJobs = await searchRequisitions(
+              employeeJobFamilyNames,
+              undefined
+            );
             if (withJobs) {
               const messWithJobs: ILocalMessage = {
                 _id: null,
@@ -132,7 +136,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
         >
           {/* {i === 1
             ? t("referral:jobs", {
-                title: employeeJobCategory + " & " + employeeJobCategory,
+                title: employeeJobCategory,
               })
             : o.text} */}
           {i === 1 ? employeeJobCategory + " jobs" : o.text}

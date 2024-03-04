@@ -106,6 +106,7 @@ export const Content: FC = () => {
 
         timeout = setTimeout(() => {
           postMessToParent(EventIds.RefreshToken);
+          sessionStorage.clear();
 
           interval = setInterval(() => {
             postMessToParent(EventIds.RefreshToken);

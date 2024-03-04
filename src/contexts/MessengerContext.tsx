@@ -181,6 +181,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   employeeLocationID: "",
   setEmployeeLocationID: () => {},
   jobSourceID: "",
+  employeeJobFamilyNames: [""],
+  setEmployeeJobFamilyNames: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -281,6 +283,9 @@ const ChatProvider = ({
   const [employeeLocation, setEmployeeLocation] = useState("");
   const [employeeJobCategory, setEmployeeJobCategory] = useState("");
   const [employeeLocationID, setEmployeeLocationID] = useState("");
+  const [employeeJobFamilyNames, setEmployeeJobFamilyNames] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     employeeId && localStorage.setItem("employeeId", employeeId.toString());
@@ -678,7 +683,7 @@ const ChatProvider = ({
 
   const searchRequisitions = useCallback(
     async (
-      searchCategory?: string,
+      searchCategory?: string | string[],
       searchLocation?: string,
       searchCountry?: string,
       employeeLocationID?: string
@@ -1334,6 +1339,8 @@ const ChatProvider = ({
     employeeLocationID,
     setEmployeeLocationID,
     jobSourceID,
+    employeeJobFamilyNames,
+    setEmployeeJobFamilyNames,
   };
 
   // console.log(
