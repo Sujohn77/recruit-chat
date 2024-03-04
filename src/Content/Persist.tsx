@@ -34,7 +34,6 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     chatScreen,
     requisitions,
     category,
-    error,
     firebaseToken,
     offerJobs,
     isAuthInFirebase,
@@ -63,7 +62,6 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setFirebaseToken,
     setEmployeeLocation,
     setEmployeeJobCategory,
-    setError,
     alertCategories,
     setAlertCategories,
     setOfferJobs,
@@ -71,17 +69,15 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setCategory,
     setLocations,
   } = useChatMessenger();
-  const store = useChatMessenger();
-
-  const storeWithoutFn = Object.fromEntries(
-    Object.entries(store).filter(([key, value]) => typeof value !== "function")
-  );
-  const storeKeys = Object.keys(storeWithoutFn) as ChatMessengerContextKeys[];
-
-  const storeKeysEnum = useMemo(() => {
-    const keysEnum: { [key in ChatMessengerContextKeys]?: string } = {};
-    return storeKeys.forEach((k) => (keysEnum[k] = k));
-  }, [storeKeys]);
+  // const store = useChatMessenger();
+  // const storeWithoutFn = Object.fromEntries(
+  //   Object.entries(store).filter(([key, value]) => typeof value !== "function")
+  // );
+  // const storeKeys = Object.keys(storeWithoutFn) as ChatMessengerContextKeys[];
+  // const storeKeysEnum = useMemo(() => {
+  //   const keysEnum: { [key in ChatMessengerContextKeys]?: string } = {};
+  //   return storeKeys.forEach((k) => (keysEnum[k] = k));
+  // }, [storeKeys]);
 
   // useEffect(() => {
   //   for (const key in storeWithoutFn) {

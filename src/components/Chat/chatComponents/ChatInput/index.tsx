@@ -105,6 +105,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     offerJobs,
     firstName: userFName,
     lastName: userLName,
+    employeeId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -861,7 +862,12 @@ export const ChatInput: FC<IChatInputProps> = ({
       <BurgerMenu
         setIsShowResults={setIsShowResults}
         setSelectedReferralJobId={setSelectedReferralJobId}
-        cleanInputValue={() => setDraftMessage("")}
+        cleanInputValue={() => {
+          setReferralStep(
+            ReferralSteps[employeeId ? "UserFirstName" : "EmployeeId"]
+          );
+          setDraftMessage("");
+        }}
       />
 
       {inputType === TextFieldTypes.MultiSelect ? (
