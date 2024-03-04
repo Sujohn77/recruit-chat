@@ -815,6 +815,13 @@ export const ChatInput: FC<IChatInputProps> = ({
     }
   };
 
+  const cleanInputState = useCallback(() => {
+    setReferralStep(ReferralSteps[employeeId ? "UserFirstName" : "EmployeeId"]);
+    setDraftMessage("");
+    setRefError("");
+    setError("");
+  }, [employeeId]);
+
   const isLastMessageWithOptions =
     !!messages[0]?.optionList && !!messages[0]?.optionList.options.length;
   const disabled = !isChatInputAvailable || isLastMessageWithOptions;
@@ -862,14 +869,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       <BurgerMenu
         setIsShowResults={setIsShowResults}
         setSelectedReferralJobId={setSelectedReferralJobId}
-        cleanInputValue={() => {
-          setReferralStep(
-            ReferralSteps[employeeId ? "UserFirstName" : "EmployeeId"]
-          );
-          setDraftMessage("");
-          setRefError("");
-          setError("");
-        }}
+        cleanInputValue={cleanInputState}
       />
 
       {inputType === TextFieldTypes.MultiSelect ? (
