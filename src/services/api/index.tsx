@@ -173,8 +173,6 @@ class Api {
       "api/requisition/searchbyresume/",
       data
     );
-  createCandidate = (data: ICreationCandidatePayload) =>
-    this.client.post<ICreateCandidateResponse>("api/candidate/create", data);
   sendTranscript = (data: ISendTranscript) =>
     this.client.post<ISendTranscriptResponse>(
       "api/messenger/chat/transcript/send",

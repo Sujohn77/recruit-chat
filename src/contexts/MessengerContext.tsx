@@ -381,40 +381,47 @@ const ChatProvider = ({
   // }, [isCandidateAnonym]);
 
   const createAnonymCandidate = useCallback(async () => {
-    setIsLoadedMessages(true);
-    try {
-      if (chatBotToken) {
-        userAPI.setAuthHeader(chatBotToken);
-      }
+    const storedCandidateId = localStorage.getItem("candidateId");
+    const storedChatId = localStorage.getItem("chatId");
 
-      const res: ApiResponse<ICreateCandidateResponse> =
-        await userAPI.createAnonymCandidate({
-          firstName: "Anonymous",
-          lastName: "ChatbotUser",
-          typeId: 17,
-        });
+    storedCandidateId && setCandidateId(Number(storedCandidateId));
+    storedChatId && setChatId(Number(storedChatId));
 
-      if (res.data?.id) {
-        setCandidateId(res.data.id);
-
-        const firebaseTokenResponse: ApiResponse<string> =
-          await userAPI.getFirebaseAccessToken(res.data?.id);
-
-        if (firebaseTokenResponse.data) {
-          setFirebaseToken(firebaseTokenResponse.data);
+    if (!storedCandidateId?.trim()) {
+      setIsLoadedMessages(true);
+      try {
+        if (chatBotToken) {
+          userAPI.setAuthHeader(chatBotToken);
         }
 
-        const chatRes: ApiResponse<ICreateChatResponse> =
-          await userAPI.createChatByAnonymUser(res.data.id);
+        const res: ApiResponse<ICreateCandidateResponse> =
+          await userAPI.createAnonymCandidate({
+            firstName: "Anonymous",
+            lastName: "ChatbotUser",
+            typeId: 17,
+          });
 
-        if (chatRes.data?.chatId) {
-          setChatId(chatRes.data?.chatId);
+        if (res.data?.id) {
+          setCandidateId(res.data.id);
+
+          const firebaseTokenResponse: ApiResponse<string> =
+            await userAPI.getFirebaseAccessToken(res.data?.id);
+
+          if (firebaseTokenResponse.data) {
+            setFirebaseToken(firebaseTokenResponse.data);
+          }
+
+          if (!storedChatId) {
+            const chatRes: ApiResponse<ICreateChatResponse> =
+              await userAPI.createChatByAnonymUser(res.data.id);
+            chatRes.data?.chatId && setChatId(chatRes.data?.chatId);
+          }
         }
+      } catch (error) {
+        LOG(error, "CreateAnonymCandidate ERROR");
+      } finally {
+        setIsLoadedMessages(false);
       }
-    } catch (error) {
-      LOG(error, "CreateAnonymCandidate ERROR");
-    } finally {
-      setIsLoadedMessages(false);
     }
   }, []);
 
