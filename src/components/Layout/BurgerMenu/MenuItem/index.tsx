@@ -10,8 +10,8 @@ export const MenuItem: FC<IMenuItemProps> = ({ onClick, item }) => {
   return (
     <S.MenuItemWrapper
       onClick={() => !isOpenDropDown && onClick(item)}
-      onMouseEnter={() => item.isDropdown && setIsOpenDropDown(true)}
-      onMouseLeave={() => item.isDropdown && setIsOpenDropDown(false)}
+      // onMouseEnter={() => item.isDropdown && setIsOpenDropDown(true)} // this feature is temporarily hidden (language change - CHAT-265)
+      // onMouseLeave={() => item.isDropdown && setIsOpenDropDown(false)}
     >
       {item.text}
 
