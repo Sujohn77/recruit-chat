@@ -100,8 +100,9 @@ export const ua = {
       "Ваше резюме прикріплено.\nВи можете натиснути X, щоб видалити його та завантажити інший, або клацнути нижче, щоб завантажити та шукати вакансії",
     botThanks:
       "Дякуємо, що висловили інтерес до цієї вакансії, перевіряйте свою електронну пошту на наявність оновлень.",
-    employeeId:
-      "To start the process we need to validate your {{companyName}} employee details. \n What is your Employee ID ?",
+    employeeId: `To start the process we need to validate your {{companyName}} employee details. \n 
+    
+    What is your Employee ID ?`,
     provide_firstname: "What's your first name?",
     provide_lastname: "What's your last name?",
   },
