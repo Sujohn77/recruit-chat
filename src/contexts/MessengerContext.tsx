@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useAuthContext } from "./AuthContext";
 import React, {
   createContext,
   useCallback,
@@ -236,7 +235,6 @@ const ChatProvider = ({
 
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
 
-  const { clearAuthConfig } = useAuthContext();
   const {
     requisitions,
     locations,
@@ -503,7 +501,6 @@ const ChatProvider = ({
             ]);
           }
         } catch (err) {
-          clearAuthConfig();
           setMessages((prev) => [
             {
               _id: generateLocalId(),
