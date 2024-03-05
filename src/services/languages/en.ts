@@ -104,7 +104,7 @@ export const en = {
     botThanks:
       "Thank you for expressing your interest in this job, please check your email for updates.",
     employeeId:
-      "To start the process we need to validate your {{companyName}} employee details. What is your Employee ID ?",
+      "To start the process we need to validate your {{companyName}} employee details. \n What is your Employee ID ?",
     try_again: "Try again",
     logout: "Do you really want to finish the session?",
     processed_your_resume:
