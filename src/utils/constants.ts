@@ -404,3 +404,8 @@ export enum MessageStatuses {
   warning = "warning",
   error = "error",
 }
+
+export enum TryAgainTypes {
+  Validate = "Validate",
+  SendReferral = "SendReferral",
+}

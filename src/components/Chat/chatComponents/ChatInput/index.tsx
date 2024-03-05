@@ -30,8 +30,10 @@ import {
   MessageStatuses,
   Status,
   TextFieldTypes,
+  TryAgainTypes,
 } from "utils/constants";
 import {
+  LOG,
   generateLocalId,
   getAccessWriteType,
   getFormattedLocations,
@@ -111,14 +113,15 @@ export const ChatInput: FC<IChatInputProps> = ({
     lastName: userLName,
     employeeId,
     jobSourceID,
+    referralStep,
+    setReferralStep,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
 
   // ---------------------- State --------------------- //
-  const formattedLocations = getFormattedLocations(locations);
   const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
-    locations: formattedLocations,
+    locations: getFormattedLocations(locations),
     requisitions,
     category,
     lastActionType: currentMsgType,
@@ -129,14 +132,13 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [userLastName, setUserLastName] = useState(userLName);
   const [userEmail, setUserEmail] = useState(emailAddress);
 
-  const [draftMessage, setDraftMessage] = useState<string | null>(null);
+  const [draftMessage, setDraftMessage] = useState<string | null>(
+    localStorage.getItem(INPUT_KEY)
+  );
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
   // Referral
   const [refEmployeeId, setRefEmployeeId] = useState("");
-  const [referralStep, setReferralStep] = useState<ReferralSteps>(
-    ReferralSteps.EmployeeId
-  );
   // user details of the person they want to refer:
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -159,7 +161,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   useEffect(() => {
     const storedReferralStep = localStorage.getItem("referralStep");
     if (storedReferralStep) {
-      setTimeout(() => setReferralStep(Number(storedReferralStep)), 1000);
+      setReferralStep(Number(storedReferralStep));
     }
 
     setRefEmployeeId(localStorage.getItem("refEmployeeId") || "");
@@ -416,6 +418,14 @@ export const ChatInput: FC<IChatInputProps> = ({
     ]
   );
 
+  LOG(
+    referralStep,
+    "referralStep",
+    COLORS.PASTEL_GRIN,
+    COLORS.PICTON_BLUE_LIGHT,
+    true
+  );
+
   const referralHandle = (draftMessage: string) => {
     const mess: ILocalMessage = {
       isOwn: true,
@@ -477,35 +487,9 @@ export const ChatInput: FC<IChatInputProps> = ({
             content: {
               subType: MessageType.TRY_AGAIN,
               text: t("errors:referral_validation"),
+              tryAgainType: TryAgainTypes.Validate,
             },
             _id: generateLocalId(),
-            onClickTryAgain: () => {
-              const tryAgain: ILocalMessage = {
-                _id: generateLocalId(),
-                localId: generateLocalId(),
-                content: {
-                  subType: MessageType.TEXT,
-                  text: t("messages:try_again"),
-                },
-                isOwn: true,
-              };
-              const employeeQuestion: ILocalMessage = {
-                _id: generateLocalId(),
-                localId: generateLocalId(),
-                content: {
-                  subType: MessageType.TEXT,
-                  text: t("messages:employeeId", {
-                    companyName: referralCompanyName,
-                  }),
-                },
-              };
-              _setMessages((prevMessages) => [
-                employeeQuestion,
-                tryAgain,
-                ...prevMessages,
-              ]);
-              setReferralStep(ReferralSteps.EmployeeId);
-            },
           };
 
           _setMessages((prevMessages) => [tryAgainMess, ...prevMessages]);
@@ -693,27 +677,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               content: {
                 subType: MessageType.TRY_AGAIN,
                 text: t("errors:submit_referral_error"),
-              },
-              onClickTryAgain: () => {
-                const tryAgain: ILocalMessage = {
-                  _id: generateLocalId(),
-                  localId: generateLocalId(),
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: t("messages:try_again"),
-                  },
-                  isOwn: true,
-                };
-
-                const userLastNameMess = getReferralQuestion(
-                  ReferralSteps.UserFirstName
-                );
-                _setMessages((prevMessages) => [
-                  userLastNameMess,
-                  tryAgain,
-                  ...prevMessages,
-                ]);
-                setReferralStep(ReferralSteps.UserFirstName);
+                tryAgainType: TryAgainTypes.SendReferral,
               },
             };
             _setMessages((prevMessages) => [errorMess, ...prevMessages]);

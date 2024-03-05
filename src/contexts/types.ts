@@ -16,6 +16,7 @@ import {
   ButtonsOptions,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
+import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 
 export interface ISearchRequisition {
   title: string;
@@ -140,6 +141,8 @@ export interface IChatMessengerContext {
   jobSourceID: string;
   employeeJobFamilyNames: string[];
   setEmployeeJobFamilyNames: (names: string[]) => void;
+  referralStep: ReferralSteps;
+  setReferralStep: (step: ReferralSteps) => void;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

@@ -2,7 +2,7 @@ import { ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
 
-import { CHAT_OPTIONS, ChatScreens } from "./constants";
+import { CHAT_OPTIONS, ChatScreens, TryAgainTypes } from "./constants";
 import {
   IChatRoomID,
   IMessage,
@@ -66,6 +66,7 @@ export interface IContent {
   text?: string;
   locations?: string[];
   isError?: boolean;
+  tryAgainType?: TryAgainTypes;
 }
 
 export interface ILocalMessage {
@@ -75,7 +76,6 @@ export interface ILocalMessage {
   isOwn?: boolean;
   optionList?: null | IMessageOptions;
   chatItemId?: number;
-  onClickTryAgain?: (message?: ILocalMessage) => void;
   background?: string;
   border?: string;
   jobId?: string | number;

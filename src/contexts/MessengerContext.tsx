@@ -7,13 +7,16 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import findIndex from "lodash/findIndex";
-import map from "lodash/map";
 import moment from "moment";
+import map from "lodash/map";
+import find from "lodash/find";
+import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
+import findIndex from "lodash/findIndex";
 import { ApiResponse } from "apisauce";
 import firebase from "firebase";
 import "firebase/auth";
+import { useTranslation } from "react-i18next";
 
 import {
   MessageType,
@@ -78,10 +81,8 @@ import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
-import find from "lodash/find";
-import filter from "lodash/filter";
 import { getQuestions } from "components/ChatContent/data";
-import { useTranslation } from "react-i18next";
+import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -182,6 +183,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   jobSourceID: "",
   employeeJobFamilyNames: [""],
   setEmployeeJobFamilyNames: () => {},
+  referralStep: ReferralSteps.EmployeeId,
+  setReferralStep: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -284,6 +287,9 @@ const ChatProvider = ({
   const [employeeJobFamilyNames, setEmployeeJobFamilyNames] = useState<
     string[]
   >([]);
+  const [referralStep, setReferralStep] = useState<ReferralSteps>(
+    ReferralSteps.EmployeeId
+  );
 
   useEffect(() => {
     employeeId && localStorage.setItem("employeeId", employeeId.toString());
@@ -1345,6 +1351,8 @@ const ChatProvider = ({
     jobSourceID,
     employeeJobFamilyNames,
     setEmployeeJobFamilyNames,
+    referralStep,
+    setReferralStep,
   };
 
   // console.log(
