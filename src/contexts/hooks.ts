@@ -11,8 +11,7 @@ import {
 } from "services/types";
 import { IReferralData } from "utils/types";
 
-interface ISubmitReferral {
-  jobId?: number;
+export interface ISubmitReferral {
   referralSourceTypeId: number;
   referredCandidate: {
     firstName: string;
@@ -20,6 +19,8 @@ interface ISubmitReferral {
     emailAddress: string;
     mobileNumber: string;
   };
+  jobId?: number;
+  jobSourceID?: string;
 }
 
 export const useValidateReferral = () => {
@@ -100,7 +101,7 @@ export const useValidateReferral = () => {
 };
 
 export const useSubmitReferral = () => {
-  const { setIsChatLoading, candidateId, jobSourceID } = useChatMessenger();
+  const { setIsChatLoading, candidateId } = useChatMessenger();
 
   return useCallback(
     async (
@@ -115,7 +116,6 @@ export const useSubmitReferral = () => {
           await apiInstance.submitReferral({
             ...payload,
             referrerSubscriberId: candidateId!,
-            jobSourceId: jobSourceID,
           });
 
         if (res.data && isNumber(res.data?.previouslyReferredState)) {

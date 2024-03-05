@@ -629,7 +629,7 @@ export interface ICreateAndSendPayload {
     emailAddress: string;
     mobileNumber: string;
   };
-  jobSourceId: string;
+  jobSourceId?: string;
   jobId?: number;
 }
 

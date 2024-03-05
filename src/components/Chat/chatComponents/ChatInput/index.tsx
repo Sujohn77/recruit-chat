@@ -51,7 +51,11 @@ import {
 } from "utils/types";
 import { COLORS } from "utils/colors";
 import { useFirebaseSignIn, useTextField } from "utils/hooks";
-import { useSubmitReferral, useValidateReferral } from "contexts/hooks";
+import {
+  ISubmitReferral,
+  useSubmitReferral,
+  useValidateReferral,
+} from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 
 interface IChatInputProps {
@@ -106,6 +110,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     firstName: userFName,
     lastName: userLName,
     employeeId,
+    jobSourceID,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -609,7 +614,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         const isValid = isValidNumber(phone);
 
         if (isValid) {
-          const payload = {
+          const payload: ISubmitReferral = {
             referralSourceTypeId: 3,
             referredCandidate: {
               emailAddress: email,
@@ -618,6 +623,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               mobileNumber: phone,
             },
             jobId: selectedReferralJobId,
+            jobSourceID: selectedReferralJobId ? jobSourceID : undefined,
           };
           const onSuccessSubmit = (previouslyReferredState: number) => {
             const jobOffer = offerJobs.find(

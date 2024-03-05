@@ -95,7 +95,6 @@ export const fr = {
     botThanks:
       "Merci d'avoir manifesté votre intérêt pour ce travail, veuillez vérifier votre courrier électronique pour les mises à jour.",
     employeeId: `To start the process we need to validate your {{companyName}} employee details. \n 
-    
     What is your Employee ID ?`,
     try_again: "Try again",
     logout: "Do you really want to finish the session?",
