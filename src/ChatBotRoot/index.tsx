@@ -1,4 +1,3 @@
-import { AuthProvider } from "contexts/AuthContext";
 import { ChatProvider } from "contexts/MessengerContext";
 import { ThemeContextProvider } from "contexts/ThemeContext";
 import { FileUploadProvider } from "contexts/FileUploadContext";
@@ -47,7 +46,20 @@ export const ChatBotRoot: FC = () => {
         sessionStorage.setItem(SessionStorage.Token, event.data.token);
       }
 
-      event.data?.guid && setChatBotID(event.data.guid);
+      if (event.data?.guid) {
+        const storedLastActivity = localStorage.getItem("lastActivity");
+        if (storedLastActivity) {
+          const date = new Date().getTime();
+          const lastDate = new Date(storedLastActivity).getTime();
+          const timeDifference = (date - lastDate) / (1000 * 60 * 60);
+
+          if (timeDifference > 0.5) {
+            localStorage.clear();
+          }
+        }
+
+        setChatBotID(event.data.guid);
+      }
     };
 
     window.addEventListener("message", onMessage);
@@ -58,7 +70,6 @@ export const ChatBotRoot: FC = () => {
   }, []);
 
   useEffect(() => {
-    postMessToParent(EventIds.HideSpinner); // hide spinner from the parent page
     // for Safari (iframe.onload didn't work)
     let timeout: NodeJS.Timeout;
     if (!chatBotID) {
@@ -72,25 +83,23 @@ export const ChatBotRoot: FC = () => {
 
   return (
     <Container id="chat-bot">
-      <AuthProvider>
-        {chatBotID && (
-          <ChatProvider
-            chatBotId={chatBotID}
-            chatBotToken={chatBotToken}
-            clientApiToken={clientApiToken}
-            companyName={companyName}
-            chatBotRefBaseURL={chatBotRefBaseURL}
-            isReferralEnabled={isReferralEnabled}
-            jobSourceID={jobSourceId}
-          >
-            <ThemeContextProvider value={theme}>
-              <FileUploadProvider>
-                <Content />
-              </FileUploadProvider>
-            </ThemeContextProvider>
-          </ChatProvider>
-        )}
-      </AuthProvider>
+      {chatBotID && (
+        <ChatProvider
+          chatBotId={chatBotID}
+          chatBotToken={chatBotToken}
+          clientApiToken={clientApiToken}
+          companyName={companyName}
+          chatBotRefBaseURL={chatBotRefBaseURL}
+          isReferralEnabled={isReferralEnabled}
+          jobSourceID={jobSourceId}
+        >
+          <ThemeContextProvider value={theme}>
+            <FileUploadProvider>
+              <Content />
+            </FileUploadProvider>
+          </ThemeContextProvider>
+        </ChatProvider>
+      )}
     </Container>
   );
 };

@@ -19,8 +19,9 @@ export const Logout: FC<ILogoutProps> = ({
   const { t } = useTranslation();
 
   const logoutHandle = useCallback(() => {
-    localStorage.clear();
     postMessToParent(EventIds.RefreshChatbot);
+    localStorage.clear();
+    localStorage.setItem("status", "close"); // to close chatbot in other tabs
   }, []);
 
   return showLogoutScreen ? (

@@ -3,8 +3,9 @@ import { FC, useCallback, useEffect, useMemo } from "react";
 
 import { ChatMessengerContextKeys, IUser } from "contexts/types";
 import { IRequisitionType } from "services/hooks";
-import { ChatScreens } from "utils/constants";
+import { ChatScreens, EventIds } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, IRequisition } from "utils/types";
+import { LOG, postMessToParent } from "utils/helpers";
 
 interface IStorePersistProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -104,89 +105,99 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
   //   });
   // }, [storeWithoutFn, storeKeys]);
 
-  const updateStorage = useCallback(() => {
-    const storedUserData = localStorage.getItem("requisitions");
-    storedUserData &&
-      setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
-    //   console.log(storedUserData, "storedUserData");
+  const updateStorage = useCallback((e?: StorageEvent) => {
+    localStorage.setItem("lastActivity", new Date().toString());
 
-    const storedMessages = localStorage.getItem("messages");
-    storedMessages &&
-      _setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
-    //   console.log(storedMessages, "storedMessages");
+    if (e?.key === "status" && e.newValue === "close") {
+      postMessToParent(EventIds.RefreshChatbot);
 
-    const storedCurrentMsgType = localStorage.getItem("currentMsgType");
-    storedCurrentMsgType &&
-      setCurrentMsgType(storedCurrentMsgType as CHAT_ACTIONS);
-    //   console.log(storedCurrentMsgType, "storedCurrentMsgType");
+      localStorage.clear();
+    } else {
+      const storedUserData = localStorage.getItem("requisitions");
+      storedUserData &&
+        setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
+      //   console.log(storedUserData, "storedUserData");
 
-    const storedUser = localStorage.getItem("user");
-    storedUser && setUser(JSON.parse(storedUser) as IUser);
-    // console.log(storedUser, "storedUser");
+      const storedMessages = localStorage.getItem("messages");
+      storedMessages &&
+        _setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
+      //   console.log(storedMessages, "storedMessages");
 
-    const storedChatScreen = localStorage.getItem("chatScreen");
-    storedChatScreen && setChatScreen(storedChatScreen as ChatScreens);
-    // console.log(storedChatScreen, "storedChatScreen");
+      const storedCurrentMsgType = localStorage.getItem("currentMsgType");
+      storedCurrentMsgType &&
+        setCurrentMsgType(storedCurrentMsgType as CHAT_ACTIONS);
+      //   console.log(storedCurrentMsgType, "storedCurrentMsgType");
 
-    const storedOfferJobs = localStorage.getItem("offerJobs");
-    storedOfferJobs &&
-      setOfferJobs(JSON.parse(storedOfferJobs) as IRequisition[]);
-    // console.log(storedOfferJobs, "storedOfferJobs");
+      const storedUser = localStorage.getItem("user");
+      storedUser && setUser(JSON.parse(storedUser) as IUser);
+      // console.log(storedUser, "storedUser");
 
-    const storedSearchLocations = localStorage.getItem("searchLocations");
-    storedSearchLocations &&
-      setSearchLocations(JSON.parse(storedSearchLocations) as string[]);
+      const storedChatScreen = localStorage.getItem("chatScreen");
+      storedChatScreen && setChatScreen(storedChatScreen as ChatScreens);
+      // console.log(storedChatScreen, "storedChatScreen");
 
-    const storedCandidateId = localStorage.getItem("candidateId");
-    storedCandidateId && setCandidateId(Number(storedCandidateId));
+      const storedOfferJobs = localStorage.getItem("offerJobs");
+      storedOfferJobs &&
+        setOfferJobs(JSON.parse(storedOfferJobs) as IRequisition[]);
+      // console.log(storedOfferJobs, "storedOfferJobs");
 
-    const storedFirebaseToken = localStorage.getItem("firebaseToken");
-    storedFirebaseToken && setFirebaseToken(storedFirebaseToken);
+      const storedSearchLocations = localStorage.getItem("searchLocations");
+      storedSearchLocations &&
+        setSearchLocations(JSON.parse(storedSearchLocations) as string[]);
 
-    const storedAlertCategories = localStorage.getItem("alertCategories");
-    storedAlertCategories &&
-      setAlertCategories(JSON.parse(storedAlertCategories) as string[] | null);
+      const storedCandidateId = localStorage.getItem("candidateId");
+      storedCandidateId && setCandidateId(Number(storedCandidateId));
 
-    const storedEmployeeId = localStorage.getItem("employeeId");
-    storedEmployeeId && setEmployeeId(Number(storedEmployeeId));
+      const storedFirebaseToken = localStorage.getItem("firebaseToken");
+      storedFirebaseToken && setFirebaseToken(storedFirebaseToken);
 
-    const storedEmployeeFullName = localStorage.getItem("employeeFullName");
-    storedEmployeeFullName && setEmployeeFullName(storedEmployeeFullName);
+      const storedAlertCategories = localStorage.getItem("alertCategories");
+      storedAlertCategories &&
+        setAlertCategories(
+          JSON.parse(storedAlertCategories) as string[] | null
+        );
 
-    const storedEmployeeJobCategory = localStorage.getItem(
-      "employeeJobCategory"
-    );
-    storedEmployeeJobCategory &&
-      setEmployeeJobCategory(storedEmployeeJobCategory);
+      const storedEmployeeId = localStorage.getItem("employeeId");
+      storedEmployeeId && setEmployeeId(Number(storedEmployeeId));
 
-    const storedEmailAddress = localStorage.getItem("emailAddress");
-    storedEmailAddress && setEmailAddress(storedEmailAddress);
+      const storedEmployeeFullName = localStorage.getItem("employeeFullName");
+      storedEmployeeFullName && setEmployeeFullName(storedEmployeeFullName);
 
-    const storedViewJob = localStorage.getItem("viewJob");
-    storedViewJob && setViewJob(JSON.parse(storedViewJob) as IRequisition);
+      const storedEmployeeJobCategory = localStorage.getItem(
+        "employeeJobCategory"
+      );
+      storedEmployeeJobCategory &&
+        setEmployeeJobCategory(storedEmployeeJobCategory);
 
-    const storedEmployeeLocation = localStorage.getItem("employeeLocation");
-    storedEmployeeLocation && setEmployeeLocation(storedEmployeeLocation);
+      const storedEmailAddress = localStorage.getItem("emailAddress");
+      storedEmailAddress && setEmailAddress(storedEmailAddress);
 
-    const storedRefBirth = localStorage.getItem("refBirth");
-    storedRefBirth && setRefBirth(storedRefBirth);
+      const storedViewJob = localStorage.getItem("viewJob");
+      storedViewJob && setViewJob(JSON.parse(storedViewJob) as IRequisition);
 
-    const storedRefLastName = localStorage.getItem("refLastName");
-    storedRefLastName && setRefLastName(storedRefLastName);
+      const storedEmployeeLocation = localStorage.getItem("employeeLocation");
+      storedEmployeeLocation && setEmployeeLocation(storedEmployeeLocation);
 
-    const storedChatId = localStorage.getItem("chatId");
-    Number(storedChatId) && setChatId(Number(storedChatId));
+      const storedRefBirth = localStorage.getItem("refBirth");
+      storedRefBirth && setRefBirth(storedRefBirth);
 
-    const storedCategory = localStorage.getItem("category");
-    storedCategory && setCategory(storedCategory);
+      const storedRefLastName = localStorage.getItem("refLastName");
+      storedRefLastName && setRefLastName(storedRefLastName);
 
-    const storedLocations = localStorage.getItem("locations");
-    storedLocations && setLocations(JSON.parse(storedLocations));
+      const storedChatId = localStorage.getItem("chatId");
+      Number(storedChatId) && setChatId(Number(storedChatId));
 
-    const storedFirstName = localStorage.getItem("firstName");
-    storedFirstName && setFirstName(storedFirstName);
-    const storedLastName = localStorage.getItem("lastName");
-    storedLastName && setLastName(storedLastName);
+      const storedCategory = localStorage.getItem("category");
+      storedCategory && setCategory(storedCategory);
+
+      const storedLocations = localStorage.getItem("locations");
+      storedLocations && setLocations(JSON.parse(storedLocations));
+
+      const storedFirstName = localStorage.getItem("firstName");
+      storedFirstName && setFirstName(storedFirstName);
+      const storedLastName = localStorage.getItem("lastName");
+      storedLastName && setLastName(storedLastName);
+    }
   }, []);
 
   useEffect(() => {

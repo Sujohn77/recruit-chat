@@ -15,9 +15,7 @@ export const HiringHelp: FC<IHiringHelpProps> = ({ message }) => {
   const { t } = useTranslation();
   const messagesProps = getMessageProps(message);
 
-  const onClick = () => {
-    // TODO: add redirect link (from 'api/chatbot/style?ChatBotGuid=ID')
-  };
+  const onClick = () => {};
 
   return (
     <S.Wrapper {...messagesProps}>
