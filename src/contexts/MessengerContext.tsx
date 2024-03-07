@@ -295,6 +295,19 @@ const ChatProvider = ({
   );
 
   useEffect(() => {
+    const onPersistViewJob = ({ key, newValue }: StorageEvent) => {
+      if (key === hostname + "viewJob") {
+        setViewJob(newValue ? JSON.parse(newValue) : null);
+      }
+    };
+
+    window.addEventListener("storage", onPersistViewJob);
+    return () => {
+      window.removeEventListener("storage", onPersistViewJob);
+    };
+  }, []);
+
+  useEffect(() => {
     employeeId &&
       localStorage.setItem(hostname + "employeeId", employeeId.toString());
     refLastName && localStorage.setItem(hostname + "refLastName", refLastName);

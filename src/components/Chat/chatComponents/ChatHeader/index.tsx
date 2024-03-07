@@ -32,8 +32,8 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
     if (showLoginScreen) {
       setShowLoginScreen(false);
     } else {
-      setViewJob(null);
       localStorage.removeItem(hostname + "viewJob");
+      setViewJob(null);
     }
   }, [showLoginScreen]);
 

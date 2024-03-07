@@ -45,7 +45,6 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
       if (isLastMess) {
         switch (answer.id) {
           case 1:
-            setViewJob(null);
             chooseButtonOption(ButtonsOptions.MAKE_REFERRAL, t("labels:yes"));
             _setMessages((prev) => [
               ...prev.map((m) =>
@@ -53,6 +52,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               ),
             ]);
             localStorage.removeItem(hostname + "viewJob");
+            setViewJob(null);
             break;
           case 2:
             setSelectedReferralJobId(undefined);

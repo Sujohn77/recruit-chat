@@ -39,6 +39,7 @@ export const ChatBotRoot: FC = () => {
 
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
+      // LOG(data, "DATA", undefined, undefined, true);
       const { props, style, hostname, token, guid } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);
@@ -61,7 +62,7 @@ export const ChatBotRoot: FC = () => {
 
       if (token) {
         setChatBotToken(token);
-        sessionStorage.setItem(hostname + SessionStorage.Token, token);
+        sessionStorage.setItem(SessionStorage.Token, token);
       }
 
       if (guid) {

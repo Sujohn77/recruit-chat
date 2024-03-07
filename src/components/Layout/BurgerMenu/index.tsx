@@ -75,8 +75,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
+      localStorage.removeItem(hostname + "viewJob");
       setViewJob(null);
-      sessionStorage.removeItem(hostname + "viewJob");
       cleanInputValue();
     }
 
@@ -85,6 +85,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       type === CHAT_ACTIONS.MAKE_REFERRAL
     ) {
       setSelectedReferralJobId(undefined);
+      localStorage.removeItem(hostname + "viewJob");
       setViewJob(null);
       cleanInputValue();
     }

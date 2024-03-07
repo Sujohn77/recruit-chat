@@ -227,8 +227,6 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     lastName && localStorage.setItem(hostname + "lastName", lastName);
     refBirth && localStorage.setItem(hostname + "refBirth", refBirth);
     refLastName && localStorage.setItem(hostname + "refLastName", refLastName);
-    viewJob &&
-      localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
     employeeId &&
       localStorage.setItem(hostname + "employeeId", employeeId.toString());
     employeeFullName &&
@@ -241,39 +239,37 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     employeeLocation &&
       localStorage.setItem(hostname + "employeeLocation", employeeLocation);
     chatId && localStorage.setItem(hostname + "chatId", chatId.toString());
-
     requisitions.length &&
       localStorage.setItem(
         hostname + "requisitions",
         JSON.stringify(requisitions)
       );
     chatScreen && localStorage.setItem(hostname + "chatScreen", chatScreen);
-
     offerJobs.length &&
       localStorage.setItem(hostname + "offerJobs", JSON.stringify(offerJobs));
-
     searchLocations.length &&
       localStorage.setItem(
         hostname + "searchLocations",
         JSON.stringify(searchLocations)
       );
-
     candidateId &&
       localStorage.setItem(hostname + "candidateId", candidateId.toString());
-
     firebaseToken &&
       localStorage.setItem(hostname + "firebaseToken", firebaseToken);
-
     alertCategories &&
       localStorage.setItem(
         hostname + "alertCategories",
         JSON.stringify(alertCategories)
       );
-
     locations.length &&
       localStorage.setItem(hostname + "locations", JSON.stringify(locations));
-
     category && localStorage.setItem(hostname + "category", category);
+
+    if (viewJob) {
+      localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
+    } else {
+      localStorage.removeItem(hostname + "viewJob");
+    }
   }, [
     messages,
     currentMsgType,

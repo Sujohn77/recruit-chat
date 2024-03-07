@@ -19,9 +19,9 @@ export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
 
   const referFriendHandle = useCallback(() => {
     viewJob?.id && setJobId(+viewJob.id);
-    setViewJob(null);
     chooseButtonOption(ButtonsOptions.MAKE_REFERRAL, t("buttons:refer_friend"));
     localStorage.removeItem(hostname + "viewJob");
+    setViewJob(null);
   }, [viewJob]);
 
   return !viewJob ? null : (
