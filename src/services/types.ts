@@ -614,7 +614,7 @@ export interface IValidateRefResponse extends ISuccessResponse {
   updateChatBotCandidateId: boolean;
   employeeFullName: string;
   employeeLocationCity: string;
-  employeeLocationID: string;
+  employeeLocationId: string;
   employeeJobFamilyNames: string[];
   employeeJobTitle: string;
   employeeJobCategory?: string;

@@ -62,7 +62,7 @@ export const useValidateReferral = () => {
               employeeLocationCity,
               employeeJobTitle,
               employeeFullName,
-              employeeLocationID,
+              employeeLocationId,
               employeeJobFamilyNames,
               updateChatBotCandidateId,
             } = res.data;
@@ -74,7 +74,7 @@ export const useValidateReferral = () => {
             employeeLocationCity && setEmployeeLocation(employeeLocationCity);
             employeeJobTitle && setEmployeeJobCategory(employeeJobTitle);
             employeeFullName && setEmployeeFullName(employeeFullName);
-            employeeLocationID && setEmployeeLocationID(employeeLocationID);
+            employeeLocationId && setEmployeeLocationID(employeeLocationId);
             employeeJobFamilyNames.length &&
               setEmployeeJobFamilyNames(employeeJobFamilyNames);
           }
