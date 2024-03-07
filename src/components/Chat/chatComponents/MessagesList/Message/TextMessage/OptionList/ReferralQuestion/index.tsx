@@ -36,6 +36,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
     employeeId,
     chooseButtonOption,
     setViewJob,
+    hostname,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -51,7 +52,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
                 m._id === message._id ? { ...m, optionList: undefined } : m
               ),
             ]);
-            localStorage.removeItem("viewJob");
+            localStorage.removeItem(hostname + "viewJob");
             break;
           case 2:
             setSelectedReferralJobId(undefined);

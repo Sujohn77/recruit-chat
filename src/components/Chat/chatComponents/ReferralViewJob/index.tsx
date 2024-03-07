@@ -13,14 +13,15 @@ interface IRefViewJobProps {
 }
 
 export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
-  const { viewJob, chooseButtonOption, setViewJob } = useChatMessenger();
+  const { viewJob, chooseButtonOption, setViewJob, hostname } =
+    useChatMessenger();
   const { t } = useTranslation();
 
   const referFriendHandle = useCallback(() => {
     viewJob?.id && setJobId(+viewJob.id);
     setViewJob(null);
     chooseButtonOption(ButtonsOptions.MAKE_REFERRAL, t("buttons:refer_friend"));
-    localStorage.removeItem("viewJob");
+    localStorage.removeItem(hostname + "viewJob");
   }, [viewJob]);
 
   return !viewJob ? null : (

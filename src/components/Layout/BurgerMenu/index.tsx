@@ -53,6 +53,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     clientApiToken,
     _setMessages,
     employeeJobCategory,
+    hostname,
   } = useChatMessenger();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,7 +76,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
       setViewJob(null);
-      sessionStorage.removeItem("viewJob");
+      sessionStorage.removeItem(hostname + "viewJob");
       cleanInputValue();
     }
 

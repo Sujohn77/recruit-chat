@@ -69,6 +69,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setChatId,
     setCategory,
     setLocations,
+    hostname,
   } = useChatMessenger();
   // const store = useChatMessenger();
   // const storeWithoutFn = Object.fromEntries(
@@ -85,7 +86,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
   //     const storeItem = store[key as ChatMessengerContextKeys];
   //     if (storeItem) {
   //       sessionStorage.setItem(
-  //         key,
+  //        hostname +  key,
   //         typeof storeItem === "string" ? storeItem : JSON.stringify(storeItem)
   //       );
   //     }
@@ -96,7 +97,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
   //   storeKeys.forEach((k) => {
   //     if (storeWithoutFn[k]) {
   //       sessionStorage.setItem(
-  //         k,
+  //        hostname +  k,
   //         typeof storeWithoutFn[k] === "string"
   //           ? storeWithoutFn[k]
   //           : JSON.stringify(storeWithoutFn[k])
@@ -106,141 +107,173 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
   // }, [storeWithoutFn, storeKeys]);
 
   const updateStorage = useCallback((e?: StorageEvent) => {
-    localStorage.setItem("lastActivity", new Date().toString());
+    localStorage.setItem(hostname + "lastActivity", new Date().toString());
 
-    if (e?.key === "status" && e.newValue === "close") {
+    if (e?.key === hostname + "status" && e.newValue === "close") {
       postMessToParent(EventIds.RefreshChatbot);
 
       localStorage.clear();
     } else {
-      const storedUserData = localStorage.getItem("requisitions");
+      const storedUserData = localStorage.getItem(hostname + "requisitions");
       storedUserData &&
         setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
       //   console.log(storedUserData, "storedUserData");
 
-      const storedMessages = localStorage.getItem("messages");
+      const storedMessages = localStorage.getItem(hostname + "messages");
       storedMessages &&
         _setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
       //   console.log(storedMessages, "storedMessages");
 
-      const storedCurrentMsgType = localStorage.getItem("currentMsgType");
+      const storedCurrentMsgType = localStorage.getItem(
+        hostname + "currentMsgType"
+      );
       storedCurrentMsgType &&
         setCurrentMsgType(storedCurrentMsgType as CHAT_ACTIONS);
       //   console.log(storedCurrentMsgType, "storedCurrentMsgType");
 
-      const storedUser = localStorage.getItem("user");
+      const storedUser = localStorage.getItem(hostname + "user");
       storedUser && setUser(JSON.parse(storedUser) as IUser);
       // console.log(storedUser, "storedUser");
 
-      const storedChatScreen = localStorage.getItem("chatScreen");
+      const storedChatScreen = localStorage.getItem(hostname + "chatScreen");
       storedChatScreen && setChatScreen(storedChatScreen as ChatScreens);
       // console.log(storedChatScreen, "storedChatScreen");
 
-      const storedOfferJobs = localStorage.getItem("offerJobs");
+      const storedOfferJobs = localStorage.getItem(hostname + "offerJobs");
       storedOfferJobs &&
         setOfferJobs(JSON.parse(storedOfferJobs) as IRequisition[]);
       // console.log(storedOfferJobs, "storedOfferJobs");
 
-      const storedSearchLocations = localStorage.getItem("searchLocations");
+      const storedSearchLocations = localStorage.getItem(
+        hostname + "searchLocations"
+      );
       storedSearchLocations &&
         setSearchLocations(JSON.parse(storedSearchLocations) as string[]);
 
-      const storedCandidateId = localStorage.getItem("candidateId");
+      const storedCandidateId = localStorage.getItem(hostname + "candidateId");
       storedCandidateId && setCandidateId(Number(storedCandidateId));
 
-      const storedFirebaseToken = localStorage.getItem("firebaseToken");
+      const storedFirebaseToken = localStorage.getItem(
+        hostname + "firebaseToken"
+      );
       storedFirebaseToken && setFirebaseToken(storedFirebaseToken);
 
-      const storedAlertCategories = localStorage.getItem("alertCategories");
+      const storedAlertCategories = localStorage.getItem(
+        hostname + "alertCategories"
+      );
       storedAlertCategories &&
         setAlertCategories(
           JSON.parse(storedAlertCategories) as string[] | null
         );
 
-      const storedEmployeeId = localStorage.getItem("employeeId");
+      const storedEmployeeId = localStorage.getItem(hostname + "employeeId");
       storedEmployeeId && setEmployeeId(Number(storedEmployeeId));
 
-      const storedEmployeeFullName = localStorage.getItem("employeeFullName");
+      const storedEmployeeFullName = localStorage.getItem(
+        hostname + "employeeFullName"
+      );
       storedEmployeeFullName && setEmployeeFullName(storedEmployeeFullName);
 
       const storedEmployeeJobCategory = localStorage.getItem(
-        "employeeJobCategory"
+        hostname + "employeeJobCategory"
       );
       storedEmployeeJobCategory &&
         setEmployeeJobCategory(storedEmployeeJobCategory);
 
-      const storedEmailAddress = localStorage.getItem("emailAddress");
+      const storedEmailAddress = localStorage.getItem(
+        hostname + "emailAddress"
+      );
       storedEmailAddress && setEmailAddress(storedEmailAddress);
 
-      const storedViewJob = localStorage.getItem("viewJob");
+      const storedViewJob = localStorage.getItem(hostname + "viewJob");
       storedViewJob && setViewJob(JSON.parse(storedViewJob) as IRequisition);
 
-      const storedEmployeeLocation = localStorage.getItem("employeeLocation");
+      const storedEmployeeLocation = localStorage.getItem(
+        hostname + "employeeLocation"
+      );
       storedEmployeeLocation && setEmployeeLocation(storedEmployeeLocation);
 
-      const storedRefBirth = localStorage.getItem("refBirth");
+      const storedRefBirth = localStorage.getItem(hostname + "refBirth");
       storedRefBirth && setRefBirth(storedRefBirth);
 
-      const storedRefLastName = localStorage.getItem("refLastName");
+      const storedRefLastName = localStorage.getItem(hostname + "refLastName");
       storedRefLastName && setRefLastName(storedRefLastName);
 
-      const storedChatId = localStorage.getItem("chatId");
+      const storedChatId = localStorage.getItem(hostname + "chatId");
       Number(storedChatId) && setChatId(Number(storedChatId));
 
-      const storedCategory = localStorage.getItem("category");
+      const storedCategory = localStorage.getItem(hostname + "category");
       storedCategory && setCategory(storedCategory);
 
-      const storedLocations = localStorage.getItem("locations");
+      const storedLocations = localStorage.getItem(hostname + "locations");
       storedLocations && setLocations(JSON.parse(storedLocations));
 
-      const storedFirstName = localStorage.getItem("firstName");
+      const storedFirstName = localStorage.getItem(hostname + "firstName");
       storedFirstName && setFirstName(storedFirstName);
-      const storedLastName = localStorage.getItem("lastName");
+      const storedLastName = localStorage.getItem(hostname + "lastName");
       storedLastName && setLastName(storedLastName);
     }
   }, []);
 
   useEffect(() => {
     messages.length &&
-      localStorage.setItem("messages", JSON.stringify(messages));
-    currentMsgType && localStorage.setItem("currentMsgType", currentMsgType);
-    user && localStorage.setItem("user", JSON.stringify(user));
-    emailAddress && localStorage.setItem("emailAddress", emailAddress);
-    firstName && localStorage.setItem("firstName", firstName);
-    lastName && localStorage.setItem("lastName", lastName);
-    refBirth && localStorage.setItem("refBirth", refBirth);
-    refLastName && localStorage.setItem("refLastName", refLastName);
-    viewJob && localStorage.setItem("viewJob", JSON.stringify(viewJob));
-    employeeId && localStorage.setItem("employeeId", employeeId.toString());
+      localStorage.setItem(hostname + "messages", JSON.stringify(messages));
+    currentMsgType &&
+      localStorage.setItem(hostname + "currentMsgType", currentMsgType);
+    user && localStorage.setItem(hostname + "user", JSON.stringify(user));
+    emailAddress &&
+      localStorage.setItem(hostname + "emailAddress", emailAddress);
+    firstName && localStorage.setItem(hostname + "firstName", firstName);
+    lastName && localStorage.setItem(hostname + "lastName", lastName);
+    refBirth && localStorage.setItem(hostname + "refBirth", refBirth);
+    refLastName && localStorage.setItem(hostname + "refLastName", refLastName);
+    viewJob &&
+      localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
+    employeeId &&
+      localStorage.setItem(hostname + "employeeId", employeeId.toString());
     employeeFullName &&
-      localStorage.setItem("employeeFullName", employeeFullName);
+      localStorage.setItem(hostname + "employeeFullName", employeeFullName);
     employeeJobCategory &&
-      localStorage.setItem("employeeJobCategory", employeeJobCategory);
+      localStorage.setItem(
+        hostname + "employeeJobCategory",
+        employeeJobCategory
+      );
     employeeLocation &&
-      localStorage.setItem("employeeLocation", employeeLocation);
-    chatId && localStorage.setItem("chatId", chatId.toString());
+      localStorage.setItem(hostname + "employeeLocation", employeeLocation);
+    chatId && localStorage.setItem(hostname + "chatId", chatId.toString());
 
     requisitions.length &&
-      localStorage.setItem("requisitions", JSON.stringify(requisitions));
-    chatScreen && localStorage.setItem("chatScreen", chatScreen);
+      localStorage.setItem(
+        hostname + "requisitions",
+        JSON.stringify(requisitions)
+      );
+    chatScreen && localStorage.setItem(hostname + "chatScreen", chatScreen);
 
     offerJobs.length &&
-      localStorage.setItem("offerJobs", JSON.stringify(offerJobs));
+      localStorage.setItem(hostname + "offerJobs", JSON.stringify(offerJobs));
 
     searchLocations.length &&
-      localStorage.setItem("searchLocations", JSON.stringify(searchLocations));
+      localStorage.setItem(
+        hostname + "searchLocations",
+        JSON.stringify(searchLocations)
+      );
 
-    candidateId && localStorage.setItem("candidateId", candidateId.toString());
+    candidateId &&
+      localStorage.setItem(hostname + "candidateId", candidateId.toString());
 
-    firebaseToken && localStorage.setItem("firebaseToken", firebaseToken);
+    firebaseToken &&
+      localStorage.setItem(hostname + "firebaseToken", firebaseToken);
 
     alertCategories &&
-      localStorage.setItem("alertCategories", JSON.stringify(alertCategories));
+      localStorage.setItem(
+        hostname + "alertCategories",
+        JSON.stringify(alertCategories)
+      );
 
     locations.length &&
-      localStorage.setItem("locations", JSON.stringify(locations));
+      localStorage.setItem(hostname + "locations", JSON.stringify(locations));
 
-    category && localStorage.setItem("category", category);
+    category && localStorage.setItem(hostname + "category", category);
   }, [
     messages,
     currentMsgType,

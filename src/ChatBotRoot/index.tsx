@@ -9,6 +9,23 @@ import { IApiThemeResponse } from "utils/types";
 import { postMessToParent } from "utils/helpers";
 import { EventIds, SessionStorage } from "utils/constants";
 
+interface IParentMessage {
+  guid?: string;
+  style?: IApiThemeResponse;
+  token?: string;
+  props?: {
+    referralEnabled?: "true" | "false";
+    companyName?: string;
+    referralListDomain?: string;
+    clientApiToken?: string;
+    jobSourceId?: string;
+  };
+  companyName?: string;
+  referralListDomain?: string;
+  clientApiToken?: string;
+  hostname?: string;
+}
+
 export const ChatBotRoot: FC = () => {
   const [theme, setTheme] = useState<IApiThemeResponse | null>(null);
   const [chatBotID, setChatBotID] = useState<string | null>(null);
@@ -18,36 +35,39 @@ export const ChatBotRoot: FC = () => {
   const [chatBotRefBaseURL, setChatBotRefBaseURL] = useState("");
   const [clientApiToken, setClientApiToken] = useState("");
   const [jobSourceId, setJobSourceId] = useState("");
+  const [hostname, setHostname] = useState("");
 
   useEffect(() => {
-    const onMessage = (event: MessageEvent) => {
-      // LOG(event.data, "event.data");
-      if (event.data?.style) {
-        setTheme(event.data.style);
-      }
-      if (event.data?.props) {
-        setIsReferralEnabled(event.data?.props?.referralEnabled === "true");
+    const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
+      const { props, style, hostname, token, guid } = data;
+      hostname && setHostname(hostname);
+      style && setTheme(style);
 
-        event.data.props?.companyName &&
-          setReferralCompanyName(event.data.props?.companyName);
+      if (props) {
+        const {
+          clientApiToken,
+          companyName,
+          jobSourceId,
+          referralEnabled,
+          referralListDomain,
+        } = props;
 
-        event.data.props?.referralListDomain &&
-          setChatBotRefBaseURL(event.data.props?.referralListDomain);
-
-        event.data.props?.clientApiToken &&
-          setClientApiToken(event.data.props?.clientApiToken);
-
-        event.data.props.jobSourceId &&
-          setJobSourceId(event.data.props.jobSourceId);
-      }
-
-      if (event.data?.token) {
-        setChatBotToken(event.data?.token);
-        sessionStorage.setItem(SessionStorage.Token, event.data.token);
+        setIsReferralEnabled(referralEnabled === "true");
+        companyName && setReferralCompanyName(companyName);
+        referralListDomain && setChatBotRefBaseURL(referralListDomain);
+        clientApiToken && setClientApiToken(clientApiToken);
+        jobSourceId && setJobSourceId(jobSourceId);
       }
 
-      if (event.data?.guid) {
-        const storedLastActivity = localStorage.getItem("lastActivity");
+      if (token) {
+        setChatBotToken(token);
+        sessionStorage.setItem(hostname + SessionStorage.Token, token);
+      }
+
+      if (guid) {
+        const storedLastActivity = localStorage.getItem(
+          hostname + "lastActivity"
+        );
         if (storedLastActivity) {
           const date = new Date().getTime();
           const lastDate = new Date(storedLastActivity).getTime();
@@ -58,7 +78,7 @@ export const ChatBotRoot: FC = () => {
           }
         }
 
-        setChatBotID(event.data.guid);
+        setChatBotID(guid);
       }
     };
 
@@ -92,6 +112,7 @@ export const ChatBotRoot: FC = () => {
           chatBotRefBaseURL={chatBotRefBaseURL}
           isReferralEnabled={isReferralEnabled}
           jobSourceID={jobSourceId}
+          hostname={hostname}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

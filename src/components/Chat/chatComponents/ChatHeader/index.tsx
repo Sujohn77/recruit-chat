@@ -22,7 +22,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob } = useChatMessenger();
+  const { viewJob, setViewJob, hostname } = useChatMessenger();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -33,7 +33,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
       setShowLoginScreen(false);
     } else {
       setViewJob(null);
-      localStorage.removeItem("viewJob");
+      localStorage.removeItem(hostname + "viewJob");
     }
   }, [showLoginScreen]);
 

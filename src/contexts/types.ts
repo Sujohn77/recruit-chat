@@ -143,6 +143,7 @@ export interface IChatMessengerContext {
   setEmployeeJobFamilyNames: (names: string[]) => void;
   referralStep: ReferralSteps;
   setReferralStep: (step: ReferralSteps) => void;
+  hostname: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

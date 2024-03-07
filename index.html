@@ -65,6 +65,10 @@
 
     ifrm.addEventListener("load", () => {
       ifrm.contentWindow.postMessage(
+        { guid, style, token, hostname: window.location.hostname },
+        ifrm.src
+      );
+      ifrm.contentWindow.postMessage(
         {
           guid,
           style,
@@ -73,6 +77,7 @@
           companyName,
           referralListDomain,
           clientApiToken,
+          hostname: window.location.hostname,
         },
         ifrm.src
       );

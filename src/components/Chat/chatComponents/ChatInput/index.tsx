@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
 import isNaN from "lodash/isNaN";
 import uniqBy from "lodash/uniqBy";
-import isNull from "lodash/isNull";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
@@ -115,6 +114,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     jobSourceID,
     referralStep,
     setReferralStep,
+    hostname,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -133,7 +133,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [userEmail, setUserEmail] = useState(emailAddress);
 
   const [draftMessage, setDraftMessage] = useState<string | null>(
-    localStorage.getItem(INPUT_KEY)
+    localStorage.getItem(hostname + INPUT_KEY)
   );
   const [inputValues, setInputValues] = useState<string[]>([]);
   const [isShowResults, setIsShowResults] = useState(false);
@@ -150,34 +150,36 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   useEffect(() => {
     referralStep &&
-      localStorage.setItem("referralStep", referralStep.toString());
-    refEmployeeId && localStorage.setItem("refEmployeeId", refEmployeeId);
-    firstName && localStorage.setItem("firstName", firstName);
-    lastName && localStorage.setItem("lastName", lastName);
-    email && localStorage.setItem("email", email);
-    phone && localStorage.setItem("phone", phone);
+      localStorage.setItem(hostname + "referralStep", referralStep.toString());
+    refEmployeeId &&
+      localStorage.setItem(hostname + "refEmployeeId", refEmployeeId);
+    firstName && localStorage.setItem(hostname + "firstName", firstName);
+    lastName && localStorage.setItem(hostname + "lastName", lastName);
+    email && localStorage.setItem(hostname + "email", email);
+    phone && localStorage.setItem(hostname + "phone", phone);
   }, [referralStep, refEmployeeId]);
 
   useEffect(() => {
-    const storedReferralStep = localStorage.getItem("referralStep");
+    const storedReferralStep = localStorage.getItem(hostname + "referralStep");
     if (storedReferralStep) {
       setReferralStep(Number(storedReferralStep));
     }
 
-    setRefEmployeeId(localStorage.getItem("refEmployeeId") || "");
-    setFirstName(localStorage.getItem("firstName") || "");
-    setLastName(localStorage.getItem("lastName") || "");
-    setEmail(localStorage.getItem("email") || "");
-    setPhone(localStorage.getItem("phone") || "");
+    setRefEmployeeId(localStorage.getItem(hostname + "refEmployeeId") || "");
+    setFirstName(localStorage.getItem(hostname + "firstName") || "");
+    setLastName(localStorage.getItem(hostname + "lastName") || "");
+    setEmail(localStorage.getItem(hostname + "email") || "");
+    setPhone(localStorage.getItem(hostname + "phone") || "");
   }, []);
 
   useEffect(() => {
-    !isNull(draftMessage) && localStorage.setItem(INPUT_KEY, draftMessage);
+    typeof draftMessage === "string" &&
+      localStorage.setItem(hostname + INPUT_KEY, draftMessage);
   }, [draftMessage]);
 
   useEffect(() => {
     const onPersistInputValue = ({ key, newValue }: StorageEvent) => {
-      if (key === INPUT_KEY) {
+      if (key === hostname + INPUT_KEY) {
         setDraftMessage(newValue);
       }
     };
@@ -401,7 +403,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         }
       }
 
-      setDraftMessage(null);
+      setDraftMessage("");
     },
     [
       currentMsgType,
@@ -771,7 +773,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
     if (currentMsgType) {
       setInputValues(uniq(newValues));
-      setDraftMessage(null);
+      setDraftMessage("");
       if (currentMsgType !== CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) {
         dispatch({
           type: currentMsgType,

@@ -93,6 +93,7 @@ interface IChatProviderProps {
   jobSourceID: string;
   chatBotId?: string | null;
   clientApiToken?: string;
+  hostname: string;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -185,6 +186,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setEmployeeJobFamilyNames: () => {},
   referralStep: ReferralSteps.EmployeeId,
   setReferralStep: () => {},
+  hostname: "",
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -200,6 +202,7 @@ const ChatProvider = ({
   chatBotRefBaseURL,
   clientApiToken,
   jobSourceID,
+  hostname,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
@@ -292,13 +295,14 @@ const ChatProvider = ({
   );
 
   useEffect(() => {
-    employeeId && localStorage.setItem("employeeId", employeeId.toString());
-    refLastName && localStorage.setItem("refLastName", refLastName);
+    employeeId &&
+      localStorage.setItem(hostname + "employeeId", employeeId.toString());
+    refLastName && localStorage.setItem(hostname + "refLastName", refLastName);
   }, [refLastName, employeeId]);
 
   useEffect(() => {
-    const storedEmployeeId = localStorage.getItem("employeeId");
-    const storedRefLastName = localStorage.getItem("refLastName");
+    const storedEmployeeId = localStorage.getItem(hostname + "employeeId");
+    const storedRefLastName = localStorage.getItem(hostname + "refLastName");
 
     storedEmployeeId && setEmployeeId(+storedEmployeeId);
     storedRefLastName && setRefLastName(storedRefLastName);
@@ -385,8 +389,8 @@ const ChatProvider = ({
   // }, [isCandidateAnonym]);
 
   const createAnonymCandidate = useCallback(async () => {
-    const storedCandidateId = localStorage.getItem("candidateId");
-    const storedChatId = localStorage.getItem("chatId");
+    const storedCandidateId = localStorage.getItem(hostname + "candidateId");
+    const storedChatId = localStorage.getItem(hostname + "chatId");
 
     storedCandidateId && setCandidateId(Number(storedCandidateId));
     storedChatId && setChatId(Number(storedChatId));
@@ -1353,6 +1357,7 @@ const ChatProvider = ({
     setEmployeeJobFamilyNames,
     referralStep,
     setReferralStep,
+    hostname,
   };
 
   // console.log(

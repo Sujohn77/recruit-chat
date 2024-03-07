@@ -36,6 +36,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     setFlowId,
     setSubscriberWorkflowId,
     _setMessages,
+    hostname,
   } = useChatMessenger();
   const { t } = useTranslation();
   const lastBtn = useRef<null | ButtonType>(null);
@@ -158,7 +159,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           }
 
           setViewJob(null);
-          localStorage.removeItem("viewJob");
+          localStorage.removeItem(hostname + "viewJob");
           _setMessages((prevMessages) => [
             interestedInResMess,
             ...prevMessages,
@@ -195,7 +196,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             setFlowId(res.data.FlowID);
             setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
             setViewJob(null);
-            localStorage.removeItem("viewJob");
+            localStorage.removeItem(hostname + "viewJob");
           } else {
             setShowApplyBtn(false);
             setApplyJobError(
