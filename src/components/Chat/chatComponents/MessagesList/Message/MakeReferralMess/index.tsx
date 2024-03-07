@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { renderSendingTime } from "..";
 import * as S from "../styles";
-import { getMessageProps } from "utils/helpers";
-import { ButtonsOptions, ILocalMessage } from "utils/types";
+import { generateLocalId, getMessageProps } from "utils/helpers";
+import { ButtonsOptions, ILocalMessage, MessageType } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
@@ -33,9 +33,19 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
       const resMess = getValidationRefResponse(
         employeeJobCategory,
         employeeFullName || refLastName,
-        true
+        false
       );
-      _setMessages((prevMessages) => [resMess, ...prevMessages]);
+      const makeRefMess: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        isOwn: true,
+        content: {
+          subType: MessageType.TEXT,
+          text: t("buttons:make_referral"),
+        },
+      };
+
+      _setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
     } else {
       chooseButtonOption(
         ButtonsOptions.MAKE_REFERRAL,
