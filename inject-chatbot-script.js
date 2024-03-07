@@ -1,39 +1,43 @@
 // ----------------------------- CONSTANTS ----------------------------- //
-// const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // 'qa' guid
+// const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // JJ guid
 // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
 // const chatbotSrc = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`; // zustand
-const guid = "f466faec-ea83-4122-8c23-458ab21e96be";
+const guid = "f466faec-ea83-4122-8c23-458ab21e96be"; // qa guid
 const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com";
 
 const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
 const logStyle =
   "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;";
 const iframeID = "chat-iframe";
-const loaderID = "_chat-bot-loader";
-const loaderStyleId = "loader_style_id";
 
 const eventIds = {
   REFRESH_TOKEN: "refresh_token",
   REFRESH_CHATBOT: "refresh_chatbot",
   IFRAME_HEIGHT: "iframe_height",
   GET_CHATBOT_DATA: "get_chatbot_data",
-  HIDE_SPINNER: "hide_spinner",
 };
 // ---------------------------------------------------------------------- //
 let chatBotToken;
 let chatBotStyle;
-let spinner;
+let chatBotProps;
+let chatBotCompanyName;
+let chatBotReferralListDomain;
+let chatBotClientApiToken;
 
-function removeSpinner() {
-  document.getElementById(loaderID)?.remove();
-  document.getElementById(loaderStyleId)?.remove();
-  spinner?.loader?.remove();
-  spinner?.style?.remove();
-}
-
-function appendChatBot(style, token) {
+function appendChatBot(
+  style,
+  token,
+  props,
+  companyName,
+  referralListDomain,
+  clientApiToken
+) {
   chatBotStyle = style;
+  chatBotProps = props;
   chatBotToken = token;
+  chatBotCompanyName = companyName;
+  chatBotReferralListDomain = referralListDomain;
+  chatBotClientApiToken = clientApiToken;
 
   const ifrm = document.createElement("iframe");
   ifrm.setAttribute("src", chatbotSrc);
@@ -55,8 +59,23 @@ function appendChatBot(style, token) {
   document.body?.appendChild(ifrm);
 
   ifrm.addEventListener("load", () => {
-    removeSpinner();
-    ifrm.contentWindow.postMessage({ guid, style, token }, ifrm.src);
+    ifrm.contentWindow.postMessage(
+      { guid, style, token, hostname: window.location.hostname },
+      ifrm.src
+    );
+    ifrm.contentWindow.postMessage(
+      {
+        guid,
+        style,
+        token,
+        props,
+        companyName,
+        referralListDomain,
+        clientApiToken,
+        hostname: window.location.hostname,
+      },
+      ifrm.src
+    );
   });
   ifrm.onerror = () => refreshToken();
 }
@@ -71,7 +90,6 @@ async function refreshToken(callback) {
       body: JSON.stringify({ ChatbotGuid: guid.trim() }),
     });
 
-    console.log(refreshRes, "refreshToken res");
     // if request was canceled
     if (refreshRes.status === null) {
       refreshToken(callback);
@@ -79,6 +97,7 @@ async function refreshToken(callback) {
 
     const data = await refreshRes.clone().json();
 
+    console.log("refreshToken RES", data);
     if (data?.errors) {
       console.log(data.errors[0]);
       return Promise.reject(data.errors[0]);
@@ -94,9 +113,10 @@ async function refreshToken(callback) {
 
 async function getChatBotStyle(token) {
   try {
-    const response = await fetch(`${BASE_URL}/style?ChatBotGuid=` + guid);
+    const response = await fetch(
+      `${BASE_URL}/configuration/?chatBotGuid=${guid}`
+    );
 
-    console.log(response, "getChatBotStyle res");
     // if request was canceled
     if (response.status === null) {
       getChatBotStyle(token);
@@ -107,10 +127,16 @@ async function getChatBotStyle(token) {
     if (data?.statusCode === 413) {
       refreshToken(getChatBotStyle);
     } else {
-      appendChatBot(JSON.parse(data), token);
+      appendChatBot(
+        data.style,
+        token,
+        data.props,
+        data.props.companyName,
+        data.props.referralListDomain,
+        data.props.clientApiToken
+      );
     }
   } catch (error) {
-    removeSpinner();
     return Promise.reject(error);
   }
 }
@@ -118,8 +144,8 @@ async function getChatBotStyle(token) {
 refreshToken(getChatBotStyle);
 
 function onMessage(event) {
+  // console.log("%cEVENT", logStyle, event);
   if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-    console.log("%cEVENT", logStyle, event.event_id);
     const chatbotIframe = document.getElementById(iframeID);
 
     switch (event.data.event_id) {
@@ -133,7 +159,7 @@ function onMessage(event) {
               );
             }
           })
-          .catch(() => console.log("_ E R R O R _"));
+          .catch((error) => console.log("error", error));
 
         break;
       case eventIds.REFRESH_CHATBOT:
@@ -148,17 +174,22 @@ function onMessage(event) {
             : "135px";
         }
         break;
-      // this case for Safari (iframe.onload didn't work)
       case eventIds.GET_CHATBOT_DATA:
+        // this case for Safari (iframe.onload didn't work)
         chatbotIframe.contentWindow.postMessage(
-          { guid, style: chatBotStyle, token: chatBotToken },
+          {
+            guid,
+            style: chatBotStyle,
+            token: chatBotToken,
+            props: chatBotProps,
+            companyName: chatBotCompanyName,
+            referralListDomain: chatBotReferralListDomain,
+            clientApiToken: chatBotClientApiToken,
+          },
           chatbotSrc
         );
         break;
 
-      case eventIds.HIDE_SPINNER:
-        removeSpinner();
-        break;
       default:
         break;
     }
@@ -170,47 +201,3 @@ if (window.addEventListener) {
 } else {
   window.attachEvent("onmessage", onMessage); // IE8
 }
-
-window.onload = () => {
-  const loader = document.createElement("span");
-  loader.setAttribute("id", loaderID);
-  loader.style.cssText = `
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 2;
-    width: 48px;
-    height: 48px;
-    border: 5px solid #00b6ea;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    opacity: 0.7;
-    `;
-
-  const style = document.createElement("style");
-  style.setAttribute("type", "text/css");
-  style.id = loaderStyleId;
-  style.innerHTML = `
-    @keyframes rotation {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    `;
-  document?.body.appendChild(loader);
-  document?.body.appendChild(style);
-
-  // timeout in case of errors in the process of chatbot implementation
-  setTimeout(() => {
-    loader.remove();
-    style.remove();
-  }, 5000);
-
-  spinner = { loader, style };
-};
