@@ -93,7 +93,13 @@ export const SearchResults: FC<ISearchResultsProps> = ({
                       {/* first part of option  */}
                       {option.substring(0, startIndex)}
                       {/* search substring */}
-                      <span>{matchedPart}</span>
+                      {/* <span>{matchedPart}</span> */}
+                      <span>
+                        {option.substring(
+                          startIndex,
+                          startIndex + matchedPart.length
+                        )}
+                      </span>
                       {/* second part of option (without search substring) */}
                       {option.substring(startIndex + matchedPart.length)}
                     </>

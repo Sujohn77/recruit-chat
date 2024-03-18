@@ -19,8 +19,8 @@ import { SearchResults } from "components/Chat/ChatComponents/ChatInput/SearchRe
 interface IAutocompleteProps {
   value: string;
   matchedItems: string[];
-  headerName: string;
   matchedPart: string;
+  headerName: string;
   placeHolder: string;
   isShowResults: boolean;
   type: TextFieldTypes;
@@ -36,10 +36,10 @@ interface IAutocompleteProps {
 }
 
 export const Autocomplete: React.FC<IAutocompleteProps> = ({
-  matchedItems,
   value,
-  headerName,
+  matchedItems,
   matchedPart,
+  headerName,
   onChange,
   placeHolder,
   setInputValue,
