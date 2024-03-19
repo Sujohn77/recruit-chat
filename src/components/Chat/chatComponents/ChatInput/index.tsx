@@ -289,7 +289,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
       if (inputType === TextFieldTypes.MultiSelect && actionType) {
         const items = !!matchedSearchItem
-          ? uniq([...inputValues, matchedSearchItem])
+          ? uniq(inputValues)
           : uniq(inputValues.length ? inputValues : [draftMessage!]);
 
         if (
@@ -418,14 +418,6 @@ export const ChatInput: FC<IChatInputProps> = ({
       userLastName,
       userEmail,
     ]
-  );
-
-  LOG(
-    referralStep,
-    "referralStep",
-    COLORS.PASTEL_GRIN,
-    COLORS.PICTON_BLUE_LIGHT,
-    true
   );
 
   const referralHandle = (draftMessage: string) => {
