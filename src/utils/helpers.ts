@@ -55,7 +55,7 @@ import i18n from "services/localization";
 window.Buffer = Buffer;
 
 interface IGetMatchedItems {
-  message: string | null;
+  searchText: string | null;
   searchItems: string[];
   searchLocations: string[];
   alertCategories?: string[] | null;
@@ -237,26 +237,26 @@ export const validateEmailOrPhone = (value: string) => {
 };
 
 export const getMatchedItems = ({
-  message,
+  searchText,
   searchItems,
   searchLocations,
   alertCategories,
 }: IGetMatchedItems) => {
-  const compareItem = message?.toLowerCase() || "";
-  const compareWord = compareItem.toLowerCase();
+  const compareItem = searchText?.toLowerCase() || "";
   const matchedPositions = filter(searchItems, (item) => {
     const searchItem = item.toLowerCase();
 
-    const isMatch = some(
-      searchItem.split(" "),
-      (word) => word.slice(0, compareWord.length) === compareWord
-    );
+    const isMatch =
+      some(
+        searchItem.split(" "),
+        (word) => word.slice(0, compareItem.length) === compareItem
+      ) || searchItem.includes(compareItem);
 
     return isMatch && searchItem.includes(compareItem);
   });
 
   const matchedPart =
-    matchedPositions.length && message?.length
+    matchedPositions.length && searchText?.length
       ? compareItem[0].toUpperCase() + compareItem.slice(1, compareItem.length)
       : "";
 
@@ -270,17 +270,16 @@ export const getMatchedItems = ({
     (item) => {
       const words = item.split(" ");
       const index = words.findIndex(
-        (word) => word.slice(0, compareWord.length) === compareWord
+        (word) => word.slice(0, compareItem.length) === compareItem
       );
-
       if (index !== -1) {
         return words
           .map((w, i) =>
-            index === i ? w.slice(message?.length, item.length) : w
+            index === i ? w.slice(searchText?.length, item.length) : w
           )
           .join(" ");
       } else {
-        return item.slice(message?.length, item.length);
+        return item.slice(searchText?.length, item.length);
       }
     }
   );
