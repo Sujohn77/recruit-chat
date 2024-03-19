@@ -52,6 +52,7 @@ export const Content: FC = () => {
     if (!isNull(chatScreen)) {
       timeout = setTimeout(() => {
         sessionStorage.clear();
+        localStorage.clear();
         postMessToParent(EventIds.RefreshChatbot);
       }, REFRESH_APP_TIMEOUT);
     }
