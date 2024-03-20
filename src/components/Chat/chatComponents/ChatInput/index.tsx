@@ -382,26 +382,42 @@ export const ChatInput: FC<IChatInputProps> = ({
           ]);
           setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
         } else if (currentMsgType === CHAT_ACTIONS.SET_USER_EMAIL) {
-          const emailError = validateEmail(draftMessage!);
-          if (emailError) {
-            setError(emailError);
-          } else {
-            setUserEmail(draftMessage!);
-            _setMessages((prev) => [message, ...prev]);
-            dispatch({
-              type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
-              payload: {
-                candidateData: {
-                  emailAddress: emailAddress || draftMessage!,
-                  firstName: userFName || userFirstName,
-                  lastName: userLName || userLastName,
-                  callback: () => {
-                    createAlertHandle(t("messages:successSubscribed"));
+          _setMessages((prev) => [message, ...prev]);
+          setIsChatLoading(true);
+
+          setTimeout(() => {
+            setIsChatLoading(false);
+
+            const emailError = validateEmail(draftMessage!);
+            if (emailError) {
+              const errorEmailMessage: ILocalMessage = {
+                _id: generateLocalId(),
+                localId: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: emailError,
+                  isError: true,
+                },
+              };
+              _setMessages((prev) => [errorEmailMessage, ...prev]);
+            } else {
+              setUserEmail(draftMessage!);
+              // _setMessages((prev) => [message, ...prev]);
+              dispatch({
+                type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+                payload: {
+                  candidateData: {
+                    emailAddress: emailAddress || draftMessage!,
+                    firstName: userFName || userFirstName,
+                    lastName: userLName || userLastName,
+                    callback: () => {
+                      createAlertHandle(t("messages:successSubscribed"));
+                    },
                   },
                 },
-              },
-            });
-          }
+              });
+            }
+          }, 500);
         } else {
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
