@@ -45,13 +45,13 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
-  const [showApplyBtn, setShowApplyBtn] = useState(true);
   const [jobIdWithoutFlowId, setJobIdWithoutFlowId] = useState<number>();
   const [isLoading, setIsLoading] = useState(false);
+  // const [showApplyBtn, setShowApplyBtn] = useState(true);
 
-  useEffect(() => {
-    isNull(viewJob) && setShowApplyBtn(true);
-  }, [viewJob]);
+  // useEffect(() => {
+  //   isNull(viewJob) && setShowApplyBtn(true);
+  // }, [viewJob]);
 
   useEffect(() => {
     if (height === 0 && applyJobError) {
@@ -74,7 +74,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   useEffect(() => {
     if (viewJob?.id && +viewJob?.id === jobIdWithoutFlowId) {
-      setShowApplyBtn(false);
+      // setShowApplyBtn(false);
       setApplyJobError(t("errors:not_possible_to_start"));
       setTimeout(() => {
         hideErrorAndShowApplyBtn();
@@ -102,9 +102,9 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
   const hideErrorAndShowApplyBtn = useCallback(() => {
     setJobIdWithoutFlowId(undefined);
-    setHeight(0);
-    setShowApplyBtn(true);
-    setApplyJobError(null);
+    // setHeight(0);
+    // setShowApplyBtn(true);
+    // setApplyJobError(null);
   }, []);
 
   const interestedInHandler = async (isRecall = false) => {
@@ -179,50 +179,54 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   };
 
   const handleApplyJobClick = async () => {
+    setApplyJobLoading(true);
+    setApplyJobError(null);
+    setHeight(0);
     lastBtn.current = "apply";
-    if (!isAnonym || isCandidateWithEmail) {
-      if (viewJob?.id && candidateId && chatId) {
-        setApplyJobLoading(true);
-        try {
-          const res: ApiResponse<IApplyJobResponse> =
-            await apiInstance.applyJob(+viewJob.id, candidateId, chatId);
+    setTimeout(async () => {
+      if (!isAnonym || isCandidateWithEmail) {
+        if (viewJob?.id && candidateId && chatId) {
+          try {
+            const res: ApiResponse<IApplyJobResponse> =
+              await apiInstance.applyJob(+viewJob.id, candidateId, chatId);
 
-          if (
-            res.data?.success &&
-            res.data?.FlowID &&
-            res.data?.SubscriberWorkflowID
-          ) {
-            setIsApplyJobSuccessfully(true);
-            setFlowId(res.data.FlowID);
-            setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
-            localStorage.removeItem(hostname + "viewJob");
-            setViewJob(null);
-          } else {
-            setShowApplyBtn(false);
-            setApplyJobError(
-              res.data?.errors[0]?.trim() || t("errors:not_possible_to_start")
-            );
+            if (
+              res.data?.success &&
+              res.data?.FlowID &&
+              res.data?.SubscriberWorkflowID
+            ) {
+              setIsApplyJobSuccessfully(true);
+              setFlowId(res.data.FlowID);
+              setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
+              localStorage.removeItem(hostname + "viewJob");
+              setViewJob(null);
+            } else {
+              // setShowApplyBtn(false);
+              setApplyJobError(
+                res.data?.errors[0]?.trim() || t("errors:not_possible_to_start")
+              );
 
-            if (res.data?.FlowID === 0) {
-              setJobIdWithoutFlowId(+viewJob.id);
+              if (res.data?.FlowID === 0) {
+                setJobIdWithoutFlowId(+viewJob.id);
+              }
             }
-          }
 
-          if (res.data?.statusCode === 105) {
-            setApplyJobError(
-              res.data?.errors[0] || t("errors:something_went_wrong")
-            );
+            if (res.data?.statusCode === 105) {
+              setApplyJobError(
+                res.data?.errors[0] || t("errors:something_went_wrong")
+              );
+            }
+          } catch (error) {
+            error.message && setApplyJobError(error.message);
+          } finally {
+            setApplyJobLoading(false);
           }
-        } catch (error) {
-          error.message && setApplyJobError(error.message);
-        } finally {
-          setApplyJobLoading(false);
         }
+      } else {
+        setIsClicked((value) => (value === 1 ? value : value + 1));
+        setShowLoginScreen(true);
       }
-    } else {
-      setIsClicked((value) => (value === 1 ? value : value + 1));
-      setShowLoginScreen(true);
-    }
+    }, 500);
   };
 
   return !viewJob ? null : (
@@ -237,21 +241,19 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
         </S.ShortItems>
 
         <S.ButtonsWrapper>
-          {showApplyBtn && (
-            <DarkButton
-              disabled={applyJobLoading}
-              onClick={handleApplyJobClick}
-              fontWeight={700}
-            >
-              {applyJobLoading ? (
-                <S.LoaderWrapper>
-                  <Loader showLoader absolutePosition={false} />
-                </S.LoaderWrapper>
-              ) : (
-                t("labels:apply")
-              )}
-            </DarkButton>
-          )}
+          <DarkButton
+            disabled={applyJobLoading}
+            onClick={handleApplyJobClick}
+            fontWeight={700}
+          >
+            {applyJobLoading ? (
+              <S.LoaderWrapper>
+                <Loader showLoader absolutePosition={false} />
+              </S.LoaderWrapper>
+            ) : (
+              t("labels:apply")
+            )}
+          </DarkButton>
 
           <DarkButton
             disabled={isLoading}
@@ -296,20 +298,15 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
       <S.TextTitle>{t("labels:job_description")} </S.TextTitle>
       <S.ViewDescription>{parse(viewJob.description)}</S.ViewDescription>
 
-      {showApplyBtn && (
-        <S.SubmitButton
-          disabled={applyJobLoading}
-          onClick={handleApplyJobClick}
-        >
-          {applyJobLoading ? (
-            <S.LoaderWrapper>
-              <Loader showLoader absolutePosition={false} />
-            </S.LoaderWrapper>
-          ) : (
-            t("labels:apply")
-          )}
-        </S.SubmitButton>
-      )}
+      <S.SubmitButton disabled={applyJobLoading} onClick={handleApplyJobClick}>
+        {applyJobLoading ? (
+          <S.LoaderWrapper>
+            <Loader showLoader absolutePosition={false} />
+          </S.LoaderWrapper>
+        ) : (
+          t("labels:apply")
+        )}
+      </S.SubmitButton>
 
       <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
         <S.Error>
