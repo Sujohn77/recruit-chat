@@ -387,10 +387,14 @@ export const pushMessage = ({
   isReferralEnabled,
 }: IPushMessage) => {
   const { type, payload } = action;
-  const text =
-    payload?.item ||
-    payload?.items?.map((i) => i.substring(0, i.indexOf(","))).join("\r\n") ||
-    "";
+  // const text =
+  //   payload?.item ||
+  //   payload?.items?.map((i) => i.substring(0, i.indexOf(","))).join("\r\n") ||
+  //   "";
+
+  const text = payload?.item
+    ? payload.item
+    : payload?.items?.join("\r\n") || "";
 
   LOG(payload?.items, "payload?.items", COLORS.WHITE, COLORS.BLACK, true);
   LOG(text, "text", COLORS.BLACK, COLORS.WHITE, true);
