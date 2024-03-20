@@ -24,6 +24,7 @@ import {
   getValidationRefResponse,
 } from "./data";
 import { ICONS } from "assets";
+import { useIsTabActive } from "services/hooks";
 import {
   MessageOptionTypes,
   MessageStatuses,
@@ -32,7 +33,6 @@ import {
   TryAgainTypes,
 } from "utils/constants";
 import {
-  LOG,
   generateLocalId,
   getAccessWriteType,
   getFormattedLocations,
@@ -118,6 +118,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
+  const isTabActive = useIsTabActive();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
@@ -177,18 +178,24 @@ export const ChatInput: FC<IChatInputProps> = ({
       localStorage.setItem(hostname + INPUT_KEY, draftMessage);
   }, [draftMessage]);
 
-  useEffect(() => {
-    const onPersistInputValue = ({ key, newValue }: StorageEvent) => {
-      if (key === hostname + INPUT_KEY) {
-        setDraftMessage(newValue);
-      }
-    };
+  // useEffect(() => {
+  //   const onPersistInputValue = ({ key, newValue }: StorageEvent) => {
+  //     if (key === hostname + INPUT_KEY) {
+  //       setDraftMessage(newValue);
+  //     }
+  //   };
+  //   window.addEventListener("storage", onPersistInputValue);
+  //   return () => {
+  //     window.removeEventListener("storage", onPersistInputValue);
+  //   };
+  // }, []);
 
-    window.addEventListener("storage", onPersistInputValue);
-    return () => {
-      window.removeEventListener("storage", onPersistInputValue);
-    };
-  }, []);
+  useEffect(() => {
+    if (isTabActive) {
+      const storedDraftMess = localStorage.getItem(hostname + INPUT_KEY);
+      typeof storedDraftMess === "string" && setDraftMessage(storedDraftMess);
+    }
+  }, [isTabActive]);
 
   const { matchedPart, matchedItems } = useMemo(
     () =>

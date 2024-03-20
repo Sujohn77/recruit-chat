@@ -10,9 +10,10 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
 import { PhoneInputWrapper } from "./styles";
+import { useIsTabActive } from "services/hooks";
 import { isResultsType } from "utils/helpers";
-import { TextFieldTypes } from "utils/constants";
 import { useDetectCountry } from "utils/hooks";
+import { TextFieldTypes } from "utils/constants";
 import { DefaultInput } from "components/Layout";
 import { SearchResults } from "components/Chat/ChatComponents/ChatInput/SearchResults";
 
@@ -55,9 +56,14 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   const { dispatch, currentMsgType, error, isChatLoading } = useChatMessenger();
   const detectedCountry = useDetectCountry();
   const inputRef = useRef<HTMLInputElement>(null);
+  const isTabActive = useIsTabActive();
 
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+
+  useEffect(() => {
+    isTabActive && inputRef.current?.focus();
+  }, [isTabActive]);
 
   useEffect(() => {
     !isResults && setHeight(0);
