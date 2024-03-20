@@ -4,8 +4,8 @@ import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
 import * as S from "./styles";
+import { Burger } from "./Burger";
 import { MenuItem } from "./MenuItem";
-import { BurgerIcon } from "./BurgerIcon";
 import {
   baseWithRefItems,
   baseWithRef,
@@ -72,6 +72,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
   const handleItemClick = async (item: IMenuItem) => {
     const { type, text } = item;
+    setIsOpen(false);
 
     if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
       setIsApplyJobFlow(false);
@@ -147,17 +148,14 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           }
         }
         break;
-
       case CHAT_ACTIONS.CHANGE_LANG:
         // this feature is temporarily hidden (language change - CHAT-265)
         break;
-
       default:
         dispatch({
           type,
           payload: { item: text, isChatMessage: true },
         });
-        setIsOpen(true);
         setIsShowResults(false);
     }
   };
@@ -168,16 +166,16 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   );
 
   return (
-    <S.Wrapper onClick={handleBurgerClick}>
-      <BurgerIcon />
-
+    <S.Wrapper>
+      <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
       {isOpen && (
-        <S.MenuItemsWrapper onMouseLeave={() => setIsOpen(false)}>
+        <S.MenuItemsWrapper>
           {map(list, (item, index) => (
             <MenuItem
               key={`menu-item-${index}`}
               item={item}
               onClick={handleItemClick}
+              onSelectLanguage={handleBurgerClick}
             />
           ))}
         </S.MenuItemsWrapper>

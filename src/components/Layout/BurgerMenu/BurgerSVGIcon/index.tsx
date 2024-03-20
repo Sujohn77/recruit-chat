@@ -1,7 +1,7 @@
 import React from "react";
 import { IconButton } from "@mui/material";
 
-export const BurgerIcon: React.FC = () => (
+export const BurgerSVGIcon: React.FC = () => (
   <IconButton
     size="large"
     edge="start"
