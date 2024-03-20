@@ -617,7 +617,7 @@ const ChatProvider = ({
               }
             }
 
-            setCategory(foundRequisition?.category || payload?.item?.trim());
+            setCategory(foundRequisition?.title || payload?.item?.trim());
             _setCategoryTitle(foundRequisition?.title || payload?.item?.trim());
             payload!.item = foundRequisition?.title || payload?.item?.trim();
           }

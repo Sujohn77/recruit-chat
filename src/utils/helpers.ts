@@ -511,10 +511,10 @@ export const getSearchJobsData = (
   return {
     page: 0,
     pageSize: 50,
-    keyword: "*",
+    keyword: typeof category === "string" ? category : "*",
     minDatePosted: "2016-11-13T00:00:00",
     uniqueTitles: true,
-    categories: typeof category === "string" ? [category] : category,
+    // categories: typeof category === "string" ? [category] : category,
     location:
       !employeeLocationID && city
         ? {
