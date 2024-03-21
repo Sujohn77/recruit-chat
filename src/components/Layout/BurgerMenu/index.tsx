@@ -192,10 +192,10 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   );
 
   return (
-    <S.Wrapper ref={wrapperRef}>
+    <S.Wrapper>
       <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
       {isOpen && (
-        <S.MenuItemsWrapper>
+        <S.MenuItemsWrapper ref={wrapperRef}>
           {map(list, (item, index) => (
             <MenuItem
               key={`menu-item-${index}`}
