@@ -6,8 +6,9 @@ import { FC, useEffect, useState } from "react";
 import { Container } from "./styles";
 import { Content } from "content";
 import { IApiThemeResponse } from "utils/types";
-import { postMessToParent } from "utils/helpers";
+import { LOG, postMessToParent } from "utils/helpers";
 import { EventIds, SessionStorage } from "utils/constants";
+import { COLORS } from "utils/colors";
 
 interface IParentMessage {
   guid?: string;
@@ -41,6 +42,7 @@ export const ChatBotRoot: FC = () => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
       // LOG(data, "DATA", undefined, undefined, true);
       const { props, style, hostname, token, guid } = data;
+      LOG(data, "data", COLORS.BLACK, COLORS.WHITE, true);
       hostname && setHostname(hostname);
       style && setTheme(style);
 
