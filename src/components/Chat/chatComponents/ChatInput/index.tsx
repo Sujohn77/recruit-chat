@@ -724,7 +724,6 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      const isWriteAccess = getAccessWriteType(currentMsgType) || file;
       if ((draftMessage || phone) && event.key === "Enter" && isWriteAccess) {
         event.preventDefault();
         onSendMessageHandler();
@@ -735,7 +734,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [draftMessage, sendMessage]);
+  }, [draftMessage, sendMessage, isWriteAccess]);
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
