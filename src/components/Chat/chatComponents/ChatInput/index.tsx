@@ -351,7 +351,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
           dispatch({
             type: actionType,
-            payload: { items },
+            payload: { items: items.length ? items : [draftMessage] },
           });
         }
       } else {

@@ -774,10 +774,13 @@ const ChatProvider = ({
       switch (type) {
         case CHAT_ACTIONS.SEND_LOCATIONS: {
           if (category) {
+            const locations = searchLocations.length
+              ? searchLocations[0]?.split(",")[0] || searchLocations[0]
+              : payload?.items?.[0];
             try {
               additionalCondition = await searchRequisitions(
                 category,
-                searchLocations[0]?.split(",")[0] || searchLocations[0]
+                locations
               );
             } catch {}
           }
