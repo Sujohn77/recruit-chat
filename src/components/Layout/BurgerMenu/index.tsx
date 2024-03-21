@@ -1,5 +1,12 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
@@ -55,6 +62,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     employeeJobCategory,
     hostname,
   } = useChatMessenger();
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const list = useMemo(() => {
@@ -69,6 +78,23 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     }
     return defaultItems;
   }, [isReferralEnabled, isCandidateWithEmail, employeeId]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleItemClick = async (item: IMenuItem) => {
     const { type, text } = item;
@@ -166,7 +192,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   );
 
   return (
-    <S.Wrapper>
+    <S.Wrapper ref={wrapperRef}>
       <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
       {isOpen && (
         <S.MenuItemsWrapper>

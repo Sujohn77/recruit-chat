@@ -5,7 +5,7 @@ import { ChatMessengerContextKeys, IUser } from "contexts/types";
 import { IRequisitionType } from "services/hooks";
 import { ChatScreens, EventIds } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, IRequisition } from "utils/types";
-import { LOG, postMessToParent } from "utils/helpers";
+import { postMessToParent } from "utils/helpers";
 
 interface IStorePersistProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -106,9 +106,11 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
   //   });
   // }, [storeWithoutFn, storeKeys]);
 
-  const updateStorage = useCallback((e?: StorageEvent) => {
+  useEffect(() => {
     localStorage.setItem(hostname + "lastActivity", new Date().toString());
+  }, [messages.length, currentMsgType]);
 
+  const updateStorage = useCallback((e?: StorageEvent) => {
     if (e?.key === hostname + "status" && e.newValue === "close") {
       postMessToParent(EventIds.RefreshChatbot);
 
