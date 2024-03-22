@@ -1,7 +1,7 @@
 import React, { FC, MouseEvent, useEffect } from "react";
 import map from "lodash/map";
 
-import * as S from "./styles";
+import * as S from "../styles";
 import { COLORS } from "utils/colors";
 import { InfiniteScrollView } from "components/InfiniteScrollView";
 import { useChatMessenger } from "contexts/MessengerContext";

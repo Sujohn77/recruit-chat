@@ -7,9 +7,7 @@ export const FormInput = styled(TextField)`
   textarea {
     background: ${COLORS.CONCRETE};
     border-radius: 10px;
-
     padding: 10px;
-    /* font-family: Inter; */
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;

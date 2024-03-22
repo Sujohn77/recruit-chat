@@ -15,7 +15,7 @@ import { isResultsType } from "utils/helpers";
 import { useDetectCountry } from "utils/hooks";
 import { TextFieldTypes } from "utils/constants";
 import { DefaultInput } from "components/Layout";
-import { SearchResults } from "components/Chat/ChatComponents/ChatInput/SearchResults";
+import { SearchResults } from "components/Chat/ChatComponents/ChatInput/Autocomplete/SearchResults";
 
 interface IAutocompleteProps {
   value: string;

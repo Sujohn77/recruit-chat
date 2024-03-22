@@ -7,10 +7,9 @@ import AnimateHeight, { Height } from "react-animate-height";
 import { IMAGES } from "assets";
 import { PopUp } from "..";
 import * as S from "./styles";
-import { COLORS } from "utils/colors";
 import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
-import { FormInput } from "components/Layout/Autocomplete/styles";
+import { FormInput } from "components/Chat/ChatComponents/ChatInput/Autocomplete/styles";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
 
 const ANIMATION_ID = "LOGIN_ANIMATION_ID";

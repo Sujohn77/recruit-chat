@@ -6,7 +6,7 @@ import { FormControl } from "@mui/material";
 import * as S from "./styles";
 import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
-import { FormInput } from "components/Layout/Autocomplete/styles";
+import { FormInput } from "components/Chat/ChatComponents/ChatInput/Autocomplete/styles";
 
 export const EmailForm: FC = () => {
   const { t } = useTranslation();
