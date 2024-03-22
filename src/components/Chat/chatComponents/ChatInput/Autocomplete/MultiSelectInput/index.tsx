@@ -8,14 +8,16 @@ import {
   useEffect,
 } from "react";
 import { useAutocomplete } from "@mui/material";
+import { useDebounce } from "use-debounce";
 import filter from "lodash/filter";
 import map from "lodash/map";
 
 import * as S from "./styles";
 import { Tag } from "./tag";
-import { isResultsType } from "utils/helpers";
 import { TextInput } from "components/Layout/Input/styles";
 import { SearchResults } from "components/Chat/ChatComponents/ChatInput/Autocomplete/SearchResults";
+import { isResultsType } from "utils/helpers";
+import { CHAT_ACTIONS } from "utils/types";
 
 interface IMultiSelectInputProps {
   value: string;
@@ -44,7 +46,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setIsShowResults,
   setHeight,
 }) => {
-  const { currentMsgType } = useChatMessenger();
+  const { currentMsgType, isChatLoading, searchLocation } = useChatMessenger();
   const {
     getInputProps,
     getTagProps,
@@ -61,11 +63,20 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     value: values,
     onChange,
   });
+  const [debouncedValue] = useDebounce(value, 500, {
+    maxWait: 1000,
+    leading: isChatLoading,
+  });
 
   const autocompleteInputProps = getInputProps();
-
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+
+  useEffect(() => {
+    if (value && currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
+      searchLocation(debouncedValue);
+    }
+  }, [currentMsgType, debouncedValue]);
 
   useEffect(() => {
     !isResults && setHeight(0);

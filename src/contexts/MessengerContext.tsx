@@ -175,7 +175,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setRequisitions: () => {},
   setFirebaseToken: () => {},
   setAlertCategories: () => {},
-  setOfferJobs: (offers: IRequisition[]) => {},
+  setOfferJobs: () => {},
   setChatId: () => {},
   setLocations: () => {},
   setCategory: () => {},
@@ -187,6 +187,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   referralStep: ReferralSteps.EmployeeId,
   setReferralStep: () => {},
   hostname: "",
+  searchRequisitionsByKeyword: () => Promise.resolve(null),
+  searchLocation: () => Promise.resolve(null),
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -247,6 +249,8 @@ const ChatProvider = ({
     setJobPositions,
     setRequisitions,
     setLocations,
+    searchRequisitionsByKeyword,
+    searchLocation,
   } = useRequisitions(
     searchRequisitionsTrigger,
     setIsChatLoading,
@@ -1376,6 +1380,8 @@ const ChatProvider = ({
     referralStep,
     setReferralStep,
     hostname,
+    searchRequisitionsByKeyword,
+    searchLocation,
   };
 
   // console.log(

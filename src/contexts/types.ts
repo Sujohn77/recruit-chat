@@ -145,6 +145,8 @@ export interface IChatMessengerContext {
   referralStep: ReferralSteps;
   setReferralStep: (step: ReferralSteps) => void;
   hostname: string;
+  searchRequisitionsByKeyword: (keyword: string) => Promise<any>;
+  searchLocation: (keyword: string) => Promise<any>;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

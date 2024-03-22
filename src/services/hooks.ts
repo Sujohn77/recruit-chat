@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Dispatch,
   SetStateAction,
@@ -7,6 +6,8 @@ import {
   useState,
 } from "react";
 import map from "lodash/map";
+import uniq from "lodash/uniq";
+import uniqBy from "lodash/uniqBy";
 import { ApiResponse } from "apisauce";
 
 import { IRequisitionsResponse, LocationType } from "./types";
@@ -47,8 +48,8 @@ export const useRequisitions = (
             });
           if (response?.data?.requisitions?.length) {
             if (page !== 0) {
-              setRequisitions((prevValue) => [
-                ...prevValue,
+              setRequisitions((prevRequisitions) => [
+                ...prevRequisitions,
                 ...map(response?.data?.requisitions, (c: IRequisition) => ({
                   title: c.title,
                   category: c.categories![0],
@@ -56,8 +57,8 @@ export const useRequisitions = (
               ]);
 
               if (response?.data?.requisitions.length) {
-                setLocations((prevValue) => [
-                  ...prevValue,
+                setLocations((prevLocations) => [
+                  ...prevLocations,
                   ...map(response?.data?.requisitions, (r) => r.location),
                 ]);
               }
@@ -100,8 +101,8 @@ export const useRequisitions = (
       ]);
 
       if (requisitions.length) {
-        setLocations((prevValue) => [
-          ...prevValue,
+        setLocations((prevLocations) => [
+          ...prevLocations,
           ...map(requisitions, (r) => r.location),
         ]);
       }
@@ -137,6 +138,57 @@ export const useRequisitions = (
     }
   };
 
+  const searchRequisitionsByKeyword = useCallback(async (keyword: string) => {
+    if (keyword) {
+      setIsChatLoading(true);
+      try {
+        const response: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions({ ...searchParams, keyword });
+        if (response.data?.requisitions.length) {
+          setRequisitions((prevRequisitions) =>
+            uniq([
+              ...prevRequisitions,
+              ...map(response?.data?.requisitions, (c: IRequisition) => ({
+                title: c.title,
+                category: c.categories![0],
+              })),
+            ])
+          );
+        }
+      } catch (error) {
+        isDevMode && console.log("searchRequisitionsByKeyword", error);
+      } finally {
+        setIsChatLoading(false);
+      }
+    }
+  }, []);
+
+  const searchLocation = useCallback(async (searchStr: string) => {
+    if (searchStr) {
+      setIsChatLoading(true);
+      try {
+        const response: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions({
+            ...searchParams,
+            keyword: searchStr,
+          });
+        if (response?.data?.requisitions.length) {
+          setLocations((preLocations) => [
+            ...preLocations,
+            ...map(
+              uniqBy(response?.data?.requisitions, (i) => i.location),
+              (r) => r.location
+            ),
+          ]);
+        }
+      } catch (error) {
+        isDevMode && console.log("searchRequisitionsByKeyword", error);
+      } finally {
+        setIsChatLoading(false);
+      }
+    }
+  }, []);
+
   return {
     requisitions,
     locations,
@@ -145,6 +197,8 @@ export const useRequisitions = (
     setPage,
     setRequisitions,
     setLocations,
+    searchRequisitionsByKeyword,
+    searchLocation,
   };
 };
 

@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import { useDebounce } from "use-debounce";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
@@ -16,6 +17,7 @@ import { useDetectCountry } from "utils/hooks";
 import { TextFieldTypes } from "utils/constants";
 import { DefaultInput } from "components/Layout";
 import { SearchResults } from "components/Chat/ChatComponents/ChatInput/Autocomplete/SearchResults";
+import { CHAT_ACTIONS } from "utils/types";
 
 interface IAutocompleteProps {
   value: string;
@@ -53,13 +55,29 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   errorText,
   disabled = false,
 }) => {
-  const { dispatch, currentMsgType, error, isChatLoading } = useChatMessenger();
+  const {
+    dispatch,
+    currentMsgType,
+    error,
+    isChatLoading,
+    searchRequisitionsByKeyword,
+  } = useChatMessenger();
   const detectedCountry = useDetectCountry();
   const inputRef = useRef<HTMLInputElement>(null);
   const isTabActive = useIsTabActive();
+  const [debouncedValue] = useDebounce(value, 500, {
+    maxWait: 1000,
+    leading: isChatLoading,
+  });
 
   const isResults =
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
+
+  useEffect(() => {
+    if (value && currentMsgType === CHAT_ACTIONS.SET_CATEGORY) {
+      searchRequisitionsByKeyword(debouncedValue);
+    }
+  }, [currentMsgType, debouncedValue]);
 
   useEffect(() => {
     isTabActive && inputRef.current?.focus();
