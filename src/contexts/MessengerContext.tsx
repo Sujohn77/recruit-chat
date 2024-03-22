@@ -713,13 +713,15 @@ const ChatProvider = ({
       searchCategory?: string | string[],
       searchLocation?: string,
       searchCountry?: string,
-      employeeLocationID?: string
+      employeeLocationID?: string,
+      employeeJobFamilyNames?: string[]
     ): Promise<null | boolean> => {
       const payload = getSearchJobsData(
         searchCategory,
         searchLocation,
         searchCountry,
-        employeeLocationID
+        employeeLocationID,
+        employeeJobFamilyNames
       );
 
       setIsChatLoading(true);

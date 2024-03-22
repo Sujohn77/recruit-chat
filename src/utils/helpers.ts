@@ -506,7 +506,8 @@ export const getSearchJobsData = (
   category?: string | string[],
   city?: string,
   country?: string,
-  employeeLocationID?: string
+  employeeLocationID?: string,
+  employeeJobFamilyNames?: string[]
 ): ISearchJobsPayload => {
   return {
     page: 0,
@@ -514,7 +515,9 @@ export const getSearchJobsData = (
     keyword: typeof category === "string" ? category : "*",
     minDatePosted: "2016-11-13T00:00:00",
     uniqueTitles: true,
-    // categories: typeof category === "string" ? [category] : category,
+    categories: employeeJobFamilyNames?.length
+      ? employeeJobFamilyNames
+      : undefined,
     location:
       !employeeLocationID && city
         ? {

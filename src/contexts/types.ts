@@ -125,7 +125,8 @@ export interface IChatMessengerContext {
     searchCategory?: string | string[],
     searchLocation?: string,
     searchCountry?: string,
-    employeeLocationID?: string
+    employeeLocationID?: string,
+    employeeJobFamilyNames?: string[]
   ) => Promise<null | boolean>;
   employeeFullName: string;
   setEmployeeFullName: (name: string) => void;
