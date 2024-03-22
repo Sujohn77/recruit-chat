@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { ISearchRequisition } from "contexts/types";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,28 +6,26 @@ import firebase from "firebase";
 import "firebase/auth";
 
 import { CHAT_ACTIONS } from "./types";
+import { getFormattedLocations } from "./helpers";
 import { searchAlertCategories } from "components/Chat/mockData";
 import { useChatMessenger } from "contexts/MessengerContext";
 import i18n from "services/localization";
 
 interface IUseTextField {
-  lastActionType: CHAT_ACTIONS | null;
+  currentMsgType: CHAT_ACTIONS | null;
   locations: string[];
   category: string | null;
   requisitions: ISearchRequisition[];
 }
 
-export const useTextField = ({
-  lastActionType,
-  requisitions,
-  locations,
-  category,
-}: IUseTextField) => {
+export const useTextField = () => {
   const { t } = useTranslation();
+  const { category, currentMsgType, requisitions, locations } =
+    useChatMessenger();
 
   const getTextFieldProps = useCallback(
-    ({ lastActionType, requisitions, locations }: IUseTextField) => {
-      if (lastActionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
+    ({ currentMsgType, requisitions, locations }: IUseTextField) => {
+      if (currentMsgType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
         return {
           searchItems: searchAlertCategories,
           placeHolder: t("placeHolders:alert_category"),
@@ -38,8 +35,8 @@ export const useTextField = ({
       }
 
       if (
-        lastActionType === CHAT_ACTIONS.SET_LOCATIONS ||
-        lastActionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+        currentMsgType === CHAT_ACTIONS.SET_LOCATIONS ||
+        currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
       ) {
         return {
           searchItems: locations,
@@ -53,9 +50,9 @@ export const useTextField = ({
         searchItems: map(requisitions, (r) => r.title),
         headerName: t("chat_item_description:categories_title"),
         placeHolder:
-          lastActionType === CHAT_ACTIONS.SET_CATEGORY
+          currentMsgType === CHAT_ACTIONS.SET_CATEGORY
             ? t("placeHolders:message")
-            : lastActionType === CHAT_ACTIONS.ANSWER_QUESTIONS
+            : currentMsgType === CHAT_ACTIONS.ANSWER_QUESTIONS
             ? t("placeHolders:startTyping")
             : t("placeHolders:default"),
         subHeaderName: i18n.t("messages:processed_your_resume"),
@@ -64,14 +61,12 @@ export const useTextField = ({
     []
   );
 
-  const inputProps = getTextFieldProps({
-    lastActionType,
+  return getTextFieldProps({
+    currentMsgType,
     requisitions,
-    locations,
+    locations: getFormattedLocations(locations),
     category,
   });
-
-  return inputProps;
 };
 
 export const useApiKey = () => {

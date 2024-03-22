@@ -34,8 +34,6 @@ import {
 } from "utils/constants";
 import {
   generateLocalId,
-  getAccessWriteType,
-  getFormattedLocations,
   getInputType,
   getMatchedItem,
   getMatchedItems,
@@ -78,11 +76,9 @@ export const ChatInput: FC<IChatInputProps> = ({
   const { t } = useTranslation();
   const { file, setNotification, showJobTitles } = useFileUploadContext();
   const {
-    category,
     dispatch,
     searchLocations,
     status,
-    locations,
     currentMsgType,
     setError,
     error,
@@ -121,12 +117,8 @@ export const ChatInput: FC<IChatInputProps> = ({
   const isTabActive = useIsTabActive();
 
   // ---------------------- State --------------------- //
-  const { searchItems, placeHolder, headerName, subHeaderName } = useTextField({
-    locations: getFormattedLocations(locations),
-    requisitions,
-    category,
-    lastActionType: currentMsgType,
-  });
+  const { searchItems, placeHolder, headerName, subHeaderName } =
+    useTextField();
 
   // user
   const [userFirstName, setUserFirstName] = useState(userFName);
@@ -177,18 +169,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     typeof draftMessage === "string" &&
       localStorage.setItem(hostname + INPUT_KEY, draftMessage);
   }, [draftMessage]);
-
-  // useEffect(() => {
-  //   const onPersistInputValue = ({ key, newValue }: StorageEvent) => {
-  //     if (key === hostname + INPUT_KEY) {
-  //       setDraftMessage(newValue);
-  //     }
-  //   };
-  //   window.addEventListener("storage", onPersistInputValue);
-  //   return () => {
-  //     window.removeEventListener("storage", onPersistInputValue);
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (isTabActive) {
@@ -245,7 +225,6 @@ export const ChatInput: FC<IChatInputProps> = ({
 
     if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) {
       setReferralStep(ReferralSteps.UserFirstName);
-      clearReferralState();
     }
   }, [currentMsgType]);
 
@@ -254,14 +233,6 @@ export const ChatInput: FC<IChatInputProps> = ({
       setInputValues([]);
     }
   }, [currentMsgType]);
-
-  const clearReferralState = useCallback(() => {
-    // TODO: test
-    // setFirstName("");
-    // setLastName("");
-    // setEmail("");
-    // setPhone("");
-  }, []);
 
   // Callbacks
   const sendMessage = useCallback(
