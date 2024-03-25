@@ -147,6 +147,7 @@ export interface IChatMessengerContext {
   hostname: string;
   searchRequisitionsByKeyword: (keyword: string) => Promise<any>;
   searchLocation: (keyword: string) => Promise<any>;
+  categoriesForAlert: string[];
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

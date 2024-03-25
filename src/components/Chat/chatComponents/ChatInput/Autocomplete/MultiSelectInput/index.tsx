@@ -73,7 +73,10 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
 
   useEffect(() => {
-    if (value && currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
+    if (
+      debouncedValue.trim() &&
+      currentMsgType === CHAT_ACTIONS.SET_LOCATIONS
+    ) {
       searchLocation(debouncedValue);
     }
   }, [currentMsgType, debouncedValue]);

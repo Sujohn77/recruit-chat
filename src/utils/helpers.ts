@@ -57,8 +57,6 @@ window.Buffer = Buffer;
 interface IGetMatchedItems {
   searchText: string | null;
   searchItems: string[];
-  searchLocations: string[];
-  alertCategories?: string[] | null;
 }
 
 interface IIsResultType {
@@ -236,23 +234,49 @@ export const validateEmailOrPhone = (value: string) => {
   return "";
 };
 
+function searchInLocations(
+  searchTerm: string,
+  searchItems: string[]
+): string[] {
+  const results: string[] = [];
+  if (searchTerm.trim().indexOf(" ") === -1) {
+    const searchWord = searchTerm.trim();
+    searchItems.forEach((i) => {
+      const words: string[] = i.split(", ");
+      words.forEach((word) => {
+        if (word.startsWith(searchWord)) {
+          results.push(i);
+        }
+      });
+    });
+  } else {
+    const searchWords: string[] = searchTerm.trim().split(" ");
+    searchItems.forEach((i) => {
+      if (searchWords.every((word) => i.includes(word))) {
+        results.push(i);
+      }
+    });
+  }
+
+  return results;
+}
+
 export const getMatchedItems = ({
   searchText,
   searchItems,
-  searchLocations,
-  alertCategories,
 }: IGetMatchedItems) => {
-  const compareItem = searchText?.toLowerCase() || "";
+  const compareItem = searchText?.toLowerCase()?.trim() || "";
   const matchedPositions = filter(searchItems, (item) => {
     const searchItem = item.toLowerCase();
 
     const isMatch =
+      searchItem.includes(compareItem) &&
       some(
         searchItem.split(" "),
         (word) => word.slice(0, compareItem.length) === compareItem
-      ) || searchItem.includes(compareItem);
+      );
 
-    return isMatch && searchItem.includes(compareItem);
+    return isMatch;
   });
 
   const matchedPart =
@@ -260,34 +284,9 @@ export const getMatchedItems = ({
       ? compareItem[0].toUpperCase() + compareItem.slice(1, compareItem.length)
       : "";
 
-  // matched items without search substring
-  const matchedItemsWithoutSearchString = map(
-    filter(matchedPositions, (p) =>
-      alertCategories?.length
-        ? !alertCategories.includes(p)
-        : !searchLocations.includes(p)
-    ),
-    (item) => {
-      const words = item.split(" ");
-      const index = words.findIndex(
-        (word) => word.slice(0, compareItem.length) === compareItem
-      );
-      if (index !== -1) {
-        return words
-          .map((w, i) =>
-            index === i ? w.slice(searchText?.length, item.length) : w
-          )
-          .join(" ");
-      } else {
-        return item.slice(searchText?.length, item.length);
-      }
-    }
-  );
-
   return {
     matchedItems: matchedPositions,
     matchedPart,
-    matchedItemsWithoutSearchString,
   };
 };
 

@@ -189,6 +189,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   hostname: "",
   searchRequisitionsByKeyword: () => Promise.resolve(null),
   searchLocation: () => Promise.resolve(null),
+  categoriesForAlert: [],
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -240,6 +241,8 @@ const ChatProvider = ({
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
   const [requisitionsPage, setRequisitionsPage] = useState(0);
+
+  const [categoriesForAlert, setCategoriesForAlert] = useState<string[]>([]);
 
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
 
@@ -606,6 +609,15 @@ const ChatProvider = ({
               };
               const requisitionsResponse: ApiResponse<IRequisitionsResponse> =
                 await apiInstance.searchRequisitions(searchParams);
+
+              if (requisitionsResponse.data?.facets.Categories.length) {
+                setCategoriesForAlert(
+                  map(
+                    requisitionsResponse.data?.facets.Categories,
+                    (c) => c.value
+                  )
+                );
+              }
 
               if (requisitionsResponse.data?.requisitions.length) {
                 foundRequisition = find(
@@ -1382,6 +1394,7 @@ const ChatProvider = ({
     hostname,
     searchRequisitionsByKeyword,
     searchLocation,
+    categoriesForAlert,
   };
 
   // console.log(

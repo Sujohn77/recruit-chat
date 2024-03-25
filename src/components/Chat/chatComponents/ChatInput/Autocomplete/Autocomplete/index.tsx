@@ -74,7 +74,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
     isShowResults && isResultsType({ type: currentMsgType, matchedItems });
 
   useEffect(() => {
-    if (value && currentMsgType === CHAT_ACTIONS.SET_CATEGORY) {
+    if (debouncedValue.trim() && currentMsgType === CHAT_ACTIONS.SET_CATEGORY) {
       searchRequisitionsByKeyword(debouncedValue);
     }
   }, [currentMsgType, debouncedValue]);

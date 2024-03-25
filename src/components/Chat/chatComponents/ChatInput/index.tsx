@@ -85,7 +85,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     requisitions,
     chooseButtonOption,
     isChatLoading,
-    alertCategories,
     isApplyJobFlow,
     sendPreScreenMessage,
     setSearchLocations,
@@ -182,19 +181,8 @@ export const ChatInput: FC<IChatInputProps> = ({
       getMatchedItems({
         searchText: draftMessage,
         searchItems,
-        searchLocations,
-        alertCategories:
-          currentMsgType === CHAT_ACTIONS.SET_ALERT_CATEGORIES
-            ? alertCategories
-            : undefined,
       }),
-    [
-      searchItems,
-      draftMessage,
-      searchLocations,
-      currentMsgType,
-      alertCategories,
-    ]
+    [searchItems, draftMessage]
   );
 
   const isWriteAccess =
@@ -867,7 +855,12 @@ export const ChatInput: FC<IChatInputProps> = ({
           phoneValue={phone}
           setPhoneValue={setPhone}
           onChange={onChangeCategory}
-          disabled={isChatLoading || disabled}
+          disabled={
+            (isChatLoading &&
+              currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
+              currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS) ||
+            disabled
+          }
           errorText={refError}
           isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
         />

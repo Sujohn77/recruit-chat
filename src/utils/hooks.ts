@@ -7,7 +7,6 @@ import "firebase/auth";
 
 import { CHAT_ACTIONS } from "./types";
 import { getFormattedLocations } from "./helpers";
-import { searchAlertCategories } from "components/Chat/mockData";
 import { useChatMessenger } from "contexts/MessengerContext";
 import i18n from "services/localization";
 
@@ -20,14 +19,19 @@ interface IUseTextField {
 
 export const useTextField = () => {
   const { t } = useTranslation();
-  const { category, currentMsgType, requisitions, locations } =
-    useChatMessenger();
+  const {
+    category,
+    currentMsgType,
+    requisitions,
+    locations,
+    categoriesForAlert,
+  } = useChatMessenger();
 
   const getTextFieldProps = useCallback(
     ({ currentMsgType, requisitions, locations }: IUseTextField) => {
       if (currentMsgType === CHAT_ACTIONS.SET_ALERT_CATEGORIES) {
         return {
-          searchItems: searchAlertCategories,
+          searchItems: categoriesForAlert,
           placeHolder: t("placeHolders:alert_category"),
           headerName: t("chat_item_description:all_categories"),
           subHeaderName: null,
@@ -58,7 +62,7 @@ export const useTextField = () => {
         subHeaderName: i18n.t("messages:processed_your_resume"),
       };
     },
-    []
+    [categoriesForAlert]
   );
 
   return getTextFieldProps({
