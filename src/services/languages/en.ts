@@ -18,7 +18,7 @@ export const en = {
     default: "Type a message",
     message: "Select or Type a Job Title",
     bot_typing: "Bot is typing...",
-    chooseLocation: "Select a location from the list",
+    chooseLocation: "Select or Type a Job Location",
     email: "Email",
     alert_category: "Reply to choose category...",
     startTyping: "Start typing to select a job title...",
