@@ -29,10 +29,8 @@ export const MenuItem: FC<IMenuItemProps> = ({ onClick, item }) => {
 
       {isOpenDropDown && (
         <DropDown
-          // this feature is temporarily hidden (language change - CHAT-265)
-          // onClick={(value: string) => onClick({ ...item, text: value })}
-          onClick={() => {}}
-          options={item.options!}
+          onClick={(value: string) => onClick({ ...item, text: value })}
+          options={item.options}
         />
       )}
     </S.MenuItemWrapper>

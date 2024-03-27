@@ -331,8 +331,6 @@ export const getChatActionResponse = ({
   return getParsedMessages(responseMessages);
 };
 
-export const languages = ["EN", "FR", "UA"];
-
 export enum CHAT_OPTIONS {
   FIND_JOB = "FIND JOB",
   ASK_QUESTION = "ASK QUESTION",

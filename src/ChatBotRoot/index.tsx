@@ -6,7 +6,7 @@ import { FC, useEffect, useState } from "react";
 import { Container } from "./styles";
 import { Content } from "content";
 import { IApiThemeResponse } from "utils/types";
-import { LOG, postMessToParent } from "utils/helpers";
+import { LOG, isStringArray, postMessToParent } from "utils/helpers";
 import { EventIds, SessionStorage } from "utils/constants";
 import { COLORS } from "utils/colors";
 
@@ -20,6 +20,8 @@ interface IParentMessage {
     referralListDomain?: string;
     clientApiToken?: string;
     jobSourceId?: string;
+    multiLanguage?: boolean;
+    languages?: string[];
   };
   companyName?: string;
   referralListDomain?: string;
@@ -37,12 +39,13 @@ export const ChatBotRoot: FC = () => {
   const [clientApiToken, setClientApiToken] = useState("");
   const [jobSourceId, setJobSourceId] = useState("");
   const [hostname, setHostname] = useState("");
+  const [languages, setLanguages] = useState<string[]>(["en", "fr"]);
+  const [isMultiLanguage, seTisMultiLanguage] = useState(false);
 
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
-      // LOG(data, "DATA", undefined, undefined, true);
-      const { props, style, hostname, token, guid } = data;
       LOG(data, "data", COLORS.BLACK, COLORS.WHITE, true);
+      const { props, style, hostname, token, guid } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);
 
@@ -53,6 +56,8 @@ export const ChatBotRoot: FC = () => {
           jobSourceId,
           referralEnabled,
           referralListDomain,
+          multiLanguage,
+          languages: apiLanguages,
         } = props;
 
         setIsReferralEnabled(referralEnabled === "true");
@@ -60,6 +65,12 @@ export const ChatBotRoot: FC = () => {
         referralListDomain && setChatBotRefBaseURL(referralListDomain);
         clientApiToken && setClientApiToken(clientApiToken);
         jobSourceId && setJobSourceId(jobSourceId);
+        seTisMultiLanguage(!!multiLanguage);
+        apiLanguages?.length &&
+          isStringArray(apiLanguages) &&
+          setLanguages(apiLanguages);
+
+        // seTisMultiLanguage(true);
       }
 
       if (token) {
@@ -116,6 +127,8 @@ export const ChatBotRoot: FC = () => {
           isReferralEnabled={isReferralEnabled}
           jobSourceID={jobSourceId}
           hostname={hostname}
+          languages={languages}
+          isMultiLanguage={isMultiLanguage}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

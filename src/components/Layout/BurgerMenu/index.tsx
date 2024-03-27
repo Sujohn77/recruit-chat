@@ -61,6 +61,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     _setMessages,
     employeeJobCategory,
     hostname,
+    languages,
+    isMultiLanguage,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -68,13 +70,13 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
   const list = useMemo(() => {
     let defaultItems = isCandidateWithEmail
-      ? menuForCandidateWithEmail
-      : menuItems;
+      ? menuForCandidateWithEmail(languages, isMultiLanguage)
+      : menuItems(languages, isMultiLanguage);
     if (isReferralEnabled && !!employeeId) {
-      return baseWithRef;
+      return baseWithRef(languages, isMultiLanguage);
     }
     if (isReferralEnabled) {
-      return baseWithRefItems;
+      return baseWithRefItems(languages, isMultiLanguage);
     }
     return defaultItems;
   }, [isReferralEnabled, isCandidateWithEmail, employeeId]);

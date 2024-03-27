@@ -855,3 +855,8 @@ export const isValidNumber = (number: string, iso2?: string) => {
 
   return false;
 };
+
+export const isStringArray = (property: any): property is string[] => {
+  if (!Array.isArray(property)) return false;
+  return property.every((item) => typeof item === "string");
+};

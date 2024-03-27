@@ -4,7 +4,7 @@ import map from "lodash/map";
 import { List, Wrapper, Option } from "./styles";
 
 interface IDropDownProps {
-  options: string[];
+  options?: string[];
   onClick: (value: string) => void;
 }
 

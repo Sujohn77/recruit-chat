@@ -148,6 +148,8 @@ export interface IChatMessengerContext {
   searchRequisitionsByKeyword: (keyword: string) => Promise<any>;
   searchLocation: (keyword: string) => Promise<any>;
   categoriesForAlert: string[];
+  languages: string[];
+  isMultiLanguage: boolean;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

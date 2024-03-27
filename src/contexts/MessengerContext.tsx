@@ -94,6 +94,8 @@ interface IChatProviderProps {
   chatBotId?: string | null;
   clientApiToken?: string;
   hostname: string;
+  languages: string[];
+  isMultiLanguage: boolean;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -190,6 +192,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   searchRequisitionsByKeyword: () => Promise.resolve(null),
   searchLocation: () => Promise.resolve(null),
   categoriesForAlert: [],
+  languages: [],
+  isMultiLanguage: false,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -206,6 +210,8 @@ const ChatProvider = ({
   clientApiToken,
   jobSourceID,
   hostname,
+  languages,
+  isMultiLanguage,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
@@ -1395,6 +1401,8 @@ const ChatProvider = ({
     searchRequisitionsByKeyword,
     searchLocation,
     categoriesForAlert,
+    languages,
+    isMultiLanguage,
   };
 
   // console.log(
