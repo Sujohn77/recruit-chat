@@ -46,7 +46,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setIsShowResults,
   setHeight,
 }) => {
-  const { currentMsgType, isChatLoading, searchLocation } = useChatMessenger();
+  const { currentMsgType, searchLocation } = useChatMessenger();
   const {
     getInputProps,
     getTagProps,
@@ -64,8 +64,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     onChange,
   });
   const [debouncedValue] = useDebounce(value, 500, {
-    maxWait: 1000,
-    leading: isChatLoading,
+    maxWait: 2000,
   });
 
   const autocompleteInputProps = getInputProps();

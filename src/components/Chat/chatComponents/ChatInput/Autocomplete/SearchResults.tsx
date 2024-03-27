@@ -74,10 +74,16 @@ export const SearchResults: FC<ISearchResultsProps> = ({
             scrollThreshold={0.8}
             style={infiniteScrollStyle}
           >
-            {map(matchedItems, (option, index) => {
+            {map(matchedItems, (item, index) => {
               const optionProps =
-                getOptionProps && getOptionProps({ option, index });
-              const startIndex = option.indexOf(matchedPart);
+                getOptionProps && getOptionProps({ option: item, index });
+              const startIndex = item
+                .toLowerCase()
+                .indexOf(matchedPart.toLowerCase());
+              const endIndex = startIndex + matchedPart.length;
+              const firstPart = item.substring(0, startIndex);
+              const matchPart = item.substring(startIndex, endIndex);
+              const secondPart = item.substring(endIndex);
 
               return (
                 <S.SearchPosition
@@ -90,21 +96,12 @@ export const SearchResults: FC<ISearchResultsProps> = ({
                 >
                   {matchedPart ? (
                     <>
-                      {/* first part of option  */}
-                      {option.substring(0, startIndex)}
-                      {/* search substring */}
-                      {/* <span>{matchedPart}</span> */}
-                      <span>
-                        {option.substring(
-                          startIndex,
-                          startIndex + matchedPart.length
-                        )}
-                      </span>
-                      {/* second part of option (without search substring) */}
-                      {option.substring(startIndex + matchedPart.length)}
+                      {firstPart}
+                      <span>{matchPart}</span>
+                      {secondPart}
                     </>
                   ) : (
-                    option
+                    item
                   )}
                 </S.SearchPosition>
               );

@@ -179,7 +179,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const { matchedPart, matchedItems } = useMemo(
     () =>
       getMatchedItems({
-        searchText: draftMessage,
+        searchStr: draftMessage,
         searchItems,
       }),
     [searchItems, draftMessage]

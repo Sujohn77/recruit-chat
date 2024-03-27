@@ -66,8 +66,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const isTabActive = useIsTabActive();
   const [debouncedValue] = useDebounce(value, 500, {
-    maxWait: 1000,
-    leading: isChatLoading,
+    maxWait: 2000,
   });
 
   const isResults =

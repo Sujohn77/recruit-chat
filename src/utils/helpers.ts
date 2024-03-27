@@ -55,7 +55,7 @@ import i18n from "services/localization";
 window.Buffer = Buffer;
 
 interface IGetMatchedItems {
-  searchText: string | null;
+  searchStr: string | null;
   searchItems: string[];
 }
 
@@ -234,58 +234,38 @@ export const validateEmailOrPhone = (value: string) => {
   return "";
 };
 
-function searchInLocations(
-  searchTerm: string,
+function advancedSearch(
+  searchTerm: string | null,
   searchItems: string[]
 ): string[] {
-  const results: string[] = [];
-  if (searchTerm.trim().indexOf(" ") === -1) {
-    const searchWord = searchTerm.trim();
-    searchItems.forEach((i) => {
-      const words: string[] = i.split(", ");
-      words.forEach((word) => {
-        if (word.startsWith(searchWord)) {
-          results.push(i);
-        }
-      });
-    });
-  } else {
-    const searchWords: string[] = searchTerm.trim().split(" ");
-    searchItems.forEach((i) => {
-      if (searchWords.every((word) => i.includes(word))) {
-        results.push(i);
-      }
-    });
+  if (!searchTerm?.trim()) {
+    return searchItems;
   }
-
-  return results;
+  const searchTerms = searchTerm?.toLowerCase().split(" ");
+  return searchItems.filter((item) => {
+    const lowerItem = item.toLowerCase();
+    return searchTerms?.every(
+      (term) =>
+        lowerItem.includes(term) ||
+        lowerItem.split(" ").some((word) => word.startsWith(term))
+    );
+  });
 }
 
 export const getMatchedItems = ({
-  searchText,
+  searchStr,
   searchItems,
-}: IGetMatchedItems) => {
-  const compareItem = searchText?.toLowerCase()?.trim() || "";
-  const matchedPositions = filter(searchItems, (item) => {
-    const searchItem = item.toLowerCase();
-
-    const isMatch =
-      searchItem.includes(compareItem) &&
-      some(
-        searchItem.split(" "),
-        (word) => word.slice(0, compareItem.length) === compareItem
-      );
-
-    return isMatch;
-  });
+}: IGetMatchedItems): { matchedItems: string[]; matchedPart: string } => {
+  const searchText = searchStr?.toLowerCase()?.trim() || "";
+  const matchedItems = advancedSearch(searchStr, searchItems);
 
   const matchedPart =
-    matchedPositions.length && searchText?.length
-      ? compareItem[0].toUpperCase() + compareItem.slice(1, compareItem.length)
+    matchedItems.length && searchStr?.length
+      ? searchText[0].toUpperCase() + searchText.slice(1, searchText.length)
       : "";
 
   return {
-    matchedItems: matchedPositions,
+    matchedItems,
     matchedPart,
   };
 };
