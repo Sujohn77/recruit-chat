@@ -8,7 +8,7 @@ import {
   MessageType,
 } from "./types";
 import { COLORS } from "./colors";
-import { getQuestions } from "components/ChatContent/data";
+import { getQuestions } from "contexts/data";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 export const isDevMode = process.env.NODE_ENV === "development";

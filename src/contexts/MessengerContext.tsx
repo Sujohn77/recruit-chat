@@ -81,8 +81,8 @@ import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { COLORS } from "utils/colors";
-import { getQuestions } from "components/ChatContent/data";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
+import { getQuestions } from "./data";
 
 interface IChatProviderProps {
   children: React.ReactNode;
