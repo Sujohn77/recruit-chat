@@ -176,9 +176,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           }
         }
         break;
-      case CHAT_ACTIONS.CHANGE_LANG:
-        // this feature is temporarily hidden (language change - CHAT-265)
-        break;
+      // case CHAT_ACTIONS.CHANGE_LANG:
+      // this feature is temporarily hidden (language change - CHAT-265)
+      // break;
       default:
         dispatch({
           type,
