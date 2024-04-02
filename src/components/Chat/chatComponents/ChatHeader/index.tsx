@@ -5,7 +5,6 @@ import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
-import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
 
@@ -13,12 +12,14 @@ interface IChatHeaderProps {
   showLoginScreen: boolean;
   setShowLoginScreen: (show: boolean) => void;
   setShowConfirmLogout: Dispatch<SetStateAction<boolean>>;
+  setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ChatHeader: FC<IChatHeaderProps> = ({
   showLoginScreen,
   setShowLoginScreen,
   setShowConfirmLogout,
+  setShowIcon,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
@@ -39,6 +40,8 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 
   const onCloseChat = useCallback(() => setShowConfirmLogout(true), []);
 
+  const onMinimizeChatbot = useCallback(() => setShowIcon((prev) => !prev), []);
+
   return (
     <S.ChatHeaderWrapper>
       {viewJob ? (
@@ -50,6 +53,8 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
         <>
           <IntroImage src={theme?.imageUrl} size="20px" alt="" />
           <S.Title>{title}</S.Title>
+
+          <S.RollDownIcon onClick={onMinimizeChatbot}>_</S.RollDownIcon>
           <S.CloseChat onClick={onCloseChat} />
         </>
       )}

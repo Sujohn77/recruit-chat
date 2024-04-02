@@ -50,4 +50,17 @@ export const CloseChat = styled(Close)`
   cursor: pointer;
 `;
 
+export const RollDownIcon = styled.div`
+  position: absolute;
+  margin-left: auto;
+  height: 18px;
+  width: 18px;
+  right: 45px;
+  bottom: 28px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 20px;
+  color: ${({ theme }) => theme.chatbotHeaderTextColor || COLORS.WHITE};
+`;
+
 export const ViewHeader = styled(Flex)``;

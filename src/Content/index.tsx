@@ -1,7 +1,9 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useEffect, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import isNull from "lodash/isNull";
 
+import { StorePersist } from "./Persist";
 import { Chat } from "components";
 import { Intro } from "screens";
 import {
@@ -11,14 +13,17 @@ import {
   REFRESH_TOKEN_TIMEOUT,
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
-import { StorePersist } from "./Persist";
 import { Loader } from "components/Layout";
+import { IntroImage } from "screens/Intro/styles";
+import { ThemeType } from "utils/theme/default";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, messages, chatScreen } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
+  const theme = useTheme() as ThemeType;
 
   const [showLoader, setShowLoader] = useState(true);
+  const [showIcon, setShowIcon] = useState(false);
 
   const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
 
@@ -130,8 +135,31 @@ export const Content: FC = () => {
         <Loader showLoader />
       ) : (
         <>
-          {isSelectedOption && <Chat isShowChat={isSelectedOption} />}
-          <Intro isSelectedOption={isSelectedOption} />
+          {showIcon ? (
+            // TODO: refactor
+            <div
+              style={{
+                position: "absolute",
+                right: "20px",
+                bottom: "20px",
+                cursor: "pointer",
+              }}
+            >
+              <IntroImage
+                onClick={() => setShowIcon(false)}
+                src={theme?.imageUrl}
+                size="60px"
+                alt=""
+              />
+            </div>
+          ) : (
+            <>
+              {isSelectedOption && (
+                <Chat isShowChat={isSelectedOption} setShowIcon={setShowIcon} />
+              )}
+              <Intro isSelectedOption={isSelectedOption} />
+            </>
+          )}
         </>
       )}
     </StorePersist>

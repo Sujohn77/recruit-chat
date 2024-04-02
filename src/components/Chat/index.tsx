@@ -13,10 +13,11 @@ import { Login } from "./ChatComponents/Login";
 import { Logout } from "./ChatComponents/Logout";
 interface IChatProps {
   isShowChat: boolean;
+  setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
   children?: React.ReactNode | React.ReactNode[];
 }
 
-export const Chat: FC<IChatProps> = ({ isShowChat }) => {
+export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
   const { isReferralEnabled } = useChatMessenger();
 
   const [height, setHeight] = useState(480);
@@ -32,6 +33,7 @@ export const Chat: FC<IChatProps> = ({ isShowChat }) => {
         setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
+        setShowIcon={setShowIcon}
       />
       <MessagesList
         resultsHeight={height}
