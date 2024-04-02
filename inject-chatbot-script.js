@@ -1,3 +1,4 @@
+// <script>
 // ----------------------------- CONSTANTS ----------------------------- //
 // const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // JJ guid
 // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
@@ -56,27 +57,29 @@ function appendChatBot(
   );
   ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
-  document.body?.appendChild(ifrm);
+  const currentPage = window.location.pathname;
+  const availablePages = strToArray(props?.pages);
+  const showChatbot = availablePages?.some((p) => p === currentPage);
 
-  ifrm.addEventListener("load", () => {
-    ifrm.contentWindow.postMessage(
-      { guid, style, token, hostname: window.location.hostname },
-      ifrm.src
-    );
-    ifrm.contentWindow.postMessage(
-      {
-        guid,
-        style,
-        token,
-        props,
-        companyName,
-        referralListDomain,
-        clientApiToken,
-        hostname: window.location.hostname,
-      },
-      ifrm.src
-    );
-  });
+  if (showChatbot) {
+    document.body?.appendChild(ifrm);
+    ifrm.addEventListener("load", () => {
+      ifrm.contentWindow.postMessage(
+        {
+          guid,
+          style,
+          token,
+          props,
+          companyName,
+          referralListDomain,
+          clientApiToken,
+          hostname: window.location.hostname,
+        },
+        ifrm.src
+      );
+    });
+  }
+
   ifrm.onerror = () => refreshToken();
 }
 
@@ -185,6 +188,7 @@ function onMessage(event) {
             companyName: chatBotCompanyName,
             referralListDomain: chatBotReferralListDomain,
             clientApiToken: chatBotClientApiToken,
+            hostname: window.location.hostname,
           },
           chatbotSrc
         );
@@ -196,8 +200,19 @@ function onMessage(event) {
   }
 }
 
+function strToArray(str) {
+  if (!str.trim()) return [];
+  return str
+    ?.replace(/"/g, "")
+    ?.replace("{", "")
+    ?.replace("}", "")
+    ?.split(", ")
+    ?.map((p) => (p[0] === "/" ? p : "/" + p));
+}
+
 if (window.addEventListener) {
   window.addEventListener("message", onMessage);
 } else {
   window.attachEvent("onmessage", onMessage); // IE8
 }
+// </script>

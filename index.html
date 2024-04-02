@@ -61,27 +61,29 @@
     );
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
-    document.body?.appendChild(ifrm);
+    const currentPage = window.location.pathname;
+    const availablePages = strToArray(props?.pages);
+    const showChatbot = availablePages?.some((p) => p === currentPage);
 
-    ifrm.addEventListener("load", () => {
-      ifrm.contentWindow.postMessage(
-        { guid, style, token, hostname: window.location.hostname },
-        ifrm.src
-      );
-      ifrm.contentWindow.postMessage(
-        {
-          guid,
-          style,
-          token,
-          props,
-          companyName,
-          referralListDomain,
-          clientApiToken,
-          hostname: window.location.hostname,
-        },
-        ifrm.src
-      );
-    });
+    if (showChatbot) {
+      document.body?.appendChild(ifrm);
+      ifrm.addEventListener("load", () => {
+        ifrm.contentWindow.postMessage(
+          {
+            guid,
+            style,
+            token,
+            props,
+            companyName,
+            referralListDomain,
+            clientApiToken,
+            hostname: window.location.hostname,
+          },
+          ifrm.src
+        );
+      });
+    }
+
     ifrm.onerror = () => refreshToken();
   }
 
@@ -190,6 +192,7 @@
               companyName: chatBotCompanyName,
               referralListDomain: chatBotReferralListDomain,
               clientApiToken: chatBotClientApiToken,
+              hostname: window.location.hostname,
             },
             chatbotSrc
           );
@@ -199,6 +202,37 @@
           break;
       }
     }
+  }
+
+  function strToArray(str) {
+    if (!str.trim()) return [];
+    return str
+      ?.replace(/"/g, "")
+      ?.replace("{", "")
+      ?.replace("}", "")
+      ?.split(", ")
+      ?.map((p) => (p[0] === "/" ? p : "/" + p));
+  }
+
+  function LOG(logObj, description, color = "#3B96F0", background = "#90ee90") {
+    if (description) {
+      console.log(
+        `%c   ${description}   `,
+        `color: ${color}; font-size: 14px; background-color: ${background};`,
+        logObj
+      );
+    } else {
+      console.log(
+        `%c   ___   `,
+        `color: ${
+          description?.includes("ERROR") ? COLORS.TORCH_RED : color
+        }; font-size: 14px; background-color: ${background};`,
+        logObj
+      );
+    }
+    console.log(
+      "_____________________________________________________________"
+    );
   }
 
   if (window.addEventListener) {
