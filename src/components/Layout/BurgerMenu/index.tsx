@@ -95,7 +95,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         wrapperRef.current &&
         !wrapperRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        setTimeout(() => setIsOpen(false), 100);
       }
     };
 
@@ -196,14 +196,12 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     }
   };
 
-  const handleBurgerClick = useCallback(
-    () => setIsOpen((prevState) => !prevState),
-    []
-  );
+  const handleBurgerClick = useCallback(() => {
+    !isOpen && setIsOpen(true);
+  }, [isOpen]);
 
   return (
     <S.Wrapper>
-      <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
       {isOpen && (
         <S.MenuItemsWrapper ref={wrapperRef}>
           {map(list, (item, index) => (
@@ -216,6 +214,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           ))}
         </S.MenuItemsWrapper>
       )}
+      <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
     </S.Wrapper>
   );
 };
