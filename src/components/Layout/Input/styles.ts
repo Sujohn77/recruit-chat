@@ -3,6 +3,11 @@ import styled from "styled-components";
 import { COLORS } from "utils/colors";
 import { InputTheme } from "utils/constants";
 
+interface IInputProps {
+  isFrLanguage: boolean;
+  withValue: boolean;
+}
+
 export const Wrapper = styled.div`
   width: 100%;
   position: relative;
@@ -18,7 +23,7 @@ export const Wrapper = styled.div`
 
 export const TextAreaInputWrapper = styled.div``;
 
-export const TextInput = styled.input`
+export const TextInput = styled.input<IInputProps>`
   color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: ${({ theme }) =>
@@ -26,24 +31,23 @@ export const TextInput = styled.input`
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  width: ${({ theme }) =>
-    theme === InputTheme.Default
-      ? "-webkit-fill-available"
-      : "250px!important"};
+  width: ${({ isFrLanguage, withValue }) =>
+    isFrLanguage ? (withValue ? 281 : 323) : 250}px !important;
   height: ${({ theme }) => (theme === InputTheme.Default ? "38px" : "40px")};
   border-radius: ${({ theme }) =>
     theme === InputTheme.Default ? "10px" : "0"};
   padding: ${({ theme }) => (theme === InputTheme.Default ? "0 10px" : "0")};
 `;
 
-export const TextAreaInput = styled.textarea`
+export const TextAreaInput = styled.textarea<IInputProps>`
   color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: none;
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  width: 250px !important;
+  width: ${({ isFrLanguage, withValue }) =>
+    isFrLanguage ? (withValue ? 281 : 323) : 250}px !important;
 `;
 
 export const ErrorText = styled.span`

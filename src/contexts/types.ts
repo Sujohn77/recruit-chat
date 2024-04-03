@@ -150,6 +150,8 @@ export interface IChatMessengerContext {
   categoriesForAlert: string[];
   languages: string[];
   isMultiLanguage: boolean;
+  currentLanguage: string;
+  setCurrentLanguage: (lang: string) => void;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

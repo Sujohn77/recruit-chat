@@ -194,6 +194,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   categoriesForAlert: [],
   languages: [],
   isMultiLanguage: false,
+  currentLanguage: "en",
+  setCurrentLanguage: () => {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -284,6 +286,7 @@ const ChatProvider = ({
     number | undefined
   >(undefined);
   const [isChatInputAvailable, setIsChatInputAvailable] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState("en");
 
   // Candidate info
   const [emailAddress, setEmailAddress] = useState("");
@@ -675,6 +678,7 @@ const ChatProvider = ({
         case CHAT_ACTIONS.CHANGE_LANG: {
           if (payload?.item) {
             i18n.changeLanguage(payload.item.toLowerCase());
+            setCurrentLanguage(payload.item.toLowerCase());
           }
           break;
         }
@@ -1403,6 +1407,8 @@ const ChatProvider = ({
     categoriesForAlert,
     languages,
     isMultiLanguage,
+    currentLanguage,
+    setCurrentLanguage,
   };
 
   // console.log(

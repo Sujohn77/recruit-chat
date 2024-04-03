@@ -63,6 +63,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     hostname,
     languages,
     isMultiLanguage,
+    currentLanguage,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -79,7 +80,14 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       return baseWithRefItems(languages, isMultiLanguage);
     }
     return defaultItems;
-  }, [isReferralEnabled, isCandidateWithEmail, employeeId]);
+  }, [
+    isReferralEnabled,
+    isCandidateWithEmail,
+    employeeId,
+    languages,
+    isMultiLanguage,
+    currentLanguage,
+  ]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -5,12 +5,16 @@ import { COLORS } from "utils/colors";
 interface IPlaneIconProps {
   disabled: boolean;
 }
+interface IMessageWrapperProps {
+  marginTop: string;
+  isFrLang: boolean;
+}
 
 export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
 export const inputOffset = "-30px";
 
-export const MessagesInput = styled(Box)<{ marginTop: string }>`
+export const MessagesInput = styled(Box)<IMessageWrapperProps>`
   min-height: 50px;
   z-index: 1;
   position: absolute;
@@ -18,7 +22,7 @@ export const MessagesInput = styled(Box)<{ marginTop: string }>`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 10px ${({ isFrLang }) => (isFrLang ? 0 : 16)}px;
   box-sizing: border-box;
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;

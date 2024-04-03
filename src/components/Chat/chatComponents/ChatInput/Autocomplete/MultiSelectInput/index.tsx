@@ -46,7 +46,8 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setIsShowResults,
   setHeight,
 }) => {
-  const { currentMsgType, searchLocation } = useChatMessenger();
+  const { currentMsgType, searchLocation, currentLanguage } =
+    useChatMessenger();
   const {
     getInputProps,
     getTagProps,
@@ -120,7 +121,11 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
         />
       )}
 
-      <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
+      <S.InputWrapper
+        ref={setAnchorEl}
+        className={focused ? "focused" : ""}
+        isFrLanguage={currentLanguage === "fr"}
+      >
         {map(
           filter(selectedValues, (option) => !!option),
           (option: string, index: number) => (
@@ -139,6 +144,8 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
           value={value}
           onClick={onInputClick}
           onChange={onChangeHandler}
+          isFrLanguage={currentLanguage === "fr"}
+          withValue={!!value}
         />
       </S.InputWrapper>
     </S.Wrapper>

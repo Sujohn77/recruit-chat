@@ -29,16 +29,11 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     employeeJobCategory,
     employeeLocation,
     searchLocations,
-    isCandidateWithEmail,
-    isAnonym,
-    isApplyJobFlow,
     chatScreen,
     requisitions,
     category,
     firebaseToken,
     offerJobs,
-    isAuthInFirebase,
-    isChatInputAvailable,
     locations,
 
     _setMessages,
@@ -55,11 +50,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setRefBirth,
     setRefLastName,
     setViewJob,
-    setIsApplyJobFlow,
-    setIsCandidateAnonym,
     setSearchLocations,
     setRequisitions,
-    setJobPositions,
     setFirebaseToken,
     setEmployeeLocation,
     setEmployeeJobCategory,
@@ -70,6 +62,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setCategory,
     setLocations,
     hostname,
+    currentLanguage,
+    setCurrentLanguage,
   } = useChatMessenger();
   // const store = useChatMessenger();
   // const storeWithoutFn = Object.fromEntries(
@@ -116,6 +110,11 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
 
       localStorage.clear();
     } else {
+      const storedCurrentLanguage = localStorage.getItem(
+        hostname + "currentLanguage"
+      );
+      storedCurrentLanguage && setCurrentLanguage(storedCurrentLanguage);
+
       const storedUserData = localStorage.getItem(hostname + "requisitions");
       storedUserData &&
         setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
@@ -267,6 +266,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       localStorage.setItem(hostname + "locations", JSON.stringify(locations));
     category && localStorage.setItem(hostname + "category", category);
 
+    localStorage.setItem(hostname + "currentLanguage", currentLanguage);
+
     if (viewJob) {
       localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
     } else {
@@ -296,6 +297,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     alertCategories,
     locations,
     category,
+    currentLanguage,
   ]);
 
   useEffect(() => {

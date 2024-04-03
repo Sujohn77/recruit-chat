@@ -110,6 +110,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     referralStep,
     setReferralStep,
     hostname,
+    currentLanguage,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -836,7 +837,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   return (
-    <S.MessagesInput marginTop={marginTop}>
+    <S.MessagesInput marginTop={marginTop} isFrLang={currentLanguage === "fr"}>
       <BurgerMenu
         setIsShowResults={setIsShowResults}
         setSelectedReferralJobId={setSelectedReferralJobId}
