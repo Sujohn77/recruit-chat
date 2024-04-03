@@ -860,3 +860,8 @@ export const isStringArray = (property: any): property is string[] => {
   if (!Array.isArray(property)) return false;
   return property.every((item) => typeof item === "string");
 };
+
+export const locationsStrToArray = (str?: string) => {
+  if (!str?.trim()) return [];
+  return str?.replace(/"/g, "")?.replace("{", "")?.replace("}", "")?.split(",");
+};

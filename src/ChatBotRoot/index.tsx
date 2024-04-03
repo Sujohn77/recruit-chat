@@ -6,7 +6,12 @@ import { FC, useEffect, useState } from "react";
 import { Container } from "./styles";
 import { Content } from "content";
 import { IApiThemeResponse } from "utils/types";
-import { LOG, isStringArray, postMessToParent } from "utils/helpers";
+import {
+  LOG,
+  isStringArray,
+  locationsStrToArray,
+  postMessToParent,
+} from "utils/helpers";
 import { EventIds, SessionStorage } from "utils/constants";
 import { COLORS } from "utils/colors";
 
@@ -21,7 +26,7 @@ interface IParentMessage {
     clientApiToken?: string;
     jobSourceId?: string;
     multiLanguage?: boolean;
-    languages?: string[];
+    languages?: string;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -39,7 +44,7 @@ export const ChatBotRoot: FC = () => {
   const [clientApiToken, setClientApiToken] = useState("");
   const [jobSourceId, setJobSourceId] = useState("");
   const [hostname, setHostname] = useState("");
-  const [languages, setLanguages] = useState<string[]>(["en", "fr"]);
+  const [languages, setLanguages] = useState<string[]>(["en"]);
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
 
   useEffect(() => {
@@ -66,11 +71,10 @@ export const ChatBotRoot: FC = () => {
         clientApiToken && setClientApiToken(clientApiToken);
         jobSourceId && setJobSourceId(jobSourceId);
         seTisMultiLanguage(!!multiLanguage);
-        apiLanguages?.length &&
-          isStringArray(apiLanguages) &&
-          setLanguages(apiLanguages);
-
-        // seTisMultiLanguage(true);
+        const languages = locationsStrToArray(apiLanguages);
+        languages?.length &&
+          isStringArray(languages) &&
+          setLanguages(languages);
       }
 
       if (token) {
