@@ -30,7 +30,11 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     jobOffer.id && setSelectedReferralJobId(+jobOffer.id);
     localStorage.removeItem(hostname + "viewJob");
     setViewJob(null);
-    chooseButtonOption(ButtonsOptions.MAKE_REFERRAL, t("buttons:refer_friend"));
+    chooseButtonOption(
+      ButtonsOptions.MAKE_REFERRAL,
+      t("buttons:refer_friend"),
+      "buttons:refer_friend"
+    );
   }, [jobOffer.id]);
 
   return (

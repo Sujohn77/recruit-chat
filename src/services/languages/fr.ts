@@ -40,6 +40,8 @@ export const fr = {
     job_description: "Description du poste :",
     apply: "Appliquer",
     drop_here: "déposer ici",
+    first_name: "Prénom",
+    last_name: "Nom et prénom",
   },
   languages: {
     en: "Anglais",
@@ -119,6 +121,8 @@ export const fr = {
     dont_have_answer: "Désolé, je n'ai pas encore de réponse à cette question",
     provide_firstname: "Quel est votre prénom ?",
     provide_lastname: "Quel est votre nom ?",
+    please_choose:
+      "Veuillez choisir l'une des options suivantes pour commencer votre recherche d'emploi",
   },
   chat_item_description: {
     lookingFor: "Bonjour ! Êtes-vous à la recherche d'un poste ?",

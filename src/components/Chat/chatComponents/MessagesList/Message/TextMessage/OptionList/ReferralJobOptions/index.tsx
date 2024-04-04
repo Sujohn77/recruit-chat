@@ -77,7 +77,11 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               const messWithJobs: ILocalMessage = {
                 _id: null,
                 localId: generateLocalId(),
-                content: { subType: MessageType.JOB_POSITIONS },
+                content: {
+                  subType: MessageType.JOB_POSITIONS,
+                  i18n: "",
+                  i18nProps: null,
+                },
                 isOwn: false,
               };
               _setMessages((prev) => [messWithJobs, ...prev]);
@@ -95,20 +99,25 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               const messWithJobs: ILocalMessage = {
                 _id: null,
                 localId: generateLocalId(),
-                content: { subType: MessageType.JOB_POSITIONS },
+                content: {
+                  subType: MessageType.JOB_POSITIONS,
+                  i18n: "",
+                  i18nProps: null,
+                },
                 isOwn: false,
               };
               _setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;
           case 3:
-            dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
+            dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH, i18nProps: null });
             break;
           case 4:
             setSelectedReferralJobId(undefined);
             chooseButtonOption(
               ButtonsOptions.MAKE_REFERRAL,
-              t("referral:general_referral")
+              t("referral:general_referral"),
+              "referral:general_referral"
             );
             break;
 

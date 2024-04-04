@@ -61,6 +61,7 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:botMessageYou"),
+          i18n: "messages:botMessageYou",
         },
       ];
     case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
@@ -68,6 +69,7 @@ const getChatActionMessages = (
         {
           subType: MessageType.SUBMIT_FILE,
           text: i18n.t("messages:submitFile"),
+          i18n: "messages:submitFile",
         },
       ];
     case CHAT_ACTIONS.REFINE_SEARCH:
@@ -75,6 +77,7 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:whatJobTitle"),
+          i18n: "messages:whatJobTitle",
         },
       ];
     case CHAT_ACTIONS.SAVE_TRANSCRIPT:
@@ -97,17 +100,20 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:jobRecommendations"),
+          i18n: "messages:jobRecommendations",
         },
       ];
     case CHAT_ACTIONS.SET_JOB_ALERT:
       return [
         {
-          text: i18n.t("messages:interestedCategories"),
           subType: MessageType.TEXT,
+          text: i18n.t("messages:interestedCategories"),
+          i18n: "messages:interestedCategories",
         },
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:setJobAlert"),
+          i18n: "messages:setJobAlert",
           isOwn: true,
           isChatMessage: true,
         },
@@ -117,6 +123,7 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:botMessageYou"),
+          i18n: "messages:botMessageYou",
         },
         // {
         //   subType: MessageType.TEXT,
@@ -128,24 +135,29 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:successSubscribed"),
+          i18n: "messages:successSubscribed",
         },
       ];
     case CHAT_ACTIONS.APPLY_POSITION:
       return [
         {
           text: i18n.t("messages:provideName"),
+          i18n: "messages:provideName",
         },
         {
           text: i18n.t("messages:applyThanks"),
+          i18n: "messages:applyThanks",
         },
       ];
     case CHAT_ACTIONS.INTERESTED_IN:
       return [
         {
           text: i18n.t("messages:whatFullName"),
+          i18n: "messages:whatFullName",
         },
         {
           text: i18n.t("messages:fewQuestions"),
+          i18n: "messages:fewQuestions",
         },
         {
           subType: MessageType.INTERESTED_IN,
@@ -158,18 +170,21 @@ const getChatActionMessages = (
         {
           subType: MessageType.BUTTON,
           text: i18n.t("messages:answerQuestions"),
+          i18n: "messages:answerQuestions",
           isOwn: true,
           isChatMessage: true,
         },
         {
           subType: MessageType.BUTTON,
           text: i18n.t("messages:uploadCV"),
+          i18n: "messages:uploadCV",
           isOwn: true,
           isChatMessage: true,
         },
         {
           subType: MessageType.TEXT,
-          text: "Please choose one of the following options to begin your job search",
+          text: i18n.t("messages:please_choose"),
+          i18n: "messages:please_choose",
         },
       ];
     case CHAT_ACTIONS.ASK_QUESTION:
@@ -181,10 +196,13 @@ const getChatActionMessages = (
         {
           text: i18n.t("messages:reachEmail"),
           subType: MessageType.TEXT,
+          i18n: "messages:reachEmail",
         },
         {
           text: i18n.t("messages:niceToMeet", { name: param }),
           subType: MessageType.TEXT,
+          i18n: "messages:niceToMeet",
+          i18nProps: { name: param },
         },
       ];
     case CHAT_ACTIONS.GET_USER_EMAIL:
@@ -192,14 +210,17 @@ const getChatActionMessages = (
         {
           text: i18n.t("messages:botThanks"),
           subType: MessageType.TEXT,
+          i18n: "messages:botThanks",
         },
         {
           text: i18n.t("messages:contactLater"),
           subType: MessageType.TEXT,
+          i18n: "messages:contactLater",
         },
         {
           text: i18n.t("messages:thanks"),
           subType: MessageType.TEXT,
+          i18n: "messages:thanks",
         },
       ];
     case CHAT_ACTIONS.HIRING_PROCESS:
@@ -207,13 +228,26 @@ const getChatActionMessages = (
     case CHAT_ACTIONS.UPLOAD_CV:
       return [{ subType: MessageType.UPLOAD_CV }];
     case CHAT_ACTIONS.ANSWER_QUESTIONS:
-      return [{ text: i18n.t("messages:whatJobTitle") }];
+      return [
+        {
+          text: i18n.t("messages:whatJobTitle"),
+          i18n: "messages:whatJobTitle",
+        },
+      ];
     case CHAT_ACTIONS.APPLY_NAME:
-      return [{ text: i18n.t("messages:provideEmail") }];
+      return [
+        {
+          text: i18n.t("messages:provideEmail"),
+          i18n: "messages:provideEmail",
+        },
+      ];
     case CHAT_ACTIONS.NO_PERMIT_WORK: {
       return [
         { subType: MessageType.REFINE_SEARCH },
-        { text: i18n.t("messages:noPermitWork") },
+        {
+          text: i18n.t("messages:noPermitWork"),
+          i18n: "messages:noPermitWork",
+        },
       ];
     }
     case CHAT_ACTIONS.HELP: {
@@ -223,12 +257,16 @@ const getChatActionMessages = (
       return [{ subType: MessageType.NO_MATCH }];
     }
     case CHAT_ACTIONS.QUESTION_RESPONSE: {
-      return [{ text: i18n.t("messages:emailAnswer") }];
+      return [
+        { text: i18n.t("messages:emailAnswer"), i18n: "messages:emailAnswer" },
+      ];
     }
     case CHAT_ACTIONS.CHANGE_LANG: {
       return [
         {
           text: i18n.t("messages:changeLang", { lang: param }),
+          i18n: "messages:changeLang",
+          i18nProps: { lang: param },
           isOwn: true,
         },
       ];
@@ -241,6 +279,7 @@ const getChatActionMessages = (
         {
           subType: MessageType.TEXT,
           text: i18n.t("messages:processed_your_resume"),
+          i18n: "messages:processed_your_resume",
         },
         {
           subType: MessageType.UPLOADED_CV,
@@ -254,6 +293,7 @@ const getChatActionMessages = (
             {
               subType: MessageType.TEXT,
               text: i18n.t("referral:friend_first_name"),
+              i18n: "referral:friend_first_name",
             },
           ]
         : [
@@ -262,6 +302,10 @@ const getChatActionMessages = (
               text: i18n.t("messages:employeeId", {
                 companyName: referralCompanyName,
               }),
+              i18n: "messages:employeeId",
+              i18nProps: {
+                companyName: referralCompanyName,
+              },
             },
           ];
     default:
@@ -302,6 +346,7 @@ export const getChatActionResponse = ({
   param,
   isQuestion = false,
   employeeId,
+  i18nPhrase,
 }: IGetChatResponseProps): ILocalMessage[] => {
   if (
     additionalCondition !== null &&
@@ -317,6 +362,7 @@ export const getChatActionResponse = ({
       employeeId,
       withReferralFlow,
       referralCompanyName,
+      i18nPhrase,
     });
   }
 

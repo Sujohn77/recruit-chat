@@ -10,6 +10,8 @@ export const options: IScreenOption[] = [
     type: CHAT_ACTIONS.FIND_JOB,
     size: "16px",
     screen: ChatScreens.FindAJob,
+    i18n: "buttons:find_job",
+    i18nProps: null,
   },
   {
     icon: ICONS.QUESTION,
@@ -17,6 +19,8 @@ export const options: IScreenOption[] = [
     type: CHAT_ACTIONS.ASK_QUESTION,
     size: "16px",
     screen: ChatScreens.QnA,
+    i18n: "buttons:ask_questions",
+    i18nProps: null,
   },
 ];
 
@@ -27,6 +31,8 @@ export const optionWithReferral: IScreenOption[] = [
     type: CHAT_ACTIONS.MAKE_REFERRAL,
     size: "16px",
     screen: ChatScreens.MakeReferral,
+    i18n: "buttons:make_referral",
+    i18nProps: null,
   },
   {
     icon: ICONS.QUESTION,
@@ -34,5 +40,7 @@ export const optionWithReferral: IScreenOption[] = [
     type: CHAT_ACTIONS.ASK_QUESTION,
     size: "16px",
     screen: ChatScreens.QnA,
+    i18n: "buttons:ask_questions",
+    i18nProps: null,
   },
 ];

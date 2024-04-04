@@ -36,7 +36,11 @@ export interface IChatMessengerContext {
   category: string | null;
   user: IUser | null;
   status: Status | null;
-  chooseButtonOption: (text: ButtonsOptions | null, param?: string) => void;
+  chooseButtonOption: (
+    text: ButtonsOptions | null,
+    param?: string,
+    i18nPhrase?: string
+  ) => void;
   dispatch: (action: ITriggerActionProps) => void;
   searchLocations: string[];
   locations: LocationType[];
@@ -83,8 +87,10 @@ export interface IChatMessengerContext {
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
   sendPreScreenMessage: (
     message: string,
+    i18n: string,
     optionId?: number,
-    chatItemId?: number
+    chatItemId?: number,
+    i18nProps?: Object
   ) => Promise<any>;
   emailAddress: string;
   firstName: string;
@@ -212,6 +218,8 @@ export type IPayloadType = {
 export interface ITriggerActionProps {
   type: CHAT_ACTIONS;
   payload?: IPayloadType;
+  i18n?: string;
+  i18nProps: Object | null;
 }
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}

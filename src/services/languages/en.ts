@@ -39,6 +39,8 @@ export const en = {
     job_description: "Job description: ",
     apply: "Apply",
     drop_here: "drop here",
+    first_name: "First Name",
+    last_name: "Last Name",
   },
   languages: {
     en: "English",
@@ -112,6 +114,8 @@ export const en = {
     dont_have_answer: "Sorry, I don't have an answer to that question yet",
     provide_firstname: "What's your first name?",
     provide_lastname: "What's your last name?",
+    please_choose:
+      "Please choose one of the following options to begin your job search",
   },
   chat_item_description: {
     lookingFor: "Hi! Are you looking for a job?",

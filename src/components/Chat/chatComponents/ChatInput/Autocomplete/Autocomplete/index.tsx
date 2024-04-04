@@ -98,6 +98,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
         dispatch({
           type: currentMsgType,
           payload: { item: e.currentTarget.textContent },
+          i18nProps: null,
         });
       }
 

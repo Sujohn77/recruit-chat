@@ -3,19 +3,21 @@ import { FC, useCallback } from "react";
 import map from "lodash/map";
 
 import { IMessageProps } from "utils/helpers";
-import { CHAT_ACTIONS } from "utils/types";
+import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
 import { MessageBox, MessageText } from "../styles";
 import * as S from "./styles";
+import { useGetMessageText } from "utils/hooks";
 
 interface ITextWithOptionsProps extends IMessageProps {
-  text: string;
+  message: ILocalMessage;
 }
 
 export const TextWithOptions: FC<ITextWithOptionsProps> = ({
-  text,
+  message,
   ...messageProps
 }) => {
   const { dispatch, currentMsgType } = useChatMessenger();
+  const messageText = useGetMessageText(message);
 
   const onClick = useCallback(
     (opt: string) => {
@@ -23,6 +25,7 @@ export const TextWithOptions: FC<ITextWithOptionsProps> = ({
         dispatch({
           type: currentMsgType,
           payload: { item: opt },
+          i18nProps: null,
         });
       }
     },
@@ -44,7 +47,7 @@ export const TextWithOptions: FC<ITextWithOptionsProps> = ({
   return (
     <div>
       <MessageBox {...messageProps}>
-        <MessageText>{text}</MessageText>
+        <MessageText>{messageText}</MessageText>
       </MessageBox>
       {optionItems && currentMsgType && <S.Options>{optionItems}</S.Options>}
     </div>

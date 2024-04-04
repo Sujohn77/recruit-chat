@@ -8,11 +8,13 @@ import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
 import { ICONS } from "assets";
-import { getMessageProps } from "utils/helpers";
+import { LOG, getMessageProps } from "utils/helpers";
 import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
 import { ILocalMessage, MessageType } from "utils/types";
+import { useGetMessageText } from "utils/hooks";
+import { useTranslation } from "react-i18next";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -28,47 +30,59 @@ export const TextMessage: FC<ITextMessageProps> = ({
   setSelectedReferralJobId,
 }) => {
   const theme = useTheme() as ThemeType;
-  const { referralCompanyName, offerJobs } = useChatMessenger();
+  const { referralCompanyName, offerJobs, currentLanguage } =
+    useChatMessenger();
+  const altMessText = useGetMessageText(message);
+  const { t, i18n } = useTranslation();
+
+  LOG(message.content, "content", COLORS.TORCH_RED, COLORS.PERSIAN, true);
+  LOG(altMessText, "altMessText", COLORS.ALTO, COLORS.TORCH_RED, true);
 
   const messageText = useMemo(() => {
+    const { content } = message;
     const withMaxTextWidth =
       message.optionList?.type !== MessageOptionTypes.AvailableJobs;
     const jobOffer = offerJobs.find(
       (o) => o.id.toString() === message.jobId?.toString()
     );
 
-    if (jobOffer?.title && message?.content?.text?.includes(jobOffer?.title)) {
-      const index = message.content.text.indexOf(jobOffer?.title);
+    if (jobOffer?.title && content?.text?.includes(jobOffer?.title)) {
+      const index = content?.text?.indexOf(jobOffer?.title);
       return (
         <S.MessageText>
-          {message?.content?.text.substring(0, index)}
+          {content?.text?.substring(0, index)}
           <S.MessageText fontWeight={700}>{jobOffer?.title}</S.MessageText>
-          {message.content.text.substring(index + jobOffer?.title.length)}
+          {content?.text?.substring(index + jobOffer?.title.length)}
         </S.MessageText>
       );
     }
 
-    if (
-      referralCompanyName &&
-      message?.content?.text?.includes(referralCompanyName)
-    ) {
-      const index = message.content.text.indexOf(referralCompanyName);
+    if (referralCompanyName && content?.text?.includes(referralCompanyName)) {
+      let text = content?.text;
+      let index = text.indexOf(referralCompanyName);
+
+      if (message.content.i18n && i18n.exists(message.content.i18n)) {
+        text = t(message.content.i18n, {
+          companyName: referralCompanyName,
+        });
+        index = text.indexOf(referralCompanyName);
+      }
 
       return (
         <S.MessageText withMaxWidth={withMaxTextWidth}>
-          {message?.content?.text.substring(0, index)}
+          {text.substring(0, index)}
           <S.MessageText fontWeight={700}>{referralCompanyName}</S.MessageText>
-          {message.content.text.substring(index + referralCompanyName.length)}
+          {text.substring(index + referralCompanyName.length)}
         </S.MessageText>
       );
     } else {
       return (
         <S.MessageText withMaxWidth={withMaxTextWidth}>
-          {message?.content?.text}
+          {altMessText}
         </S.MessageText>
       );
     }
-  }, []);
+  }, [currentLanguage]);
 
   const isErrorMessage = message.content.isError;
   const messageProps = { ...getMessageProps(message) };

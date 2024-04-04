@@ -251,6 +251,8 @@ export const ChatInput: FC<IChatInputProps> = ({
         content: {
           subType: MessageType.TEXT,
           text: draftMessage || "",
+          i18n: "",
+          i18nProps: null,
         },
       };
 
@@ -276,6 +278,8 @@ export const ChatInput: FC<IChatInputProps> = ({
               subType: MessageType.TEXT,
               text: matchedSearchItem ? items.join("\r") : draftMessage!,
               locations: items.length ? items : [draftMessage || ""],
+              i18n: "",
+              i18nProps: null,
             },
             _id: generateLocalId(),
           };
@@ -312,6 +316,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           dispatch({
             type: actionType,
             payload: { items: items.length ? items : [draftMessage] },
+            i18nProps: null,
           });
         }
       } else {
@@ -357,6 +362,8 @@ export const ChatInput: FC<IChatInputProps> = ({
                   subType: MessageType.TEXT,
                   text: emailError,
                   isError: true,
+                  i18n: "",
+                  i18nProps: null,
                 },
               };
               _setMessages((prev) => [errorEmailMessage, ...prev]);
@@ -375,6 +382,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                     },
                   },
                 },
+                i18nProps: null,
               });
             }
           }, 500);
@@ -382,6 +390,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
             payload: { item: draftMessage },
+            i18nProps: null,
           });
         }
       }
@@ -410,6 +419,8 @@ export const ChatInput: FC<IChatInputProps> = ({
       content: {
         subType: MessageType.TEXT,
         text: draftMessage,
+        i18n: "",
+        i18nProps: null,
       },
       _id: generateLocalId(),
     };
@@ -465,6 +476,8 @@ export const ChatInput: FC<IChatInputProps> = ({
               subType: MessageType.TRY_AGAIN,
               text: t("errors:referral_validation"),
               tryAgainType: TryAgainTypes.Validate,
+              i18n: "errors:referral_validation",
+              i18nProps: null,
             },
             _id: generateLocalId(),
           };
@@ -528,6 +541,8 @@ export const ChatInput: FC<IChatInputProps> = ({
                 subType: MessageType.TEXT,
                 text: emailError,
                 isError: true,
+                i18n: "",
+                i18nProps: null,
               },
             };
             _setMessages((prev) => [errorMessage, ...prev]);
@@ -565,6 +580,8 @@ export const ChatInput: FC<IChatInputProps> = ({
               subType: MessageType.TEXT,
               text: t("errors:not_match"),
               isError: true,
+              i18n: "errors:not_match",
+              i18nProps: null,
             },
           };
           _setMessages((prev) => [errorMessage, ...prev]);
@@ -615,6 +632,19 @@ export const ChatInput: FC<IChatInputProps> = ({
                         })
                   }
                 `,
+                // TODO: test
+                i18n: getReferralResponseMess(
+                  previouslyReferredState,
+                  firstName,
+                  lastName,
+                  referralCompanyName,
+                  true
+                ),
+                i18nProps: {
+                  refFirstName: firstName,
+                  refLastName,
+                  refCompanyName: referralCompanyName,
+                },
               },
               optionList: {
                 type: MessageOptionTypes.Referral,
@@ -627,6 +657,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                     isSelected: false,
                     name: t("labels:yes"),
                     text: t("labels:yes"),
+                    i18nPhrase: "labels:yes",
                   },
                   {
                     id: 2,
@@ -634,6 +665,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                     isSelected: false,
                     name: t("labels:no"),
                     text: t("labels:no"),
+                    i18nPhrase: "labels:no",
                   },
                 ],
               },
@@ -655,6 +687,8 @@ export const ChatInput: FC<IChatInputProps> = ({
                 subType: MessageType.TRY_AGAIN,
                 text: t("errors:submit_referral_error"),
                 tryAgainType: TryAgainTypes.SendReferral,
+                i18n: "errors:submit_referral_error",
+                i18nProps: null,
               },
             };
             _setMessages((prevMessages) => [errorMess, ...prevMessages]);
@@ -670,6 +704,8 @@ export const ChatInput: FC<IChatInputProps> = ({
               subType: MessageType.TEXT,
               text: t("errors:invalid_phone_number"),
               isError: true,
+              i18n: "errors:invalid_phone_number",
+              i18nProps: null,
             },
           };
           _setMessages((prev) => [errorMessage, ...prev]);
@@ -752,6 +788,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         dispatch({
           type: currentMsgType,
           payload: { items: uniq(newValues) },
+          i18nProps: null,
         });
       } else {
         setSearchLocations(uniq(newValues));
@@ -763,7 +800,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (!isChatLoading) {
       if (isApplyJobFlow && draftMessage) {
         try {
-          await sendPreScreenMessage(draftMessage);
+          await sendPreScreenMessage(draftMessage, "");
           setDraftMessage("");
         } catch (error) {
           console.log(error);

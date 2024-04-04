@@ -3,6 +3,7 @@ import {
   IUserLoginDataKeys,
   MessageOptionTypes,
   MessageStatuses,
+  TryAgainTypes,
 } from "utils/constants";
 import { IRequisition, MessageType } from "utils/types";
 
@@ -114,11 +115,14 @@ export interface IMessageContent {
 
 export interface IMessageContentInnerInfo {
   subType: MessageType;
+  i18n: string;
   typeId?: number;
   contextId?: string | null;
   text?: string;
   url?: null | string;
   subTypeId?: string | null;
+  tryAgainType?: TryAgainTypes;
+  i18nProps: Object;
 }
 
 export enum ServerMessageType {
@@ -138,6 +142,8 @@ export interface IMessageOption {
   isSelected?: boolean;
   name?: string;
   text?: string;
+  i18nPhrase: string;
+  i18nProps?: any;
 }
 
 export interface IMessageOptions {

@@ -8,6 +8,7 @@ import { getMessageProps } from "utils/helpers";
 import { resumeElementId } from "utils/constants";
 import * as S from "../styles";
 import { renderSendingTime } from "..";
+import { useGetMessageText } from "utils/hooks";
 
 interface IProps {
   message: ILocalMessage;
@@ -19,6 +20,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
   const { chooseButtonOption } = useChatMessenger();
   const { resetFile, searchWithResume, isJobSearchingLoading, file } =
     useFileUploadContext();
+  const messageText = useGetMessageText(message);
 
   const onSearchWithResume = () => {
     if (isLastMessage) {
@@ -46,9 +48,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
 
   return (
     <S.MessageBox {...getMessageProps(message)}>
-      {message?.content?.text && (
-        <S.MessageText>{message.content.text}</S.MessageText>
-      )}
+      {messageText}
 
       <S.ActionButton
         onClick={onSearchWithResume}

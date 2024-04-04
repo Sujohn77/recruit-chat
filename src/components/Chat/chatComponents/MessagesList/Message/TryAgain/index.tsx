@@ -30,6 +30,8 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
       content: {
         subType: MessageType.TEXT,
         text: t("messages:try_again"),
+        i18n: "messages:try_again",
+        i18nProps: null,
       },
       isOwn: true,
     };
@@ -44,6 +46,10 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
             text: t("messages:employeeId", {
               companyName: referralCompanyName,
             }),
+            i18n: "messages:employeeId",
+            i18nProps: {
+              companyName: referralCompanyName,
+            },
           },
         };
         _setMessages((prevMessages) => [

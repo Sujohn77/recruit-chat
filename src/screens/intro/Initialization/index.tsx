@@ -15,9 +15,14 @@ export const Initialization: FC = () => {
   const { dispatch, isReferralEnabled, setChatScreen } = useChatMessenger();
 
   const onSelectOption = useCallback(
-    ({ message, type, screen }: IScreenOption) => {
+    ({ message, type, screen, i18n, i18nProps }: IScreenOption) => {
       setChatScreen(screen);
-      dispatch({ type, payload: { item: message, isChatMessage: true } });
+      dispatch({
+        type,
+        payload: { item: message, isChatMessage: true },
+        i18nProps: i18nProps,
+        i18n: i18n,
+      });
     },
     []
   );

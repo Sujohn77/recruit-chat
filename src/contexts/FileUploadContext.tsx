@@ -126,7 +126,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           messages[0]?.content.subType === MessageType.UPLOAD_CV;
 
         if (isLastMsgEqualToUploadType) {
-          dispatch({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
+          dispatch({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV, i18nProps: null });
         }
       }
     } catch (error) {
@@ -161,6 +161,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
             param: resumeData.fileName,
             withReferralFlow: isReferralEnabled,
             referralCompanyName,
+            i18nPhrase: "",
           });
           _setMessages([...responseMessages, ...updatedMessages]);
           setShowJobTitles(true);
@@ -168,6 +169,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
           dispatch({
             type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
             payload: { items: response.data.requisitions },
+            i18nProps: null,
           });
         }
       } catch (error) {

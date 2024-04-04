@@ -11,11 +11,11 @@ export const NotFoundOffer: FC = () => {
   const { dispatch, isReferralEnabled } = useChatMessenger();
 
   const setJobAlert = useCallback(() => {
-    dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT });
+    dispatch({ type: CHAT_ACTIONS.SET_JOB_ALERT, i18nProps: null });
   }, []);
 
   const refineJobSearch = useCallback(() => {
-    dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH });
+    dispatch({ type: CHAT_ACTIONS.REFINE_SEARCH, i18nProps: null });
   }, []);
 
   return (

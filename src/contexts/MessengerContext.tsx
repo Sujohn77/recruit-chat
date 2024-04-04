@@ -502,7 +502,7 @@ const ChatProvider = ({
   }, [serverMessages.length, isInitialized]);
 
   const createJobAlert = useCallback(
-    async ({ email, type, successText }: IJobAlertData) => {
+    async ({ email, type, successText, i18nPhrase = "" }: IJobAlertData) => {
       if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
         setIsChatLoading(true);
         try {
@@ -518,6 +518,8 @@ const ChatProvider = ({
               content: {
                 subType: MessageType.TEXT,
                 text: successText || res.data,
+                i18n: "",
+                i18nProps: null,
               },
               isOwn: false,
               localId: generateLocalId(),
@@ -534,6 +536,8 @@ const ChatProvider = ({
                 content: {
                   subType: MessageType.TEXT,
                   text: t("errors:something_went_wrong"),
+                  i18n: "errors:something_went_wrong",
+                  i18nProps: null,
                 },
               },
               ...prev,
@@ -548,6 +552,8 @@ const ChatProvider = ({
               content: {
                 subType: MessageType.TEXT,
                 text: t("errors:something_went_wrong"),
+                i18n: i18nPhrase,
+                i18nProps: null,
               },
             },
             ...prev,
@@ -769,7 +775,7 @@ const ChatProvider = ({
           setCategory(null);
           _setCategoryTitle(null);
         } else {
-          dispatch({ type: CHAT_ACTIONS.NO_MATCH });
+          dispatch({ type: CHAT_ACTIONS.NO_MATCH, i18nProps: null });
         }
         return !!res.data?.requisitions.length;
       } catch (err) {
@@ -793,7 +799,7 @@ const ChatProvider = ({
   // Callbacks
   const getChatBotResponse = useCallback(
     async (action: ITriggerActionProps) => {
-      const { type, payload } = action;
+      const { type, payload, i18n = "" } = action;
 
       let additionalCondition = null;
       let updatedMessages = [...messages];
@@ -929,7 +935,7 @@ const ChatProvider = ({
             setJobPositions(payload.items);
             additionalCondition = !!payload.items.length;
           } else {
-            dispatch({ type: CHAT_ACTIONS.NO_MATCH });
+            dispatch({ type: CHAT_ACTIONS.NO_MATCH, i18nProps: null });
           }
           break;
         }
@@ -940,6 +946,8 @@ const ChatProvider = ({
               content: {
                 subType: MessageType.TEXT,
                 text: payload.question?.trim(),
+                i18n: i18n,
+                i18nProps: null,
               },
               isOwn: true,
               localId: generateLocalId(),
@@ -976,6 +984,8 @@ const ChatProvider = ({
                           ? MessageType.REFERRAL
                           : MessageType.TEXT,
                       text: answer,
+                      i18n: i18n,
+                      i18nProps: null,
                     },
                     isOwn: false,
                     localId: generateLocalId(),
@@ -995,6 +1005,8 @@ const ChatProvider = ({
                   content: {
                     subType: MessageType.TEXT,
                     text: t("messages:dont_have_answer"),
+                    i18n: "messages:dont_have_answer",
+                    i18nProps: null,
                   },
                   localId: generateLocalId(),
                   _id: generateLocalId(),
@@ -1014,6 +1026,8 @@ const ChatProvider = ({
                 content: {
                   subType: MessageType.TEXT,
                   text: t("messages:dont_have_answer"),
+                  i18n: "messages:dont_have_answer",
+                  i18nProps: null,
                 },
                 localId: generateLocalId(),
                 _id: generateLocalId(),
@@ -1051,6 +1065,7 @@ const ChatProvider = ({
         employeeId,
         withReferralFlow: isReferralEnabled,
         referralCompanyName: companyName,
+        i18nPhrase: i18n,
       });
 
       updatedMessages = getMessagesOnAction({
@@ -1112,8 +1127,10 @@ const ChatProvider = ({
   // for sending answer (after "Apply job")
   const sendPreScreenMessage = async (
     message: string,
+    i18n: string,
     optionId?: number,
-    chatItemId?: number
+    chatItemId?: number,
+    i18nProps?: Object | null
   ) => {
     if (flowId && subscriberWorkflowId && candidateId) {
       const localMess: ILocalMessage = {
@@ -1122,6 +1139,8 @@ const ChatProvider = ({
         content: {
           subType: MessageType.TEXT,
           text: message,
+          i18n,
+          i18nProps: i18nProps || null,
         },
         _id: generateLocalId(),
       };
@@ -1157,7 +1176,8 @@ const ChatProvider = ({
 
   const chooseButtonOption = (
     excludeItem: ButtonsOptions | null,
-    param?: string
+    param?: string,
+    i18nPhrase = ""
   ) => {
     const type = getActionTypeByOption(excludeItem);
     const updatedMessages = replaceItemsWithType({
@@ -1178,6 +1198,7 @@ const ChatProvider = ({
         employeeId,
         withReferralFlow: isReferralEnabled,
         referralCompanyName: companyName,
+        i18nPhrase: i18nPhrase,
       });
 
       switch (type) {
@@ -1210,6 +1231,8 @@ const ChatProvider = ({
                     content: {
                       subType: MessageType.TEXT,
                       text: param,
+                      i18n: i18nPhrase,
+                      i18nProps: null,
                     },
                     isOwn: true,
                   },
@@ -1234,8 +1257,12 @@ const ChatProvider = ({
       if (chatType) {
         const action: ITriggerActionProps =
           currentMsgType === CHAT_ACTIONS.ASK_QUESTION && excludeItem
-            ? { type: chatType, payload: { question: excludeItem } }
-            : { type: chatType };
+            ? {
+                type: chatType,
+                payload: { question: excludeItem },
+                i18nProps: null,
+              }
+            : { type: chatType, i18nProps: null };
         getChatBotResponse(action);
       }
       setMessages(updatedMessages);

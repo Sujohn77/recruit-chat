@@ -139,6 +139,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         content: {
           subType: MessageType.TEXT,
           text,
+          i18n: "make_referral",
+          i18nProps: null,
         },
         isOwn: true,
       };
@@ -171,6 +173,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
                     lastName,
                   },
                 },
+                i18nProps: null,
               });
             }
 
@@ -191,6 +194,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         dispatch({
           type,
           payload: { item: text, isChatMessage: true },
+          i18nProps: null,
         });
         setIsShowResults(false);
     }

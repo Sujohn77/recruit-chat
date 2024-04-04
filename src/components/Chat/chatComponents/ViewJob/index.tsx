@@ -130,6 +130,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
                     isRecall ? "short_success_interested" : "success_interested"
                   }`
                 ),
+                i18n: `chat_item_description:${
+                  isRecall ? "short_success_interested" : "success_interested"
+                }`,
+                i18nProps: null,
               },
             };
           } else if (response.data?.statusCode === 303) {
@@ -141,6 +145,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               content: {
                 subType: MessageType.TEXT,
                 text: t("errors:already_expressed"),
+                i18n: "errors:already_expressed",
+                i18nProps: null,
               },
             };
           } else if (response.data?.statusCode === 105) {
@@ -153,6 +159,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
                 content: {
                   subType: MessageType.TEXT,
                   text: response.data.errors[0],
+                  i18n: "",
+                  i18nProps: null,
                 },
               };
             }

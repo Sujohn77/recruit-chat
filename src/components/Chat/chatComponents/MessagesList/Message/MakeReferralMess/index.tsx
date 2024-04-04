@@ -42,6 +42,8 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
         content: {
           subType: MessageType.TEXT,
           text: t("buttons:make_referral"),
+          i18n: "buttons:make_referral",
+          i18nProps: null,
         },
       };
 
@@ -49,7 +51,8 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     } else {
       chooseButtonOption(
         ButtonsOptions.MAKE_REFERRAL,
-        t("buttons:make_referral")
+        t("buttons:make_referral"),
+        "buttons:make_referral"
       );
     }
   };

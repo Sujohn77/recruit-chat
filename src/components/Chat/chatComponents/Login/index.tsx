@@ -55,6 +55,7 @@ export const Login: FC<ILoginProps> = ({
             callback: () => setShowLoginScreen(false),
           },
         },
+        i18nProps: null,
       });
     }
   }, [email, firstName, lastName]);
@@ -113,7 +114,7 @@ export const Login: FC<ILoginProps> = ({
             error={!!firstNameError}
             helperText={firstNameError}
             onClick={() => setTouched(!touched)}
-            placeholder="First Name"
+            placeholder={t("labels:first_name")}
           />
 
           <FormInput
@@ -122,7 +123,7 @@ export const Login: FC<ILoginProps> = ({
             error={!!lastNameError}
             helperText={lastNameError}
             onClick={() => setTouched(!touched)}
-            placeholder="Last Name"
+            placeholder={t("labels:last_name")}
           />
 
           <FormInput

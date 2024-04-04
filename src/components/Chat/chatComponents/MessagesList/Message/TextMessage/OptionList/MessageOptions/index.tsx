@@ -1,5 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { IMessageOption } from "services/types";
 import { ILocalMessage } from "utils/types";
@@ -18,14 +19,21 @@ export const MessageOptions: FC<IOptionListProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { sendPreScreenMessage } = useChatMessenger();
+  const { sendPreScreenMessage, currentLanguage } = useChatMessenger();
+  const { t, i18n } = useTranslation();
 
   const onSelectOption = useCallback(
-    async ({ text, id }: IMessageOption) => {
+    async ({ text, id, i18nPhrase, i18nProps }: IMessageOption) => {
       if (text && isLastMess) {
         setSelectedReferralJobId(undefined);
         try {
-          await sendPreScreenMessage(text, id, message.chatItemId);
+          await sendPreScreenMessage(
+            text,
+            i18nPhrase,
+            id,
+            message.chatItemId,
+            i18nProps
+          );
         } catch (error) {
           // TODO: add error handler
         }
@@ -34,18 +42,24 @@ export const MessageOptions: FC<IOptionListProps> = ({
     [isLastMess]
   );
 
-  return (
-    <S.OptionList>
-      {message.optionList?.options.map((option) => (
+  const optionList = useMemo(() => {
+    return message.optionList?.options.map((o) => {
+      const text = i18n.exists(o.i18nPhrase, o.i18nProps)
+        ? t(o.i18nPhrase, o.i18nProps)
+        : o.text;
+
+      return (
         <S.MessageOption
-          key={option.id}
+          key={o.id}
           isActive={isLastMess}
           disabled={!isLastMess}
-          onClick={() => onSelectOption(option)}
+          onClick={() => onSelectOption(o)}
         >
-          <S.Text>{option.text}</S.Text>
+          <S.Text>{text}</S.Text>
         </S.MessageOption>
-      ))}
-    </S.OptionList>
-  );
+      );
+    });
+  }, [currentLanguage, isLastMess, onSelectOption]);
+
+  return <S.OptionList>{optionList}</S.OptionList>;
 };

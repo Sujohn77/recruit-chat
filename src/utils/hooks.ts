@@ -1,11 +1,11 @@
 import { ISearchRequisition } from "contexts/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 import firebase from "firebase";
 import "firebase/auth";
 
-import { CHAT_ACTIONS } from "./types";
+import { CHAT_ACTIONS, ILocalMessage } from "./types";
 import { getFormattedLocations } from "./helpers";
 import { useChatMessenger } from "contexts/MessengerContext";
 import i18n from "services/localization";
@@ -124,4 +124,19 @@ export const useDetectCountry = (lowerCase = true): string => {
   }, []);
 
   return lowerCase ? country.toLowerCase() : country;
+};
+
+export const useGetMessageText = (mess: ILocalMessage) => {
+  const { currentLanguage } = useChatMessenger();
+  const { t, i18n } = useTranslation();
+
+  return useMemo(() => {
+    if (mess.content.i18n && i18n.exists(mess.content.i18n)) {
+      return mess.content.i18nProps
+        ? t(mess.content.i18n, mess.content.i18nProps)
+        : t(mess.content.i18n);
+    } else if (mess?.content?.text) {
+      return mess?.content?.text;
+    } else return null;
+  }, [currentLanguage]);
 };

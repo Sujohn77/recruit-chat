@@ -61,6 +61,7 @@ export const EmailForm: FC = () => {
             lastName,
           },
         },
+        i18nProps: null,
       };
       dispatch(action);
     }
@@ -76,7 +77,7 @@ export const EmailForm: FC = () => {
           error={!!firstNameError}
           helperText={firstNameError}
           onClick={() => setTouched(!touched)}
-          placeholder="First Name"
+          placeholder={t("labels:first_name")}
         />
 
         <FormInput
@@ -85,7 +86,7 @@ export const EmailForm: FC = () => {
           error={!!lastNameError}
           helperText={lastNameError}
           onClick={() => setTouched(!touched)}
-          placeholder="Last Name"
+          placeholder={t("labels:last_name")}
         />
 
         <FormInput

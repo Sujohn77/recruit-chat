@@ -127,10 +127,12 @@ export const getActionTypeByOption = (option: ButtonsOptions | null) => {
 
 export const getParsedMessages = (
   messages: {
+    i18n?: string;
     subType?: MessageType;
     text?: string;
     isOwn?: boolean;
     isChatMessage?: boolean;
+    i18nProps?: Object | null;
   }[]
 ): ILocalMessage[] => {
   const responseMessages = [];
@@ -142,13 +144,14 @@ export const getParsedMessages = (
       dateCreated,
       content: {
         subType: msg.subType || MessageType.TEXT,
+        text: msg.text,
+        i18n: msg.i18n || "",
+        i18nProps: msg.i18nProps || null,
       },
       localId,
       isOwn: !!msg.isOwn,
     };
-    if (msg.text) {
-      message.content.text = msg.text;
-    }
+
     responseMessages.push(message);
   }
 
@@ -169,41 +172,6 @@ export const MessageTypeId: Record<ServerMessageType, number> = {
   [MessageType.VIDEO]: 2,
   [MessageType.DOCUMENT]: 2,
   [MessageType.FILE]: 2,
-};
-
-export const getLocalMessage = (
-  sender: IUserSelf,
-  requestMessage?: IApiMessage,
-  chatBotMessage?: IMessage
-): IMessage => {
-  const currentUnixTime = moment().unix();
-
-  return {
-    chatItemId: chatBotMessage?.chatItemId || -1,
-    localId:
-      requestMessage?.localId || chatBotMessage?.localId || generateLocalId(),
-    content: {
-      typeId: MessageTypeId.text,
-      subTypeId: null,
-      contextId:
-        requestMessage?.contextId || chatBotMessage?.content.contextId || null,
-      text: requestMessage?.msg || chatBotMessage?.text,
-      subType: MessageType.TEXT,
-      url: null,
-    },
-    dateCreated: {
-      seconds: currentUnixTime,
-    },
-    dateModified: {
-      seconds: currentUnixTime,
-    },
-    isEdited: false,
-    isReceived: false,
-    sender,
-    searchValue: "",
-    isOwn: false,
-    subType: chatBotMessage?.subType || chatBotMessage?.content.subType,
-  };
 };
 
 // CONTEXT
@@ -276,17 +244,23 @@ export const getParsedMessage = ({
   isOwn = true,
   isChatMessage = false,
   localId = generateLocalId(),
+  i18nPhrase = "",
+  i18nProps,
 }: {
   text: string;
   subType: MessageType;
   isOwn?: boolean;
   localId?: string;
   isChatMessage?: boolean;
+  i18nPhrase: string;
+  i18nProps: Object | null;
 }) => {
   const dateCreated = { seconds: moment().unix() };
   const content: IContent = {
     subType: subType || MessageType.TEXT,
     text,
+    i18n: i18nPhrase,
+    i18nProps,
   };
   return {
     dateCreated,
@@ -302,6 +276,8 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
     const content: IContent = {
       subType: msg?.content.subType,
       text: msg?.content.text,
+      i18n: msg.content.i18n,
+      i18nProps: msg.content.i18nProps,
     };
     return {
       dateCreated: msg.dateCreated,
@@ -356,6 +332,10 @@ const initialMessages = (isReferralEnabled: boolean) =>
         `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
       ),
       isChatMessage: true,
+      i18n: `messages:${
+        isReferralEnabled ? "refInitialMessage" : "initialMessage"
+      }`,
+      i18nProps: null,
     },
   ]);
 
@@ -365,7 +345,7 @@ export const pushMessage = ({
   setMessages,
   isReferralEnabled,
 }: IPushMessage) => {
-  const { type, payload } = action;
+  const { type, payload, i18n, i18nProps } = action;
   // const text =
   //   payload?.item ||
   //   payload?.items?.map((i) => i.substring(0, i.indexOf(","))).join("\r\n") ||
@@ -385,6 +365,8 @@ export const pushMessage = ({
         ? MessageType.FILE
         : MessageType.TEXT,
     isChatMessage: !!action.payload?.isChatMessage,
+    i18nPhrase: i18n || "",
+    i18nProps,
   });
 
   const updatedMessages = popMessage({

@@ -1,4 +1,5 @@
 import i18n from "services/localization";
+import { IMessageOption } from "services/types";
 import { MessageOptionTypes, ReferralResponse } from "utils/constants";
 import { generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
@@ -23,6 +24,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:lastname"),
+          i18n: "referral:lastname",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -33,6 +36,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:birth"),
+          i18n: "referral:birth",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -43,6 +48,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:thanks"),
+          i18n: "referral:thanks",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -53,6 +60,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:friend_firstname"),
+          i18n: "referral:friend_firstname",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -63,6 +72,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:friend_lastname"),
+          i18n: "referral:friend_lastname",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -73,6 +84,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:friend_email"),
+          i18n: "referral:friend_email",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -83,6 +96,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:confirm_email"),
+          i18n: "referral:confirm_email",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -93,6 +108,8 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: {
           subType: MessageType.TEXT,
           text: i18n.t("referral:friend_mobile_number"),
+          i18n: "referral:friend_mobile_number",
+          i18nProps: null,
         },
         _id: generateLocalId(),
       };
@@ -100,7 +117,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
     default:
       return {
         _id: null,
-        content: { subType: MessageType.TEXT },
+        content: { subType: MessageType.TEXT, i18n: "", i18nProps: null },
         localId: generateLocalId(),
       };
   }
@@ -110,22 +127,30 @@ export const getReferralResponseMess = (
   previouslyReferredState: ReferralResponse,
   refFirstName?: string,
   refLastName?: string,
-  refCompanyName?: string | null
+  refCompanyName?: string | null,
+  isI18nPhase = false
 ): string => {
   switch (previouslyReferredState) {
     case 0:
-      return i18n.t("referral:thanks_you");
+      return isI18nPhase
+        ? "referral:thanks_you"
+        : i18n.t("referral:thanks_you");
+
     case 1:
-      return i18n.t("referral:previously_referred", {
-        refFirstName,
-        refLastName,
-      });
+      return isI18nPhase
+        ? "referral:previously_referred"
+        : i18n.t("referral:previously_referred", {
+            refFirstName,
+            refLastName,
+          });
     case 2:
-      return i18n.t("referral:previously_referred_to_company", {
-        refFirstName,
-        refLastName,
-        refCompanyName,
-      });
+      return isI18nPhase
+        ? "referral:previously_referred_to_company"
+        : i18n.t("referral:previously_referred_to_company", {
+            refFirstName,
+            refLastName,
+            refCompanyName,
+          });
     default:
       return "";
   }
@@ -147,6 +172,9 @@ export const getValidationRefResponse = (
       ? i18n.t("referral:successful_validation", { userLastName: fullName }) +
         i18n.t("referral:referral_options")
       : i18n.t("referral:referral_options"),
+    // TODO: test
+    i18n: "",
+    i18nProps: null,
   },
   _id: generateLocalId(),
   optionList: {
@@ -159,7 +187,7 @@ export const getValidationRefResponse = (
 const getReferralOptions = (
   searchCategory: string,
   withReferralHistoryBtn = false
-) =>
+): IMessageOption[] =>
   withReferralHistoryBtn
     ? [
         {
@@ -168,6 +196,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:job_in_my_area"),
           text: i18n.t("referral:job_in_my_area"),
+          i18nPhrase: "referral:job_in_my_area",
         },
         {
           id: 2,
@@ -175,6 +204,8 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:jobs", { title: searchCategory }),
           text: i18n.t("referral:jobs", { title: searchCategory }),
+          i18nPhrase: "referral:jobs",
+          i18nProps: { title: searchCategory },
         },
         {
           id: 3,
@@ -182,6 +213,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:any_job"),
           text: i18n.t("referral:any_job"),
+          i18nPhrase: "referral:any_job",
         },
         {
           id: 4,
@@ -189,6 +221,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:general_referral"),
           text: i18n.t("referral:general_referral"),
+          i18nPhrase: "referral:general_referral",
         },
         {
           id: 5,
@@ -196,6 +229,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("chat_menu:see_my_referrals"),
           text: i18n.t("chat_menu:see_my_referrals"),
+          i18nPhrase: "chat_menu:see_my_referrals",
         },
       ]
     : [
@@ -205,6 +239,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:job_in_my_area"),
           text: i18n.t("referral:job_in_my_area"),
+          i18nPhrase: "referral:job_in_my_area",
         },
         {
           id: 2,
@@ -212,6 +247,8 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:jobs", { title: searchCategory }),
           text: i18n.t("referral:jobs", { title: searchCategory }),
+          i18nPhrase: "referral:jobs",
+          i18nProps: { title: searchCategory },
         },
         {
           id: 3,
@@ -219,6 +256,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:any_job"),
           text: i18n.t("referral:any_job"),
+          i18nPhrase: "referral:any_job",
         },
         {
           id: 4,
@@ -226,6 +264,7 @@ const getReferralOptions = (
           isSelected: false,
           name: i18n.t("referral:general_referral"),
           text: i18n.t("referral:general_referral"),
+          i18nPhrase: "referral:general_referral",
         },
       ];
 
@@ -242,6 +281,8 @@ export const getAlertJobMessage = (
       content: {
         subType: MessageType.TEXT,
         text: i18n.t("messages:provide_firstname"),
+        i18n: "messages:provide_firstname",
+        i18nProps: null,
       },
     };
   } else if (!lastName) {
@@ -252,6 +293,8 @@ export const getAlertJobMessage = (
       content: {
         subType: MessageType.TEXT,
         text: i18n.t("messages:provide_lastname"),
+        i18n: "messages:provide_lastname",
+        i18nProps: null,
       },
     };
   } else {
@@ -263,6 +306,10 @@ export const getAlertJobMessage = (
         text: i18n.t(
           `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`
         ),
+        i18n: `messages:${
+          emailAddress ? "emailAlreadyProvided" : "alertEmail"
+        }`,
+        i18nProps: null,
       },
       _id: null,
     };

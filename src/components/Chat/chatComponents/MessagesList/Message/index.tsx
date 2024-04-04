@@ -77,9 +77,7 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.INTERESTED_IN:
       return <InterestedIn message={message} />;
     case MessageType.TEXT_WITH_CHOICE: {
-      return (
-        <TextWithOptions text={message?.content.text!} {...messageProps} />
-      );
+      return <TextWithOptions message={message} {...messageProps} />;
     }
     case MessageType.HIRING_PROCESS: {
       // return <HiringHelp message={message} />; // for phase 2

@@ -63,6 +63,8 @@ export interface IState {
 
 export interface IContent {
   subType: MessageType;
+  i18n: string;
+  i18nProps: Object | null;
   text?: string;
   locations?: string[];
   isError?: boolean;
@@ -224,6 +226,7 @@ export interface IGetChatResponseProps {
   param?: string | undefined;
   isQuestion?: boolean;
   employeeId?: number;
+  i18nPhrase: string;
 }
 
 export interface IFilterItemsWithType {
@@ -266,6 +269,7 @@ export interface IJobAlertData {
   email: string;
   type: CHAT_ACTIONS;
   successText?: string;
+  i18nPhrase?: string;
 }
 
 export interface IApiThemeResponse {
@@ -319,4 +323,6 @@ export interface IScreenOption {
   type: CHAT_ACTIONS;
   size: string;
   screen: ChatScreens;
+  i18n: string;
+  i18nProps: Object | null;
 }
