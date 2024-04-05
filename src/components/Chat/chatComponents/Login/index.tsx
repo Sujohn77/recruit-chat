@@ -62,7 +62,7 @@ export const Login: FC<ILoginProps> = ({
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
+      if (showLoginScreen && event.key === "Enter") {
         event.preventDefault();
         onLogin();
       }
@@ -72,7 +72,7 @@ export const Login: FC<ILoginProps> = ({
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [onLogin]);
+  }, [onLogin, showLoginScreen]);
 
   useEffect(() => {
     setHeight(emailError ? "auto" : 0);
