@@ -35,9 +35,6 @@ export const TextMessage: FC<ITextMessageProps> = ({
   const altMessText = useGetMessageText(message);
   const { t, i18n } = useTranslation();
 
-  LOG(message.content, "content", COLORS.TORCH_RED, COLORS.PERSIAN, true);
-  LOG(altMessText, "altMessText", COLORS.ALTO, COLORS.TORCH_RED, true);
-
   const messageText = useMemo(() => {
     const { content } = message;
     const withMaxTextWidth =

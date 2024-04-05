@@ -404,19 +404,6 @@ const ChatProvider = ({
     return () => savedSocketConnection?.unsubscribe();
   }, [isApplyJobSuccessfully]);
 
-  // useEffect(() => {
-  //   LOG(_firebaseMessages, "_firebaseMessages", COLORS.WHITE);
-  // }, [_firebaseMessages]);
-  // useEffect(() => {
-  //   LOG(candidateId, "candidateId", COLORS.WHITE);
-  // }, [candidateId]);
-  // useEffect(() => {
-  //   LOG(chatId, "chatId", COLORS.WHITE);
-  // }, [chatId]);
-  // useEffect(() => {
-  //   LOG(isCandidateAnonym, "isCandidateAnonym", COLORS.WHITE);
-  // }, [isCandidateAnonym]);
-
   const createAnonymCandidate = useCallback(async () => {
     const storedCandidateId = localStorage.getItem(hostname + "candidateId");
     const storedChatId = localStorage.getItem(hostname + "chatId");
@@ -577,8 +564,8 @@ const ChatProvider = ({
   // Initiate an action & set state
   const dispatch = useCallback(
     async (action: ITriggerActionProps) => {
-      LOG(action.type, "DISPATCH", "#ff8c00");
-      LOG(action.payload, "DISPATCH payload", "#ff8c00");
+      LOG(action.type, "DISPATCH", "#ff8c00", undefined, true);
+      LOG(action.payload, "DISPATCH payload", "#ff8c00", undefined, true);
       // Check if there were errors before
       const apiError = sessionStorage.getItem(SessionStorage.ApiError);
       const parsedError = apiError && JSON.parse(apiError);
@@ -858,18 +845,11 @@ const ChatProvider = ({
 
                 setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
-                LOG(
-                  candidateRes,
-                  "UpdateOrMargeCandidate Response",
-                  COLORS.WHITE
-                );
 
                 const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
                   await apiInstance.sendTranscript({
                     ChatID: chatId,
                   });
-
-                LOG(sendTranscriptRes, "Send Transcript Response");
               }
             }
           } catch (error) {
@@ -910,11 +890,6 @@ const ChatProvider = ({
                 setShouldCallAgain(true);
                 setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
-
-                LOG(
-                  candidateRes,
-                  "UPDATE_OR_MERGE_CANDIDATE Candidate Response"
-                );
               }
             } catch (error) {
             } finally {
@@ -1160,7 +1135,6 @@ const ChatProvider = ({
         const answerResponse: ApiResponse<IFollowingResponse> =
           await apiInstance.sendAnswer(payload);
 
-        LOG(answerResponse, "answerResponse");
         if (answerResponse.data?.success) {
           return Promise.resolve(answerResponse.data);
         } else {
