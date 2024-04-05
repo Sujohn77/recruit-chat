@@ -36,6 +36,7 @@ interface IAutocompleteProps {
   setPhoneValue: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
   errorText?: string;
+  sendMessage: (mess: string) => void;
 }
 
 export const Autocomplete: React.FC<IAutocompleteProps> = ({
@@ -53,6 +54,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   phoneValue,
   setPhoneValue,
   errorText,
+  sendMessage,
   disabled = false,
 }) => {
   const {
@@ -94,7 +96,12 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
     (e: MouseEvent<HTMLLIElement>) => {
       setInputValue(null);
 
-      if (currentMsgType) {
+      if (
+        currentMsgType === CHAT_ACTIONS.SET_CATEGORY &&
+        e.currentTarget.textContent
+      ) {
+        sendMessage(e.currentTarget.textContent);
+      } else if (currentMsgType) {
         dispatch({
           type: currentMsgType,
           payload: { item: e.currentTarget.textContent },
@@ -104,7 +111,7 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
 
       setIsShowResults(false);
     },
-    [currentMsgType]
+    [currentMsgType, sendMessage]
   );
 
   return (

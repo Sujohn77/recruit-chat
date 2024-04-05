@@ -890,6 +890,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       ) : (
         <Autocomplete
           {...inputProps}
+          sendMessage={sendMessage}
           phoneValue={phone}
           setPhoneValue={setPhone}
           onChange={onChangeCategory}
