@@ -8,7 +8,6 @@ export const Wrapper = styled.div``;
 
 export const InputWrapper = styled.div<IInputWrapperProps>`
   ${({ isFrLanguage }) => (isFrLanguage ? "" : "width: 270px;")}
-  padding: 1px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -29,7 +28,6 @@ export const InputWrapper = styled.div<IInputWrapperProps>`
   & input {
     height: 30px;
     box-sizing: border-box;
-    padding: 4px 6px;
     width: 0;
     min-width: 30px;
     flex-grow: 1;

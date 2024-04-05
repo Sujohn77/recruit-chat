@@ -346,17 +346,10 @@ export const pushMessage = ({
   isReferralEnabled,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
-  // const text =
-  //   payload?.item ||
-  //   payload?.items?.map((i) => i.substring(0, i.indexOf(","))).join("\r\n") ||
-  //   "";
 
   const text = payload?.item
     ? payload.item
     : payload?.items?.join("\r\n") || "";
-
-  LOG(payload?.items, "payload?.items", COLORS.WHITE, COLORS.BLACK, true);
-  LOG(text, "text", COLORS.BLACK, COLORS.WHITE, true);
 
   const message = getParsedMessage({
     text,
@@ -383,19 +376,8 @@ export const pushMessage = ({
   return updatedMessages;
 };
 
-const popMessage = ({ type, messages }: IPopMessage) => {
-  if (!type) {
-    return messages;
-  }
-
-  const updatedMessages = !type
-    ? messages
-    : filter(messages, (msg) => msg?.content.subType !== type);
-
-  !type && updatedMessages.shift();
-
-  return updatedMessages;
-};
+const popMessage = ({ type, messages }: IPopMessage) =>
+  !type ? messages : filter(messages, (msg) => msg?.content.subType !== type);
 
 export const replaceItemsWithType = ({
   type,
