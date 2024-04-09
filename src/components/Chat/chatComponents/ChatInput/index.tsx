@@ -56,6 +56,9 @@ import {
   useValidateReferral,
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
+import { apiInstance } from "services/api";
+import { ApiResponse } from "apisauce";
+import { IAskAQuestionResponse } from "services/types";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -226,6 +229,42 @@ export const ChatInput: FC<IChatInputProps> = ({
   // Callbacks
   const sendMessage = useCallback(
     async (draftMessage: string | null) => {
+      const message: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        isOwn: true,
+        content: {
+          subType: MessageType.TEXT,
+          text: draftMessage || "",
+          i18n: "",
+          i18nProps: null,
+        },
+      };
+
+      if (draftMessage === "can i speak to someone?") {
+        setDraftMessage("");
+        _setMessages((prev) => [message, ...prev]);
+        const data = {
+          question: draftMessage.trim(),
+          languageCode: "en",
+          options: {
+            answersNumber: 1,
+            includeUnstructuredSources: true,
+            confidenceScoreThreshold: 0.5,
+          },
+        };
+
+        try {
+          setIsChatLoading(true);
+          const response: ApiResponse<IAskAQuestionResponse> =
+            await apiInstance.contactRealPerson(data);
+        } catch (error) {
+        } finally {
+          setIsChatLoading(false);
+        }
+        return;
+      }
+
       const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
       const isSelectedValues =
         matchedSearchItem || inputValues.length || draftMessage;
@@ -242,18 +281,6 @@ export const ChatInput: FC<IChatInputProps> = ({
           successText,
         });
         setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
-      };
-
-      const message: ILocalMessage = {
-        _id: generateLocalId(),
-        localId: generateLocalId(),
-        isOwn: true,
-        content: {
-          subType: MessageType.TEXT,
-          text: draftMessage || "",
-          i18n: "",
-          i18nProps: null,
-        },
       };
 
       if (inputType === TextFieldTypes.MultiSelect && actionType) {
@@ -798,7 +825,9 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   const onSendMessageHandler = async () => {
     if (!isChatLoading) {
-      if (isApplyJobFlow && draftMessage) {
+      if (draftMessage?.trim() === "can i speak to someone?") {
+        sendMessage(draftMessage);
+      } else if (isApplyJobFlow && draftMessage) {
         try {
           await sendPreScreenMessage(draftMessage, "");
           setDraftMessage("");

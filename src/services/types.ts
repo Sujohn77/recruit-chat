@@ -498,8 +498,14 @@ export interface IAskAQuestionRequest {
   options?: null | IQuestionOptions; // options - QnA configuration options [not required, can be null]
 }
 
+export interface IAskMetadata {
+  keyName: string;
+  keyValue: string;
+}
+
 export interface IAskAQuestionResponse {
   answers: string[];
+  metadata?: IAskMetadata[];
 }
 
 export interface IApplyJobResponse extends ISuccessResponse {

@@ -148,7 +148,13 @@ class Api {
 
   askAQuestion = (data: IAskAQuestionRequest) =>
     this.client.post<IAskAQuestionResponse>(
-      "api/questionAnswering/answers",
+      "api/questionAnswering/answers?queuechatswitch=true",
+      data
+    );
+
+  contactRealPerson = (data: IAskAQuestionRequest) =>
+    this.client.post<IAskAQuestionResponse>(
+      "api/questionAnswering/answerdata",
       data
     );
 
