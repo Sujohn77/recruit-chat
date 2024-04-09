@@ -22,7 +22,7 @@ const defaultQuestions = (referralCompanyName: string | null) => [
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
-    i18n: "questions:recruitment_process",
+    i18n: "questions:flexible_work",
     i18nProps: {
       companyName: referralCompanyName,
     },
