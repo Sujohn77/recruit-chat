@@ -321,36 +321,6 @@ export interface ICreateAnonymCandidateRequest {
   typeId: number;
 }
 
-export interface ICreationCandidatePayload {
-  title?: string;
-  firstName: string;
-  lastName: string;
-  status?: null;
-  sourceType?: "Social Media";
-  source?: "Twitter";
-  companyID?: 4;
-  addresses?: IAddress[];
-  contactMethods: IContactMethod[];
-  employmentExperience?: IEmploymentExperience[];
-  educationHistoryModel?: IEducationHistoryModel[];
-  profile: {
-    headine?: string;
-    summary?: string;
-    photoURL?: string;
-    currentEmployer: string;
-    currentJobTitle: string;
-    educationLevel?: string;
-    jobFunction?: string;
-    jobSpeciality?: string;
-    yearsExperience?: string;
-    willingToRelocate?: "true";
-    communicationLanguage?: "French";
-  };
-  social?: ISocial[];
-  tags?: string[];
-  skills?: ISkill[];
-}
-
 // Api responses
 
 export interface IUploadResponse {
@@ -499,13 +469,18 @@ export interface IAskAQuestionRequest {
 }
 
 export interface IAskMetadata {
-  keyName: string;
-  keyValue: string;
+  KeyName: string;
+  KeyValue: string;
 }
 
 export interface IAskAQuestionResponse {
   answers: string[];
   metadata?: IAskMetadata[];
+}
+
+export interface IContactPersonRes {
+  queueId?: string | number;
+  chatId?: string | number;
 }
 
 export interface IApplyJobResponse extends ISuccessResponse {

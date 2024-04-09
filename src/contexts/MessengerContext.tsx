@@ -116,78 +116,78 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   resumeName: "",
   isChatLoading: false,
   showJobAutocompleteBox: false,
-  chooseButtonOption: () => {},
-  dispatch: () => {},
-  setSnapshotMessages: () => {},
-  setCurrentMsgType: () => {},
-  setError: () => {},
-  setViewJob: () => {},
-  submitMessage: () => {},
-  setIsInitialized: () => {},
-  setJobPositions: () => {},
-  setShowJobAutocompleteBox: () => {},
-  _setMessages: () => {},
+  chooseButtonOption() {},
+  dispatch() {},
+  setSnapshotMessages() {},
+  setCurrentMsgType() {},
+  setError() {},
+  setViewJob() {},
+  submitMessage() {},
+  setIsInitialized() {},
+  setJobPositions() {},
+  setShowJobAutocompleteBox() {},
+  _setMessages() {},
   isAnonym: true,
   shouldCallAgain: false,
   isCandidateWithEmail: false,
   firebaseToken: null,
   isAuthInFirebase: false,
-  setIsAuthInFirebase: () => {},
-  setIsApplyJobSuccessfully: () => {},
+  setIsAuthInFirebase() {},
+  setIsApplyJobSuccessfully() {},
   isApplyJobFlow: false,
-  setFlowId: () => {},
-  setSubscriberWorkflowId: () => {},
-  setIsApplyJobFlow: () => {},
+  setFlowId() {},
+  setSubscriberWorkflowId() {},
+  setIsApplyJobFlow() {},
   sendPreScreenMessage: () => Promise.resolve(),
   emailAddress: "",
   firstName: "",
   lastName: "",
-  setEmailAddress: () => {},
-  setFirstName: () => {},
-  setLastName: () => {},
-  setSearchLocations: () => {},
-  logout: () => {},
-  createJobAlert: () => {},
-  clearJobFilters: () => {},
+  setEmailAddress() {},
+  setFirstName() {},
+  setLastName() {},
+  setSearchLocations() {},
+  logout() {},
+  createJobAlert() {},
+  clearJobFilters() {},
   isChatInputAvailable: false,
-  setIsChatInputAvailable: () => {},
+  setIsChatInputAvailable() {},
   requisitionsPage: 0,
-  setRequisitionsPage: () => {},
-  setIsChatLoading: () => {},
-  setCandidateId: () => {},
-  setIsCandidateAnonym: () => {},
-  setEmployeeId: () => {},
+  setRequisitionsPage() {},
+  setIsChatLoading() {},
+  setCandidateId() {},
+  setIsCandidateAnonym() {},
+  setEmployeeId() {},
   isReferralEnabled: false,
   referralCompanyName: null,
-  setRefBirth: () => {},
-  setRefLastName: () => {},
+  setRefBirth() {},
+  setRefLastName() {},
   refBirth: "",
   refLastName: "",
   refURL: "",
   chatScreen: null,
-  setChatScreen: () => {},
+  setChatScreen() {},
   employeeLocation: "",
   employeeJobCategory: "",
-  setEmployeeJobCategory: () => {},
-  setEmployeeLocation: () => {},
+  setEmployeeJobCategory() {},
+  setEmployeeLocation() {},
   searchRequisitions: () => Promise.resolve(null),
   employeeFullName: "",
-  setEmployeeFullName: () => {},
-  setUser: () => {},
-  setRequisitions: () => {},
-  setFirebaseToken: () => {},
-  setAlertCategories: () => {},
-  setOfferJobs: () => {},
-  setChatId: () => {},
-  setLocations: () => {},
-  setCategory: () => {},
+  setEmployeeFullName() {},
+  setUser() {},
+  setRequisitions() {},
+  setFirebaseToken() {},
+  setAlertCategories() {},
+  setOfferJobs() {},
+  setChatId() {},
+  setLocations() {},
+  setCategory() {},
   employeeLocationID: "",
-  setEmployeeLocationID: () => {},
+  setEmployeeLocationID() {},
   jobSourceID: "",
   employeeJobFamilyNames: [""],
-  setEmployeeJobFamilyNames: () => {},
+  setEmployeeJobFamilyNames() {},
   referralStep: ReferralSteps.EmployeeId,
-  setReferralStep: () => {},
+  setReferralStep() {},
   hostname: "",
   searchRequisitionsByKeyword: () => Promise.resolve(null),
   searchLocation: () => Promise.resolve(null),
@@ -195,7 +195,13 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   languages: [],
   isMultiLanguage: false,
   currentLanguage: "en",
-  setCurrentLanguage: () => {},
+  setCurrentLanguage() {},
+  isLiveChat: false,
+  setIsLiveChat() {},
+  queueId: null,
+  setQueueId() {},
+  queueChatId: null,
+  setQueueChatId() {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -273,12 +279,17 @@ const ChatProvider = ({
 
   const [isAuthInFirebase, setIsAuthInFirebase] = useState(false);
   const [_firebaseMessages, _setFirebaseMessages] = useState<IMessage[]>([]);
+  const [_firebaseQueueMessages, _setFirebaseQueueMessages] = useState<
+    IMessage[]
+  >([]);
 
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
   const [chatId, setChatId] = useState<number | undefined>();
+  const [queueChatId, setQueueChatId] = useState<number | null>(null);
   const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
   const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
+  const [isLiveChat, setIsLiveChat] = useState(false);
 
   const [isApplyJobFlow, setIsApplyJobFlow] = useState(false);
   const [flowId, setFlowId] = useState<number | undefined>(undefined);
@@ -309,6 +320,7 @@ const ChatProvider = ({
   const [referralStep, setReferralStep] = useState<ReferralSteps>(
     ReferralSteps.EmployeeId
   );
+  const [queueId, setQueueId] = useState<null | number>(null);
 
   useEffect(() => {
     const onPersistViewJob = ({ key, newValue }: StorageEvent) => {
@@ -403,6 +415,50 @@ const ChatProvider = ({
     }
     return () => savedSocketConnection?.unsubscribe();
   }, [isApplyJobSuccessfully]);
+
+  useEffect(() => {
+    setMessages((prevMessages) => [
+      ...parseFirebaseMessages(_firebaseQueueMessages),
+      ...prevMessages,
+    ]);
+  }, [_firebaseQueueMessages]);
+
+  useEffect(() => {
+    let savedSocketConnection: any;
+    if (isLiveChat) {
+      messagesSocketConnection.current =
+        new FirebaseSocketReactivePagination<IMessage>(
+          SocketCollectionPreset.QueuesChatMessages,
+          queueId,
+          queueChatId
+        );
+
+      savedSocketConnection = messagesSocketConnection.current;
+      savedSocketConnection.subscribe(
+        (messagesSnapshots: ISnapshot<IMessage>[]) => {
+          const processedSnapshots = sortBy(
+            getProcessedSnapshots<IMessageID, IMessage>(
+              _firebaseQueueMessages,
+              messagesSnapshots,
+              "chatItemId",
+              [],
+              "localId"
+            ),
+            (message: IMessage) => {
+              if (typeof message.dateCreated === "string") {
+                return -moment(message.dateCreated).unix();
+              } else if (message.dateCreated.seconds) {
+                return -message.dateCreated.seconds;
+              }
+            }
+          );
+
+          _setFirebaseQueueMessages(processedSnapshots);
+        }
+      );
+    }
+    return () => savedSocketConnection?.unsubscribe();
+  }, [isLiveChat, queueId, queueChatId]);
 
   const createAnonymCandidate = useCallback(async () => {
     const storedCandidateId = localStorage.getItem(hostname + "candidateId");
@@ -1068,6 +1124,7 @@ const ChatProvider = ({
       isInitialized,
       requisitions.length,
       chatBotId,
+      companyName,
     ]
   );
 
@@ -1410,6 +1467,12 @@ const ChatProvider = ({
     isMultiLanguage,
     currentLanguage,
     setCurrentLanguage,
+    isLiveChat,
+    setIsLiveChat,
+    queueId,
+    setQueueId,
+    queueChatId,
+    setQueueChatId,
   };
 
   // console.log(

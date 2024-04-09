@@ -33,6 +33,7 @@ import {
   TryAgainTypes,
 } from "utils/constants";
 import {
+  LOG,
   generateLocalId,
   getInputType,
   getMatchedItem,
@@ -56,9 +57,9 @@ import {
   useValidateReferral,
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
+import { IAskAQuestionResponse, IContactPersonRes } from "services/types";
 import { apiInstance } from "services/api";
 import { ApiResponse } from "apisauce";
-import { IAskAQuestionResponse } from "services/types";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -114,6 +115,9 @@ export const ChatInput: FC<IChatInputProps> = ({
     setReferralStep,
     hostname,
     currentLanguage,
+    setIsLiveChat,
+    setQueueId,
+    setQueueChatId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -258,6 +262,22 @@ export const ChatInput: FC<IChatInputProps> = ({
           setIsChatLoading(true);
           const response: ApiResponse<IAskAQuestionResponse> =
             await apiInstance.contactRealPerson(data);
+
+          if (
+            response.data?.metadata?.some(
+              ({ KeyName: keyName, KeyValue: keyValue }) =>
+                keyName === "queuechatswitch" && keyValue === "true"
+            )
+          ) {
+            const liveChat: ApiResponse<IContactPersonRes> =
+              await apiInstance.connectToLiveChat();
+
+            if (liveChat?.data?.queueId && liveChat?.data?.chatId) {
+              setQueueId(+liveChat?.data?.queueId);
+              setQueueChatId(+liveChat?.data?.chatId);
+              setIsLiveChat(true);
+            }
+          }
         } catch (error) {
         } finally {
           setIsChatLoading(false);

@@ -158,6 +158,12 @@ export interface IChatMessengerContext {
   isMultiLanguage: boolean;
   currentLanguage: string;
   setCurrentLanguage: (lang: string) => void;
+  isLiveChat: boolean;
+  setIsLiveChat: (isLiveChat: boolean) => void;
+  queueId: null | number;
+  setQueueId: (queueId: null | number) => void;
+  queueChatId: null | number;
+  setQueueChatId: (id: null | number) => void;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

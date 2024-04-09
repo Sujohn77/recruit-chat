@@ -22,7 +22,7 @@ const defaultQuestions = (referralCompanyName: string | null) => [
     subType: MessageType.BUTTON,
     isChatMessage: true,
     isOwn: true,
-    i18n: "questions:recruitment_process",
+    i18n: "questions:flexible_work",
     i18nProps: {
       companyName: referralCompanyName,
     },
@@ -42,7 +42,7 @@ const defaultQuestions = (referralCompanyName: string | null) => [
 ];
 
 export const getReferralMessText = (referralCompanyName: string | null) =>
-  i18n.t("questions:refer_friend", { referralCompanyName });
+  i18n.t("questions:refer_friend", { companyName: referralCompanyName });
 
 export const getQuestions = (
   withReferralFlow: boolean,

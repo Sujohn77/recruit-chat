@@ -11,6 +11,7 @@ import {
   IValidateRefResponse,
   ICreateAndSendPayload,
   ISubmitReferralResponse,
+  IContactPersonRes,
 } from "services/types";
 
 import {
@@ -23,7 +24,6 @@ import { getStorageValue, postMessToParent } from "../../utils/helpers";
 import {
   AppKeyType,
   IApiMessage,
-  ICreationCandidatePayload,
   IRequisitionsResponse,
   ISearchJobsPayload,
   ISendMessageResponse,
@@ -31,7 +31,6 @@ import {
   IUploadCVPayload,
   IUserSelf,
   IUploadResponse,
-  ICreateCandidateResponse,
   ISendTranscriptResponse,
   ISendTranscript,
   IVerifyChatBotResponse,
@@ -47,9 +46,6 @@ import {
 export const FORM_URLENCODED = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 };
-
-// const GUID = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // James's guid
-// const GUID = "f466faec-ea83-4122-8c23-458ab21e96be"; // Test guid
 const GUID = process.env.REACT_APP_GUID;
 export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 
@@ -157,6 +153,9 @@ class Api {
       "api/questionAnswering/answerdata",
       data
     );
+
+  connectToLiveChat = () =>
+    this.client.get<IContactPersonRes>("api/messenger/chat/move-to-queue");
 
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
