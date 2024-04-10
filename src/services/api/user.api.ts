@@ -35,7 +35,7 @@ class userInstance {
   createAnonymCandidate = (data: ICreateAnonymCandidateRequest) =>
     this.client.post<ICreateCandidateResponse>("api/candidate/create", data);
 
-  createChatByAnonymUser = (candidateId: number) =>
+  createChat = (candidateId: number) =>
     this.client.post<ICreateChatResponse>("api/messenger/chat/create", {
       candidateId,
     });

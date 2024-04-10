@@ -437,7 +437,7 @@ const ChatProvider = ({
 
           if (!storedChatId) {
             const chatRes: ApiResponse<ICreateChatResponse> =
-              await userAPI.createChatByAnonymUser(res.data.id);
+              await userAPI.createChat(res.data.id);
             chatRes.data?.chatId && setChatId(chatRes.data?.chatId);
           }
         }
