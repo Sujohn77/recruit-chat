@@ -82,6 +82,7 @@ export interface ILocalMessage {
   border?: string;
   jobId?: string | number;
   dateCreated?: { seconds: number };
+  sender?: IUserSelf;
 }
 
 export enum ButtonsOptions {

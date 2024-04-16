@@ -38,6 +38,7 @@ class userInstance {
   createChatByAnonymUser = (candidateId: number) =>
     this.client.post<ICreateChatResponse>("api/messenger/chat/create", {
       candidateId,
+      chatTypeId: 4,
     });
 
   getFirebaseAccessToken = (candidateId: number) =>

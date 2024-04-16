@@ -684,6 +684,7 @@ export const parseFirebaseMessages = (
         optionList: mess?.optionList,
         _id: mess.chatItemId,
         chatItemId: mess.chatItemId,
+        sender: mess.sender,
       })
     ),
     "chatItemId"
