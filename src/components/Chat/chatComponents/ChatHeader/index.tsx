@@ -23,7 +23,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { viewJob, setViewJob, hostname } = useChatMessenger();
+  const { viewJob, setViewJob, hostname, isLiveChat } = useChatMessenger();
 
   const title = viewJob
     ? t("chat_item_description:view_job_title")
@@ -52,7 +52,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
       ) : (
         <>
           <IntroImage src={theme?.imageUrl} size="20px" alt="" />
-          <S.Title>{title}</S.Title>
+          <S.Title>{isLiveChat ? t("labels:live_chat") : title}</S.Title>
 
           <S.RollDownIcon onClick={onMinimizeChatbot}>_</S.RollDownIcon>
           <S.CloseChat onClick={onCloseChat} />

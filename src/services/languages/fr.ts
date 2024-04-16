@@ -42,6 +42,7 @@ export const fr = {
     drop_here: "déposer ici",
     first_name: "Prénom",
     last_name: "Nom et prénom",
+    live_chat: "Live Chat",
   },
   languages: {
     en: "Anglais",

@@ -41,6 +41,7 @@ export const en = {
     drop_here: "drop here",
     first_name: "First Name",
     last_name: "Last Name",
+    live_chat: "Live Chat",
   },
   languages: {
     en: "English",

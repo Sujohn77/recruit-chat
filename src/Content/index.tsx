@@ -136,7 +136,6 @@ export const Content: FC = () => {
       ) : (
         <>
           {showIcon ? (
-            // TODO: refactor
             <div
               style={{
                 position: "absolute",
