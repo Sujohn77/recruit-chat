@@ -53,13 +53,11 @@ import { COLORS } from "utils/colors";
 import { useFirebaseSignIn, useTextField } from "utils/hooks";
 import {
   ISubmitReferral,
+  useConnectToLiveChat,
   useSubmitReferral,
   useValidateReferral,
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
-import { IAskAQuestionResponse, IContactPersonRes } from "services/types";
-import { apiInstance } from "services/api";
-import { ApiResponse } from "apisauce";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -90,9 +88,9 @@ export const ChatInput: FC<IChatInputProps> = ({
     chooseButtonOption,
     isChatLoading,
     isApplyJobFlow,
-    sendPreScreenMessage,
+    sendNewMessage,
     setSearchLocations,
-    _setMessages,
+    setMessages,
     setCurrentMsgType,
     messages,
     emailAddress,
@@ -115,24 +113,26 @@ export const ChatInput: FC<IChatInputProps> = ({
     setReferralStep,
     hostname,
     currentLanguage,
-    setIsLiveChat,
-    setQueueId,
-    setQueueChatId,
+    isLiveChat,
+    chatId,
+    chatQueueId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
   const isTabActive = useIsTabActive();
+  const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
     useTextField();
 
+  const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
   // user
   const [userFirstName, setUserFirstName] = useState(userFName);
   const [userLastName, setUserLastName] = useState(userLName);
   const [userEmail, setUserEmail] = useState(emailAddress);
 
-  const [draftMessage, setDraftMessage] = useState<string | null>(
+  const [messageValue, setMessageValue] = useState<string | null>(
     localStorage.getItem(hostname + INPUT_KEY)
   );
   const [inputValues, setInputValues] = useState<string[]>([]);
@@ -173,29 +173,29 @@ export const ChatInput: FC<IChatInputProps> = ({
   }, []);
 
   useEffect(() => {
-    typeof draftMessage === "string" &&
-      localStorage.setItem(hostname + INPUT_KEY, draftMessage);
-  }, [draftMessage]);
+    typeof messageValue === "string" &&
+      localStorage.setItem(hostname + INPUT_KEY, messageValue);
+  }, [messageValue]);
 
   useEffect(() => {
     if (isTabActive) {
       const storedDraftMess = localStorage.getItem(hostname + INPUT_KEY);
-      typeof storedDraftMess === "string" && setDraftMessage(storedDraftMess);
+      typeof storedDraftMess === "string" && setMessageValue(storedDraftMess);
     }
   }, [isTabActive]);
 
   const { matchedPart, matchedItems } = useMemo(
     () =>
       getMatchedItems({
-        searchStr: draftMessage,
+        searchStr: messageValue,
         searchItems,
       }),
-    [searchItems, draftMessage]
+    [searchItems, messageValue]
   );
 
   const isWriteAccess =
     file ||
-    (inputType === TextFieldTypes.Select && draftMessage) ||
+    (inputType === TextFieldTypes.Select && messageValue) ||
     !!inputValues.length ||
     (referralStep === ReferralSteps.UserMobileNumber && isValidNumber(phone));
 
@@ -214,7 +214,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (
       (currentMsgType === CHAT_ACTIONS.SET_CATEGORY ||
         currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) &&
-      (!!draftMessage || !!file)
+      (!!messageValue || !!file)
     ) {
       setIsShowResults(true);
     }
@@ -232,62 +232,17 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   // Callbacks
   const sendMessage = useCallback(
-    async (draftMessage: string | null) => {
-      const message: ILocalMessage = {
-        _id: generateLocalId(),
-        localId: generateLocalId(),
-        isOwn: true,
-        content: {
-          subType: MessageType.TEXT,
-          text: draftMessage || "",
-          i18n: "",
-          i18nProps: null,
-        },
-      };
-
-      if (draftMessage === "can i speak to someone?") {
-        setDraftMessage("");
-        _setMessages((prev) => [message, ...prev]);
-        const data = {
-          question: draftMessage.trim(),
-          languageCode: "en",
-          options: {
-            answersNumber: 1,
-            includeUnstructuredSources: true,
-            confidenceScoreThreshold: 0.5,
-          },
-        };
-
-        try {
-          setIsChatLoading(true);
-          const response: ApiResponse<IAskAQuestionResponse> =
-            await apiInstance.contactRealPerson(data);
-
-          if (
-            response.data?.metadata?.some(
-              ({ KeyName: keyName, KeyValue: keyValue }) =>
-                keyName === "queuechatswitch" && keyValue === "true"
-            )
-          ) {
-            const liveChat: ApiResponse<IContactPersonRes> =
-              await apiInstance.connectToLiveChat();
-
-            if (liveChat?.data?.queueId && liveChat?.data?.chatId) {
-              setQueueId(+liveChat?.data?.queueId);
-              setQueueChatId(+liveChat?.data?.chatId);
-              setIsLiveChat(true);
-            }
-          }
-        } catch (error) {
-        } finally {
-          setIsChatLoading(false);
-        }
+    async (message: string | null) => {
+      if (message?.trim() === "can i speak to someone?") {
+        setMessageValue("");
+        setIsOpenBurgerMenu(false);
+        connectToLiveChat();
         return;
       }
 
-      const matchedSearchItem = getMatchedItem(draftMessage, searchItems);
+      const matchedSearchItem = getMatchedItem(message, searchItems);
       const isSelectedValues =
-        matchedSearchItem || inputValues.length || draftMessage;
+        matchedSearchItem || inputValues.length || message;
       const actionType =
         isSelectedValues && currentMsgType
           ? getNextActionType(currentMsgType)
@@ -296,7 +251,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       const createAlertHandle = (successText: string) => {
         clearJobFilters();
         createJobAlert({
-          email: emailAddress || draftMessage!,
+          email: emailAddress || message!,
           type: CHAT_ACTIONS.SET_ALERT_EMAIL,
           successText,
         });
@@ -306,7 +261,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       if (inputType === TextFieldTypes.MultiSelect && actionType) {
         const items = !!matchedSearchItem
           ? uniq(inputValues)
-          : uniq(inputValues.length ? inputValues : [draftMessage!]);
+          : uniq(inputValues.length ? inputValues : [message!]);
 
         if (
           actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
@@ -323,19 +278,19 @@ export const ChatInput: FC<IChatInputProps> = ({
             localId: generateLocalId(),
             content: {
               subType: MessageType.TEXT,
-              text: matchedSearchItem ? items.join("\r") : draftMessage!,
-              locations: items.length ? items : [draftMessage || ""],
+              text: matchedSearchItem ? items.join("\r") : message!,
+              locations: items.length ? items : [message || ""],
               i18n: "",
               i18nProps: null,
             },
             _id: generateLocalId(),
           };
 
-          setSearchLocations(items.length ? items : [draftMessage!]);
+          setSearchLocations(items.length ? items : [message!]);
           setInputValues([]);
 
           if (!emailAddress) {
-            _setMessages((prevMessages) => [
+            setMessages((prevMessages) => [
               alertEmailMess,
               messWithLocations,
               ...prevMessages,
@@ -349,10 +304,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
             }
           } else {
-            _setMessages((prevMessages) => [
-              messWithLocations,
-              ...prevMessages,
-            ]);
+            setMessages((prevMessages) => [messWithLocations, ...prevMessages]);
             createAlertHandle(t("messages:emailAlreadyProvided"));
           }
         } else {
@@ -362,45 +314,57 @@ export const ChatInput: FC<IChatInputProps> = ({
 
           dispatch({
             type: actionType,
-            payload: { items: items.length ? items : [draftMessage] },
+            payload: { items: items.length ? items : [message] },
             i18nProps: null,
           });
         }
       } else {
+        const currentMess: ILocalMessage = {
+          _id: generateLocalId(),
+          localId: generateLocalId(),
+          isOwn: true,
+          content: {
+            subType: MessageType.TEXT,
+            text: message || "",
+            i18n: null,
+            i18nProps: null,
+          },
+        };
+
         if (
           (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
             currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) &&
-          (draftMessage || phone)
+          (message || phone)
         ) {
-          referralHandle(draftMessage || phone);
+          referralHandle(message || phone);
         } else if (currentMsgType === CHAT_ACTIONS.SET_USER_FIRST_NAME) {
-          setUserFirstName(draftMessage!);
-          _setMessages((prev) => [
-            getAlertJobMessage(draftMessage!, userLName, emailAddress),
-            message,
+          setUserFirstName(message!);
+          setMessages((prev) => [
+            getAlertJobMessage(message!, userLName, emailAddress),
+            currentMess,
             ...prev,
           ]);
           setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
         } else if (currentMsgType === CHAT_ACTIONS.SET_USER_LAST_NAME) {
-          setUserLastName(draftMessage!);
-          _setMessages((prev) => [
+          setUserLastName(message!);
+          setMessages((prev) => [
             getAlertJobMessage(
               userFName || userFirstName,
-              draftMessage!,
+              message!,
               emailAddress
             ),
-            message,
+            currentMess,
             ...prev,
           ]);
           setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
         } else if (currentMsgType === CHAT_ACTIONS.SET_USER_EMAIL) {
-          _setMessages((prev) => [message, ...prev]);
+          setMessages((prev) => [currentMess, ...prev]);
           setIsChatLoading(true);
 
           setTimeout(() => {
             setIsChatLoading(false);
 
-            const emailError = validateEmail(draftMessage!);
+            const emailError = validateEmail(message!);
             if (emailError) {
               const errorEmailMessage: ILocalMessage = {
                 _id: generateLocalId(),
@@ -413,15 +377,15 @@ export const ChatInput: FC<IChatInputProps> = ({
                   i18nProps: null,
                 },
               };
-              _setMessages((prev) => [errorEmailMessage, ...prev]);
+              setMessages((prev) => [errorEmailMessage, ...prev]);
             } else {
-              setUserEmail(draftMessage!);
+              setUserEmail(message!);
               // _setMessages((prev) => [message, ...prev]);
               dispatch({
                 type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
                 payload: {
                   candidateData: {
-                    emailAddress: emailAddress || draftMessage!,
+                    emailAddress: emailAddress || message!,
                     firstName: userFName || userFirstName,
                     lastName: userLName || userLastName,
                     callback: () => {
@@ -436,13 +400,13 @@ export const ChatInput: FC<IChatInputProps> = ({
         } else {
           dispatch({
             type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
-            payload: { item: draftMessage },
+            payload: { item: message },
             i18nProps: null,
           });
         }
       }
 
-      setDraftMessage("");
+      setMessageValue("");
     },
     [
       currentMsgType,
@@ -456,6 +420,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       userFirstName,
       userLastName,
       userEmail,
+      chatId,
     ]
   );
 
@@ -475,12 +440,12 @@ export const ChatInput: FC<IChatInputProps> = ({
     switch (referralStep) {
       case ReferralSteps.EmployeeId:
         setRefEmployeeId(draftMessage);
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
         setTimeout(() => {
           const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
           setIsChatLoading(false);
-          _setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
+          setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
         }, 500);
         setReferralStep(ReferralSteps.ReferralLastName);
 
@@ -488,14 +453,14 @@ export const ChatInput: FC<IChatInputProps> = ({
       case ReferralSteps.ReferralLastName:
         draftMessage?.trim() && setRefLastName(draftMessage);
 
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
         setTimeout(() => {
           const enterBirthMess = getReferralQuestion(
             ReferralSteps.ReferralLastName
           );
           setIsChatLoading(false);
-          _setMessages((prevMessages) => [enterBirthMess, ...prevMessages]);
+          setMessages((prevMessages) => [enterBirthMess, ...prevMessages]);
         }, 500);
         setReferralStep(ReferralSteps.ReferralBirth);
 
@@ -507,7 +472,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             employeeFullName || refLastName,
             true
           );
-          _setMessages((prevMessages) => [resMess, ...prevMessages]);
+          setMessages((prevMessages) => [resMess, ...prevMessages]);
 
           const trimmedEmployeeID = refEmployeeId.trim();
           trimmedEmployeeID &&
@@ -529,10 +494,10 @@ export const ChatInput: FC<IChatInputProps> = ({
             _id: generateLocalId(),
           };
 
-          _setMessages((prevMessages) => [tryAgainMess, ...prevMessages]);
+          setMessages((prevMessages) => [tryAgainMess, ...prevMessages]);
         };
 
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setRefBirth(draftMessage);
         onValidateReferral(
           {
@@ -547,7 +512,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       case ReferralSteps.UserFirstName:
         draftMessage?.trim() && setFirstName(draftMessage);
 
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
         setTimeout(() => {
           const userLastNameMess = getReferralQuestion(
@@ -555,7 +520,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           );
 
           setIsChatLoading(false);
-          _setMessages((prevMessages) => [userLastNameMess, ...prevMessages]);
+          setMessages((prevMessages) => [userLastNameMess, ...prevMessages]);
         }, 500);
         setReferralStep(ReferralSteps.UserLastName);
 
@@ -563,18 +528,18 @@ export const ChatInput: FC<IChatInputProps> = ({
       case ReferralSteps.UserLastName:
         draftMessage?.trim() && setLastName(draftMessage);
 
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
         setTimeout(() => {
           const userEmailMess = getReferralQuestion(ReferralSteps.UserEmail);
           setIsChatLoading(false);
-          _setMessages((prevMessages) => [userEmailMess, ...prevMessages]);
+          setMessages((prevMessages) => [userEmailMess, ...prevMessages]);
         }, 500);
         setReferralStep(ReferralSteps.UserEmail);
 
         break;
       case ReferralSteps.UserEmail:
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         setIsChatLoading(true);
 
         setTimeout(() => {
@@ -592,14 +557,14 @@ export const ChatInput: FC<IChatInputProps> = ({
                 i18nProps: null,
               },
             };
-            _setMessages((prev) => [errorMessage, ...prev]);
+            setMessages((prev) => [errorMessage, ...prev]);
           } else {
             setEmail(draftMessage.trim());
 
             const userConfirmMess = getReferralQuestion(
               ReferralSteps.UserConfirmationEmail
             );
-            _setMessages((prevMessages) => [userConfirmMess, ...prevMessages]);
+            setMessages((prevMessages) => [userConfirmMess, ...prevMessages]);
             setReferralStep(ReferralSteps.UserConfirmationEmail);
           }
           setIsChatLoading(false);
@@ -608,7 +573,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         break;
       case ReferralSteps.UserConfirmationEmail:
         if (email === draftMessage.trim()) {
-          _setMessages((prevMessages) => [mess, ...prevMessages]);
+          setMessages((prevMessages) => [mess, ...prevMessages]);
           setIsChatLoading(true);
 
           setTimeout(() => {
@@ -616,7 +581,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               ReferralSteps.UserMobileNumber
             );
             setIsChatLoading(false);
-            _setMessages((prevMessages) => [userMobileMess, ...prevMessages]);
+            setMessages((prevMessages) => [userMobileMess, ...prevMessages]);
           }, 500);
           setReferralStep(ReferralSteps.UserMobileNumber);
         } else {
@@ -631,11 +596,11 @@ export const ChatInput: FC<IChatInputProps> = ({
               i18nProps: null,
             },
           };
-          _setMessages((prev) => [errorMessage, ...prev]);
+          setMessages((prev) => [errorMessage, ...prev]);
         }
         break;
       case ReferralSteps.UserMobileNumber:
-        _setMessages((prevMessages) => [mess, ...prevMessages]);
+        setMessages((prevMessages) => [mess, ...prevMessages]);
         const isValid = isValidNumber(phone);
 
         if (isValid) {
@@ -720,7 +685,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               border: `1px solid ${COLORS[isOk ? "ONAHAU" : "BEAUTY_BUSH"]}`,
               jobId: jobOffer?.id,
             };
-            _setMessages((prevMessages) => [question, ...prevMessages]);
+            setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
             setReferralStep(ReferralSteps.UserFirstName);
             setPhone("");
@@ -738,7 +703,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                 i18nProps: null,
               },
             };
-            _setMessages((prevMessages) => [errorMess, ...prevMessages]);
+            setMessages((prevMessages) => [errorMess, ...prevMessages]);
           };
 
           onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
@@ -755,7 +720,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               i18nProps: null,
             },
           };
-          _setMessages((prev) => [errorMessage, ...prev]);
+          setMessages((prev) => [errorMessage, ...prev]);
         }
 
         break;
@@ -767,7 +732,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      if ((draftMessage || phone) && event.key === "Enter" && isWriteAccess) {
+      if ((messageValue || phone) && event.key === "Enter" && isWriteAccess) {
         event.preventDefault();
         onSendMessageHandler();
       }
@@ -777,7 +742,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [draftMessage, sendMessage, isWriteAccess]);
+  }, [messageValue, sendMessage, isWriteAccess]);
 
   // Callbacks
   const onChangeCategory = (event: ChangeEvent<HTMLInputElement>) => {
@@ -795,7 +760,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       }
     }
 
-    setDraftMessage(value);
+    setMessageValue(value);
     setNotification(null);
   };
 
@@ -830,7 +795,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
     if (currentMsgType) {
       setInputValues(uniq(newValues));
-      setDraftMessage("");
+      setMessageValue("");
       if (currentMsgType !== CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) {
         dispatch({
           type: currentMsgType,
@@ -844,13 +809,25 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   const onSendMessageHandler = async () => {
+    LOG(messageValue, "messageValue", undefined, undefined, true);
+    LOG(isLiveChat, "isLiveChat", undefined, undefined, true);
     if (!isChatLoading) {
-      if (draftMessage?.trim() === "can i speak to someone?") {
-        sendMessage(draftMessage);
-      } else if (isApplyJobFlow && draftMessage) {
+      if (messageValue?.trim() === "can i speak to someone?") {
+        sendMessage(messageValue);
+      } else if (isLiveChat && messageValue) {
+        await sendNewMessage(
+          messageValue,
+          "",
+          undefined,
+          undefined,
+          undefined,
+          true
+        );
+        setMessageValue("");
+      } else if (isApplyJobFlow && messageValue) {
         try {
-          await sendPreScreenMessage(draftMessage, "");
-          setDraftMessage("");
+          await sendNewMessage(messageValue, "");
+          setMessageValue("");
         } catch (error) {
           console.log(error);
         }
@@ -858,13 +835,13 @@ export const ChatInput: FC<IChatInputProps> = ({
         const isSendMess =
           currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length;
         if (isSendMess) {
-          sendMessage(draftMessage);
+          sendMessage(messageValue);
           setIsShowResults(false);
         }
 
         switch (currentMsgType) {
           case CHAT_ACTIONS.ASK_QUESTION:
-            draftMessage && chooseButtonOption(draftMessage as ButtonsOptions);
+            messageValue && chooseButtonOption(messageValue as ButtonsOptions);
             break;
           default:
             break;
@@ -875,7 +852,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   const cleanInputState = useCallback(() => {
     setReferralStep(ReferralSteps[employeeId ? "UserFirstName" : "EmployeeId"]);
-    setDraftMessage("");
+    setMessageValue("");
     setRefError("");
     setError("");
   }, [employeeId]);
@@ -911,20 +888,22 @@ export const ChatInput: FC<IChatInputProps> = ({
     subHeaderName,
     matchedItems: uniqBy(matchedItems, (i) => i),
     matchedPart,
-    value: draftMessage || "",
+    value: messageValue || "",
     placeHolder: getPlaceholder(),
     setIsShowResults,
     isShowResults,
     setHeight,
     setInputValue: (value: string) => {
       setError(null);
-      setDraftMessage(value);
+      setMessageValue(value);
     },
   };
 
   return (
     <S.MessagesInput marginTop={marginTop} isFrLang={currentLanguage === "fr"}>
       <BurgerMenu
+        isOpen={isOpenBurgerMenu}
+        setIsOpen={setIsOpenBurgerMenu}
         setIsShowResults={setIsShowResults}
         setSelectedReferralJobId={setSelectedReferralJobId}
         cleanInputValue={cleanInputState}

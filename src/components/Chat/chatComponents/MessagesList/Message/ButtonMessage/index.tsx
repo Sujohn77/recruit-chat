@@ -6,18 +6,25 @@ import * as S from "../styles";
 import { getMessageProps } from "utils/helpers";
 import { ButtonsOptions, ILocalMessage, MessageType } from "utils/types";
 import { useGetMessageText } from "utils/hooks";
+import { useConnectToLiveChat } from "contexts/hooks";
 
 interface IButtonMessageProps {
   message: ILocalMessage;
 }
 
 export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
-  const { chooseButtonOption, messages } = useChatMessenger();
+  const { chooseButtonOption, messages, chatId, chatQueueId } =
+    useChatMessenger();
   const messageText = useGetMessageText(mess);
+  const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
   const onClick = useCallback(() => {
     if (mess?.content.subType === MessageType.BUTTON && mess?.content?.text) {
-      chooseButtonOption(mess.content.text as ButtonsOptions);
+      if (mess.content.text === "can i speak to someone?") {
+        connectToLiveChat();
+      } else {
+        chooseButtonOption(mess.content.text as ButtonsOptions);
+      }
     }
   }, [messages.length]);
 

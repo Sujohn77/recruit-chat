@@ -5,11 +5,20 @@ import { useCallback } from "react";
 
 import { apiInstance } from "services/api";
 import {
+  IAskAQuestionResponse,
+  IContactPersonRes,
   ISubmitReferralResponse,
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
-import { IReferralData } from "utils/types";
+import {
+  CHAT_ACTIONS,
+  ILocalMessage,
+  IReferralData,
+  MessageType,
+} from "utils/types";
+import { generateLocalId } from "utils/helpers";
+import some from "lodash/some";
 
 export interface ISubmitReferral {
   referralSourceTypeId: number;
@@ -130,4 +139,83 @@ export const useSubmitReferral = () => {
     },
     [candidateId]
   );
+};
+
+export const useConnectToLiveChat = (
+  chatId: number | null | undefined,
+  chatQueueId: number | null
+) => {
+  const {
+    setIsChatLoading,
+    setQueueId,
+    setQueueChatId,
+    setIsLiveChat,
+    setMessages,
+    setCurrentMsgType,
+  } = useChatMessenger();
+
+  return useCallback(async () => {
+    if (chatId && chatQueueId) {
+      const currentMess: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        isOwn: true,
+        content: {
+          subType: MessageType.TEXT,
+          text: "can i speak to someone?",
+          i18n: null,
+          i18nProps: null,
+        },
+      };
+      setMessages((prev) => [currentMess, ...prev]);
+      setCurrentMsgType(CHAT_ACTIONS.LIVE_CHAT);
+
+      try {
+        setIsChatLoading(true);
+        const res: ApiResponse<IAskAQuestionResponse> =
+          await apiInstance.connectToLiveChat({
+            question: "can i speak to someone?",
+          });
+
+        if (res.data?.answers[0]) {
+          const answer: ILocalMessage = {
+            _id: generateLocalId(),
+            localId: generateLocalId(),
+            content: {
+              subType: MessageType.TEXT,
+              text: res.data?.answers[0],
+              i18n: null,
+              i18nProps: null,
+            },
+          };
+          setMessages((prev) => [answer, ...prev]);
+        }
+
+        if (
+          some(
+            res.data?.metadata,
+            ({ KeyName, KeyValue }) =>
+              KeyName === "queuechatswitch" && KeyValue === "true"
+          )
+        ) {
+          const liveChat: ApiResponse<IContactPersonRes> =
+            await apiInstance.getLiveChat({
+              chatId: chatId!,
+              SharedServiceQueueId: chatQueueId!,
+            });
+
+          if (liveChat?.data?.message === "Chat successfully moved") {
+            setQueueId(chatQueueId!);
+            setQueueChatId(chatId!);
+            setIsLiveChat(true);
+          }
+        }
+      } catch (error) {
+      } finally {
+        setIsChatLoading(false);
+      }
+    } else {
+      return;
+    }
+  }, [chatQueueId, chatId]);
 };
