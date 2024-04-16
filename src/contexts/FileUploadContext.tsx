@@ -49,7 +49,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     submitMessage,
     currentMsgType,
     setJobPositions,
-    _setMessages,
+    setMessages: _setMessages,
     candidateId,
     isReferralEnabled,
     referralCompanyName,

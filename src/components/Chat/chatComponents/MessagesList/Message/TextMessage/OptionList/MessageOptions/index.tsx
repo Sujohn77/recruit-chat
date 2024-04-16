@@ -19,7 +19,7 @@ export const MessageOptions: FC<IOptionListProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { sendPreScreenMessage, currentLanguage } = useChatMessenger();
+  const { sendNewMessage, currentLanguage } = useChatMessenger();
   const { t, i18n } = useTranslation();
 
   const onSelectOption = useCallback(
@@ -27,7 +27,7 @@ export const MessageOptions: FC<IOptionListProps> = ({
       if (text && isLastMess) {
         setSelectedReferralJobId(undefined);
         try {
-          await sendPreScreenMessage(
+          await sendNewMessage(
             text,
             i18nPhrase,
             id,

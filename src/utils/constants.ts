@@ -54,7 +54,6 @@ const getChatActionMessages = (
   withoutDefaultQuestions?: boolean,
   employeeId?: number
 ) => {
-  LOG(type, "getChatActionMessages TYPE", COLORS.WHITE);
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [

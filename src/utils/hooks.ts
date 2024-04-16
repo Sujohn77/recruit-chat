@@ -99,12 +99,19 @@ export const useFirebaseSignIn = () => {
         .auth()
         .signInWithCustomToken(firebaseToken)
         .then((response) => {
-          console.log("(Firebase) SUCCESS SIGN IN", response);
+          console.log(
+            "(Firebase) signInWithCustomToken SUCCESS SIGN IN",
+            response
+          );
           setIsAuthInFirebase(true);
           return { response };
         })
         .catch((error) => {
-          console.log("(Firebase) SIGN IN Error --->", error?.message, error);
+          console.log(
+            "(Firebase) signInWithCustomToken Error --->",
+            error?.message,
+            error
+          );
           return { error };
         });
       // });

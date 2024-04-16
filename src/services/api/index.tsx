@@ -144,18 +144,21 @@ class Api {
 
   askAQuestion = (data: IAskAQuestionRequest) =>
     this.client.post<IAskAQuestionResponse>(
-      "api/questionAnswering/answers?queuechatswitch=true",
+      "api/questionAnswering/answers",
       data
     );
 
-  contactRealPerson = (data: IAskAQuestionRequest) =>
+  connectToLiveChat = (data: IAskAQuestionRequest) =>
     this.client.post<IAskAQuestionResponse>(
       "api/questionAnswering/answerdata",
       data
     );
 
-  connectToLiveChat = () =>
-    this.client.get<IContactPersonRes>("api/messenger/chat/move-to-queue");
+  getLiveChat = (data: { chatId: number; SharedServiceQueueId: number }) =>
+    this.client.post<IContactPersonRes>(
+      "api/messenger/chat/move-to-queue",
+      data
+    );
 
   sendMessage = (payload: IApiMessage) =>
     this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
@@ -202,7 +205,7 @@ class Api {
     });
   sendAnswer = (data: ISendAnswerRequest) =>
     this.client.post<IFollowingResponse>(
-      "/api/chatbot/sendprescreenmessage",
+      "/api/chatbot/send-chatbot-message",
       data
     );
   // -------------------------------------------------------------------- //

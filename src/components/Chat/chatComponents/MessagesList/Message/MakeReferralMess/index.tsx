@@ -21,7 +21,7 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
   const { t } = useTranslation();
   const {
     chooseButtonOption,
-    _setMessages,
+    setMessages,
     refLastName,
     employeeId,
     employeeJobCategory,
@@ -47,7 +47,7 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
         },
       };
 
-      _setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
+      setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
     } else {
       chooseButtonOption(
         ButtonsOptions.MAKE_REFERRAL,

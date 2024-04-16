@@ -35,7 +35,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     setIsApplyJobSuccessfully,
     setFlowId,
     setSubscriberWorkflowId,
-    _setMessages,
+    setMessages,
     hostname,
   } = useChatMessenger();
   const { t } = useTranslation();
@@ -47,11 +47,14 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [isClicked, setIsClicked] = useState(0);
   const [jobIdWithoutFlowId, setJobIdWithoutFlowId] = useState<number>();
   const [isLoading, setIsLoading] = useState(false);
-  // const [showApplyBtn, setShowApplyBtn] = useState(true);
 
-  // useEffect(() => {
-  //   isNull(viewJob) && setShowApplyBtn(true);
-  // }, [viewJob]);
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isLoading) {
+      timeout = setTimeout(() => setIsLoading(false), 3000);
+    }
+    return () => timeout && clearTimeout(timeout);
+  }, [isLoading]);
 
   useEffect(() => {
     if (height === 0 && applyJobError) {
@@ -168,11 +171,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
           localStorage.removeItem(hostname + "viewJob");
           setViewJob(null);
-          _setMessages((prevMessages) => [
-            interestedInResMess,
-            ...prevMessages,
-          ]);
+          setMessages((prevMessages) => [interestedInResMess, ...prevMessages]);
+          setIsLoading(false);
         } catch (error) {
+          setIsLoading(false);
           console.log(error);
         } finally {
           setIsLoading(false);

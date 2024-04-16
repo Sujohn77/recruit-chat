@@ -31,7 +31,9 @@ export const useRequisitions = (
   searchRequisitionsTrigger: any,
   setIsChatLoading: Dispatch<SetStateAction<boolean>>,
   page: number,
-  setPage: Dispatch<SetStateAction<number>>
+  setPage: Dispatch<SetStateAction<number>>,
+  setCategoriesForAlert: (c: string[]) => void,
+  categoriesForAlert: string[]
 ) => {
   const [requisitions, setRequisitions] = useState<IRequisitionType[]>([]);
   const [locations, setLocations] = useState<LocationType[]>([]);
@@ -46,6 +48,12 @@ export const useRequisitions = (
               ...searchParams,
               page,
             });
+          setCategoriesForAlert?.(
+            uniq([
+              ...categoriesForAlert,
+              ...map(response.data?.facets.Categories, (c) => c.value),
+            ])
+          );
           if (response?.data?.requisitions?.length) {
             if (page !== 0) {
               setRequisitions((prevRequisitions) => [
@@ -127,6 +135,7 @@ export const useRequisitions = (
         ...searchParams,
         page,
       });
+
       if (response?.data?.requisitions?.length) {
         setJobPositions(response.data.requisitions);
         return response.data.requisitions;
@@ -172,6 +181,7 @@ export const useRequisitions = (
             ...searchParams,
             keyword: searchStr,
           });
+
         if (response?.data?.requisitions.length) {
           setLocations((preLocations) => [
             ...preLocations,

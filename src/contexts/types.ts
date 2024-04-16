@@ -68,7 +68,7 @@ export interface IChatMessengerContext {
   resumeName: string;
   isChatLoading: boolean;
   // _setMessages: (messages: ILocalMessage[]) => void;
-  _setMessages: React.Dispatch<React.SetStateAction<ILocalMessage[]>>;
+  setMessages: React.Dispatch<React.SetStateAction<ILocalMessage[]>>;
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;
   candidateId?: number;
@@ -85,12 +85,13 @@ export interface IChatMessengerContext {
   setFlowId: (flowId: number) => void;
   setSubscriberWorkflowId: (id: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
-  sendPreScreenMessage: (
+  sendNewMessage: (
     message: string,
     i18n: string,
     optionId?: number,
     chatItemId?: number,
-    i18nProps?: Object
+    i18nProps?: Object,
+    isLiveChat?: boolean
   ) => Promise<any>;
   emailAddress: string;
   firstName: string;
@@ -164,6 +165,8 @@ export interface IChatMessengerContext {
   setQueueId: (queueId: null | number) => void;
   queueChatId: null | number;
   setQueueChatId: (id: null | number) => void;
+  chatQueueId: number | null;
+  alertTemplateId?: number;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

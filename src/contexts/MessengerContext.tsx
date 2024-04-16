@@ -14,9 +14,11 @@ import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
 import findIndex from "lodash/findIndex";
 import { ApiResponse } from "apisauce";
+import { useTranslation } from "react-i18next";
+import firebaseApp from "firebase/app";
 import firebase from "firebase";
 import "firebase/auth";
-import { useTranslation } from "react-i18next";
+import "firebase/firestore";
 
 import {
   MessageType,
@@ -80,9 +82,9 @@ import { apiInstance } from "services/api";
 import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
-import { COLORS } from "utils/colors";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { getQuestions } from "./data";
+import uniq from "lodash/uniq";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -96,6 +98,8 @@ interface IChatProviderProps {
   hostname: string;
   languages: string[];
   isMultiLanguage: boolean;
+  chatQueueId: number | null;
+  alertTemplateId: undefined | number;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -126,7 +130,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setIsInitialized() {},
   setJobPositions() {},
   setShowJobAutocompleteBox() {},
-  _setMessages() {},
+  setMessages() {},
   isAnonym: true,
   shouldCallAgain: false,
   isCandidateWithEmail: false,
@@ -138,7 +142,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setFlowId() {},
   setSubscriberWorkflowId() {},
   setIsApplyJobFlow() {},
-  sendPreScreenMessage: () => Promise.resolve(),
+  sendNewMessage: () => Promise.resolve(),
   emailAddress: "",
   firstName: "",
   lastName: "",
@@ -202,6 +206,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setQueueId() {},
   queueChatId: null,
   setQueueChatId() {},
+  chatQueueId: null,
+  alertTemplateId: undefined,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -220,8 +226,11 @@ const ChatProvider = ({
   hostname,
   languages,
   isMultiLanguage,
+  chatQueueId,
+  alertTemplateId,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
+  const queueMessagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
   // -------------------------------- State -------------------------------- //
 
@@ -258,6 +267,36 @@ const ChatProvider = ({
 
   const [categoriesForAlert, setCategoriesForAlert] = useState<string[]>([]);
 
+  useEffect(() => {
+    const getCategoriesForAlert = async () => {
+      const searchParams = {
+        pageSize: 50,
+        keyword: "*",
+        minDatePosted: "2016-11-13T00:00:00",
+        uniqueTitles: true,
+        page: 0,
+      };
+      try {
+        const requisitionsResponse: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions(searchParams);
+
+        if (requisitionsResponse.data?.facets.Categories.length) {
+          setCategoriesForAlert((prev) =>
+            uniq([
+              ...prev,
+              ...map(
+                requisitionsResponse.data?.facets.Categories,
+                (c) => c.value
+              ),
+            ])
+          );
+        }
+      } catch (error) {}
+    };
+
+    getCategoriesForAlert();
+  }, []);
+
   const [shouldCallAgain, setShouldCallAgain] = useState(false);
 
   const {
@@ -272,7 +311,9 @@ const ChatProvider = ({
     searchRequisitionsTrigger,
     setIsChatLoading,
     requisitionsPage,
-    setRequisitionsPage
+    setRequisitionsPage,
+    setCategoriesForAlert,
+    categoriesForAlert
   );
   // ----------------------------------------------------------------------------- //
   const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
@@ -363,6 +404,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_USER_FIRST_NAME:
       case CHAT_ACTIONS.SET_USER_LAST_NAME:
       case CHAT_ACTIONS.SET_USER_EMAIL:
+      case CHAT_ACTIONS.LIVE_CHAT:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -424,16 +466,18 @@ const ChatProvider = ({
   }, [_firebaseQueueMessages]);
 
   useEffect(() => {
+    LOG(queueChatId, "queueChatId", undefined, undefined, true);
     let savedSocketConnection: any;
-    if (isLiveChat) {
-      messagesSocketConnection.current =
+
+    if (isLiveChat && queueId && queueChatId) {
+      queueMessagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
           SocketCollectionPreset.QueuesChatMessages,
           queueId,
           queueChatId
         );
 
-      savedSocketConnection = messagesSocketConnection.current;
+      savedSocketConnection = queueMessagesSocketConnection.current;
       savedSocketConnection.subscribe(
         (messagesSnapshots: ISnapshot<IMessage>[]) => {
           const processedSnapshots = sortBy(
@@ -498,7 +542,6 @@ const ChatProvider = ({
           }
         }
       } catch (error) {
-        LOG(error, "CreateAnonymCandidate ERROR");
       } finally {
         setIsLoadedMessages(false);
       }
@@ -554,6 +597,7 @@ const ChatProvider = ({
             location: searchLocations.join(" "),
             jobCategory: alertCategories?.length ? alertCategories[0] : "",
             candidateId: candidateId,
+            chatbotAlertTemplateId: alertTemplateId,
           });
 
           if (typeof res.data === "string") {
@@ -614,6 +658,7 @@ const ChatProvider = ({
       firstName,
       lastName,
       emailAddress,
+      alertTemplateId,
     ]
   );
 
@@ -669,12 +714,6 @@ const ChatProvider = ({
                 await apiInstance.searchRequisitions(searchParams);
 
               if (requisitionsResponse.data?.facets.Categories.length) {
-                setCategoriesForAlert(
-                  map(
-                    requisitionsResponse.data?.facets.Categories,
-                    (c) => c.value
-                  )
-                );
               }
 
               if (requisitionsResponse.data?.requisitions.length) {
@@ -803,6 +842,7 @@ const ChatProvider = ({
       try {
         const res: ApiResponse<IRequisitionsResponse> =
           await apiInstance.searchRequisitions(payload);
+
         if (res.data?.requisitions.length) {
           const offersWithSelectedTitle = filter(
             res.data.requisitions,
@@ -1157,14 +1197,29 @@ const ChatProvider = ({
   );
 
   // for sending answer (after "Apply job")
-  const sendPreScreenMessage = async (
+  const sendNewMessage = async (
     message: string,
     i18n: string,
     optionId?: number,
     chatItemId?: number,
-    i18nProps?: Object | null
+    i18nProps?: Object | null,
+    isLiveChat = false
   ) => {
-    if (flowId && subscriberWorkflowId && candidateId) {
+    if (isLiveChat && candidateId && queueId) {
+      const payload: ISendAnswerRequest = {
+        candidateId,
+        message,
+        queueId,
+      };
+      const answerResponse: ApiResponse<IFollowingResponse> =
+        await apiInstance.sendAnswer(payload);
+
+      if (answerResponse.data?.success) {
+        return Promise.resolve(answerResponse.data);
+      } else {
+        return Promise.reject(answerResponse);
+      }
+    } else if (flowId && subscriberWorkflowId && candidateId) {
       const localMess: ILocalMessage = {
         localId: generateLocalId(),
         isOwn: true,
@@ -1182,7 +1237,7 @@ const ChatProvider = ({
         const payload: ISendAnswerRequest = {
           SubscriberWorkflowID: subscriberWorkflowId,
           localId: localMess?.localId?.toString()!,
-          FlowID: flowId,
+          FlowID: isLiveChat ? undefined : flowId,
           candidateId,
           message,
           optionId,
@@ -1390,7 +1445,7 @@ const ChatProvider = ({
     resumeName,
     setJobPositions,
     isChatLoading,
-    _setMessages: setMessages,
+    setMessages,
     setShowJobAutocompleteBox,
     showJobAutocompleteBox,
     isAnonym: isCandidateAnonym,
@@ -1406,7 +1461,7 @@ const ChatProvider = ({
     isApplyJobFlow,
     setFlowId,
     setSubscriberWorkflowId,
-    sendPreScreenMessage,
+    sendNewMessage,
     setIsApplyJobFlow,
     emailAddress,
     firstName,
@@ -1473,6 +1528,8 @@ const ChatProvider = ({
     setQueueId,
     queueChatId,
     setQueueChatId,
+    chatQueueId,
+    alertTemplateId,
   };
 
   // console.log(

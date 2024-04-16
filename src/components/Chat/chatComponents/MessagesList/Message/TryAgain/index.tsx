@@ -20,7 +20,7 @@ interface ITryAgainProps {
 
 export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
   const { t } = useTranslation();
-  const { referralCompanyName, _setMessages, setReferralStep } =
+  const { referralCompanyName, setMessages, setReferralStep } =
     useChatMessenger();
 
   const onTryAgainClick = useCallback(() => {
@@ -52,7 +52,7 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
             },
           },
         };
-        _setMessages((prevMessages) => [
+        setMessages((prevMessages) => [
           employeeQuestion,
           tryAgain,
           ...prevMessages,
@@ -65,7 +65,7 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
         const userLastNameMess = getReferralQuestion(
           ReferralSteps.UserFirstName
         );
-        _setMessages((prevMessages) => [
+        setMessages((prevMessages) => [
           userLastNameMess,
           tryAgain,
           ...prevMessages,

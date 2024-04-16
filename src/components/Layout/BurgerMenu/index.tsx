@@ -36,12 +36,16 @@ interface IBurgerMenuProps {
     React.SetStateAction<number | undefined>
   >;
   cleanInputValue: () => void;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const BurgerMenu: FC<IBurgerMenuProps> = ({
   setIsShowResults,
   setSelectedReferralJobId,
   cleanInputValue,
+  isOpen,
+  setIsOpen,
 }) => {
   const {
     dispatch,
@@ -58,16 +62,16 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     refBirth,
     refURL,
     clientApiToken,
-    _setMessages,
+    setMessages,
     employeeJobCategory,
     hostname,
     languages,
     isMultiLanguage,
     currentLanguage,
+    setIsLiveChat,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const list = useMemo(() => {
     let defaultItems = isCandidateWithEmail
@@ -115,6 +119,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       localStorage.removeItem(hostname + "viewJob");
       setViewJob(null);
       cleanInputValue();
+      setIsLiveChat(false);
     }
 
     if (
@@ -125,6 +130,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       localStorage.removeItem(hostname + "viewJob");
       setViewJob(null);
       cleanInputValue();
+      setIsLiveChat(false);
     }
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
@@ -145,7 +151,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         isOwn: true,
       };
 
-      _setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
+      setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
       return;
     }
 

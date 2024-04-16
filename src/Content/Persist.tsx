@@ -35,9 +35,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     firebaseToken,
     offerJobs,
     locations,
-
-    _setMessages,
-
+    setMessages,
     setCandidateId,
     setUser,
     setCurrentMsgType,
@@ -122,7 +120,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
 
       const storedMessages = localStorage.getItem(hostname + "messages");
       storedMessages &&
-        _setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
+        setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
       //   console.log(storedMessages, "storedMessages");
 
       const storedCurrentMsgType = localStorage.getItem(

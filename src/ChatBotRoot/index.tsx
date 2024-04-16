@@ -27,6 +27,8 @@ interface IParentMessage {
     jobSourceId?: string;
     multiLanguage?: boolean;
     languages?: string;
+    queueId?: string;
+    alertTemplateId?: string;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -46,6 +48,8 @@ export const ChatBotRoot: FC = () => {
   const [hostname, setHostname] = useState("");
   const [languages, setLanguages] = useState<string[]>(["en"]);
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
+  const [chatQueueId, setChatQueueId] = useState<number | null>(null);
+  const [alertTemplateId, setAlertTemplateId] = useState<number>();
 
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
@@ -63,8 +67,12 @@ export const ChatBotRoot: FC = () => {
           referralListDomain,
           multiLanguage,
           languages: apiLanguages,
+          queueId,
+          alertTemplateId,
         } = props;
 
+        alertTemplateId && setAlertTemplateId(+alertTemplateId);
+        queueId && setChatQueueId(+queueId);
         setIsReferralEnabled(referralEnabled === "true");
         companyName && setReferralCompanyName(companyName);
         referralListDomain && setChatBotRefBaseURL(referralListDomain);
@@ -123,6 +131,7 @@ export const ChatBotRoot: FC = () => {
     <Container id="chat-bot">
       {chatBotID && (
         <ChatProvider
+          chatQueueId={chatQueueId}
           chatBotId={chatBotID}
           chatBotToken={chatBotToken}
           clientApiToken={clientApiToken}
@@ -133,6 +142,7 @@ export const ChatBotRoot: FC = () => {
           hostname={hostname}
           languages={languages}
           isMultiLanguage={isMultiLanguage}
+          alertTemplateId={alertTemplateId}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

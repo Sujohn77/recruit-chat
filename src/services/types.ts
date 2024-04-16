@@ -405,6 +405,7 @@ export interface IJobAlertRequest {
   location: string;
   jobCategory: string | null;
   candidateId: number;
+  chatbotAlertTemplateId?: number;
 }
 
 // Responses
@@ -479,8 +480,8 @@ export interface IAskAQuestionResponse {
 }
 
 export interface IContactPersonRes {
-  queueId?: string | number;
-  chatId?: string | number;
+  message?: string;
+  success: boolean;
 }
 
 export interface IApplyJobResponse extends ISuccessResponse {
@@ -489,14 +490,17 @@ export interface IApplyJobResponse extends ISuccessResponse {
 }
 
 export interface ISendAnswerRequest {
-  FlowID: number; //from previous api call
-  SubscriberWorkflowID: number; //from previous api call
+  FlowID?: number; //from previous api call
+  SubscriberWorkflowID?: number; //from previous api call
   message: string; // ("yes")  the user's typed response/answer
   candidateId: number;
-  localId: string;
+  localId?: string;
   optionId?: number;
   chatItemId?: number;
+  queueId?: number;
 }
+
+export interface ISendLiveChatMessageRequest {}
 
 export interface IFollowingResponse extends ISuccessResponse {}
 

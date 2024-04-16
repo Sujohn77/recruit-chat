@@ -63,7 +63,7 @@ export interface IState {
 
 export interface IContent {
   subType: MessageType;
-  i18n: string;
+  i18n: string | null;
   i18nProps: Object | null;
   text?: string;
   locations?: string[];
@@ -147,6 +147,7 @@ export enum CHAT_ACTIONS {
   SET_USER_LAST_NAME = "SET_USER_LAST_NAME",
   SET_USER_EMAIL = "SET_USER_EMAIL",
   CREATED_JOB_ALERT = "CREATED_JOB_ALERT",
+  LIVE_CHAT = "LIVE_CHAT",
 }
 
 export enum Status {

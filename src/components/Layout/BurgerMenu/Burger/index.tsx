@@ -7,8 +7,8 @@ interface IBurgerProps {
 }
 
 export const Burger: React.FC<IBurgerProps> = ({ isOpen, onBurgerClick }) => (
-  <S.Container>
-    <S.BurgerIcon onClick={onBurgerClick} isOpen={isOpen}>
+  <S.Container onClick={onBurgerClick}>
+    <S.BurgerIcon isOpen={isOpen}>
       <div />
       <div />
       <div />

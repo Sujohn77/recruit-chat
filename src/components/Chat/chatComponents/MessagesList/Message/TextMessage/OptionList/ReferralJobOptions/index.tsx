@@ -29,7 +29,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   const { t } = useTranslation();
   const {
     dispatch,
-    _setMessages,
+    setMessages,
     chooseButtonOption,
     searchRequisitions,
     employeeJobCategory,
@@ -46,7 +46,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   const onSelectOption = useCallback(
     async (option: IMessageOption) => {
       if (isLastMess) {
-        _setMessages((prev) =>
+        setMessages((prev) =>
           map(prev, (m) =>
             m._id === message._id
               ? {
@@ -84,7 +84,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
                 },
                 isOwn: false,
               };
-              _setMessages((prev) => [messWithJobs, ...prev]);
+              setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;
           case 2:
@@ -106,7 +106,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
                 },
                 isOwn: false,
               };
-              _setMessages((prev) => [messWithJobs, ...prev]);
+              setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;
           case 3:

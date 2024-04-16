@@ -28,7 +28,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
   setSelectedReferralJobId,
 }) => {
   const {
-    _setMessages,
+    setMessages,
     setCurrentMsgType,
     refLastName,
     employeeJobCategory,
@@ -50,7 +50,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               t("labels:yes"),
               "labels:yes"
             );
-            _setMessages((prev) => [
+            setMessages((prev) => [
               ...prev.map((m) =>
                 m._id === message._id ? { ...m, optionList: undefined } : m
               ),
@@ -77,7 +77,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
                 i18nProps: null,
               },
             };
-            _setMessages((prev) => [
+            setMessages((prev) => [
               newReferWithRefHistory,
               answer2,
               ...prev.map((m) =>
