@@ -290,9 +290,8 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
   return parsedMessages;
 };
 
-export const getItemById = (items: any[], id: string) => {
-  return find(items, (job) => job.id === Number(id));
-};
+export const getItemById = (items: any[], id: string) =>
+  find(items, (job) => job.id === Number(id));
 
 export const getMessagesOnAction = ({
   action,
