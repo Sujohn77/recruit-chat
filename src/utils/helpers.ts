@@ -668,10 +668,12 @@ export const LOG = (
 };
 
 export const parseFirebaseMessages = (
-  fMessages: IMessage[]
+  fMessages: IMessage[],
+  candidateId?: number
 ): ILocalMessage[] => {
   console.log("====================================");
   console.log(fMessages, "fMessages");
+  console.log(candidateId, "candidateId");
   console.log("====================================");
   return unionBy(
     map(
@@ -679,7 +681,7 @@ export const parseFirebaseMessages = (
       (mess) => ({
         dateCreated: mess.dateCreated,
         content: mess.content,
-        isOwn: mess.sender.id === -2 ? false : true,
+        isOwn: mess.sender.id === candidateId,
         localId: mess.localId,
         optionList: mess?.optionList,
         _id: mess.chatItemId,

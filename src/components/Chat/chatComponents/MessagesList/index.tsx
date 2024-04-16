@@ -74,7 +74,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
             }
             return (
               <Message
-                key={`${message?.localId}-${message.dateCreated}`}
+                key={`${message?._id}-${message.dateCreated}-${message.sender?.firstName}`}
                 message={message}
                 withoutMargin={withoutMargin}
                 setSelectedReferralJobId={setSelectedReferralJobId}

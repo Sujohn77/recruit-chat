@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useEffect, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ChatMessengerContextKeys, IUser } from "contexts/types";
 import { IRequisitionType } from "services/hooks";
@@ -62,6 +62,12 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     hostname,
     currentLanguage,
     setCurrentLanguage,
+    isLiveChat,
+    setIsLiveChat,
+    queueId,
+    setQueueId,
+    queueChatId,
+    setQueueChatId,
   } = useChatMessenger();
   // const store = useChatMessenger();
   // const storeWithoutFn = Object.fromEntries(
@@ -211,6 +217,14 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       storedFirstName && setFirstName(storedFirstName);
       const storedLastName = localStorage.getItem(hostname + "lastName");
       storedLastName && setLastName(storedLastName);
+
+      const storedIsLiveChat = localStorage.getItem(hostname + "isLiveChat");
+      setIsLiveChat(storedIsLiveChat === "true");
+
+      const storedQueueId = localStorage.getItem(hostname + "queueId");
+      storedQueueId && setQueueId(+storedQueueId);
+      const storedQueueChatId = localStorage.getItem(hostname + "queueChatId");
+      storedQueueChatId && setQueueChatId(+storedQueueChatId);
     }
   }, []);
 
@@ -266,6 +280,11 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
 
     localStorage.setItem(hostname + "currentLanguage", currentLanguage);
 
+    queueId && localStorage.setItem(hostname + "queueId", queueId?.toString());
+    queueChatId &&
+      localStorage.setItem(hostname + "queueChatId", queueChatId?.toString());
+    localStorage.setItem(hostname + "isLiveChat", isLiveChat?.toString());
+
     if (viewJob) {
       localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
     } else {
@@ -296,6 +315,9 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     locations,
     category,
     currentLanguage,
+    queueChatId,
+    queueId,
+    isLiveChat,
   ]);
 
   useEffect(() => {
@@ -310,16 +332,6 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       window.removeEventListener("storage", updateStorage);
     };
   }, []);
-
-  // LOG(chatId, "chatId PERSIST", undefined, undefined, true);
-  // LOG(candidateId, "candidateId", undefined, undefined, true);
-  // LOG(currentMsgType, "currentMsgType", undefined, undefined, true);
-  // LOG(employeeId, "employeeId", undefined, undefined, true);
-  // LOG(requisitions, "requisitions", undefined, undefined, true);
-  // LOG(chatScreen, "chatScreen", undefined, undefined, true);
-  // LOG(user, "user", undefined, undefined, true);
-  // LOG(storeKeysEnum, "storeKeysEnum", undefined, undefined, true);
-  // LOG(storeWithoutFn, "storeWithoutFn", undefined, undefined, true);
 
   return <>{children}</>;
 };

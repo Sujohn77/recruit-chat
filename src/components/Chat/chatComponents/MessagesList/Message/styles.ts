@@ -75,6 +75,23 @@ export const MessageBox = styled.div<IMessageBoxProps>`
     }`};
 `;
 
+export const Wrapper = styled.div``;
+
+interface ISenderProps {
+  isOwn: boolean;
+}
+
+export const Sender = styled.div<ISenderProps>`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: -0.3px;
+  color: rgb(0, 0, 0);
+  padding: 0px 3px;
+  text-align: ${({ isOwn }) => (isOwn ? "right" : "left")};
+`;
+
 export const Cancel = styled.div<ICancelProps>`
   font-size: 14px;
   line-height: 17px;

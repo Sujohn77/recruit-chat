@@ -96,41 +96,48 @@ export const TextMessage: FC<ITextMessageProps> = ({
       : theme.message.chat.backgroundColor;
 
   return wrongMess ? null : (
-    <S.MessageBox
-      {...messageProps}
-      isWarningMess={isWarningMess || !!message.background}
-      isError={isErrorMessage}
-      style={{
-        background: message.background || backgroundColor,
-        border: message.border,
-      }}
-    >
-      <S.MessageContent
+    <S.Wrapper>
+      {message.sender?.firstName && (
+        <S.Sender isOwn={!!message.isOwn}>
+          {message.sender?.firstName} {message.sender?.lastName}
+        </S.Sender>
+      )}
+      <S.MessageBox
+        {...messageProps}
+        isWarningMess={isWarningMess || !!message.background}
         isError={isErrorMessage}
-        isFile={isFile}
-        withOptions={!!message?.optionList}
-        isOwn={message.isOwn}
+        style={{
+          background: message.background || backgroundColor,
+          border: message.border,
+        }}
       >
-        {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
+        <S.MessageContent
+          isError={isErrorMessage}
+          isFile={isFile}
+          withOptions={!!message?.optionList}
+          isOwn={message.isOwn}
+        >
+          {isFile && <Icon src={ICONS.ATTACHED_FILE} />}
 
-        {message.content.locations ? (
-          <LocationList>
-            {message.content.locations.map((l, i) => (
-              <LocationItem key={`${l}-${i}`}>{l}</LocationItem>
-            ))}
-          </LocationList>
-        ) : (
-          messageText
-        )}
+          {message.content.locations ? (
+            <LocationList>
+              {message.content.locations.map((l, i) => (
+                <LocationItem key={`${l}-${i}`}>{l}</LocationItem>
+              ))}
+            </LocationList>
+          ) : (
+            messageText
+          )}
 
-        {renderSendingTime(message)}
+          {renderSendingTime(message)}
 
-        <OptionList
-          setSelectedReferralJobId={setSelectedReferralJobId}
-          message={message}
-          isLastMess={isLastMess}
-        />
-      </S.MessageContent>
-    </S.MessageBox>
+          <OptionList
+            setSelectedReferralJobId={setSelectedReferralJobId}
+            message={message}
+            isLastMess={isLastMess}
+          />
+        </S.MessageContent>
+      </S.MessageBox>
+    </S.Wrapper>
   );
 };

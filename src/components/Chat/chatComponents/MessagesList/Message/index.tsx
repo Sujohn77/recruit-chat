@@ -105,14 +105,7 @@ export const renderSendingTime = (message: ILocalMessage) => {
   const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
     "HH:mm A"
   );
-  if (message?.localId !== message._id && message.isOwn) {
-    if (message._id) {
-      return (
-        <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>
-      );
-    }
-    return null;
+  if (message._id) {
+    return <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>;
   }
-
-  return null;
 };

@@ -12,10 +12,10 @@ import map from "lodash/map";
 import find from "lodash/find";
 import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
+import unionBy from "lodash/unionBy";
 import findIndex from "lodash/findIndex";
 import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
-import firebaseApp from "firebase/app";
 import firebase from "firebase";
 import "firebase/auth";
 import "firebase/firestore";
@@ -76,7 +76,7 @@ import {
   ITriggerActionProps,
   IUser,
 } from "./types";
-import { useRequisitions } from "services/hooks";
+import { useIsTabActive, useRequisitions } from "services/hooks";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { userAPI } from "services/api/user.api";
@@ -85,6 +85,7 @@ import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { getQuestions } from "./data";
 import uniq from "lodash/uniq";
+import { COLORS } from "utils/colors";
 
 interface IChatProviderProps {
   children: React.ReactNode;
@@ -232,6 +233,7 @@ const ChatProvider = ({
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
+  const isTabActive = useIsTabActive();
   // -------------------------------- State -------------------------------- //
 
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -416,7 +418,7 @@ const ChatProvider = ({
 
   useEffect(() => {
     setMessages((prevMessages) => [
-      ...parseFirebaseMessages(_firebaseMessages),
+      ...parseFirebaseMessages(_firebaseMessages, candidateId),
       ...prevMessages,
     ]);
   }, [_firebaseMessages]);
@@ -459,17 +461,22 @@ const ChatProvider = ({
   }, [isApplyJobSuccessfully]);
 
   useEffect(() => {
-    setMessages((prevMessages) => [
-      ...parseFirebaseMessages(_firebaseQueueMessages),
-      ...prevMessages,
-    ]);
+    setMessages((prevMessages) =>
+      unionBy<ILocalMessage>(
+        [
+          ...parseFirebaseMessages(_firebaseQueueMessages, candidateId),
+          ...prevMessages,
+        ],
+        "_id"
+      )
+    );
   }, [_firebaseQueueMessages]);
 
   useEffect(() => {
-    LOG(queueChatId, "queueChatId", undefined, undefined, true);
+    LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
     let savedSocketConnection: any;
 
-    if (isLiveChat && queueId && queueChatId) {
+    if (isLiveChat && queueId && queueChatId && isTabActive) {
       queueMessagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
           SocketCollectionPreset.QueuesChatMessages,
@@ -502,7 +509,7 @@ const ChatProvider = ({
       );
     }
     return () => savedSocketConnection?.unsubscribe();
-  }, [isLiveChat, queueId, queueChatId]);
+  }, [isLiveChat, queueId, queueChatId, isTabActive]);
 
   const createAnonymCandidate = useCallback(async () => {
     const storedCandidateId = localStorage.getItem(hostname + "candidateId");
@@ -1531,12 +1538,6 @@ const ChatProvider = ({
     chatQueueId,
     alertTemplateId,
   };
-
-  // console.log(
-  //   "%c   chat state   ",
-  //   `color: ${COLORS.PASTEL_GRIN}; font-size: 14px; background-color: ${COLORS.BLACK};`,
-  //   chatState
-  // );
 
   return (
     <ChatContext.Provider value={chatState}>{children}</ChatContext.Provider>
