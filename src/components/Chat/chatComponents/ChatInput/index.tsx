@@ -121,13 +121,13 @@ export const ChatInput: FC<IChatInputProps> = ({
     setReferralStep,
     hostname,
     currentLanguage,
-    isLiveChat,
     chatId,
     chatQueueId,
     candidateId,
     setCandidateId,
     setIsCandidateAnonym,
     setIsLiveChat,
+    queueId,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -883,6 +883,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               candidateId: candidateId!,
               chatId: chatId!,
               skipEmailCheck: true,
+              queueId: queueId || undefined,
             };
             const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
               await apiInstance.updateOrMargeCandidate(candidateData);

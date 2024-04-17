@@ -161,6 +161,7 @@ export const useConnectToLiveChat = (
     candidateId,
     setCandidateId,
     setIsCandidateAnonym,
+    queueId,
   } = useChatMessenger();
 
   return useCallback(async () => {
@@ -216,15 +217,16 @@ export const useConnectToLiveChat = (
             setQueueChatId(chatId!);
 
             if (firstName && lastName) {
-              const candidateData: IUpdateOrMergeCandidateRequest = {
+              const candidatePayload: IUpdateOrMergeCandidateRequest = {
                 firstName,
                 lastName,
                 candidateId: candidateId!,
                 chatId: chatId!,
                 skipEmailCheck: true,
+                queueId: chatQueueId,
               };
               const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
-                await apiInstance.updateOrMargeCandidate(candidateData);
+                await apiInstance.updateOrMargeCandidate(candidatePayload);
 
               const res = candidateRes?.data;
 
@@ -262,5 +264,5 @@ export const useConnectToLiveChat = (
     } else {
       return;
     }
-  }, [chatQueueId, chatId]);
+  }, [chatQueueId, chatId, queueId]);
 };

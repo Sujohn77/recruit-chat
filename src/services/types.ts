@@ -513,6 +513,7 @@ export interface IUpdateOrMergeCandidateRequest {
   lastName: string;
   emailAddress?: string;
   skipEmailCheck?: boolean;
+  queueId?: number;
 }
 
 export interface IUpdateOrMergeCandidateResponse extends ISuccessResponse {
