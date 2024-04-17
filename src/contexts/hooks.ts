@@ -2,12 +2,15 @@ import { useChatMessenger } from "./MessengerContext";
 import isNumber from "lodash/isNumber";
 import { ApiResponse } from "apisauce";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 import { apiInstance } from "services/api";
 import {
   IAskAQuestionResponse,
   IContactPersonRes,
   ISubmitReferralResponse,
+  IUpdateOrMergeCandidateRequest,
+  IUpdateOrMergeCandidateResponse,
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
@@ -145,6 +148,7 @@ export const useConnectToLiveChat = (
   chatId: number | null | undefined,
   chatQueueId: number | null
 ) => {
+  const { t } = useTranslation();
   const {
     setIsChatLoading,
     setQueueId,
@@ -152,6 +156,11 @@ export const useConnectToLiveChat = (
     setIsLiveChat,
     setMessages,
     setCurrentMsgType,
+    firstName,
+    lastName,
+    candidateId,
+    setCandidateId,
+    setIsCandidateAnonym,
   } = useChatMessenger();
 
   return useCallback(async () => {
@@ -173,9 +182,7 @@ export const useConnectToLiveChat = (
       try {
         setIsChatLoading(true);
         const res: ApiResponse<IAskAQuestionResponse> =
-          await apiInstance.connectToLiveChat({
-            question: "can i speak to someone?",
-          });
+          await apiInstance.connectToLiveChat();
 
         if (res.data?.answers[0]) {
           const answer: ILocalMessage = {
@@ -207,7 +214,45 @@ export const useConnectToLiveChat = (
           if (liveChat?.data?.message === "Chat successfully moved") {
             setQueueId(chatQueueId!);
             setQueueChatId(chatId!);
-            setIsLiveChat(true);
+
+            if (firstName && lastName) {
+              const candidateData: IUpdateOrMergeCandidateRequest = {
+                firstName,
+                lastName,
+                candidateId: candidateId!,
+                chatId: chatId!,
+                skipEmailCheck: true,
+              };
+              const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+                await apiInstance.updateOrMargeCandidate(candidateData);
+
+              const res = candidateRes?.data;
+
+              if (
+                res?.success &&
+                res?.updateChatBotCandidateId &&
+                res?.candidateId
+              ) {
+                setCandidateId(res.candidateId);
+                setIsCandidateAnonym(false);
+              }
+              setIsLiveChat(true);
+            } else {
+              setMessages((prev) => [
+                {
+                  isOwn: false,
+                  localId: generateLocalId(),
+                  _id: generateLocalId(),
+                  content: {
+                    subType: MessageType.TEXT,
+                    text: t("messages:provide_firstname"),
+                    i18n: "messages:provide_firstname",
+                    i18nProps: null,
+                  },
+                },
+                ...prev,
+              ]);
+            }
           }
         }
       } catch (error) {

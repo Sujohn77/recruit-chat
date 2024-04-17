@@ -277,7 +277,7 @@ export const getAlertJobMessage = (
     return {
       isOwn: false,
       localId: generateLocalId(),
-      _id: null,
+      _id: generateLocalId(),
       content: {
         subType: MessageType.TEXT,
         text: i18n.t("messages:provide_firstname"),
@@ -289,7 +289,7 @@ export const getAlertJobMessage = (
     return {
       isOwn: false,
       localId: generateLocalId(),
-      _id: null,
+      _id: generateLocalId(),
       content: {
         subType: MessageType.TEXT,
         text: i18n.t("messages:provide_lastname"),
@@ -311,7 +311,7 @@ export const getAlertJobMessage = (
         }`,
         i18nProps: null,
       },
-      _id: null,
+      _id: generateLocalId(),
     };
   }
 };

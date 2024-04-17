@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
 import isNaN from "lodash/isNaN";
 import uniqBy from "lodash/uniqBy";
+import { ApiResponse } from "apisauce";
+import { apiInstance } from "services/api";
 
 import "../../../../services/firebase/config";
 import * as S from "./styles";
@@ -58,6 +60,10 @@ import {
   useValidateReferral,
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
+import {
+  IUpdateOrMergeCandidateRequest,
+  IUpdateOrMergeCandidateResponse,
+} from "services/types";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -107,6 +113,8 @@ export const ChatInput: FC<IChatInputProps> = ({
     offerJobs,
     firstName: userFName,
     lastName: userLName,
+    setFirstName: setFName,
+    setLastName: setLName,
     employeeId,
     jobSourceID,
     referralStep,
@@ -116,6 +124,10 @@ export const ChatInput: FC<IChatInputProps> = ({
     isLiveChat,
     chatId,
     chatQueueId,
+    candidateId,
+    setCandidateId,
+    setIsCandidateAnonym,
+    setIsLiveChat,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -233,13 +245,6 @@ export const ChatInput: FC<IChatInputProps> = ({
   // Callbacks
   const sendMessage = useCallback(
     async (message: string | null) => {
-      if (message?.trim() === "can i speak to someone?") {
-        setMessageValue("");
-        setIsOpenBurgerMenu(false);
-        connectToLiveChat();
-        return;
-      }
-
       const matchedSearchItem = getMatchedItem(message, searchItems);
       const isSelectedValues =
         matchedSearchItem || inputValues.length || message;
@@ -809,20 +814,119 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   const onSendMessageHandler = async () => {
-    LOG(messageValue, "messageValue", undefined, undefined, true);
-    LOG(isLiveChat, "isLiveChat", undefined, undefined, true);
+    // LOG(isLiveChat, "isLiveChat", undefined, undefined, true);
     if (!isChatLoading) {
       if (messageValue?.trim() === "can i speak to someone?") {
-        sendMessage(messageValue);
-      } else if (isLiveChat && messageValue) {
-        await sendNewMessage(
-          messageValue,
-          "",
-          undefined,
-          undefined,
-          undefined,
-          true
-        );
+        setMessageValue("");
+        setIsOpenBurgerMenu(false);
+        connectToLiveChat();
+        return;
+      } else if (currentMsgType === CHAT_ACTIONS.LIVE_CHAT && messageValue) {
+        if (!userFName) {
+          setFName(messageValue.trim());
+          setMessages((prev) => [
+            {
+              isOwn: true,
+              _id: generateLocalId(),
+              localId: generateLocalId(),
+              content: {
+                i18n: null,
+                i18nProps: null,
+                subType: MessageType.TEXT,
+                text: messageValue.trim(),
+              },
+            },
+            ...prev,
+          ]);
+          setMessageValue("");
+          setIsChatLoading(true);
+          setTimeout(() => {
+            setIsChatLoading(false);
+            setMessages((prevMessages) => [
+              {
+                isOwn: false,
+                localId: generateLocalId(),
+                _id: generateLocalId(),
+                content: {
+                  subType: MessageType.TEXT,
+                  text: t("messages:provide_lastname"),
+                  i18n: "messages:provide_lastname",
+                  i18nProps: null,
+                },
+              },
+              ...prevMessages,
+            ]);
+          }, 500);
+          return;
+        } else if (!userLName) {
+          setLName(messageValue.trim());
+          setMessages((prev) => [
+            {
+              isOwn: true,
+              _id: generateLocalId(),
+              localId: generateLocalId(),
+              content: {
+                i18n: null,
+                i18nProps: null,
+                subType: MessageType.TEXT,
+                text: messageValue.trim(),
+              },
+            },
+            ...prev,
+          ]);
+          setMessageValue("");
+
+          try {
+            const candidateData: IUpdateOrMergeCandidateRequest = {
+              firstName: userFName,
+              lastName: messageValue.trim(),
+              candidateId: candidateId!,
+              chatId: chatId!,
+              skipEmailCheck: true,
+            };
+            const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+              await apiInstance.updateOrMargeCandidate(candidateData);
+
+            const res = candidateRes?.data;
+
+            if (
+              res?.success &&
+              res?.updateChatBotCandidateId &&
+              res?.candidateId
+            ) {
+              setCandidateId(res.candidateId);
+              setIsCandidateAnonym(false);
+            }
+            if (res?.success) {
+              setMessages((prev) => [
+                {
+                  _id: generateLocalId(),
+                  localId: generateLocalId(),
+                  content: {
+                    subType: MessageType.TEXT,
+                    text: `Thank you ${firstName}. Please wait while we connect you...`,
+                    i18n: null,
+                    i18nProps: null,
+                  },
+                },
+                ...prev,
+              ]);
+            }
+          } catch (error) {
+          } finally {
+            setIsLiveChat(true);
+          }
+          return;
+        } else {
+          await sendNewMessage(
+            messageValue,
+            "",
+            undefined,
+            undefined,
+            undefined,
+            true
+          );
+        }
         setMessageValue("");
       } else if (isApplyJobFlow && messageValue) {
         try {

@@ -140,7 +140,7 @@ export const getParsedMessages = (
     const dateCreated = { seconds: moment().unix() };
     const localId = generateLocalId();
     const message: ILocalMessage = {
-      _id: !!msg.isChatMessage ? localId : null,
+      _id: localId,
       dateCreated,
       content: {
         subType: msg.subType || MessageType.TEXT,

@@ -972,7 +972,8 @@ const ChatProvider = ({
                   candidateId: candidateId,
                   chatId: chatId,
                 };
-                setEmailAddress(candidateData.emailAddress);
+                candidateData.emailAddress &&
+                  setEmailAddress(candidateData.emailAddress);
                 setFirstName(candidateData.firstName);
                 setLastName(candidateData.lastName);
 

@@ -148,10 +148,12 @@ class Api {
       data
     );
 
-  connectToLiveChat = (data: IAskAQuestionRequest) =>
+  connectToLiveChat = () =>
     this.client.post<IAskAQuestionResponse>(
       "api/questionAnswering/answerdata",
-      data
+      {
+        question: "can i speak to someone?",
+      }
     );
 
   getLiveChat = (data: { chatId: number; SharedServiceQueueId: number }) =>

@@ -507,11 +507,12 @@ export interface IFollowingResponse extends ISuccessResponse {}
 export interface ICreateAnonymCandidateResponse extends ISuccessResponse {}
 
 export interface IUpdateOrMergeCandidateRequest {
-  firstName: string;
-  lastName: string;
-  emailAddress: string;
   candidateId: number;
   chatId: number;
+  firstName: string;
+  lastName: string;
+  emailAddress?: string;
+  skipEmailCheck?: boolean;
 }
 
 export interface IUpdateOrMergeCandidateResponse extends ISuccessResponse {
