@@ -29,7 +29,7 @@ export const MessageListContainer = styled.div<IMessageListContainerProps>`
   .infinite-scroll-component {
     overflow: hidden !important;
     > div {
-      margin-bottom: 32px;
+      /* margin-bottom: 32px; */
     }
   }
 `;

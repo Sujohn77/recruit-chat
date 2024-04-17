@@ -72,6 +72,7 @@ import {
 import {
   IChatMessengerContext,
   IPortionMessages,
+  ISendNewMessage,
   ISubmitMessageProps,
   ITriggerActionProps,
   IUser,
@@ -417,14 +418,20 @@ const ChatProvider = ({
   // ----------------------------------------------------------------------------- //
 
   useEffect(() => {
-    setMessages((prevMessages) => [
-      ...parseFirebaseMessages(_firebaseMessages, candidateId),
-      ...prevMessages,
-    ]);
+    setMessages((prevMessages) =>
+      unionBy<ILocalMessage>(
+        [
+          ...parseFirebaseMessages(_firebaseMessages, candidateId),
+          ...prevMessages,
+        ],
+        "_id"
+      )
+    );
   }, [_firebaseMessages]);
 
   useEffect(() => {
     let savedSocketConnection: any;
+    LOG(chatId, "chatId", undefined, undefined, true);
     if (isApplyJobSuccessfully) {
       messagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
@@ -1205,14 +1212,14 @@ const ChatProvider = ({
   );
 
   // for sending answer (after "Apply job")
-  const sendNewMessage = async (
-    message: string,
-    i18n: string,
-    optionId?: number,
-    chatItemId?: number,
-    i18nProps?: Object | null,
-    isLiveChat = false
-  ) => {
+  const sendNewMessage = async ({
+    message,
+    i18n,
+    i18nProps,
+    optionId,
+    chatItemId,
+    isLiveChat = false,
+  }: ISendNewMessage) => {
     if (isLiveChat && candidateId && queueId) {
       const payload: ISendAnswerRequest = {
         candidateId,
@@ -1228,23 +1235,11 @@ const ChatProvider = ({
         return Promise.reject(answerResponse);
       }
     } else if (flowId && subscriberWorkflowId && candidateId) {
-      const localMess: ILocalMessage = {
-        localId: generateLocalId(),
-        isOwn: true,
-        content: {
-          subType: MessageType.TEXT,
-          text: message,
-          i18n,
-          i18nProps: i18nProps || null,
-        },
-        _id: generateLocalId(),
-      };
-
       try {
         setIsChatLoading(true);
         const payload: ISendAnswerRequest = {
           SubscriberWorkflowID: subscriberWorkflowId,
-          localId: localMess?.localId?.toString()!,
+          localId: generateLocalId(),
           FlowID: isLiveChat ? undefined : flowId,
           candidateId,
           message,

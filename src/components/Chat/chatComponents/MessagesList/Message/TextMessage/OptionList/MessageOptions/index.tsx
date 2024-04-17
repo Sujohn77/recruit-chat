@@ -27,16 +27,14 @@ export const MessageOptions: FC<IOptionListProps> = ({
       if (text && isLastMess) {
         setSelectedReferralJobId(undefined);
         try {
-          await sendNewMessage(
-            text,
-            i18nPhrase,
-            id,
-            message.chatItemId,
-            i18nProps
-          );
-        } catch (error) {
-          // TODO: add error handler
-        }
+          await sendNewMessage({
+            message: text,
+            optionId: id,
+            chatItemId: message.chatItemId,
+            i18n: i18nPhrase,
+            i18nProps: i18nProps,
+          });
+        } catch (error) {}
       }
     },
     [isLastMess]

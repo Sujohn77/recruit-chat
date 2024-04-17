@@ -918,19 +918,17 @@ export const ChatInput: FC<IChatInputProps> = ({
           }
           return;
         } else {
-          await sendNewMessage(
-            messageValue,
-            "",
-            undefined,
-            undefined,
-            undefined,
-            true
-          );
+          await sendNewMessage({
+            message: messageValue,
+            isLiveChat: true,
+          });
         }
         setMessageValue("");
       } else if (isApplyJobFlow && messageValue) {
         try {
-          await sendNewMessage(messageValue, "");
+          await sendNewMessage({
+            message: messageValue,
+          });
           setMessageValue("");
         } catch (error) {
           console.log(error);

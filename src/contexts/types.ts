@@ -85,14 +85,7 @@ export interface IChatMessengerContext {
   setFlowId: (flowId: number) => void;
   setSubscriberWorkflowId: (id: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
-  sendNewMessage: (
-    message: string,
-    i18n: string,
-    optionId?: number,
-    chatItemId?: number,
-    i18nProps?: Object,
-    isLiveChat?: boolean
-  ) => Promise<any>;
+  sendNewMessage: (props: ISendNewMessage) => Promise<any>;
   emailAddress: string;
   firstName: string;
   lastName: string;
@@ -251,4 +244,13 @@ export interface IUser {
 export interface IEmailLogin {
   oneTimePassword?: string;
   email?: string;
+}
+
+export interface ISendNewMessage {
+  message: string;
+  i18n?: string;
+  optionId?: number;
+  chatItemId?: number;
+  i18nProps?: Object | null;
+  isLiveChat?: boolean;
 }

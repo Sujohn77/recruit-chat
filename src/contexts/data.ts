@@ -2,13 +2,13 @@ import i18n from "services/localization";
 import { MessageType } from "utils/types";
 
 const defaultQuestions = (referralCompanyName: string | null) => [
-  {
-    text: "can i speak to someone?",
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "",
-  },
+  // {
+  //   text: "can i speak to someone?",
+  //   subType: MessageType.BUTTON,
+  //   isChatMessage: true,
+  //   isOwn: true,
+  //   i18n: "",
+  // },
   {
     text: i18n.t("questions:recruitment_process"),
     subType: MessageType.BUTTON,

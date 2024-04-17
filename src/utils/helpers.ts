@@ -696,9 +696,9 @@ export const parseFirebaseMessages = (
 export const getProcessedSnapshots = <TId, TItem extends TId>(
   initialItems: TItem[],
   snapshots: ISnapshot<TItem>[],
-  idField: keyof TId,
-  fieldsToSave: (keyof TItem)[] = [],
-  localIdField: keyof TItem | null = null
+  idField: keyof TId, // chatItemId
+  fieldsToSave: (keyof TItem)[] = [], // []
+  localIdField: keyof TItem | null = null // localId
 ): TItem[] => {
   let newItemsArray: TItem[] = initialItems.slice();
   snapshots.forEach((snapshot) => {
@@ -752,7 +752,7 @@ export const getProcessedSnapshots = <TId, TItem extends TId>(
 
     switch (snapshotType) {
       case SnapshotType.Added:
-      case SnapshotType.Modified:
+        // case SnapshotType.Modified: // TODO: test
         updateItem();
         break;
       case SnapshotType.Removed:
