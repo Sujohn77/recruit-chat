@@ -138,9 +138,9 @@
           data.style,
           token,
           data.props,
-          data.props.companyName,
-          data.props.referralListDomain,
-          data.props.clientApiToken
+          data.props?.companyName,
+          data.props?.referralListDomain,
+          data.props?.clientApiToken
         );
       }
     } catch (error) {
@@ -250,6 +250,10 @@
     <title>Chat-Bot</title>
   </head>
   <body>
-    <div id="root">___ CHATBOT ___</div>
+    <div id="root">
+      <div>___ CHATBOT ___</div>
+
+      <div>can i speak to someone?</div>
+    </div>
   </body>
 </html>
