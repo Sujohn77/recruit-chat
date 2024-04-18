@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { COLORS } from "utils/colors";
-import { MenuItemWrapper } from "components/Layout/BurgerMenu/MenuItem/styles";
+import { MenuItemWrapper } from "components/Chat/ChatComponents/BurgerMenu/MenuItem/styles";
 
 export const ViewBody = styled.div`
   position: absolute;
