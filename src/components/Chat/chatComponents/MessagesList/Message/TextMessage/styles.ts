@@ -9,3 +9,9 @@ export const LocationList = styled.ul`
 export const LocationItem = styled.li`
   color: ${({ theme }) => theme.messageTextColor};
 `;
+
+export const LinkWrapper = styled.span`
+  text-decoration: underline;
+  color: ${({ theme }) => theme.messageTextColor};
+  cursor: pointer;
+`;

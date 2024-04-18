@@ -1,9 +1,10 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useMemo } from "react";
 import { useTheme } from "styled-components";
+import Linkify from "linkify-react";
 
 import { OptionList } from "./OptionList";
-import { LocationList, LocationItem } from "./styles";
+import { LocationList, LocationItem, LinkWrapper } from "./styles";
 import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
@@ -126,7 +127,26 @@ export const TextMessage: FC<ITextMessageProps> = ({
               ))}
             </LocationList>
           ) : (
-            messageText
+            <Linkify
+              options={{
+                render: ({ attributes, content }) => (
+                  <LinkWrapper
+                    onClick={() => {
+                      const newTab = window.open(
+                        `${attributes.href}`,
+                        "_blank"
+                      );
+                      newTab!.focus();
+                    }}
+                    {...attributes.props}
+                  >
+                    {content}
+                  </LinkWrapper>
+                ),
+              }}
+            >
+              {messageText}
+            </Linkify>
           )}
 
           {renderSendingTime(message)}

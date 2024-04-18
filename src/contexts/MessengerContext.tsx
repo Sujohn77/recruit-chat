@@ -431,7 +431,6 @@ const ChatProvider = ({
 
   useEffect(() => {
     let savedSocketConnection: any;
-    LOG(chatId, "chatId", undefined, undefined, true);
     if (isApplyJobSuccessfully) {
       messagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
@@ -471,7 +470,16 @@ const ChatProvider = ({
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseQueueMessages, candidateId),
+          ...sortBy(
+            parseFirebaseMessages(_firebaseQueueMessages, candidateId),
+            (message: ILocalMessage) => {
+              if (typeof message.dateCreated === "string") {
+                return -moment(message.dateCreated).unix();
+              } else if (message?.dateCreated?.seconds) {
+                return -message.dateCreated.seconds;
+              }
+            }
+          ),
           ...prevMessages,
         ],
         "_id"
@@ -480,7 +488,10 @@ const ChatProvider = ({
   }, [_firebaseQueueMessages]);
 
   useEffect(() => {
+    LOG(isLiveChat, "isLiveChat", COLORS.BLACK, COLORS.WHITE, true);
+    LOG(queueId, "queueId", COLORS.BLACK, COLORS.WHITE, true);
     LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
+    LOG(isTabActive, "isTabActive", COLORS.WHITE, COLORS.BLACK, true);
     let savedSocketConnection: any;
 
     if (isLiveChat && queueId && queueChatId && isTabActive) {
@@ -515,8 +526,27 @@ const ChatProvider = ({
         }
       );
     }
-    return () => savedSocketConnection?.unsubscribe();
+
+    LOG(
+      _firebaseQueueMessages,
+      "_firebaseQueueMessages",
+      undefined,
+      undefined,
+      true
+    );
+    return () => {
+      LOG("unsubscribe", "", undefined, undefined, true);
+      savedSocketConnection?.unsubscribe();
+    };
   }, [isLiveChat, queueId, queueChatId, isTabActive]);
+
+  LOG(
+    _firebaseQueueMessages,
+    "_firebaseQueueMessages !!!!",
+    undefined,
+    undefined,
+    true
+  );
 
   const createAnonymCandidate = useCallback(async () => {
     const storedCandidateId = localStorage.getItem(hostname + "candidateId");
