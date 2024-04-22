@@ -435,9 +435,16 @@ const ChatProvider = ({
   }, [_firebaseMessages]);
 
   useEffect(() => {
-    LOG(chatId, "chatId", undefined, undefined, true);
     let savedSocketConnection: any;
     if (isApplyJobSuccessfully) {
+      LOG(chatId, "chatId", undefined, undefined, true);
+      LOG(
+        `.collection("chats").doc(chatId?.toString()).collection("messages")`,
+        `chatId=${chatId}`,
+        undefined,
+        undefined,
+        true
+      );
       messagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
           SocketCollectionPreset.Messages,
@@ -462,6 +469,14 @@ const ChatProvider = ({
                 return -message.dateCreated.seconds;
               }
             }
+          );
+
+          LOG(
+            processedSnapshots,
+            "Snapshots",
+            COLORS.PICTON_BLUE_LIGHT,
+            COLORS.NEW_YORK_PINK,
+            true
           );
 
           setIsApplyJobFlow(true);
@@ -1136,7 +1151,8 @@ const ChatProvider = ({
       const isQuestion =
         action.type === CHAT_ACTIONS.ASK_QUESTION &&
         (!!action.payload?.question ||
-          (!!action.payload?.item && action.payload.item !== "Ask questions"));
+          (!!action.payload?.item &&
+            action.payload.item !== t("chat_menu:ask_question")));
 
       //  Update state with response
       const param = action.payload?.item || "";
