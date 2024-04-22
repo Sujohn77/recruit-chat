@@ -210,6 +210,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   setQueueChatId() {},
   chatQueueId: null,
   alertTemplateId: undefined,
+  setIsCandidateWithEmail() {},
+  isLiveChatWithMessages: false,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -326,6 +328,7 @@ const ChatProvider = ({
   const [_firebaseQueueMessages, _setFirebaseQueueMessages] = useState<
     IMessage[]
   >([]);
+  const [isLiveChatWithMessages, setIsLiveChatWithMessages] = useState(false);
 
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
@@ -408,6 +411,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_USER_LAST_NAME:
       case CHAT_ACTIONS.SET_USER_EMAIL:
       case CHAT_ACTIONS.LIVE_CHAT:
+      case CHAT_ACTIONS.GET_EMAIL:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -430,6 +434,7 @@ const ChatProvider = ({
   }, [_firebaseMessages]);
 
   useEffect(() => {
+    LOG(chatId, "chatId", undefined, undefined, true);
     let savedSocketConnection: any;
     if (isApplyJobSuccessfully) {
       messagesSocketConnection.current =
@@ -485,14 +490,16 @@ const ChatProvider = ({
         "_id"
       )
     );
+
+    setIsLiveChatWithMessages(_firebaseMessages.length > 1);
   }, [_firebaseQueueMessages]);
 
   useEffect(() => {
-    LOG(isLiveChat, "isLiveChat", COLORS.BLACK, COLORS.WHITE, true);
+    let savedSocketConnection: any;
+    // LOG(isLiveChat, "isLiveChat", COLORS.BLACK, COLORS.WHITE, true);
     LOG(queueId, "queueId", COLORS.BLACK, COLORS.WHITE, true);
     LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
     LOG(isTabActive, "isTabActive", COLORS.WHITE, COLORS.BLACK, true);
-    let savedSocketConnection: any;
 
     if (isLiveChat && queueId && queueChatId && isTabActive) {
       queueMessagesSocketConnection.current =
@@ -527,26 +534,11 @@ const ChatProvider = ({
       );
     }
 
-    LOG(
-      _firebaseQueueMessages,
-      "_firebaseQueueMessages",
-      undefined,
-      undefined,
-      true
-    );
     return () => {
       LOG("unsubscribe", "", undefined, undefined, true);
       savedSocketConnection?.unsubscribe();
     };
   }, [isLiveChat, queueId, queueChatId, isTabActive]);
-
-  LOG(
-    _firebaseQueueMessages,
-    "_firebaseQueueMessages !!!!",
-    undefined,
-    undefined,
-    true
-  );
 
   const createAnonymCandidate = useCallback(async () => {
     const storedCandidateId = localStorage.getItem(hostname + "candidateId");
@@ -967,6 +959,7 @@ const ChatProvider = ({
                   ...payload.candidateData,
                   candidateId: candidateId,
                   chatId: chatId,
+                  skipEmailCheck: !payload.candidateData.emailAddress,
                 };
 
                 const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
@@ -983,7 +976,14 @@ const ChatProvider = ({
                   setIsCandidateAnonym(false);
                 }
 
-                setIsCandidateWithEmail(true);
+                if (res?.success) {
+                  candidateData.emailAddress &&
+                    setEmailAddress(candidateData.emailAddress);
+                  setFirstName(candidateData.firstName);
+                  setLastName(candidateData.lastName);
+                  setIsCandidateWithEmail(true);
+                }
+
                 payload.candidateData.callback?.();
 
                 const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
@@ -1008,6 +1008,7 @@ const ChatProvider = ({
                   ...payload.candidateData,
                   candidateId: candidateId,
                   chatId: chatId,
+                  skipEmailCheck: !payload.candidateData.emailAddress,
                 };
                 candidateData.emailAddress &&
                   setEmailAddress(candidateData.emailAddress);
@@ -1028,8 +1029,15 @@ const ChatProvider = ({
                   setIsCandidateAnonym(false);
                 }
 
+                if (res?.success) {
+                  candidateData.emailAddress &&
+                    setEmailAddress(candidateData.emailAddress);
+                  setFirstName(candidateData.firstName);
+                  setLastName(candidateData.lastName);
+                  setIsCandidateWithEmail(true);
+                }
+
                 setShouldCallAgain(true);
-                setIsCandidateWithEmail(true);
                 payload.candidateData.callback?.();
               }
             } catch (error) {
@@ -1563,6 +1571,8 @@ const ChatProvider = ({
     setQueueChatId,
     chatQueueId,
     alertTemplateId,
+    setIsCandidateWithEmail,
+    isLiveChatWithMessages,
   };
 
   return (

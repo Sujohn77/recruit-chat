@@ -158,22 +158,6 @@ export const getParsedMessages = (
   return responseMessages;
 };
 
-export const MessageTypeId: Record<ServerMessageType, number> = {
-  /* Default text */
-  [MessageType.TEXT]: 1,
-
-  /* Events */
-  [MessageType.DATE]: 2,
-  [MessageType.UNREAD_MESSAGES]: 2,
-  [MessageType.TRANSCRIPT]: 2,
-  [MessageType.CHAT_CREATED]: 2,
-
-  /* Files */
-  [MessageType.VIDEO]: 2,
-  [MessageType.DOCUMENT]: 2,
-  [MessageType.FILE]: 2,
-};
-
 // CONTEXT
 
 export const validateEmail = (value: string) => {
@@ -831,3 +815,30 @@ export const locationsStrToArray = (str?: string) => {
   if (!str?.trim()) return [];
   return str?.replace(/"/g, "")?.replace("{", "")?.replace("}", "")?.split(",");
 };
+
+interface ICreateMessage {
+  text: string;
+  isOwn?: boolean;
+  i18n?: string;
+  i18nProps?: Object;
+  isError?: boolean;
+}
+
+export const createTextMess = ({
+  text,
+  i18n,
+  i18nProps,
+  isOwn,
+  isError,
+}: ICreateMessage): ILocalMessage => ({
+  isOwn,
+  _id: generateLocalId(),
+  localId: generateLocalId(),
+  content: {
+    subType: MessageType.TEXT,
+    i18n: i18n || null,
+    i18nProps: i18nProps || null,
+    text: text.trim(),
+    isError,
+  },
+});

@@ -149,6 +149,7 @@ export enum CHAT_ACTIONS {
   SET_USER_EMAIL = "SET_USER_EMAIL",
   CREATED_JOB_ALERT = "CREATED_JOB_ALERT",
   LIVE_CHAT = "LIVE_CHAT",
+  GET_EMAIL = "GET_EMAIL",
 }
 
 export enum Status {

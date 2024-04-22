@@ -160,6 +160,8 @@ export interface IChatMessengerContext {
   setQueueChatId: (id: null | number) => void;
   chatQueueId: number | null;
   alertTemplateId?: number;
+  setIsCandidateWithEmail: (withEmail: boolean) => void;
+  isLiveChatWithMessages: boolean;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

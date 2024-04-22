@@ -512,7 +512,7 @@ export interface IUpdateOrMergeCandidateRequest {
   firstName: string;
   lastName: string;
   emailAddress?: string;
-  skipEmailCheck?: boolean;
+  skipEmailCheck: boolean;
   queueId?: number;
 }
 

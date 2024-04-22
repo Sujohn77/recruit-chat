@@ -35,7 +35,7 @@ import {
   TryAgainTypes,
 } from "utils/constants";
 import {
-  LOG,
+  createTextMess,
   generateLocalId,
   getInputType,
   getMatchedItem,
@@ -61,6 +61,7 @@ import {
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import {
+  ISendTranscriptResponse,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
@@ -128,6 +129,8 @@ export const ChatInput: FC<IChatInputProps> = ({
     setIsCandidateAnonym,
     setIsLiveChat,
     queueId,
+    setIsCandidateWithEmail,
+    setEmailAddress,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -824,6 +827,7 @@ export const ChatInput: FC<IChatInputProps> = ({
       } else if (currentMsgType === CHAT_ACTIONS.LIVE_CHAT && messageValue) {
         if (!userFName) {
           setFName(messageValue.trim());
+          setUserFirstName(messageValue.trim());
           setMessages((prev) => [
             {
               isOwn: true,
@@ -860,6 +864,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           return;
         } else if (!userLName) {
           setLName(messageValue.trim());
+          setUserLastName(messageValue.trim());
           setMessages((prev) => [
             {
               isOwn: true,
@@ -899,6 +904,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               setIsCandidateAnonym(false);
             }
             if (res?.success) {
+              setIsCandidateWithEmail(true);
               setMessages((prev) => [
                 {
                   _id: generateLocalId(),
@@ -925,6 +931,73 @@ export const ChatInput: FC<IChatInputProps> = ({
           });
         }
         setMessageValue("");
+      } else if (currentMsgType === CHAT_ACTIONS.GET_EMAIL && messageValue) {
+        const emailError = validateEmail(messageValue);
+        setMessages((prevMessages) => [
+          createTextMess({ text: messageValue, isOwn: true }),
+          ...prevMessages,
+        ]);
+        setIsChatLoading(true);
+        setMessageValue("");
+
+        if (emailError) {
+          setTimeout(async () => {
+            setIsChatLoading(false);
+            const errorMessage = createTextMess({
+              text: emailError,
+              isError: true,
+            });
+            setMessages((prev) => [errorMessage, ...prev]);
+          }, 300);
+        } else {
+          setUserEmail(messageValue.trim());
+          const candidatePayload: IUpdateOrMergeCandidateRequest = {
+            firstName: userFName,
+            lastName: userLName,
+            emailAddress: messageValue.trim(),
+            candidateId: candidateId!,
+            chatId: chatId!,
+            skipEmailCheck: false,
+            queueId: chatQueueId!,
+          };
+
+          try {
+            const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+              await apiInstance.updateOrMargeCandidate(candidatePayload);
+
+            const res = candidateRes?.data;
+
+            if (
+              res?.success &&
+              res?.updateChatBotCandidateId &&
+              res?.candidateId
+            ) {
+              setCandidateId(res.candidateId);
+              setIsCandidateAnonym(false);
+            }
+
+            if (res?.success) {
+              setEmailAddress(messageValue.trim());
+              setIsCandidateWithEmail(true);
+            }
+
+            if (res?.success) {
+              setEmailAddress(messageValue.trim());
+              setUserFirstName(userFName);
+              setUserLastName(userLName);
+              setIsCandidateWithEmail(true);
+            }
+
+            const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+              await apiInstance.sendTranscript({
+                ChatID: chatId!,
+              });
+            setCurrentMsgType(CHAT_ACTIONS.LIVE_CHAT);
+          } catch (error) {
+          } finally {
+            setIsChatLoading(false);
+          }
+        }
       } else if (isApplyJobFlow && messageValue) {
         try {
           await sendNewMessage({

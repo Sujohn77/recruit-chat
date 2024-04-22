@@ -1,12 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
@@ -22,7 +16,7 @@ import {
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 import { ISendTranscriptResponse } from "services/types";
 import { apiInstance } from "services/api";
-import { generateLocalId } from "utils/helpers";
+import { LOG, createTextMess, generateLocalId } from "utils/helpers";
 import {
   CHAT_ACTIONS,
   ILocalMessage,
@@ -47,6 +41,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   isOpen,
   setIsOpen,
 }) => {
+  const { t } = useTranslation();
   const {
     dispatch,
     chatId,
@@ -69,14 +64,33 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     isMultiLanguage,
     currentLanguage,
     setIsLiveChat,
+    isLiveChat,
+    currentMsgType,
+    setIsChatLoading,
+    setCurrentMsgType,
+    isLiveChatWithMessages,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const list = useMemo(() => {
-    let defaultItems = isCandidateWithEmail
-      ? menuForCandidateWithEmail(languages, isMultiLanguage)
-      : menuItems(languages, isMultiLanguage);
+    const withSendTranscript =
+      currentMsgType === CHAT_ACTIONS.LIVE_CHAT &&
+      isLiveChat &&
+      isLiveChatWithMessages;
+
+    LOG(
+      isLiveChatWithMessages,
+      "isLiveChatWithMessages",
+      undefined,
+      undefined,
+      true
+    );
+
+    let defaultItems =
+      withSendTranscript || isCandidateWithEmail
+        ? menuForCandidateWithEmail(languages, isMultiLanguage)
+        : menuItems(languages, isMultiLanguage);
     if (isReferralEnabled && !!employeeId) {
       return baseWithRef(languages, isMultiLanguage);
     }
@@ -91,6 +105,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     languages,
     isMultiLanguage,
     currentLanguage,
+    isLiveChat,
+    currentMsgType,
+    isLiveChatWithMessages,
   ]);
 
   useEffect(() => {
@@ -181,21 +198,35 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
                 },
                 i18nProps: null,
               });
-            }
-
-            const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-              await apiInstance.sendTranscript({
-                ChatID: chatId,
+              const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
+                await apiInstance.sendTranscript({
+                  ChatID: chatId,
+                });
+              console.log("Send Transcript Response", sendTranscriptRes);
+            } else {
+              const saveTranscriptMess = createTextMess({
+                text,
+                isOwn: true,
               });
-            console.log("Send Transcript Response", sendTranscriptRes);
+              setMessages((prev) => [saveTranscriptMess, ...prev]);
+
+              setCurrentMsgType(CHAT_ACTIONS.GET_EMAIL);
+              setIsChatLoading(true);
+              setTimeout(() => {
+                setIsChatLoading(false);
+                const chatbotMess = createTextMess({
+                  text: t("messages:provideEmail"),
+                  i18n: "messages:provideEmail",
+                });
+
+                setMessages((prev) => [chatbotMess, ...prev]);
+              }, 500);
+            }
           } catch (error) {
             console.log("Send Transcript ERROR", error);
           }
         }
         break;
-      // case CHAT_ACTIONS.CHANGE_LANG:
-      // this feature is temporarily hidden (language change - CHAT-265)
-      // break;
       default:
         dispatch({
           type,
