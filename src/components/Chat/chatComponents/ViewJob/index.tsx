@@ -4,14 +4,13 @@ import AnimateHeight, { Height } from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
-import isNull from "lodash/isNull";
 
 import * as S from "./styles";
 import { IMAGES } from "assets";
 import { Loader } from "components/Layout";
 import { apiInstance } from "services/api";
-import { ILocalMessage, MessageType } from "utils/types";
-import { generateLocalId, getFormattedDate } from "utils/helpers";
+import { ILocalMessage } from "utils/types";
+import { createTextMess, getFormattedDate } from "utils/helpers";
 import { IApplyJobResponse, ISuccessResponse } from "services/types";
 import { DarkButton } from "components/Layout/styles";
 
@@ -122,50 +121,31 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             await apiInstance.addCandidateByJobId(+viewJob.id, candidateId);
 
           if (response?.data?.success) {
-            interestedInResMess = {
-              isOwn: false,
+            interestedInResMess = createTextMess({
               _id: null,
-              localId: generateLocalId(),
-              content: {
-                subType: MessageType.TEXT,
-                text: t(
-                  `chat_item_description:${
-                    isRecall ? "short_success_interested" : "success_interested"
-                  }`
-                ),
-                i18n: `chat_item_description:${
+              text: t(
+                `chat_item_description:${
                   isRecall ? "short_success_interested" : "success_interested"
-                }`,
-                i18nProps: null,
-              },
-            };
+                }`
+              ),
+              i18n: `chat_item_description:${
+                isRecall ? "short_success_interested" : "success_interested"
+              }`,
+            });
           } else if (response.data?.statusCode === 303) {
             // if 303 === the user has already registered themselves for this job
-            interestedInResMess = {
+            interestedInResMess = createTextMess({
               _id: null,
-              localId: generateLocalId(),
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: t("errors:already_expressed"),
-                i18n: "errors:already_expressed",
-                i18nProps: null,
-              },
-            };
+              text: t("errors:already_expressed"),
+              i18n: "errors:already_expressed",
+            });
           } else if (response.data?.statusCode === 105) {
             // general error, show error msg
             if (response.data.errors[0]) {
-              interestedInResMess = {
+              interestedInResMess = createTextMess({
                 _id: null,
-                localId: generateLocalId(),
-                isOwn: false,
-                content: {
-                  subType: MessageType.TEXT,
-                  text: response.data.errors[0],
-                  i18n: "",
-                  i18nProps: null,
-                },
-              };
+                text: response.data.errors[0],
+              });
             }
           }
 

@@ -59,6 +59,8 @@ interface ICreateMessage {
   isError?: boolean;
   subType?: MessageType;
   tryAgainType?: TryAgainTypes;
+  _id?: string | null;
+  localId?: string;
 }
 
 interface IGetMatchedItems {
@@ -830,11 +832,13 @@ export const createTextMess = ({
   isOwn,
   isError,
   tryAgainType,
+  _id = generateLocalId(),
+  localId = generateLocalId(),
   subType = MessageType.TEXT,
 }: ICreateMessage): ILocalMessage => ({
   isOwn,
-  _id: generateLocalId(),
-  localId: generateLocalId(),
+  _id,
+  localId,
   content: {
     text: text.trim(),
     i18n: i18n || null,
