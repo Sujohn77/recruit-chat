@@ -125,17 +125,6 @@ export interface IMessageContentInnerInfo {
   i18nProps: Object;
 }
 
-export enum ServerMessageType {
-  Text = "text",
-  Transcript = "transcript_sent",
-  Video = "video_uploaded",
-  ChatCreated = "chat_created",
-  Document = "document_uploaded",
-  File = "resume_uploaded",
-  UnreadMessages = "unread_messages",
-  Date = "date",
-}
-
 export interface IMessageOption {
   id: number;
   itemId: number;

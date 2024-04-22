@@ -327,17 +327,10 @@ export const ChatInput: FC<IChatInputProps> = ({
           });
         }
       } else {
-        const currentMess: ILocalMessage = {
-          _id: generateLocalId(),
-          localId: generateLocalId(),
+        const currentMess = createTextMess({
           isOwn: true,
-          content: {
-            subType: MessageType.TEXT,
-            text: message || "",
-            i18n: null,
-            i18nProps: null,
-          },
-        };
+          text: message || "",
+        });
 
         if (
           (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
@@ -374,17 +367,10 @@ export const ChatInput: FC<IChatInputProps> = ({
 
             const emailError = validateEmail(message!);
             if (emailError) {
-              const errorEmailMessage: ILocalMessage = {
-                _id: generateLocalId(),
-                localId: generateLocalId(),
-                content: {
-                  subType: MessageType.TEXT,
-                  text: emailError,
-                  isError: true,
-                  i18n: "",
-                  i18nProps: null,
-                },
-              };
+              const errorEmailMessage = createTextMess({
+                isError: true,
+                text: emailError,
+              });
               setMessages((prev) => [errorEmailMessage, ...prev]);
             } else {
               setUserEmail(message!);
@@ -433,17 +419,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   );
 
   const referralHandle = (draftMessage: string) => {
-    const mess: ILocalMessage = {
-      isOwn: true,
-      localId: generateLocalId(),
-      content: {
-        subType: MessageType.TEXT,
-        text: draftMessage,
-        i18n: "",
-        i18nProps: null,
-      },
-      _id: generateLocalId(),
-    };
+    const mess = createTextMess({ isOwn: true, text: draftMessage });
 
     switch (referralStep) {
       case ReferralSteps.EmployeeId:
@@ -490,19 +466,14 @@ export const ChatInput: FC<IChatInputProps> = ({
         };
 
         const onFailure = () => {
-          const tryAgainMess: ILocalMessage = {
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TRY_AGAIN,
-              text: t("errors:referral_validation"),
-              tryAgainType: TryAgainTypes.Validate,
-              i18n: "errors:referral_validation",
-              i18nProps: null,
-            },
-            _id: generateLocalId(),
-          };
+          const tryAgain = createTextMess({
+            subType: MessageType.TRY_AGAIN,
+            text: t("errors:referral_validation"),
+            tryAgainType: TryAgainTypes.Validate,
+            i18n: "errors:referral_validation",
+          });
 
-          setMessages((prevMessages) => [tryAgainMess, ...prevMessages]);
+          setMessages((prevMessages) => [tryAgain, ...prevMessages]);
         };
 
         setMessages((prevMessages) => [mess, ...prevMessages]);
@@ -554,17 +525,10 @@ export const ChatInput: FC<IChatInputProps> = ({
           const emailError = validateEmail(draftMessage);
 
           if (emailError) {
-            const errorMessage: ILocalMessage = {
-              _id: generateLocalId(),
-              localId: generateLocalId(),
-              content: {
-                subType: MessageType.TEXT,
-                text: emailError,
-                isError: true,
-                i18n: "",
-                i18nProps: null,
-              },
-            };
+            const errorMessage = createTextMess({
+              isError: true,
+              text: emailError,
+            });
             setMessages((prev) => [errorMessage, ...prev]);
           } else {
             setEmail(draftMessage.trim());
@@ -593,17 +557,11 @@ export const ChatInput: FC<IChatInputProps> = ({
           }, 500);
           setReferralStep(ReferralSteps.UserMobileNumber);
         } else {
-          const errorMessage: ILocalMessage = {
-            _id: generateLocalId(),
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: t("errors:not_match"),
-              isError: true,
-              i18n: "errors:not_match",
-              i18nProps: null,
-            },
-          };
+          const errorMessage = createTextMess({
+            isError: true,
+            text: t("errors:not_match"),
+            i18n: "errors:not_match",
+          });
           setMessages((prev) => [errorMessage, ...prev]);
         }
         break;
@@ -699,35 +657,23 @@ export const ChatInput: FC<IChatInputProps> = ({
             setPhone("");
           };
           const onFailureSubmit = () => {
-            const errorMess: ILocalMessage = {
-              _id: null,
-              localId: generateLocalId(),
-              isOwn: false,
-              content: {
-                subType: MessageType.TRY_AGAIN,
-                text: t("errors:submit_referral_error"),
-                tryAgainType: TryAgainTypes.SendReferral,
-                i18n: "errors:submit_referral_error",
-                i18nProps: null,
-              },
-            };
+            const errorMess = createTextMess({
+              subType: MessageType.TRY_AGAIN,
+              text: t("errors:submit_referral_error"),
+              tryAgainType: TryAgainTypes.SendReferral,
+              i18n: "errors:submit_referral_error",
+            });
             setMessages((prevMessages) => [errorMess, ...prevMessages]);
           };
 
           onSubmitReferral(payload, onSuccessSubmit, onFailureSubmit);
           cleanInputState();
         } else {
-          const errorMessage: ILocalMessage = {
-            _id: generateLocalId(),
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: t("errors:invalid_phone_number"),
-              isError: true,
-              i18n: "errors:invalid_phone_number",
-              i18nProps: null,
-            },
-          };
+          const errorMessage = createTextMess({
+            isError: true,
+            text: t("errors:invalid_phone_number"),
+            i18n: "errors:invalid_phone_number",
+          });
           setMessages((prev) => [errorMessage, ...prev]);
         }
 
@@ -829,17 +775,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           setFName(messageValue.trim());
           setUserFirstName(messageValue.trim());
           setMessages((prev) => [
-            {
-              isOwn: true,
-              _id: generateLocalId(),
-              localId: generateLocalId(),
-              content: {
-                i18n: null,
-                i18nProps: null,
-                subType: MessageType.TEXT,
-                text: messageValue.trim(),
-              },
-            },
+            createTextMess({ isOwn: true, text: messageValue }),
             ...prev,
           ]);
           setMessageValue("");
@@ -847,17 +783,10 @@ export const ChatInput: FC<IChatInputProps> = ({
           setTimeout(() => {
             setIsChatLoading(false);
             setMessages((prevMessages) => [
-              {
-                isOwn: false,
-                localId: generateLocalId(),
-                _id: generateLocalId(),
-                content: {
-                  subType: MessageType.TEXT,
-                  text: t("messages:provide_lastname"),
-                  i18n: "messages:provide_lastname",
-                  i18nProps: null,
-                },
-              },
+              createTextMess({
+                text: t("messages:provide_lastname"),
+                i18n: "messages:provide_lastname",
+              }),
               ...prevMessages,
             ]);
           }, 500);
@@ -866,17 +795,10 @@ export const ChatInput: FC<IChatInputProps> = ({
           setLName(messageValue.trim());
           setUserLastName(messageValue.trim());
           setMessages((prev) => [
-            {
+            createTextMess({
               isOwn: true,
-              _id: generateLocalId(),
-              localId: generateLocalId(),
-              content: {
-                i18n: null,
-                i18nProps: null,
-                subType: MessageType.TEXT,
-                text: messageValue.trim(),
-              },
-            },
+              text: messageValue,
+            }),
             ...prev,
           ]);
           setMessageValue("");
@@ -906,16 +828,9 @@ export const ChatInput: FC<IChatInputProps> = ({
             if (res?.success) {
               setIsCandidateWithEmail(true);
               setMessages((prev) => [
-                {
-                  _id: generateLocalId(),
-                  localId: generateLocalId(),
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: `Thank you ${firstName}. Please wait while we connect you...`,
-                    i18n: null,
-                    i18nProps: null,
-                  },
-                },
+                createTextMess({
+                  text: `Thank you ${firstName}. Please wait while we connect you...`,
+                }),
                 ...prev,
               ]);
             }

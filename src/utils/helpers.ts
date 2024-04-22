@@ -10,7 +10,6 @@ import unionBy from "lodash/unionBy";
 import sortBy from "lodash/sortBy";
 import filter from "lodash/filter";
 import remove from "lodash/remove";
-import some from "lodash/some";
 import find from "lodash/find";
 import map from "lodash/map";
 import libPhoneNumber from "google-libphonenumber";
@@ -38,21 +37,29 @@ import {
   TextFieldTypes,
   SessionStorage,
   EventIds,
+  TryAgainTypes,
 } from "./constants";
 import {
   ContactType,
-  IApiMessage,
   IMessage,
   ISearchJobsPayload,
-  IUserSelf,
   I_id,
   LocationType,
-  ServerMessageType,
   SnapshotType,
 } from "services/types";
 import i18n from "services/localization";
 
 window.Buffer = Buffer;
+
+interface ICreateMessage {
+  text: string;
+  isOwn?: boolean;
+  i18n?: string;
+  i18nProps?: Object;
+  isError?: boolean;
+  subType?: MessageType;
+  tryAgainType?: TryAgainTypes;
+}
 
 interface IGetMatchedItems {
   searchStr: string | null;
@@ -811,18 +818,10 @@ export const isStringArray = (property: any): property is string[] => {
   return property.every((item) => typeof item === "string");
 };
 
-export const locationsStrToArray = (str?: string) => {
-  if (!str?.trim()) return [];
-  return str?.replace(/"/g, "")?.replace("{", "")?.replace("}", "")?.split(",");
-};
-
-interface ICreateMessage {
-  text: string;
-  isOwn?: boolean;
-  i18n?: string;
-  i18nProps?: Object;
-  isError?: boolean;
-}
+export const locationsStrToArray = (str?: string): string[] =>
+  !str?.trim()
+    ? []
+    : str?.replace(/"/g, "")?.replace("{", "")?.replace("}", "")?.split(",");
 
 export const createTextMess = ({
   text,
@@ -830,15 +829,18 @@ export const createTextMess = ({
   i18nProps,
   isOwn,
   isError,
+  tryAgainType,
+  subType = MessageType.TEXT,
 }: ICreateMessage): ILocalMessage => ({
   isOwn,
   _id: generateLocalId(),
   localId: generateLocalId(),
   content: {
-    subType: MessageType.TEXT,
+    text: text.trim(),
     i18n: i18n || null,
     i18nProps: i18nProps || null,
-    text: text.trim(),
+    subType,
     isError,
+    tryAgainType,
   },
 });

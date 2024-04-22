@@ -79,14 +79,6 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       isLiveChat &&
       isLiveChatWithMessages;
 
-    LOG(
-      isLiveChatWithMessages,
-      "isLiveChatWithMessages",
-      undefined,
-      undefined,
-      true
-    );
-
     let defaultItems =
       withSendTranscript || isCandidateWithEmail
         ? menuForCandidateWithEmail(languages, isMultiLanguage)
@@ -156,17 +148,12 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         refLastName,
         false
       );
-      const makeRefMess: ILocalMessage = {
-        _id: generateLocalId(),
-        localId: generateLocalId(),
-        content: {
-          subType: MessageType.TEXT,
-          text,
-          i18n: "make_referral",
-          i18nProps: null,
-        },
+
+      const makeRefMess = createTextMess({
+        text,
+        i18n: "buttons:make_referral",
         isOwn: true,
-      };
+      });
 
       setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
       return;
