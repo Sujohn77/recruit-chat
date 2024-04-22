@@ -290,6 +290,8 @@ export interface IApiThemeResponse {
   chatbot_header_text_colour: string;
   chatbot_bubble_text_color?: string;
   chat_button_primary_colour?: string;
+  chatbot_bubble_link_colour?: string;
+  chatbot_bubble_link_color?: string;
 }
 
 export interface IParsedTheme {
@@ -307,6 +309,7 @@ export interface IParsedTheme {
   chatbotHeaderTextColor?: string;
   messageTextColor?: string;
   buttonPrimaryColor?: string;
+  linkColor?: string;
 }
 
 export interface IReferralData {

@@ -12,6 +12,7 @@ export const LocationItem = styled.li`
 
 export const LinkWrapper = styled.span`
   text-decoration: underline;
+  text-decoration-color: ${({ theme }) => theme.linkColor};
   color: ${({ theme }) => theme.messageTextColor};
   cursor: pointer;
 `;

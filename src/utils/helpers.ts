@@ -601,6 +601,8 @@ export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
   chatbotHeaderTextColor: theme.chatbot_header_text_colour,
   messageTextColor: theme.chatbot_bubble_text_color,
   buttonPrimaryColor: theme.chat_button_primary_colour,
+  linkColor:
+    theme.chatbot_bubble_link_colour || theme.chatbot_bubble_link_color,
 });
 
 export const getStorageValue = (
