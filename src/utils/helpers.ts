@@ -61,6 +61,7 @@ interface ICreateMessage {
   tryAgainType?: TryAgainTypes;
   _id?: string | null;
   localId?: string;
+  dateCreated?: { seconds: number };
 }
 
 interface IGetMatchedItems {
@@ -832,6 +833,7 @@ export const createTextMess = ({
   isOwn,
   isError,
   tryAgainType,
+  dateCreated,
   _id = generateLocalId(),
   localId = generateLocalId(),
   subType = MessageType.TEXT,
@@ -847,4 +849,5 @@ export const createTextMess = ({
     isError,
     tryAgainType,
   },
+  dateCreated,
 });

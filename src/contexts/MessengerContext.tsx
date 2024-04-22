@@ -68,6 +68,7 @@ import {
   validationUserContacts,
   getParsedSnapshots,
   getProcessedSnapshots,
+  createTextMess,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -637,48 +638,26 @@ const ChatProvider = ({
           });
 
           if (typeof res.data === "string") {
-            const responseMessage: ILocalMessage = {
-              content: {
-                subType: MessageType.TEXT,
-                text: successText || res.data,
-                i18n: "",
-                i18nProps: null,
-              },
-              isOwn: false,
-              localId: generateLocalId(),
-              _id: generateLocalId(),
-            };
+            const responseMessage = createTextMess({
+              text: successText || res.data,
+            });
             setMessages((prev) => [responseMessage, ...prev]);
             setCurrentMsgType(CHAT_ACTIONS.CREATED_JOB_ALERT);
           } else if (res.status !== 200) {
             setMessages((prev) => [
-              {
-                _id: generateLocalId(),
-                localId: generateLocalId(),
-                isOwn: false,
-                content: {
-                  subType: MessageType.TEXT,
-                  text: t("errors:something_went_wrong"),
-                  i18n: "errors:something_went_wrong",
-                  i18nProps: null,
-                },
-              },
+              createTextMess({
+                text: t("errors:something_went_wrong"),
+                i18n: "errors:something_went_wrong",
+              }),
               ...prev,
             ]);
           }
         } catch (err) {
           setMessages((prev) => [
-            {
-              _id: generateLocalId(),
-              localId: generateLocalId(),
-              isOwn: false,
-              content: {
-                subType: MessageType.TEXT,
-                text: t("errors:something_went_wrong"),
-                i18n: i18nPhrase,
-                i18nProps: null,
-              },
-            },
+            createTextMess({
+              text: t("errors:something_went_wrong"),
+              i18n: t("errors:something_went_wrong"),
+            }),
             ...prev,
           ]);
         } finally {
@@ -1066,17 +1045,11 @@ const ChatProvider = ({
         case CHAT_ACTIONS.ASK_QUESTION: {
           if (payload?.question) {
             setIsChatLoading(true);
-            const questionMess: ILocalMessage = {
-              content: {
-                subType: MessageType.TEXT,
-                text: payload.question?.trim(),
-                i18n: i18n,
-                i18nProps: null,
-              },
+            const questionMess = createTextMess({
               isOwn: true,
-              localId: generateLocalId(),
-              _id: generateLocalId(),
-            };
+              text: payload.question?.trim(),
+              i18n,
+            });
             // hiringProcessMessage for another phase
             // const hiringProcessMessage = getChatActionResponse({
             //   type: CHAT_ACTIONS.HIRING_PROCESS,
@@ -1124,18 +1097,11 @@ const ChatProvider = ({
                   ...messages,
                 ];
               } else if (!response.data?.answers.length) {
-                const withoutAnswer: ILocalMessage = {
-                  isOwn: false,
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: t("messages:dont_have_answer"),
-                    i18n: "messages:dont_have_answer",
-                    i18nProps: null,
-                  },
-                  localId: generateLocalId(),
-                  _id: generateLocalId(),
+                const withoutAnswer = createTextMess({
+                  text: t("messages:dont_have_answer"),
+                  i18n: "messages:dont_have_answer",
                   dateCreated: { seconds: moment().unix() },
-                };
+                });
 
                 updatedMessages = [
                   // ...hiringProcessMessage,
@@ -1145,18 +1111,11 @@ const ChatProvider = ({
                 ];
               }
             } catch (error) {
-              const withoutAnswer: ILocalMessage = {
-                isOwn: false,
-                content: {
-                  subType: MessageType.TEXT,
-                  text: t("messages:dont_have_answer"),
-                  i18n: "messages:dont_have_answer",
-                  i18nProps: null,
-                },
-                localId: generateLocalId(),
-                _id: generateLocalId(),
+              const withoutAnswer = createTextMess({
+                text: t("messages:dont_have_answer"),
+                i18n: "messages:dont_have_answer",
                 dateCreated: { seconds: moment().unix() },
-              };
+              });
               updatedMessages = lastMessIsButton
                 ? // ? [...hiringProcessMessage, withoutAnswer, ...messages]
                   [withoutAnswer, ...messages]
@@ -1352,17 +1311,11 @@ const ChatProvider = ({
             param
               ? [
                   ...responseMessages,
-                  {
-                    _id: generateLocalId(),
-                    localId: generateLocalId(),
-                    content: {
-                      subType: MessageType.TEXT,
-                      text: param,
-                      i18n: i18nPhrase,
-                      i18nProps: null,
-                    },
+                  createTextMess({
+                    text: param || "",
                     isOwn: true,
-                  },
+                    i18n: i18nPhrase,
+                  }),
                   ...updatedMessages,
                 ]
               : [...responseMessages, ...updatedMessages]
