@@ -1,8 +1,9 @@
 import { useChatMessenger } from "./MessengerContext";
-import isNumber from "lodash/isNumber";
-import { ApiResponse } from "apisauce";
 import { useCallback } from "react";
+import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
+import isNumber from "lodash/isNumber";
+import some from "lodash/some";
 
 import { apiInstance } from "services/api";
 import {
@@ -14,14 +15,8 @@ import {
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
-import {
-  CHAT_ACTIONS,
-  ILocalMessage,
-  IReferralData,
-  MessageType,
-} from "utils/types";
-import { generateLocalId } from "utils/helpers";
-import some from "lodash/some";
+import { CHAT_ACTIONS, IReferralData } from "utils/types";
+import { createTextMess } from "utils/helpers";
 
 export interface ISubmitReferral {
   referralSourceTypeId: number;
@@ -166,18 +161,13 @@ export const useConnectToLiveChat = (
 
   return useCallback(async () => {
     if (chatId && chatQueueId) {
-      const currentMess: ILocalMessage = {
-        _id: generateLocalId(),
-        localId: generateLocalId(),
-        isOwn: true,
-        content: {
-          subType: MessageType.TEXT,
+      setMessages((prev) => [
+        createTextMess({
           text: "can i speak to someone?",
-          i18n: null,
-          i18nProps: null,
-        },
-      };
-      setMessages((prev) => [currentMess, ...prev]);
+          isOwn: true,
+        }),
+        ...prev,
+      ]);
       setCurrentMsgType(CHAT_ACTIONS.LIVE_CHAT);
 
       try {
@@ -186,17 +176,10 @@ export const useConnectToLiveChat = (
           await apiInstance.connectToLiveChat();
 
         if (res.data?.answers[0]) {
-          const answer: ILocalMessage = {
-            _id: generateLocalId(),
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: res.data?.answers[0],
-              i18n: null,
-              i18nProps: null,
-            },
-          };
-          setMessages((prev) => [answer, ...prev]);
+          setMessages((prev) => [
+            createTextMess({ text: res.data?.answers[0] || "" }),
+            ...prev,
+          ]);
         }
 
         if (
@@ -241,17 +224,10 @@ export const useConnectToLiveChat = (
               setIsLiveChat(true);
             } else {
               setMessages((prev) => [
-                {
-                  isOwn: false,
-                  localId: generateLocalId(),
-                  _id: generateLocalId(),
-                  content: {
-                    subType: MessageType.TEXT,
-                    text: t("messages:provide_firstname"),
-                    i18n: "messages:provide_firstname",
-                    i18nProps: null,
-                  },
-                },
+                createTextMess({
+                  text: t("messages:provide_firstname"),
+                  i18n: "messages:provide_firstname",
+                }),
                 ...prev,
               ]);
             }
