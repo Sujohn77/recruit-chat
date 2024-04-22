@@ -240,5 +240,5 @@ export const useConnectToLiveChat = (
     } else {
       return;
     }
-  }, [chatQueueId, chatId, queueId]);
+  }, [chatQueueId, chatId, queueId, firstName, lastName]);
 };
