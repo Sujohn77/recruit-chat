@@ -5,7 +5,7 @@ import map from "lodash/map";
 
 import * as S from "../styles";
 import { IMessageOption } from "services/types";
-import { generateLocalId } from "utils/helpers";
+import { createTextMess } from "utils/helpers";
 import {
   ButtonsOptions,
   CHAT_ACTIONS,
@@ -74,16 +74,10 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               employeeLocationID
             );
             if (withJobs) {
-              const messWithJobs: ILocalMessage = {
-                _id: null,
-                localId: generateLocalId(),
-                content: {
-                  subType: MessageType.JOB_POSITIONS,
-                  i18n: "",
-                  i18nProps: null,
-                },
-                isOwn: false,
-              };
+              const messWithJobs = createTextMess({
+                text: "",
+                subType: MessageType.JOB_POSITIONS,
+              });
               setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;
@@ -96,16 +90,10 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               employeeJobFamilyNames
             );
             if (withJobs) {
-              const messWithJobs: ILocalMessage = {
-                _id: null,
-                localId: generateLocalId(),
-                content: {
-                  subType: MessageType.JOB_POSITIONS,
-                  i18n: "",
-                  i18nProps: null,
-                },
-                isOwn: false,
-              };
+              const messWithJobs = createTextMess({
+                text: "",
+                subType: MessageType.JOB_POSITIONS,
+              });
               setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;

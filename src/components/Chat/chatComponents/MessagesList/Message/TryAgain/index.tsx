@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
 import { DarkButton } from "components/Layout/styles";
-import { ILocalMessage, MessageType } from "utils/types";
+import { ILocalMessage } from "utils/types";
 import { COLORS } from "utils/colors";
 import { TryAgainTypes } from "utils/constants";
 import { useChatMessenger } from "contexts/MessengerContext";
-import { generateLocalId } from "utils/helpers";
+import { createTextMess } from "utils/helpers";
 import {
   ReferralSteps,
   getReferralQuestion,
@@ -24,34 +24,23 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
     useChatMessenger();
 
   const onTryAgainClick = useCallback(() => {
-    const tryAgain: ILocalMessage = {
-      _id: generateLocalId(),
-      localId: generateLocalId(),
-      content: {
-        subType: MessageType.TEXT,
-        text: t("messages:try_again"),
-        i18n: "messages:try_again",
-        i18nProps: null,
-      },
+    const tryAgain = createTextMess({
       isOwn: true,
-    };
+      text: t("messages:try_again"),
+      i18n: "messages:try_again",
+    });
 
     switch (message.content.tryAgainType) {
       case TryAgainTypes.Validate:
-        const employeeQuestion: ILocalMessage = {
-          _id: generateLocalId(),
-          localId: generateLocalId(),
-          content: {
-            subType: MessageType.TEXT,
-            text: t("messages:employeeId", {
-              companyName: referralCompanyName,
-            }),
-            i18n: "messages:employeeId",
-            i18nProps: {
-              companyName: referralCompanyName,
-            },
+        const employeeQuestion = createTextMess({
+          text: t("messages:employeeId", {
+            companyName: referralCompanyName,
+          }),
+          i18n: "messages:employeeId",
+          i18nProps: {
+            companyName: referralCompanyName,
           },
-        };
+        });
         setMessages((prevMessages) => [
           employeeQuestion,
           tryAgain,

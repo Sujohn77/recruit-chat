@@ -4,14 +4,9 @@ import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
 import * as S from "../styles";
-import { generateLocalId } from "utils/helpers";
+import { createTextMess } from "utils/helpers";
 import { IMessageOption } from "services/types";
-import {
-  ButtonsOptions,
-  CHAT_ACTIONS,
-  ILocalMessage,
-  MessageType,
-} from "utils/types";
+import { ButtonsOptions, CHAT_ACTIONS, ILocalMessage } from "utils/types";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IOptionListProps {
@@ -66,17 +61,11 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               false,
               true
             );
-            const answer2: ILocalMessage = {
-              localId: generateLocalId(),
-              _id: generateLocalId(),
+            const answer2 = createTextMess({
               isOwn: true,
-              content: {
-                subType: MessageType.TEXT,
-                text: t("labels:no"),
-                i18n: "labels:no",
-                i18nProps: null,
-              },
-            };
+              text: t("labels:no"),
+              i18n: "labels:no",
+            });
             setMessages((prev) => [
               newReferWithRefHistory,
               answer2,

@@ -42,6 +42,7 @@ import {
 import {
   ContactType,
   IMessage,
+  IMessageOptions,
   ISearchJobsPayload,
   I_id,
   LocationType,
@@ -62,6 +63,8 @@ interface ICreateMessage {
   _id?: string | null;
   localId?: string;
   dateCreated?: { seconds: number };
+  optionList?: null | IMessageOptions;
+  locations?: string[];
 }
 
 interface IGetMatchedItems {
@@ -834,6 +837,8 @@ export const createTextMess = ({
   isError,
   tryAgainType,
   dateCreated,
+  optionList,
+  locations,
   _id = generateLocalId(),
   localId = generateLocalId(),
   subType = MessageType.TEXT,
@@ -848,6 +853,8 @@ export const createTextMess = ({
     subType,
     isError,
     tryAgainType,
+    locations,
   },
   dateCreated,
+  optionList,
 });

@@ -67,7 +67,6 @@ export interface IChatMessengerContext {
   setIsInitialized: Dispatch<SetStateAction<boolean>>;
   resumeName: string;
   isChatLoading: boolean;
-  // _setMessages: (messages: ILocalMessage[]) => void;
   setMessages: React.Dispatch<React.SetStateAction<ILocalMessage[]>>;
   showJobAutocompleteBox: boolean;
   setShowJobAutocompleteBox: (show: boolean) => void;

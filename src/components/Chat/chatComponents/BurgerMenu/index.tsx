@@ -16,13 +16,8 @@ import {
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 import { ISendTranscriptResponse } from "services/types";
 import { apiInstance } from "services/api";
-import { LOG, createTextMess, generateLocalId } from "utils/helpers";
-import {
-  CHAT_ACTIONS,
-  ILocalMessage,
-  IMenuItem,
-  MessageType,
-} from "utils/types";
+import { createTextMess } from "utils/helpers";
+import { CHAT_ACTIONS, IMenuItem } from "utils/types";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;

@@ -281,18 +281,11 @@ export const ChatInput: FC<IChatInputProps> = ({
             emailAddress
           );
 
-          const messWithLocations: ILocalMessage = {
+          const messWithLocations = createTextMess({
             isOwn: true,
-            localId: generateLocalId(),
-            content: {
-              subType: MessageType.TEXT,
-              text: matchedSearchItem ? items.join("\r") : message!,
-              locations: items.length ? items : [message || ""],
-              i18n: "",
-              i18nProps: null,
-            },
-            _id: generateLocalId(),
-          };
+            text: matchedSearchItem ? items.join("\r") : message!,
+            locations: items.length ? items : [message || ""],
+          });
 
           setSearchLocations(items.length ? items : [message!]);
           setInputValues([]);
@@ -588,6 +581,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
             const isOk = previouslyReferredState === 0;
 
+            // TODO: refactor
             const question: ILocalMessage = {
               isOwn: false,
               localId: generateLocalId(),

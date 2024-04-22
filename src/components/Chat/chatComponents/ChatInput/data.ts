@@ -1,7 +1,7 @@
 import i18n from "services/localization";
 import { IMessageOption } from "services/types";
 import { MessageOptionTypes, ReferralResponse } from "utils/constants";
-import { generateLocalId } from "utils/helpers";
+import { createTextMess, generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
 
 export enum ReferralSteps {
@@ -161,28 +161,25 @@ export const getValidationRefResponse = (
   fullName: string,
   isValidation: boolean,
   withReferralsHistoryBtn = false
-): ILocalMessage => ({
-  isOwn: false,
-  localId: generateLocalId(),
-  content: {
-    subType: MessageType.TEXT,
+): ILocalMessage =>
+  createTextMess({
     text: withReferralsHistoryBtn
       ? i18n.t("referral:ok") + i18n.t("referral:referral_options")
       : isValidation
       ? i18n.t("referral:successful_validation", { userLastName: fullName }) +
         i18n.t("referral:referral_options")
       : i18n.t("referral:referral_options"),
-    // TODO: test
-    i18n: "",
-    i18nProps: null,
-  },
-  _id: generateLocalId(),
-  optionList: {
-    type: MessageOptionTypes.AvailableJobs,
-    isActive: true,
-    options: getReferralOptions(searchCategory, withReferralsHistoryBtn),
-  },
-});
+    i18n: withReferralsHistoryBtn
+      ? ""
+      : isValidation
+      ? ""
+      : "referral:referral_options",
+    optionList: {
+      type: MessageOptionTypes.AvailableJobs,
+      isActive: true,
+      options: getReferralOptions(searchCategory, withReferralsHistoryBtn),
+    },
+  });
 
 const getReferralOptions = (
   searchCategory: string,
@@ -274,44 +271,21 @@ export const getAlertJobMessage = (
   emailAddress: string
 ): ILocalMessage => {
   if (!firstName) {
-    return {
-      isOwn: false,
-      localId: generateLocalId(),
-      _id: generateLocalId(),
-      content: {
-        subType: MessageType.TEXT,
-        text: i18n.t("messages:provide_firstname"),
-        i18n: "messages:provide_firstname",
-        i18nProps: null,
-      },
-    };
+    return createTextMess({
+      text: i18n.t("messages:provide_firstname"),
+      i18n: "messages:provide_firstname",
+    });
   } else if (!lastName) {
-    return {
-      isOwn: false,
-      localId: generateLocalId(),
-      _id: generateLocalId(),
-      content: {
-        subType: MessageType.TEXT,
-        text: i18n.t("messages:provide_lastname"),
-        i18n: "messages:provide_lastname",
-        i18nProps: null,
-      },
-    };
+    return createTextMess({
+      text: i18n.t("messages:provide_lastname"),
+      i18n: "messages:provide_lastname",
+    });
   } else {
-    return {
-      isOwn: false,
-      localId: generateLocalId(),
-      content: {
-        subType: MessageType.TEXT,
-        text: i18n.t(
-          `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`
-        ),
-        i18n: `messages:${
-          emailAddress ? "emailAlreadyProvided" : "alertEmail"
-        }`,
-        i18nProps: null,
-      },
-      _id: generateLocalId(),
-    };
+    return createTextMess({
+      text: i18n.t(
+        `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`
+      ),
+      i18n: `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`,
+    });
   }
 };
