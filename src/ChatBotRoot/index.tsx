@@ -82,11 +82,15 @@ export const ChatBotRoot: FC = () => {
         clientApiToken && setClientApiToken(clientApiToken);
         jobSourceId && setJobSourceId(jobSourceId);
         seTisMultiLanguage(!!multiLanguage);
-        defaultLanguage && setDefaultLanguage(defaultLanguage);
-        const languages = locationsStrToArray(apiLanguages);
-        languages?.length &&
-          isStringArray(languages) &&
-          setLanguages(languages);
+
+        const chatbotLanguages = locationsStrToArray(apiLanguages);
+        chatbotLanguages?.length &&
+          isStringArray(chatbotLanguages) &&
+          setLanguages(chatbotLanguages);
+
+        if (defaultLanguage && chatbotLanguages.includes(defaultLanguage)) {
+          setDefaultLanguage(defaultLanguage);
+        }
       }
 
       if (token) {
