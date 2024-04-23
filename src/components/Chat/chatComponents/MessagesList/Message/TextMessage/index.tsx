@@ -9,7 +9,7 @@ import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
 import { ICONS } from "assets";
-import { LOG, getMessageProps } from "utils/helpers";
+import { getMessageProps } from "utils/helpers";
 import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
 import { ThemeType } from "utils/theme/default";
