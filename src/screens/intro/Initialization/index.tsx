@@ -12,7 +12,8 @@ import { IScreenOption } from "utils/types";
 export const Initialization: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as ThemeType;
-  const { dispatch, isReferralEnabled, setChatScreen } = useChatMessenger();
+  const { dispatch, isReferralEnabled, setChatScreen, currentLanguage } =
+    useChatMessenger();
 
   const onSelectOption = useCallback(
     ({ message, type, screen, i18n, i18nProps }: IScreenOption) => {
@@ -27,34 +28,59 @@ export const Initialization: FC = () => {
     []
   );
 
+  const isFr = currentLanguage === "fr";
+  const question = t(
+    `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
+  );
+
   return (
-    <S.Wrapper>
-      <S.IntroImage src={theme?.imageUrl} size="34px" alt="" isRounded />
+    <S.Wrapper isFrench={isFr}>
+      {isFr ? (
+        <S.InfoContent>
+          <S.Header>
+            <S.IntroImage isFrench src={theme?.imageUrl} size="34px" alt="" />
+            <S.Question isFrench={isFr}>{question}</S.Question>
+          </S.Header>
+          <S.Options isFrench>
+            {map(
+              isReferralEnabled ? optionWithReferral : options,
+              (opt, index) => (
+                <S.Message
+                  key={`chat-option-${index}`}
+                  isFrench={isFr}
+                  onClick={() => onSelectOption(opt)}
+                >
+                  <S.Image src={opt.icon} size={opt.size} alt={""} />
+                  <S.Text>{t(opt.i18n)}</S.Text>
+                </S.Message>
+              )
+            )}
+          </S.Options>
+        </S.InfoContent>
+      ) : (
+        <>
+          <S.IntroImage src={theme?.imageUrl} size="34px" alt="" />
+          <S.InfoContent>
+            <S.Question isFrench={isFr}>{question}</S.Question>
 
-      <S.InfoContent>
-        <S.Question>
-          {t(
-            `messages:${
-              isReferralEnabled ? "refInitialMessage" : "initialMessage"
-            }`
-          )}
-        </S.Question>
-
-        <S.Options>
-          {map(
-            isReferralEnabled ? optionWithReferral : options,
-            (opt, index) => (
-              <S.Message
-                key={`chat-option-${index}`}
-                onClick={() => onSelectOption(opt)}
-              >
-                <S.Image src={opt.icon} size={opt.size} alt={""} />
-                <S.Text>{opt.message}</S.Text>
-              </S.Message>
-            )
-          )}
-        </S.Options>
-      </S.InfoContent>
+            <S.Options isFrench={false}>
+              {map(
+                isReferralEnabled ? optionWithReferral : options,
+                (opt, index) => (
+                  <S.Message
+                    key={`chat-option-${index}`}
+                    isFrench={isFr}
+                    onClick={() => onSelectOption(opt)}
+                  >
+                    <S.Image src={opt.icon} size={opt.size} alt={""} />
+                    <S.Text>{t(opt.i18n)}</S.Text>
+                  </S.Message>
+                )
+              )}
+            </S.Options>
+          </S.InfoContent>
+        </>
+      )}
     </S.Wrapper>
   );
 };
