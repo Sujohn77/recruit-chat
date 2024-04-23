@@ -325,7 +325,6 @@ export interface IPopMessage {
 
 export interface IScreenOption {
   icon?: string;
-  message: string;
   type: CHAT_ACTIONS;
   size: string;
   screen: ChatScreens;
