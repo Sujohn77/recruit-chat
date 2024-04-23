@@ -376,14 +376,6 @@ const ChatProvider = ({
     const storedCurrentLanguage = localStorage.getItem(
       hostname + "currentLanguage"
     );
-    LOG(defaultLanguage, "defaultLanguage", undefined, undefined, true);
-    LOG(
-      storedCurrentLanguage,
-      "storedCurrentLanguage",
-      undefined,
-      undefined,
-      true
-    );
 
     if (storedCurrentLanguage) {
       setCurrentLanguage(storedCurrentLanguage);
