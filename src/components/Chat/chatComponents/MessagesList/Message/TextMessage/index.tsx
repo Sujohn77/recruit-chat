@@ -126,6 +126,8 @@ export const TextMessage: FC<ITextMessageProps> = ({
                 <LocationItem key={`${l}-${i}`}>{l}</LocationItem>
               ))}
             </LocationList>
+          ) : message.isOwn ? (
+            messageText
           ) : (
             <Linkify
               options={{
