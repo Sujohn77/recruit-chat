@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import moment from "moment";
 import map from "lodash/map";
+import uniq from "lodash/uniq";
 import find from "lodash/find";
 import filter from "lodash/filter";
 import sortBy from "lodash/sortBy";
@@ -86,7 +87,6 @@ import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { getQuestions } from "./data";
-import uniq from "lodash/uniq";
 import { COLORS } from "utils/colors";
 
 interface IChatProviderProps {
@@ -103,6 +103,7 @@ interface IChatProviderProps {
   isMultiLanguage: boolean;
   chatQueueId: number | null;
   alertTemplateId: undefined | number;
+  defaultLanguage: string;
 }
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
@@ -233,6 +234,7 @@ const ChatProvider = ({
   isMultiLanguage,
   chatQueueId,
   alertTemplateId,
+  defaultLanguage,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -345,7 +347,7 @@ const ChatProvider = ({
     number | undefined
   >(undefined);
   const [isChatInputAvailable, setIsChatInputAvailable] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState("en");
+  const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
 
   // Candidate info
   const [emailAddress, setEmailAddress] = useState("");
@@ -369,6 +371,30 @@ const ChatProvider = ({
     ReferralSteps.EmployeeId
   );
   const [queueId, setQueueId] = useState<null | number>(null);
+
+  useEffect(() => {
+    const storedCurrentLanguage = localStorage.getItem(
+      hostname + "currentLanguage"
+    );
+    LOG(defaultLanguage, "defaultLanguage", undefined, undefined, true);
+    LOG(
+      storedCurrentLanguage,
+      "storedCurrentLanguage",
+      undefined,
+      undefined,
+      true
+    );
+
+    if (storedCurrentLanguage) {
+      setCurrentLanguage(storedCurrentLanguage);
+      i18n.changeLanguage(storedCurrentLanguage);
+      localStorage.setItem(hostname + "currentLanguage", storedCurrentLanguage);
+    } else if (defaultLanguage) {
+      localStorage.setItem(hostname + "currentLanguage", defaultLanguage);
+      i18n.changeLanguage(defaultLanguage);
+      setCurrentLanguage(defaultLanguage);
+    }
+  }, [defaultLanguage]);
 
   useEffect(() => {
     const onPersistViewJob = ({ key, newValue }: StorageEvent) => {
@@ -795,8 +821,10 @@ const ChatProvider = ({
         }
         case CHAT_ACTIONS.CHANGE_LANG: {
           if (payload?.item) {
-            i18n.changeLanguage(payload.item.toLowerCase());
-            setCurrentLanguage(payload.item.toLowerCase());
+            const lang = payload.item.toLowerCase();
+            i18n.changeLanguage(lang);
+            setCurrentLanguage(lang);
+            localStorage.setItem(hostname + "currentLanguage", lang);
           }
           break;
         }

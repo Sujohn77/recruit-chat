@@ -29,6 +29,7 @@ interface IParentMessage {
     languages?: string;
     queueId?: string;
     alertTemplateId?: string;
+    defaultLanguage?: string;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -46,6 +47,7 @@ export const ChatBotRoot: FC = () => {
   const [clientApiToken, setClientApiToken] = useState("");
   const [jobSourceId, setJobSourceId] = useState("");
   const [hostname, setHostname] = useState("");
+  const [defaultLanguage, setDefaultLanguage] = useState("en");
   const [languages, setLanguages] = useState<string[]>(["en"]);
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
@@ -69,6 +71,7 @@ export const ChatBotRoot: FC = () => {
           languages: apiLanguages,
           queueId,
           alertTemplateId,
+          defaultLanguage,
         } = props;
 
         alertTemplateId && setAlertTemplateId(+alertTemplateId);
@@ -79,6 +82,7 @@ export const ChatBotRoot: FC = () => {
         clientApiToken && setClientApiToken(clientApiToken);
         jobSourceId && setJobSourceId(jobSourceId);
         seTisMultiLanguage(!!multiLanguage);
+        defaultLanguage && setDefaultLanguage(defaultLanguage);
         const languages = locationsStrToArray(apiLanguages);
         languages?.length &&
           isStringArray(languages) &&
@@ -143,6 +147,7 @@ export const ChatBotRoot: FC = () => {
           languages={languages}
           isMultiLanguage={isMultiLanguage}
           alertTemplateId={alertTemplateId}
+          defaultLanguage={defaultLanguage}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>
