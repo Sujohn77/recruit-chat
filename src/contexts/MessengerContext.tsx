@@ -213,7 +213,6 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   chatQueueId: null,
   alertTemplateId: undefined,
   setIsCandidateWithEmail() {},
-  isLiveChatWithMessages: false,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -331,7 +330,6 @@ const ChatProvider = ({
   const [_firebaseQueueMessages, _setFirebaseQueueMessages] = useState<
     IMessage[]
   >([]);
-  const [isLiveChatWithMessages, setIsLiveChatWithMessages] = useState(false);
 
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
@@ -509,23 +507,12 @@ const ChatProvider = ({
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...sortBy(
-            parseFirebaseMessages(_firebaseQueueMessages, candidateId),
-            (message: ILocalMessage) => {
-              if (typeof message.dateCreated === "string") {
-                return -moment(message.dateCreated).unix();
-              } else if (message?.dateCreated?.seconds) {
-                return -message.dateCreated.seconds;
-              }
-            }
-          ),
+          ...parseFirebaseMessages(_firebaseQueueMessages, candidateId),
           ...prevMessages,
         ],
         "_id"
       )
     );
-
-    setIsLiveChatWithMessages(_firebaseMessages.length > 1);
   }, [_firebaseQueueMessages]);
 
   useEffect(() => {
@@ -1561,7 +1548,6 @@ const ChatProvider = ({
     chatQueueId,
     alertTemplateId,
     setIsCandidateWithEmail,
-    isLiveChatWithMessages,
   };
 
   return (

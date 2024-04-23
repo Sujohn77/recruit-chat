@@ -63,7 +63,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     currentMsgType,
     setIsChatLoading,
     setCurrentMsgType,
-    isLiveChatWithMessages,
+    messages,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -72,7 +72,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     const withSendTranscript =
       currentMsgType === CHAT_ACTIONS.LIVE_CHAT &&
       isLiveChat &&
-      isLiveChatWithMessages;
+      messages[0].dateCreated?.seconds;
 
     let defaultItems =
       withSendTranscript || isCandidateWithEmail
@@ -94,7 +94,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     currentLanguage,
     isLiveChat,
     currentMsgType,
-    isLiveChatWithMessages,
+    messages,
   ]);
 
   useEffect(() => {

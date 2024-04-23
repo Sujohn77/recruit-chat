@@ -820,7 +820,6 @@ export const ChatInput: FC<IChatInputProps> = ({
               setIsCandidateAnonym(false);
             }
             if (res?.success) {
-              setIsCandidateWithEmail(true);
               setMessages((prev) => [
                 createTextMess({
                   text: `Thank you ${firstName}. Please wait while we connect you...`,
