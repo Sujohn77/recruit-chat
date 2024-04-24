@@ -535,7 +535,7 @@ const ChatProvider = ({
         (messagesSnapshots: ISnapshot<IMessage>[]) => {
           const processedSnapshots = sortBy(
             getProcessedSnapshots<IMessageID, IMessage>(
-              _firebaseQueueMessages,
+              [],
               messagesSnapshots,
               "chatItemId",
               [],
