@@ -116,18 +116,18 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
 };
 
 export const getActionTypeByOption = (
-  option: ButtonsOptions | null | string,
+  excludeItem: ButtonsOptions | null | string,
   t: TFunction
 ) => {
-  switch (option?.toLowerCase()) {
+  switch (excludeItem?.toLowerCase()) {
     // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
     //   return CHAT_ACTIONS.HIRING_PROCESS;
     // }
-    case t("messages:uploadCV"):
+    case t("messages:uploadCV").toLowerCase():
     case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
     }
-    case t("messages:answerQuestions"):
+    case t("messages:answerQuestions").toLowerCase():
     case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
@@ -136,7 +136,7 @@ export const getActionTypeByOption = (
     }
     case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
-    case t("buttons:make_referral"):
+    case t("buttons:make_referral").toLowerCase():
     case ButtonsOptions.MAKE_REFERRAL.toLowerCase():
       return CHAT_ACTIONS.MAKE_REFERRAL;
 
