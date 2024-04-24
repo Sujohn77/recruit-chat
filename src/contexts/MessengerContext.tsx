@@ -1234,25 +1234,32 @@ const ChatProvider = ({
   // for sending answer (after "Apply job")
   const sendNewMessage = async ({
     message,
-    i18n,
-    i18nProps,
     optionId,
     chatItemId,
+    i18n,
+    i18nProps,
     isLiveChat = false,
   }: ISendNewMessage) => {
     if (isLiveChat && candidateId && queueId) {
-      const payload: ISendAnswerRequest = {
-        candidateId,
-        message,
-        queueId,
-      };
-      const answerResponse: ApiResponse<IFollowingResponse> =
-        await apiInstance.sendAnswer(payload);
+      setIsChatLoading(true);
+      try {
+        const payload: ISendAnswerRequest = {
+          candidateId,
+          message,
+          queueId,
+        };
+        const answerResponse: ApiResponse<IFollowingResponse> =
+          await apiInstance.sendAnswer(payload);
 
-      if (answerResponse.data?.success) {
-        return Promise.resolve(answerResponse.data);
-      } else {
-        return Promise.reject(answerResponse);
+        if (answerResponse.data?.success) {
+          return Promise.resolve(answerResponse.data);
+        } else {
+          return Promise.reject(answerResponse);
+        }
+      } catch (error) {
+        return Promise.reject(error?.message);
+      } finally {
+        setIsChatLoading(false);
       }
     } else if (flowId && subscriberWorkflowId && candidateId) {
       try {
