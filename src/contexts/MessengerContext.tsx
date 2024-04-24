@@ -1288,7 +1288,7 @@ const ChatProvider = ({
     param?: string,
     i18nPhrase = ""
   ) => {
-    const type = getActionTypeByOption(excludeItem);
+    const type = getActionTypeByOption(excludeItem, t);
     const updatedMessages = replaceItemsWithType({
       type: MessageType.BUTTON,
       messages,

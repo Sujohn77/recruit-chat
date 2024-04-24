@@ -13,6 +13,7 @@ import remove from "lodash/remove";
 import find from "lodash/find";
 import map from "lodash/map";
 import libPhoneNumber from "google-libphonenumber";
+import { TFunction } from "react-i18next";
 
 import {
   MessageType,
@@ -114,14 +115,19 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   }
 };
 
-export const getActionTypeByOption = (option: ButtonsOptions | null) => {
+export const getActionTypeByOption = (
+  option: ButtonsOptions | null | string,
+  t: TFunction
+) => {
   switch (option?.toLowerCase()) {
     // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
     //   return CHAT_ACTIONS.HIRING_PROCESS;
     // }
+    case t("messages:uploadCV"):
     case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
     }
+    case t("messages:answerQuestions"):
     case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
       return CHAT_ACTIONS.ANSWER_QUESTIONS;
     }
@@ -130,8 +136,10 @@ export const getActionTypeByOption = (option: ButtonsOptions | null) => {
     }
     case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
       return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
+    case t("buttons:make_referral"):
     case ButtonsOptions.MAKE_REFERRAL.toLowerCase():
       return CHAT_ACTIONS.MAKE_REFERRAL;
+
     default: {
       return null;
     }
@@ -405,7 +413,7 @@ export const replaceItemsWithType = ({
 
 export const getNextActionType = (
   chatMsgType: CHAT_ACTIONS | null,
-  excludeItem?: ButtonsOptions | null
+  excludeItem?: ButtonsOptions | null | string
 ): CHAT_ACTIONS | null => {
   if (excludeItem === ButtonsOptions.JOBS_IN_MY_AREA) {
     return CHAT_ACTIONS.SEND_REFERRAL_LOCATIONS;
