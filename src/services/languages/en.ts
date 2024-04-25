@@ -23,7 +23,7 @@ export const en = {
     alert_category: "Reply to choose category...",
     startTyping: "Start typing to select a job title...",
     selectOption: "Please select one of the options",
-    enter_employee_id: "enter your employee ID",
+    enter_employee_id: "enter your Employee ID",
   },
   labels: {
     required: "Required",
@@ -107,7 +107,7 @@ export const en = {
     botThanks:
       "Thank you for expressing your interest in this job, please check your email for updates.",
     employeeId: `To start the process we need to validate your {{companyName}} employee details. \n 
-    What is your Employee ID ?`,
+    What is your Employee ID?`,
     try_again: "Try again",
     logout: "Do you really want to finish the session?",
     processed_your_resume:

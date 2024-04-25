@@ -587,6 +587,8 @@ export const ChatInput: FC<IChatInputProps> = ({
               localId: generateLocalId(),
               _id: generateLocalId(),
               content: {
+                i18nProps: null,
+                i18n: "",
                 subType: MessageType.TEXT,
                 text: `${getReferralResponseMess(
                   previouslyReferredState,
@@ -605,18 +607,6 @@ export const ChatInput: FC<IChatInputProps> = ({
                   }
                 `,
                 // TODO: test
-                i18n: getReferralResponseMess(
-                  previouslyReferredState,
-                  firstName,
-                  lastName,
-                  referralCompanyName,
-                  true
-                ),
-                i18nProps: {
-                  refFirstName: firstName,
-                  refLastName,
-                  refCompanyName: referralCompanyName,
-                },
               },
               optionList: {
                 type: MessageOptionTypes.Referral,
