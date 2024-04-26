@@ -43,6 +43,7 @@ export const en = {
     last_name: "Last Name",
     live_chat: "Live Chat",
     continue: "Continue",
+    log_out: "Log out",
   },
   languages: {
     en: "English",

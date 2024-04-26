@@ -44,6 +44,7 @@ export const fr = {
     last_name: "Nom et prénom",
     live_chat: "Live Chat",
     continue: "Continuer",
+    log_out: "Déconnexion",
   },
   languages: {
     en: "Anglais",

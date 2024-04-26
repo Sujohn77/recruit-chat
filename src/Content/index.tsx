@@ -51,21 +51,6 @@ export const Content: FC = () => {
   }, [chatScreen]);
 
   useEffect(() => {
-    // REFRESH CHATBOT
-    let timeout: NodeJS.Timeout | undefined;
-
-    if (!isNull(chatScreen)) {
-      timeout = setTimeout(() => {
-        sessionStorage.clear();
-        localStorage.clear();
-        postMessToParent(EventIds.RefreshChatbot);
-      }, REFRESH_APP_TIMEOUT);
-    }
-
-    return () => timeout && clearTimeout(timeout);
-  }, [chatScreen, messages.length]);
-
-  useEffect(() => {
     // REFRESH TOKEN
     let timeout: NodeJS.Timeout | undefined;
     let interval: NodeJS.Timer | undefined;
