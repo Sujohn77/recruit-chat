@@ -1,5 +1,5 @@
 import i18n from "services/localization";
-import { LOG, getParsedMessages } from "./helpers";
+import { getParsedMessages } from "./helpers";
 import {
   CHAT_ACTIONS,
   HTTPStatusCodes,
@@ -7,7 +7,6 @@ import {
   ILocalMessage,
   MessageType,
 } from "./types";
-import { COLORS } from "./colors";
 import { getQuestions } from "contexts/data";
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
@@ -16,6 +15,7 @@ export const currencies = ["$", "€"];
 export const resumeElementId = "chatbot_resume";
 export const autolinkerClassName = "link-in-message";
 export const REFRESH_APP_TIMEOUT = 20 * 60 * 1000;
+export const SESSION_WARNING_TIMEOUT = 15 * 60 * 1000;
 export const _TIMEOUT = 5 * 60 * 1000; // for testing
 export const REFRESH_TOKEN_TIMEOUT = 29 * 60 * 1000;
 export const APP_VERSION = "1.0.3";
