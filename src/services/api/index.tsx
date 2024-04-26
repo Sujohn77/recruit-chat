@@ -234,36 +234,6 @@ class Api {
   };
 }
 
-class AuthAPI extends Api {
-  setAuthHeader = (token: string) => {
-    return this.client.setHeader("Authorization", `Bearer ${token}`);
-  };
-
-  verifyByEmail = (data: IVerifyEmailRequest) => {
-    return this.client.post<Partial<IVerifyEmailResponse>>(
-      "api/candidate/verifybyemail",
-      data
-    );
-  };
-
-  verify = (chatBotData: string) => {
-    return this.client.get<IVerifyChatBotResponse>(
-      "api/chatbot/verification?chatBotData=" + chatBotData
-    );
-  };
-
-  loginUserCodeCheck = (data: { grantType: string }) => {
-    return this.client.post<any>("api/auth/token", data.grantType, {
-      headers: FORM_URLENCODED,
-    });
-  };
-
-  loginUser = (data: any) => {
-    return this.client.post<any>("api/auth/login", data);
-  };
-}
-
 export const apiInstance = new Api();
-export const authInstance = new AuthAPI();
 
 export default Api;
