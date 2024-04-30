@@ -9,8 +9,8 @@ import { Intro } from "screens";
 import {
   ChatScreens,
   EventIds,
-  REFRESH_APP_TIMEOUT,
   REFRESH_TOKEN_TIMEOUT,
+  isMobile,
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
@@ -18,12 +18,12 @@ import { IntroImage } from "screens/Intro/styles";
 import { ThemeType } from "utils/theme/default";
 
 export const Content: FC = () => {
-  const { setIsApplyJobFlow, messages, chatScreen } = useChatMessenger();
+  const { setIsApplyJobFlow, chatScreen } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
   const theme = useTheme() as ThemeType;
 
   const [showLoader, setShowLoader] = useState(true);
-  const [showIcon, setShowIcon] = useState(false);
+  const [showIcon, setShowIcon] = useState(isMobile);
 
   const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
 
@@ -38,6 +38,7 @@ export const Content: FC = () => {
         JSON.stringify({
           event_id: EventIds.IFrameHeight,
           isSelectedOption,
+          isMobile,
         })
       ),
       "*"

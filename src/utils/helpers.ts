@@ -786,11 +786,12 @@ export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
   return processedSnapshots;
 };
 
-export const postMessToParent = (eventId: EventIds) => {
+export const postMessToParent = (eventId: EventIds, payload?: object) => {
   window.parent.postMessage(
     JSON.parse(
       JSON.stringify({
         event_id: eventId,
+        payload,
       })
     ),
     "*"

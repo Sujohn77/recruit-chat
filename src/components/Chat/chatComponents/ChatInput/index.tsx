@@ -974,7 +974,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   return (
-    <S.MessagesInput marginTop={marginTop} isFrLang={currentLanguage === "fr"}>
+    <S.MessagesInput marginTop={marginTop} $isFrLang={currentLanguage === "fr"}>
       <BurgerMenu
         isOpen={isOpenBurgerMenu}
         setIsOpen={setIsOpenBurgerMenu}

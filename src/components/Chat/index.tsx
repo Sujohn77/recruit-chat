@@ -12,13 +12,14 @@ import {
 } from "./ChatComponents";
 import { Login } from "./ChatComponents/Login";
 import { Logout } from "./ChatComponents/Logout";
+import { postMessToParent } from "utils/helpers";
 import { CHAT_ACTIONS } from "utils/types";
 import {
   EventIds,
   REFRESH_APP_TIMEOUT,
   SESSION_WARNING_TIMEOUT,
+  isMobile,
 } from "utils/constants";
-import { postMessToParent } from "utils/helpers";
 
 interface IChatProps {
   isShowChat: boolean;
@@ -75,7 +76,7 @@ export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
   }, []);
 
   return (
-    <S.Wrapper isOpened={isShowChat}>
+    <S.Wrapper isOpened={isShowChat} isMobile={isMobile}>
       <ChatHeader
         setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}

@@ -12,7 +12,7 @@ import {
   locationsStrToArray,
   postMessToParent,
 } from "utils/helpers";
-import { EventIds, SessionStorage } from "utils/constants";
+import { EventIds, SessionStorage, isMobile } from "utils/constants";
 import { COLORS } from "utils/colors";
 
 interface IParentMessage {
@@ -52,6 +52,10 @@ export const ChatBotRoot: FC = () => {
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
+
+  useEffect(() => {
+    postMessToParent(EventIds.IsMobile, { isMobile: isMobile });
+  }, []);
 
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
@@ -136,7 +140,7 @@ export const ChatBotRoot: FC = () => {
   }, [chatBotID]);
 
   return (
-    <Container id="chat-bot">
+    <Container id="chat-bot" isMobile={isMobile}>
       {chatBotID && (
         <ChatProvider
           chatQueueId={chatQueueId}

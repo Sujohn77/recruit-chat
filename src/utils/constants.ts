@@ -1,3 +1,4 @@
+import MobileDetect from "mobile-detect";
 import i18n from "services/localization";
 import { getParsedMessages } from "./helpers";
 import {
@@ -8,6 +9,8 @@ import {
   MessageType,
 } from "./types";
 import { getQuestions } from "contexts/data";
+
+export const isMobile = !!new MobileDetect(navigator.userAgent).mobile();
 
 export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
 export const isDevMode = process.env.NODE_ENV === "development";
@@ -429,6 +432,7 @@ export enum EventIds {
   IFrameHeight = "iframe_height",
   GetChatBotData = "get_chatbot_data",
   HideSpinner = "hide_spinner",
+  IsMobile = "is_mobile",
 }
 
 export enum ReferralResponse {

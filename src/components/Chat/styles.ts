@@ -5,6 +5,7 @@ const duration = "0.35s";
 
 interface IWrapperProps {
   isOpened: boolean;
+  isMobile: boolean;
 }
 
 export const Wrapper = styled.div<IWrapperProps>`
@@ -36,8 +37,9 @@ export const Wrapper = styled.div<IWrapperProps>`
     }
 
     100% {
-      height: 600px;
-      width: 370px;
+      height: ${({ isMobile }) =>
+        isMobile ? window.innerHeight + "px" : "600px"};
+      width: ${({ isMobile }) => (isMobile ? "100%" : "370px")};
       transform: translate(0, 0);
       margin-top: 30px;
     }
@@ -45,8 +47,9 @@ export const Wrapper = styled.div<IWrapperProps>`
 
   @keyframes close {
     0% {
-      height: 600px;
-      width: 370px;
+      height: ${({ isMobile }) =>
+        isMobile ? window.innerHeight + "px" : "600px"};
+      width: ${({ isMobile }) => (isMobile ? "100%" : "370px")};
       transform: translate(0, 0);
       margin-top: 30px;
     }

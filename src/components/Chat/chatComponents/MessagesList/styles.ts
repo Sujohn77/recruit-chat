@@ -4,6 +4,7 @@ import { COLORS } from "utils/colors";
 
 interface IMessageListContainerProps {
   resultsHeight: number;
+  isMobile: boolean;
 }
 
 export const infiniteScrollStyle: CSSProperties = {
@@ -20,7 +21,8 @@ export const MessagesArea = styled.div`
 `;
 
 export const MessageListContainer = styled.div<IMessageListContainerProps>`
-  height: ${({ resultsHeight }) => 480 - resultsHeight}px;
+  height: ${({ resultsHeight, isMobile }) =>
+    (isMobile ? window.innerHeight - 120 : 480) - resultsHeight}px;
   box-sizing: border-box;
   overflow-y: auto;
   display: flex;

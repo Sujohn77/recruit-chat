@@ -8,6 +8,7 @@ import { Message } from "./Message";
 import { infiniteScrollStyle } from "./styles";
 import { InfiniteScrollView } from "components";
 import { MessageType } from "utils/types";
+import { isMobile } from "utils/constants";
 import { Loader } from "components/Layout/Loader";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
@@ -54,6 +55,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
         resultsHeight={resultsHeight}
         id={MESSAGE_SCROLL_LIST_DIV_ID}
         ref={messagesRef}
+        isMobile={isMobile}
       >
         <InfiniteScrollView
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}

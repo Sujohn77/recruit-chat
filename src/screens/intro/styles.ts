@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+interface IWrapperProps {
+  isMobile: boolean;
+  isClosed: boolean;
+}
+
 const borderWidth = "1.5px";
 const animationDuration = "0.25s";
 
@@ -10,13 +15,13 @@ export const Flex = styled.div`
   width: 100%;
 `;
 
-export const Wrapper = styled.div`
-  width: 370px;
+export const Wrapper = styled.div<IWrapperProps>`
+  width: ${({ isMobile }) => (isMobile ? "100%" : "370px")};
   position: absolute;
   bottom: 0;
   right: 0;
 
-  animation: ${({ isClosed }: { isClosed: boolean }) =>
+  animation: ${({ isClosed }) =>
     isClosed && `fadeOut ${animationDuration} ease-in-out`};
   overflow: hidden;
   animation-fill-mode: forwards;

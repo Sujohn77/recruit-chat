@@ -20,6 +20,7 @@
     REFRESH_CHATBOT: "refresh_chatbot",
     IFRAME_HEIGHT: "iframe_height",
     GET_CHATBOT_DATA: "get_chatbot_data",
+    IS_MOBILE: "is_mobile",
   };
   // ---------------------------------------------------------------------- //
   let chatBotToken;
@@ -28,6 +29,7 @@
   let chatBotCompanyName;
   let chatBotReferralListDomain;
   let chatBotClientApiToken;
+  let chatBotIsMobile = false;
 
   function appendChatBot(
     style,
@@ -176,8 +178,11 @@
           break;
         case eventIds.IFRAME_HEIGHT:
           if (chatbotIframe && "isSelectedOption" in event.data) {
+            const isMobView = !!event.data.isMobile;
             chatbotIframe.style.height = event.data.isSelectedOption
-              ? "601px"
+              ? chatBotIsMobile || isMobView
+                ? window.innerHeight + "px"
+                : "601px"
               : "135px";
           }
           break;
@@ -196,6 +201,18 @@
             },
             chatbotSrc
           );
+          break;
+
+        case eventIds.IS_MOBILE:
+          const isMobile = event.data.payload.isMobile;
+          if (isMobile) {
+            chatBotIsMobile = true;
+            chatbotIframe.style.width = "100%";
+            chatbotIframe.style.right = "0px";
+            chatbotIframe.style.bottom = "0px";
+          } else {
+            chatBotIsMobile = false;
+          }
           break;
 
         default:
@@ -224,9 +241,7 @@
     } else {
       console.log(
         `%c   ___   `,
-        `color: ${
-          description?.includes("ERROR") ? COLORS.TORCH_RED : color
-        }; font-size: 14px; background-color: ${background};`,
+        `color: ${color}; font-size: 14px; background-color: ${background};`,
         logObj
       );
     }

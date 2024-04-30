@@ -7,7 +7,7 @@ interface IPlaneIconProps {
 }
 interface IMessageWrapperProps {
   marginTop: string;
-  isFrLang: boolean;
+  $isFrLang: boolean;
 }
 
 export const searchItemHeight = 31;
@@ -22,7 +22,7 @@ export const MessagesInput = styled(Box)<IMessageWrapperProps>`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 10px ${({ isFrLang }) => (isFrLang ? 0 : 16)}px;
+  padding: 10px ${({ $isFrLang: isFrLang }) => (isFrLang ? 0 : 16)}px;
   box-sizing: border-box;
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;

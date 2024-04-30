@@ -1,4 +1,3 @@
-// <script>
 // ----------------------------- CONSTANTS ----------------------------- //
 // const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // JJ guid
 // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
@@ -16,6 +15,7 @@ const eventIds = {
   REFRESH_CHATBOT: "refresh_chatbot",
   IFRAME_HEIGHT: "iframe_height",
   GET_CHATBOT_DATA: "get_chatbot_data",
+  IS_MOBILE: "is_mobile",
 };
 // ---------------------------------------------------------------------- //
 let chatBotToken;
@@ -24,6 +24,7 @@ let chatBotProps;
 let chatBotCompanyName;
 let chatBotReferralListDomain;
 let chatBotClientApiToken;
+let chatBotIsMobile = false;
 
 function appendChatBot(
   style,
@@ -134,9 +135,9 @@ async function getChatBotStyle(token) {
         data.style,
         token,
         data.props,
-        data.props.companyName,
-        data.props.referralListDomain,
-        data.props.clientApiToken
+        data.props?.companyName,
+        data.props?.referralListDomain,
+        data.props?.clientApiToken
       );
     }
   } catch (error) {
@@ -172,8 +173,11 @@ function onMessage(event) {
         break;
       case eventIds.IFRAME_HEIGHT:
         if (chatbotIframe && "isSelectedOption" in event.data) {
+          const isMobView = !!event.data.isMobile;
           chatbotIframe.style.height = event.data.isSelectedOption
-            ? "601px"
+            ? chatBotIsMobile || isMobView
+              ? window.innerHeight + "px"
+              : "601px"
             : "135px";
         }
         break;
@@ -192,6 +196,18 @@ function onMessage(event) {
           },
           chatbotSrc
         );
+        break;
+
+      case eventIds.IS_MOBILE:
+        const isMobile = event.data.payload.isMobile;
+        if (isMobile) {
+          chatBotIsMobile = true;
+          chatbotIframe.style.width = "100%";
+          chatbotIframe.style.right = "0px";
+          chatbotIframe.style.bottom = "0px";
+        } else {
+          chatBotIsMobile = false;
+        }
         break;
 
       default:
@@ -215,4 +231,3 @@ if (window.addEventListener) {
 } else {
   window.attachEvent("onmessage", onMessage); // IE8
 }
-// </script>
