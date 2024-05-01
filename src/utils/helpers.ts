@@ -348,6 +348,9 @@ export const pushMessage = ({
   messages,
   setMessages,
   isReferralEnabled,
+  inlineDisclaimer,
+  PPLinkUrl,
+  PPLinkInnerText,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
 
@@ -374,7 +377,24 @@ export const pushMessage = ({
   });
 
   if (message?.content.subType !== MessageType.TEXT || !!text) {
-    setMessages([message, ...updatedMessages]);
+    if (inlineDisclaimer?.enabled) {
+      const disclaimerMess: ILocalMessage = {
+        _id: generateLocalId(),
+        localId: generateLocalId(),
+        content: {
+          text: inlineDisclaimer.content.replace(
+            "{privacyPolicyLink}",
+            PPLinkUrl || PPLinkInnerText || ""
+          ),
+          subType: MessageType.TEXT,
+          i18n: null,
+          i18nProps: null,
+        },
+      };
+      setMessages([disclaimerMess, message, ...updatedMessages]);
+    } else {
+      setMessages([message, ...updatedMessages]);
+    }
   }
 
   return updatedMessages;

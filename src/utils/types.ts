@@ -219,6 +219,9 @@ export interface IPushMessage {
   messages: ILocalMessage[];
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
   isReferralEnabled: boolean;
+  inlineDisclaimer: IPrivacyPolicy | null;
+  PPLinkUrl: string | null;
+  PPLinkInnerText: string | null;
 }
 
 export interface IGetChatResponseProps {
@@ -330,4 +333,9 @@ export interface IScreenOption {
   screen: ChatScreens;
   i18n: string;
   i18nProps: Object | null;
+}
+
+export interface IPrivacyPolicy {
+  content: string;
+  enabled: boolean;
 }

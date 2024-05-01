@@ -73,6 +73,7 @@ import {
 } from "utils/helpers";
 import {
   IChatMessengerContext,
+  IPPKeys,
   IPortionMessages,
   ISendNewMessage,
   ISubmitMessageProps,
@@ -89,7 +90,7 @@ import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { getQuestions } from "./data";
 import { COLORS } from "utils/colors";
 
-interface IChatProviderProps {
+interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
   isReferralEnabled: boolean;
   companyName: string | null;
@@ -213,6 +214,12 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   chatQueueId: null,
   alertTemplateId: undefined,
   setIsCandidateWithEmail() {},
+  consentOptIn: null,
+  consentOptInContinueLinkInnerText: null,
+  footerPrivacyLink: null,
+  inlineDisclaimer: null,
+  PPLinkInnerText: null,
+  PPLinkUrl: null,
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -234,6 +241,13 @@ const ChatProvider = ({
   chatQueueId,
   alertTemplateId,
   defaultLanguage,
+
+  PPLinkInnerText,
+  PPLinkUrl,
+  consentOptIn,
+  consentOptInContinueLinkInnerText,
+  footerPrivacyLink,
+  inlineDisclaimer,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -844,13 +858,21 @@ const ChatProvider = ({
       if (!isErrors) {
         if (isPushMessageType(action.type)) {
           setStatus(Status.PENDING);
-          pushMessage({ action, messages, setMessages, isReferralEnabled });
+          pushMessage({
+            action,
+            messages,
+            setMessages,
+            isReferralEnabled,
+            inlineDisclaimer,
+            PPLinkUrl,
+            PPLinkInnerText,
+          });
         }
 
         setChatAction(action);
       }
     },
-    [user, isInitialized, messages, requisitions.length]
+    [user, isInitialized, messages, requisitions.length, inlineDisclaimer]
   );
 
   useEffect(() => {
@@ -1555,6 +1577,13 @@ const ChatProvider = ({
     chatQueueId,
     alertTemplateId,
     setIsCandidateWithEmail,
+
+    PPLinkInnerText,
+    PPLinkUrl,
+    consentOptIn,
+    consentOptInContinueLinkInnerText,
+    footerPrivacyLink,
+    inlineDisclaimer,
   };
 
   return (

@@ -5,7 +5,7 @@ import { FC, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { Content } from "content";
-import { IApiThemeResponse } from "utils/types";
+import { IApiThemeResponse, IPrivacyPolicy } from "utils/types";
 import {
   LOG,
   isStringArray,
@@ -30,6 +30,13 @@ interface IParentMessage {
     queueId?: string;
     alertTemplateId?: string;
     defaultLanguage?: string;
+    // privacy policy
+    consentOptIn?: string;
+    consentOptInContinueLinkInnerText?: string;
+    footerPrivacyLink?: string;
+    inlineDisclaimer?: string;
+    privacyPolicyLinkInnerText?: string;
+    privacyPolicyLinkUrl?: string;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -52,6 +59,19 @@ export const ChatBotRoot: FC = () => {
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
+
+  // PP
+  const [consentOptIn, setConsentOptIn] = useState<IPrivacyPolicy | null>(null);
+  const [inlineDisclaimer, setInlineDisclaimer] =
+    useState<IPrivacyPolicy | null>(null);
+  const [footerPrivacyLink, setFooterPrivacyLink] =
+    useState<IPrivacyPolicy | null>(null);
+  const [PPLinkInnerText, setPPLinkInnerText] = useState<string | null>(null);
+  const [PPLinkUrl, setPPLinkUrl] = useState<string | null>(null);
+  const [
+    consentOptInContinueLinkInnerText,
+    setConsentOptInContinueLinkInnerText,
+  ] = useState<string | null>(null);
 
   useEffect(() => {
     postMessToParent(EventIds.IsMobile, { isMobile: isMobile });
@@ -76,6 +96,13 @@ export const ChatBotRoot: FC = () => {
           queueId,
           alertTemplateId,
           defaultLanguage,
+
+          consentOptIn,
+          consentOptInContinueLinkInnerText,
+          footerPrivacyLink,
+          inlineDisclaimer,
+          privacyPolicyLinkInnerText,
+          privacyPolicyLinkUrl,
         } = props;
 
         alertTemplateId && setAlertTemplateId(+alertTemplateId);
@@ -95,6 +122,26 @@ export const ChatBotRoot: FC = () => {
         if (defaultLanguage && chatbotLanguages.includes(defaultLanguage)) {
           setDefaultLanguage(defaultLanguage);
         }
+
+        if (consentOptIn) {
+          setConsentOptIn(JSON.parse(consentOptIn));
+        }
+        if (footerPrivacyLink) {
+          setFooterPrivacyLink(JSON.parse(footerPrivacyLink));
+        }
+
+        if (inlineDisclaimer) {
+          setInlineDisclaimer(JSON.parse(inlineDisclaimer));
+        }
+
+        consentOptInContinueLinkInnerText &&
+          setConsentOptInContinueLinkInnerText(
+            consentOptInContinueLinkInnerText
+          );
+
+        privacyPolicyLinkInnerText &&
+          setPPLinkInnerText(privacyPolicyLinkInnerText);
+        privacyPolicyLinkUrl && setPPLinkUrl(privacyPolicyLinkUrl);
       }
 
       if (token) {
@@ -143,6 +190,12 @@ export const ChatBotRoot: FC = () => {
     <Container id="chat-bot" isMobile={isMobile}>
       {chatBotID && (
         <ChatProvider
+          PPLinkInnerText={PPLinkInnerText}
+          PPLinkUrl={PPLinkUrl}
+          inlineDisclaimer={inlineDisclaimer}
+          consentOptInContinueLinkInnerText={consentOptInContinueLinkInnerText}
+          footerPrivacyLink={footerPrivacyLink}
+          consentOptIn={consentOptIn}
           chatQueueId={chatQueueId}
           chatBotId={chatBotID}
           chatBotToken={chatBotToken}

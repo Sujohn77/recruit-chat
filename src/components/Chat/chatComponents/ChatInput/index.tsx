@@ -35,6 +35,7 @@ import {
   TryAgainTypes,
 } from "utils/constants";
 import {
+  LOG,
   createTextMess,
   generateLocalId,
   getInputType,
@@ -65,6 +66,7 @@ import {
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
+import { PrivacyPolicy } from "./PrivacyPolicy";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -131,6 +133,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     queueId,
     setIsCandidateWithEmail,
     setEmailAddress,
+    PPLinkUrl,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -974,47 +977,55 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   return (
-    <S.MessagesInput marginTop={marginTop} $isFrLang={currentLanguage === "fr"}>
-      <BurgerMenu
-        isOpen={isOpenBurgerMenu}
-        setIsOpen={setIsOpenBurgerMenu}
-        setIsShowResults={setIsShowResults}
-        setSelectedReferralJobId={setSelectedReferralJobId}
-        cleanInputValue={cleanInputState}
-      />
+    <S.Wrapper>
+      <S.MessagesInput
+        withBottomLink={!!PPLinkUrl}
+        marginTop={marginTop}
+        $isFrLang={currentLanguage === "fr"}
+      >
+        <BurgerMenu
+          isOpen={isOpenBurgerMenu}
+          setIsOpen={setIsOpenBurgerMenu}
+          setIsShowResults={setIsShowResults}
+          setSelectedReferralJobId={setSelectedReferralJobId}
+          cleanInputValue={cleanInputState}
+        />
 
-      {inputType === TextFieldTypes.MultiSelect ? (
-        <MultiSelectInput
-          {...inputProps}
-          values={inputValues}
-          onChange={onChangeAutocomplete}
-        />
-      ) : (
-        <Autocomplete
-          {...inputProps}
-          sendMessage={sendMessage}
-          phoneValue={phone}
-          setPhoneValue={setPhone}
-          onChange={onChangeCategory}
-          disabled={
-            (isChatLoading &&
-              currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
-              currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS) ||
-            disabled
-          }
-          errorText={refError}
-          isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
-        />
-      )}
+        {inputType === TextFieldTypes.MultiSelect ? (
+          <MultiSelectInput
+            {...inputProps}
+            values={inputValues}
+            onChange={onChangeAutocomplete}
+          />
+        ) : (
+          <Autocomplete
+            {...inputProps}
+            sendMessage={sendMessage}
+            phoneValue={phone}
+            setPhoneValue={setPhone}
+            onChange={onChangeCategory}
+            disabled={
+              (isChatLoading &&
+                currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
+                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS) ||
+              disabled
+            }
+            errorText={refError}
+            isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
+          />
+        )}
 
-      {isWriteAccess && !messages[0]?.optionList && (
-        <S.PlaneIcon
-          onClick={onSendMessageHandler}
-          disabled={isChatLoading}
-          src={ICONS.INPUT_PLANE}
-          width="16"
-        />
-      )}
-    </S.MessagesInput>
+        {isWriteAccess && !messages[0]?.optionList && (
+          <S.PlaneIcon
+            onClick={onSendMessageHandler}
+            disabled={isChatLoading}
+            src={ICONS.INPUT_PLANE}
+            width="16"
+          />
+        )}
+      </S.MessagesInput>
+
+      <PrivacyPolicy />
+    </S.Wrapper>
   );
 };

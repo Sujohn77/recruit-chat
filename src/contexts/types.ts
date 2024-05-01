@@ -14,6 +14,7 @@ import {
   IRequisition,
   IJobAlertData,
   ButtonsOptions,
+  IPrivacyPolicy,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
@@ -30,7 +31,7 @@ export enum ChatStoreKeys {
   user = "user",
 }
 
-export interface IChatMessengerContext {
+export interface IChatMessengerContext extends IPPKeys {
   messages: ILocalMessage[];
   requisitions: ISearchRequisition[];
   category: string | null;
@@ -253,4 +254,13 @@ export interface ISendNewMessage {
   chatItemId?: number;
   i18nProps?: Object | null;
   isLiveChat?: boolean;
+}
+
+export interface IPPKeys {
+  consentOptIn: IPrivacyPolicy | null;
+  inlineDisclaimer: IPrivacyPolicy | null;
+  footerPrivacyLink: IPrivacyPolicy | null;
+  PPLinkInnerText: string | null;
+  PPLinkUrl: string | null;
+  consentOptInContinueLinkInnerText: string | null;
 }
