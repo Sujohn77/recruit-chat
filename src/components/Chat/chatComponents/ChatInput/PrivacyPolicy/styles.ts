@@ -15,4 +15,5 @@ export const Wrapper = styled.div`
 
 export const Link = styled.a`
   font-size: 10px;
+  /* color: ${({ theme }) => theme.linkColor}; */
 `;
