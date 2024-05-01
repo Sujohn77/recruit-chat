@@ -161,6 +161,8 @@ export interface IChatMessengerContext extends IPPKeys {
   chatQueueId: number | null;
   alertTemplateId?: number;
   setIsCandidateWithEmail: (withEmail: boolean) => void;
+  chatConsent: boolean;
+  setChatConsent: (accepted: boolean) => void;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

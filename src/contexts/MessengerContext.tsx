@@ -220,6 +220,8 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   inlineDisclaimer: null,
   PPLinkInnerText: null,
   PPLinkUrl: null,
+  chatConsent: false,
+  setChatConsent() {},
 };
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -257,6 +259,7 @@ const ChatProvider = ({
 
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
+  const [chatConsent, setChatConsent] = useState(false);
 
   const [chatScreen, setChatScreen] = useState<ChatScreens | null>(null);
   const [category, setCategory] = useState<string | null>(null);
@@ -1577,6 +1580,8 @@ const ChatProvider = ({
     chatQueueId,
     alertTemplateId,
     setIsCandidateWithEmail,
+    chatConsent,
+    setChatConsent,
 
     PPLinkInnerText,
     PPLinkUrl,

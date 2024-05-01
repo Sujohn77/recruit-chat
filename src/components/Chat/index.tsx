@@ -6,14 +6,15 @@ import * as S from "./styles";
 import {
   ChatHeader,
   ChatInput,
+  Consent,
   MessagesList,
   ReferralViewJob,
   ViewJob,
+  Login,
+  Logout,
 } from "./ChatComponents";
-import { Login } from "./ChatComponents/Login";
-import { Logout } from "./ChatComponents/Logout";
-import { postMessToParent } from "utils/helpers";
 import { CHAT_ACTIONS } from "utils/types";
+import { postMessToParent } from "utils/helpers";
 import {
   EventIds,
   REFRESH_APP_TIMEOUT,
@@ -99,6 +100,8 @@ export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
       />
+
+      <Consent />
 
       {isReferralEnabled ? (
         <ReferralViewJob setJobId={setSelectedReferralJobId} />

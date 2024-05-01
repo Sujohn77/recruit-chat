@@ -6,3 +6,4 @@ export * from "./MessagesList";
 export * from "./PopUp";
 export * from "./ReferralViewJob";
 export * from "./ViewJob";
+export * from "./Consent";
