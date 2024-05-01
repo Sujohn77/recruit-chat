@@ -12,7 +12,7 @@ import { ICONS } from "assets";
 import { getMessageProps } from "utils/helpers";
 import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 import { ILocalMessage, MessageType } from "utils/types";
 import { useGetMessageText } from "utils/hooks";
 import { useTranslation } from "react-i18next";
@@ -30,7 +30,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
   const { referralCompanyName, offerJobs, currentLanguage } =
     useChatMessenger();
   const altMessText = useGetMessageText(message);
@@ -133,6 +133,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
               options={{
                 render: ({ attributes, content }) => (
                   <LinkWrapper
+                    style={{
+                      color: theme?.linkColor,
+                    }}
                     onClick={() => {
                       const newTab = window.open(
                         `${attributes.href}`,

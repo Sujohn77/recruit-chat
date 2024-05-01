@@ -7,14 +7,14 @@ import { IApiThemeResponse, IParsedTheme } from "utils/types";
 
 interface IThemeContextProviderProps {
   children: React.ReactNode;
-  value: IApiThemeResponse | null;
+  value: (IApiThemeResponse & IParsedTheme) | null;
 }
 
 const ThemeContextProvider = ({
   value,
   children,
 }: IThemeContextProviderProps) => {
-  const [apiTheme, setApiTheme] = useState<IParsedTheme>();
+  const [apiTheme, setApiTheme] = useState<IParsedTheme>({});
 
   useEffect(() => {
     !!value && setApiTheme(parseThemeResponse(value));

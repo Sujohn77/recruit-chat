@@ -51,6 +51,7 @@ export enum MessageType {
   UPLOADED_CV = "uploaded_cv",
   TRY_AGAIN = "try_again",
   REFERRAL = "referral",
+  INLINE_DISCLAIMER = "inline_disclaimer_text",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -220,8 +221,6 @@ export interface IPushMessage {
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
   isReferralEnabled: boolean;
   inlineDisclaimer: IPrivacyPolicy | null;
-  PPLinkUrl: string | null;
-  PPLinkInnerText: string | null;
 }
 
 export interface IGetChatResponseProps {
@@ -336,6 +335,8 @@ export interface IScreenOption {
 }
 
 export interface IPrivacyPolicy {
-  content: string;
   enabled: boolean;
+  content_en?: string;
+  content_fr?: string;
+  content_de?: string;
 }

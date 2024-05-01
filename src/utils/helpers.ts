@@ -349,8 +349,6 @@ export const pushMessage = ({
   setMessages,
   isReferralEnabled,
   inlineDisclaimer,
-  PPLinkUrl,
-  PPLinkInnerText,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
 
@@ -382,11 +380,8 @@ export const pushMessage = ({
         _id: generateLocalId(),
         localId: generateLocalId(),
         content: {
-          text: inlineDisclaimer.content.replace(
-            "{privacyPolicyLink}",
-            PPLinkUrl || PPLinkInnerText || ""
-          ),
-          subType: MessageType.TEXT,
+          text: "",
+          subType: MessageType.INLINE_DISCLAIMER,
           i18n: null,
           i18nProps: null,
         },

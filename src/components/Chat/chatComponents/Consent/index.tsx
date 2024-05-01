@@ -15,12 +15,15 @@ export const Consent: FC = () => {
     PPLinkInnerText,
     PPLinkUrl,
     currentMsgType,
+    currentLanguage,
   } = useChatMessenger();
 
+  // @ts-ignore
+  const text = consentOptIn?.[`content_${currentLanguage}`];
   const show =
+    text &&
     !chatConsent &&
     consentOptIn?.enabled &&
-    consentOptIn?.content &&
     (currentMsgType === CHAT_ACTIONS.FIND_JOB ||
       currentMsgType === CHAT_ACTIONS.ASK_QUESTION);
 
@@ -32,7 +35,7 @@ export const Consent: FC = () => {
   return show ? (
     <PopUp>
       <S.Wrapper>
-        <S.Text>{consentOptIn?.content}</S.Text>
+        <S.Text>{text}</S.Text>
 
         <S.ButtonsWrapper>
           <DarkButton onClick={openPPLink}>{PPLinkInnerText}</DarkButton>

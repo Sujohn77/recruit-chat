@@ -6,12 +6,12 @@ import map from "lodash/map";
 
 import * as S from "./styles";
 import { optionWithReferral, options } from "./data";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 import { IScreenOption } from "utils/types";
 
 export const Initialization: FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
   const { dispatch, isReferralEnabled, setChatScreen, currentLanguage } =
     useChatMessenger();
 

@@ -3,7 +3,7 @@ import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import { COLORS } from "utils/colors";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 
 interface ISuccessIconProps {
   color?: string;
@@ -12,7 +12,7 @@ interface ISuccessIconProps {
 export const SuccessAnimation: React.FC<ISuccessIconProps> = ({
   color = COLORS.CORNFLOWER_BLUE,
 }) => {
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
 
   return (
     <S.Container>

@@ -17,7 +17,6 @@ export const searchHeaderHeight = 40;
 export const inputOffset = "-30px";
 
 export const Wrapper = styled.div`
-  min-height: 50px;
   z-index: 1;
   position: absolute;
   bottom: 0;

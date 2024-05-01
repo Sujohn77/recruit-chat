@@ -7,7 +7,7 @@ import { useTheme } from "styled-components";
 import { ICONS } from "assets";
 import { DragAndDrop } from "components";
 import { ButtonsOptions } from "utils/types";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 import { resumeElementId } from "utils/constants";
 import { Close } from "screens/Intro/Initialization/styles";
 import * as S from "./styles";
@@ -23,7 +23,7 @@ export const UploadCV: FC<IUploadCVProps> = ({
   withoutMargin,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
   const inputFile = useRef<HTMLInputElement>(null);
   const { file, notification, resetFile, showFile } = useFileUploadContext();
   const { chooseButtonOption } = useChatMessenger();

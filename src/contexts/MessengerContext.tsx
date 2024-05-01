@@ -867,8 +867,6 @@ const ChatProvider = ({
             setMessages,
             isReferralEnabled,
             inlineDisclaimer,
-            PPLinkUrl,
-            PPLinkInnerText,
           });
         }
 

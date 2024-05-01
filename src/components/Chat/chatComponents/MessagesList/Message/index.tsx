@@ -22,6 +22,7 @@ import { SearchJob } from "./SearchJob";
 import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
 import { MakeReferralMess } from "./MakeReferralMess";
+import { InlineDisclaimer } from "./InlineDisclaimer";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -95,6 +96,8 @@ export const Message: FC<IMessageProps> = ({
       return <TryAgain message={message} isLastMessage={isLastMess} />;
     case MessageType.REFERRAL:
       return <MakeReferralMess message={message} isLastMessage={isLastMess} />;
+    case MessageType.INLINE_DISCLAIMER:
+      return <InlineDisclaimer message={message} />;
     default: {
       return null;
     }

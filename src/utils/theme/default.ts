@@ -1,4 +1,5 @@
 import { COLORS } from "utils/colors";
+import { IParsedTheme } from "utils/types";
 
 const defaultTheme = {
   primaryColor: COLORS.PICTON_BLUE,
@@ -97,4 +98,4 @@ const defaultTheme = {
 };
 
 export default defaultTheme;
-export type ThemeType = typeof defaultTheme;
+export type DefaultThemeType = typeof defaultTheme & IParsedTheme;

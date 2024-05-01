@@ -15,12 +15,12 @@ import {
 import { postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
 import { IntroImage } from "screens/Intro/styles";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, chatScreen } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
 
   const [showLoader, setShowLoader] = useState(true);
   const [showIcon, setShowIcon] = useState(isMobile);
