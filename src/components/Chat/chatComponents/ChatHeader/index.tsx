@@ -5,7 +5,7 @@ import { useTheme } from "styled-components";
 
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
-import { ThemeType } from "utils/theme/default";
+import { DefaultThemeType } from "utils/theme/default";
 import { Flex, IntroImage } from "screens/Intro/styles";
 
 interface IChatHeaderProps {
@@ -22,7 +22,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
   setShowIcon,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme() as ThemeType;
+  const theme = useTheme() as DefaultThemeType;
   const { viewJob, setViewJob, hostname, isLiveChat } = useChatMessenger();
 
   const title = viewJob

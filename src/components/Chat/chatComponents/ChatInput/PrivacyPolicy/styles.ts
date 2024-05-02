@@ -3,7 +3,8 @@ import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   position: relative;
-  bottom: -14px;
+  bottom: -22px;
+  height: 40px;
   left: 0;
   z-index: 2;
   border-top: 1px solid ${COLORS.GRAY};

@@ -27,7 +27,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
-  const { messages, currentMsgType, nextMessages, isChatLoading } =
+  const { messages, currentMsgType, nextMessages, isChatLoading, PPLinkUrl } =
     useChatMessenger();
 
   useEffect(() => {
@@ -50,9 +50,9 @@ export const MessagesList: FC<IMessagesListProps> = ({
     isFileDownloading || isJobSearchingLoading || isChatLoading;
 
   return (
-    <S.MessagesArea>
+    <S.MessagesArea withPPLink={!!PPLinkUrl}>
       <S.MessageListContainer
-        resultsHeight={resultsHeight}
+        resultsHeight={PPLinkUrl ? resultsHeight + 30 : resultsHeight}
         id={MESSAGE_SCROLL_LIST_DIV_ID}
         ref={messagesRef}
         isMobile={isMobile}

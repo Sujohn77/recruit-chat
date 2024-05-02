@@ -10,6 +10,7 @@ import unionBy from "lodash/unionBy";
 import sortBy from "lodash/sortBy";
 import filter from "lodash/filter";
 import remove from "lodash/remove";
+import some from "lodash/some";
 import find from "lodash/find";
 import map from "lodash/map";
 import libPhoneNumber from "google-libphonenumber";
@@ -375,7 +376,13 @@ export const pushMessage = ({
   });
 
   if (message?.content.subType !== MessageType.TEXT || !!text) {
-    if (inlineDisclaimer?.enabled) {
+    if (
+      inlineDisclaimer?.enabled &&
+      !some(
+        updatedMessages,
+        (m) => m.content.subType === MessageType.INLINE_DISCLAIMER
+      )
+    ) {
       const disclaimerMess: ILocalMessage = {
         _id: generateLocalId(),
         localId: generateLocalId(),

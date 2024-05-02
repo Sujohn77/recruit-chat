@@ -16,11 +16,16 @@ export const searchItemHeight = 31;
 export const searchHeaderHeight = 40;
 export const inputOffset = "-30px";
 
-export const Wrapper = styled.div`
+interface IWrapperProp {
+  withPPLink: boolean;
+}
+
+export const Wrapper = styled.div<IWrapperProp>`
   z-index: 1;
   position: absolute;
   bottom: 0;
   width: 100%;
+  min-height: ${({ withPPLink }) => (withPPLink ? 80 : 50)}px;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -37,7 +42,7 @@ export const MessagesInput = styled(Box)<IMessageWrapperProps>`
   align-items: center;
   padding: 10px ${({ $isFrLang }) => ($isFrLang ? 0 : 16)}px;
   padding-bottom: ${({ withBottomLink, $isFrLang }) =>
-    withBottomLink ? 20 : $isFrLang ? 0 : 16}px;
+    withBottomLink ? 40 : $isFrLang ? 0 : 16}px;
   box-sizing: border-box;
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;

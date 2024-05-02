@@ -977,7 +977,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   return (
-    <S.Wrapper>
+    <S.Wrapper withPPLink={!!PPLinkUrl}>
       <S.MessagesInput
         withBottomLink={!!PPLinkUrl}
         marginTop={marginTop}

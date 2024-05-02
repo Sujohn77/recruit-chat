@@ -7,13 +7,17 @@ interface IMessageListContainerProps {
   isMobile: boolean;
 }
 
+interface IMessagesAreaProps {
+  withPPLink: boolean;
+}
+
 export const infiniteScrollStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column-reverse",
 };
 
-export const MessagesArea = styled.div`
-  max-height: calc(100% - 120px);
+export const MessagesArea = styled.div<IMessagesAreaProps>`
+  max-height: calc(100% - ${({ withPPLink }) => (withPPLink ? 150 : 120)}px);
   overflow: hidden;
   border: ${({ theme: { borderStyle, borderWidth } }) =>
     `${borderWidth} ${borderStyle}  ${COLORS.ALTO}`};
@@ -31,7 +35,6 @@ export const MessageListContainer = styled.div<IMessageListContainerProps>`
   .infinite-scroll-component {
     overflow: hidden !important;
     > div {
-      /* margin-bottom: 32px; */
     }
   }
 `;
