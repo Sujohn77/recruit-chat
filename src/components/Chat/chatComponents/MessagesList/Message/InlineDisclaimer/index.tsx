@@ -47,10 +47,10 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
       default:
         break;
     }
-    return text;
+    return text.trim();
   }, [currentLanguage, inlineDisclaimer, PPLinkUrl]);
 
-  return !!disclaimerText.trim() ? (
+  return !!disclaimerText ? (
     <S.Wrapper>
       {message.sender?.firstName && (
         <S.Sender isOwn={!!message.isOwn}>

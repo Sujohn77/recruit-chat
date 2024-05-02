@@ -23,6 +23,7 @@ import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
 import { MakeReferralMess } from "./MakeReferralMess";
 import { InlineDisclaimer } from "./InlineDisclaimer";
+import { Consent } from "./Consent";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -98,6 +99,8 @@ export const Message: FC<IMessageProps> = ({
       return <MakeReferralMess message={message} isLastMessage={isLastMess} />;
     case MessageType.INLINE_DISCLAIMER:
       return <InlineDisclaimer message={message} />;
+    case MessageType.CONSENT:
+      return <Consent message={message} isLastMessage={isLastMess} />;
     default: {
       return null;
     }

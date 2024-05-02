@@ -27,6 +27,10 @@ interface IMessageTextProps {
   withMaxWidth?: boolean;
 }
 
+interface ISenderProps {
+  isOwn: boolean;
+}
+
 export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
@@ -76,10 +80,6 @@ export const MessageBox = styled.div<IMessageBoxProps>`
 `;
 
 export const Wrapper = styled.div``;
-
-interface ISenderProps {
-  isOwn: boolean;
-}
 
 export const Sender = styled.div<ISenderProps>`
   font-style: normal;
