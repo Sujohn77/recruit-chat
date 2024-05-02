@@ -56,6 +56,14 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   }, [isLoading]);
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (applyJobLoading) {
+      timeout = setTimeout(() => setApplyJobLoading(false), 3000);
+    }
+    return () => timeout && clearTimeout(timeout);
+  }, [applyJobLoading]);
+
+  useEffect(() => {
     if (height === 0 && applyJobError) {
       setHeight("auto");
     }
