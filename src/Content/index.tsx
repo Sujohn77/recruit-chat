@@ -14,7 +14,7 @@ import {
 } from "utils/constants";
 import { postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
-import { IntroImage } from "screens/Intro/styles";
+import { MobileIntroImg } from "screens/Intro/styles";
 import { DefaultThemeType } from "utils/theme/default";
 
 export const Content: FC = () => {
@@ -122,18 +122,23 @@ export const Content: FC = () => {
       ) : (
         <>
           {showIcon ? (
+            // TODO: refactor
             <div
               style={{
                 position: "absolute",
                 right: "20px",
                 bottom: "20px",
                 cursor: "pointer",
+                width: "70px",
+                height: "70px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <IntroImage
+              <MobileIntroImg
                 onClick={() => setShowIcon(false)}
                 src={theme?.imageUrl}
-                size="60px"
                 alt=""
               />
             </div>

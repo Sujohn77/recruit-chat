@@ -62,6 +62,17 @@ export const MessageText = styled.p`
   font-weight: 500;
 `;
 
+export const ConsentOptionButton = styled(DarkButton)`
+  font-weight: 500 !important;
+  margin-bottom: 8px !important;
+  min-height: 35px !important;
+  padding: 8px 0 !important;
+  width: 100%;
+  height: auto;
+
+  ${({ isSelected }) => isSelected && "opacity: 0.3 !important;"}
+`;
+
 export const OptionButton = styled(DarkButton)`
   font-weight: 500 !important;
   margin-bottom: 8px !important;

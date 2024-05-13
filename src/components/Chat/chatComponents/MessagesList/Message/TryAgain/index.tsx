@@ -20,8 +20,11 @@ interface ITryAgainProps {
 
 export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
   const { t } = useTranslation();
-  const { referralCompanyName, setMessages, setReferralStep } =
-    useChatMessenger();
+  const {
+    companyName: referralCompanyName,
+    setMessages,
+    setReferralStep,
+  } = useChatMessenger();
 
   const onTryAgainClick = useCallback(() => {
     const tryAgain = createTextMess({

@@ -45,6 +45,8 @@ export const fr = {
     live_chat: "Live Chat",
     continue: "Continuer",
     log_out: "Déconnexion",
+    wish_continue: "Je souhaite continuer",
+    privacy_policy: "Politique de confidentialité de {{companyName}}",
   },
   languages: {
     en: "Anglais",
@@ -128,7 +130,6 @@ export const fr = {
       "Veuillez choisir l'une des options suivantes pour commencer votre recherche d'emploi",
   },
   chat_item_description: {
-    lookingFor: "Bonjour ! Êtes-vous à la recherche d'un poste ?",
     title: "Robot de carrière",
     view_job_title: "Afficher le poste",
     no_match: "Désolés, aucune correspondance pour le moment",

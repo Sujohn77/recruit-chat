@@ -105,7 +105,7 @@ export interface IChatMessengerContext extends IPPKeys {
   setIsCandidateAnonym: (isAnonym: boolean) => void;
   setEmployeeId: (employeeId: number) => void;
   employeeId?: number;
-  referralCompanyName: string | null;
+  companyName: string | null;
   isReferralEnabled: boolean;
   setRefLastName: (lastName: string) => void;
   setRefBirth: (birth: string) => void;
@@ -262,7 +262,5 @@ export interface IPPKeys {
   consentOptIn: IPrivacyPolicy | null;
   inlineDisclaimer: IPrivacyPolicy | null;
   footerPrivacyLink: IPrivacyPolicy | null;
-  PPLinkInnerText: string | null;
   PPLinkUrl: string | null;
-  consentOptInContinueLinkInnerText: string | null;
 }

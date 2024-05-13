@@ -6,7 +6,6 @@ import * as S from "./styles";
 import {
   ChatHeader,
   ChatInput,
-  Consent,
   MessagesList,
   ReferralViewJob,
   ViewJob,
@@ -100,8 +99,6 @@ export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
       />
-
-      <Consent />
 
       {isReferralEnabled ? (
         <ReferralViewJob setJobId={setSelectedReferralJobId} />

@@ -31,8 +31,11 @@ export const TextMessage: FC<ITextMessageProps> = ({
   setSelectedReferralJobId,
 }) => {
   const theme = useTheme() as DefaultThemeType;
-  const { referralCompanyName, offerJobs, currentLanguage } =
-    useChatMessenger();
+  const {
+    companyName: referralCompanyName,
+    offerJobs,
+    currentLanguage,
+  } = useChatMessenger();
   const altMessText = useGetMessageText(message);
   const { t, i18n } = useTranslation();
 

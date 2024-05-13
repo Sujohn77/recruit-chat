@@ -52,7 +52,11 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     setMessages: _setMessages,
     candidateId,
     isReferralEnabled,
-    referralCompanyName,
+    companyName: referralCompanyName,
+    PPLinkUrl,
+    consentOptIn,
+    currentLanguage,
+    inlineDisclaimer,
   } = useChatMessenger();
 
   // ----------------------------- STATE ----------------------------- //
@@ -162,6 +166,12 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
             withReferralFlow: isReferralEnabled,
             referralCompanyName,
             i18nPhrase: "",
+            chatConsent: true,
+            consentOptIn,
+            currentLanguage,
+            PPLinkUrl,
+            inlineDisclaimer,
+            messages,
           });
           _setMessages([...responseMessages, ...updatedMessages]);
           setShowJobTitles(true);

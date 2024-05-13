@@ -16,7 +16,7 @@ export const Wrapper = styled.div<IWrapperProps>`
   border: 1px solid ${({ borderColor = COLORS.BEAUTY_BUSH }) => borderColor};
   background: ${({ backgroundColor = COLORS.PIPPIN }) => backgroundColor};
   min-height: 74px;
-  margin: 10px auto 0;
+  margin: 10px auto 20px;
   border-radius: 8px;
 `;
 

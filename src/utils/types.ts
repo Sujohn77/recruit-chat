@@ -1,6 +1,7 @@
 import { ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
+import { TFunction } from "react-i18next";
 
 import { CHAT_OPTIONS, ChatScreens, TryAgainTypes } from "./constants";
 import {
@@ -52,7 +53,6 @@ export enum MessageType {
   TRY_AGAIN = "try_again",
   REFERRAL = "referral",
   INLINE_DISCLAIMER = "inline_disclaimer_text",
-  CONSENT = "consent",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;
@@ -221,18 +221,28 @@ export interface IPushMessage {
   messages: ILocalMessage[];
   setMessages: Dispatch<SetStateAction<ILocalMessage[]>>;
   isReferralEnabled: boolean;
-  inlineDisclaimer: IPrivacyPolicy | null;
+  chatConsent: boolean;
+  currentLanguage: string;
+  consentOptIn: IPrivacyPolicy | null;
+  companyName?: string | null;
+  t: TFunction;
 }
 
 export interface IGetChatResponseProps {
   type: CHAT_ACTIONS;
   withReferralFlow: boolean;
   referralCompanyName: string | null;
+  i18nPhrase: string;
+  chatConsent: boolean;
   additionalCondition?: boolean | null;
   param?: string | undefined;
   isQuestion?: boolean;
   employeeId?: number;
-  i18nPhrase: string;
+  consentOptIn: IPrivacyPolicy | null;
+  PPLinkUrl: string | null;
+  currentLanguage: string;
+  inlineDisclaimer: IPrivacyPolicy | null;
+  messages: ILocalMessage[];
 }
 
 export interface IFilterItemsWithType {

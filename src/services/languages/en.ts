@@ -44,6 +44,8 @@ export const en = {
     live_chat: "Live Chat",
     continue: "Continue",
     log_out: "Log out",
+    wish_continue: "I wish to continue",
+    privacy_policy: "{{companyName}} Privacy Policy",
   },
   languages: {
     en: "English",
@@ -121,7 +123,6 @@ export const en = {
       "Please choose one of the following options to begin your job search",
   },
   chat_item_description: {
-    lookingFor: "Hi! Are you looking for a job?",
     title: "Career bot",
     view_job_title: "View job",
     no_match: "Sorry, no match yet",

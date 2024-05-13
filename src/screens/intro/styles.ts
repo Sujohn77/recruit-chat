@@ -4,6 +4,9 @@ interface IWrapperProps {
   isMobile: boolean;
   isClosed: boolean;
 }
+interface IImageProps {
+  size?: string;
+}
 
 const borderWidth = "1.5px";
 const animationDuration = "0.25s";
@@ -64,9 +67,20 @@ export const Close = styled.div<{ height?: string; backgroundColor?: string }>`
   }
 `;
 
-export const Image = styled.img<{ size?: string }>`
+export const Image = styled.img<IImageProps>`
   width: ${({ size = "20px" }) => size};
   height: ${({ size = "20px" }) => size};
 `;
 
-export const IntroImage = styled(Image)``;
+export const IntroImage = styled(Image)`
+  border: none;
+  outline: none;
+`;
+
+export const MobileIntroImg = styled.img`
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  object-fit: fill;
+  border-radius: 50%;
+`;

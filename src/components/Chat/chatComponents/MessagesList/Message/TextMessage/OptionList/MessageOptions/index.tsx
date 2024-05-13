@@ -42,9 +42,10 @@ export const MessageOptions: FC<IOptionListProps> = ({
 
   const optionList = useMemo(() => {
     return message.optionList?.options.map((o) => {
-      const text = i18n.exists(o.i18nPhrase, o.i18nProps)
-        ? t(o.i18nPhrase, o.i18nProps)
-        : o.text;
+      const text =
+        !!o?.i18nPhrase && i18n.exists(o?.i18nPhrase, o.i18nProps)
+          ? t(o.i18nPhrase, o.i18nProps)
+          : o.text;
 
       return (
         <S.MessageOption

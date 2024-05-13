@@ -50,7 +50,6 @@ import {
   isPushMessageType,
   LocalStorage,
   REFERRAL_OFFER_TEXT,
-  SessionStorage,
   Status,
 } from "utils/constants";
 import {
@@ -87,7 +86,7 @@ import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
-import { getQuestions } from "./data";
+import { chatMessengerDefaultState, getQuestions } from "./data";
 import { COLORS } from "utils/colors";
 
 interface IChatProviderProps extends IPPKeys {
@@ -106,123 +105,6 @@ interface IChatProviderProps extends IPPKeys {
   alertTemplateId: undefined | number;
   defaultLanguage: string;
 }
-
-export const chatMessengerDefaultState: IChatMessengerContext = {
-  messages: [],
-  status: null,
-  category: null,
-  user: null,
-  searchLocations: [],
-  requisitions: [],
-  locations: [],
-  offerJobs: [],
-  currentMsgType: null,
-  alertCategories: null,
-  error: null,
-  viewJob: null,
-  prefferedJob: null,
-  nextMessages: [],
-  resumeName: "",
-  isChatLoading: false,
-  showJobAutocompleteBox: false,
-  chooseButtonOption() {},
-  dispatch() {},
-  setSnapshotMessages() {},
-  setCurrentMsgType() {},
-  setError() {},
-  setViewJob() {},
-  submitMessage() {},
-  setIsInitialized() {},
-  setJobPositions() {},
-  setShowJobAutocompleteBox() {},
-  setMessages() {},
-  isAnonym: true,
-  shouldCallAgain: false,
-  isCandidateWithEmail: false,
-  firebaseToken: null,
-  isAuthInFirebase: false,
-  setIsAuthInFirebase() {},
-  setIsApplyJobSuccessfully() {},
-  isApplyJobFlow: false,
-  setFlowId() {},
-  setSubscriberWorkflowId() {},
-  setIsApplyJobFlow() {},
-  sendNewMessage: () => Promise.resolve(),
-  emailAddress: "",
-  firstName: "",
-  lastName: "",
-  setEmailAddress() {},
-  setFirstName() {},
-  setLastName() {},
-  setSearchLocations() {},
-  logout() {},
-  createJobAlert() {},
-  clearJobFilters() {},
-  isChatInputAvailable: false,
-  setIsChatInputAvailable() {},
-  requisitionsPage: 0,
-  setRequisitionsPage() {},
-  setIsChatLoading() {},
-  setCandidateId() {},
-  setIsCandidateAnonym() {},
-  setEmployeeId() {},
-  isReferralEnabled: false,
-  referralCompanyName: null,
-  setRefBirth() {},
-  setRefLastName() {},
-  refBirth: "",
-  refLastName: "",
-  refURL: "",
-  chatScreen: null,
-  setChatScreen() {},
-  employeeLocation: "",
-  employeeJobCategory: "",
-  setEmployeeJobCategory() {},
-  setEmployeeLocation() {},
-  searchRequisitions: () => Promise.resolve(null),
-  employeeFullName: "",
-  setEmployeeFullName() {},
-  setUser() {},
-  setRequisitions() {},
-  setFirebaseToken() {},
-  setAlertCategories() {},
-  setOfferJobs() {},
-  setChatId() {},
-  setLocations() {},
-  setCategory() {},
-  employeeLocationID: "",
-  setEmployeeLocationID() {},
-  jobSourceID: "",
-  employeeJobFamilyNames: [""],
-  setEmployeeJobFamilyNames() {},
-  referralStep: ReferralSteps.EmployeeId,
-  setReferralStep() {},
-  hostname: "",
-  searchRequisitionsByKeyword: () => Promise.resolve(null),
-  searchLocation: () => Promise.resolve(null),
-  categoriesForAlert: [],
-  languages: [],
-  isMultiLanguage: false,
-  currentLanguage: "en",
-  setCurrentLanguage() {},
-  isLiveChat: false,
-  setIsLiveChat() {},
-  queueId: null,
-  setQueueId() {},
-  queueChatId: null,
-  setQueueChatId() {},
-  chatQueueId: null,
-  alertTemplateId: undefined,
-  setIsCandidateWithEmail() {},
-  consentOptIn: null,
-  consentOptInContinueLinkInnerText: null,
-  footerPrivacyLink: null,
-  inlineDisclaimer: null,
-  PPLinkInnerText: null,
-  PPLinkUrl: null,
-  chatConsent: false,
-  setChatConsent() {},
-};
 
 const ChatContext = createContext<IChatMessengerContext>(
   chatMessengerDefaultState
@@ -243,11 +125,8 @@ const ChatProvider = ({
   chatQueueId,
   alertTemplateId,
   defaultLanguage,
-
-  PPLinkInnerText,
   PPLinkUrl,
   consentOptIn,
-  consentOptInContinueLinkInnerText,
   footerPrivacyLink,
   inlineDisclaimer,
 }: IChatProviderProps) => {
@@ -259,7 +138,7 @@ const ChatProvider = ({
 
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
-  const [chatConsent, setChatConsent] = useState(false);
+  const [chatConsent, setChatConsent] = useState(!consentOptIn?.enabled);
 
   const [chatScreen, setChatScreen] = useState<ChatScreens | null>(null);
   const [category, setCategory] = useState<string | null>(null);
@@ -719,16 +598,6 @@ const ChatProvider = ({
     async (action: ITriggerActionProps) => {
       LOG(action.type, "DISPATCH", "#ff8c00", undefined, true);
       LOG(action.payload, "DISPATCH payload", "#ff8c00", undefined, true);
-      // Check if there were errors before
-      const apiError = sessionStorage.getItem(SessionStorage.ApiError);
-      const parsedError = apiError && JSON.parse(apiError);
-      if (!!apiError) {
-        console.log("%capiError", apiError, "color: #ff8c00;");
-        if (typeof parsedError == "string") setError(parsedError);
-
-        sessionStorage.removeItem(SessionStorage.ApiError);
-        return;
-      }
 
       // Check if all previous actions were completed
       const { type, payload } = action;
@@ -744,7 +613,7 @@ const ChatProvider = ({
         }
         return;
       }
-      // console.warn("action type -->", type);
+
       switch (type) {
         case CHAT_ACTIONS.SET_CATEGORY: {
           if (payload?.item?.trim()) {
@@ -824,7 +693,6 @@ const ChatProvider = ({
           }
           break;
         }
-
         case CHAT_ACTIONS.APPLY_EMAIL:
         case CHAT_ACTIONS.GET_USER_EMAIL:
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
@@ -866,14 +734,27 @@ const ChatProvider = ({
             messages,
             setMessages,
             isReferralEnabled,
-            inlineDisclaimer,
+            chatConsent,
+            consentOptIn,
+            currentLanguage,
+            companyName,
+            t,
           });
         }
 
         setChatAction(action);
       }
     },
-    [user, isInitialized, messages, requisitions.length, inlineDisclaimer]
+    [
+      user,
+      isInitialized,
+      messages,
+      requisitions.length,
+      inlineDisclaimer,
+      consentOptIn,
+      currentLanguage,
+      PPLinkUrl,
+    ]
   );
 
   useEffect(() => {
@@ -1195,6 +1076,12 @@ const ChatProvider = ({
         withReferralFlow: isReferralEnabled,
         referralCompanyName: companyName,
         i18nPhrase: i18n,
+        chatConsent,
+        PPLinkUrl,
+        consentOptIn,
+        currentLanguage,
+        inlineDisclaimer,
+        messages,
       });
 
       updatedMessages = getMessagesOnAction({
@@ -1338,6 +1225,12 @@ const ChatProvider = ({
         withReferralFlow: isReferralEnabled,
         referralCompanyName: companyName,
         i18nPhrase: i18nPhrase,
+        chatConsent,
+        PPLinkUrl,
+        consentOptIn,
+        currentLanguage,
+        inlineDisclaimer,
+        messages,
       });
 
       switch (type) {
@@ -1358,7 +1251,6 @@ const ChatProvider = ({
           break;
         case CHAT_ACTIONS.UPLOADED_CV:
           break;
-
         case CHAT_ACTIONS.MAKE_REFERRAL:
           setMessages(
             param
@@ -1529,7 +1421,7 @@ const ChatProvider = ({
     setIsCandidateAnonym,
     setEmployeeId,
     employeeId,
-    referralCompanyName: companyName,
+    companyName,
     isReferralEnabled,
     setRefBirth,
     setRefLastName,
@@ -1581,10 +1473,8 @@ const ChatProvider = ({
     chatConsent,
     setChatConsent,
 
-    PPLinkInnerText,
     PPLinkUrl,
     consentOptIn,
-    consentOptInContinueLinkInnerText,
     footerPrivacyLink,
     inlineDisclaimer,
   };

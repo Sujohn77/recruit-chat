@@ -131,7 +131,7 @@ export interface IMessageOption {
   isSelected?: boolean;
   name?: string;
   text?: string;
-  i18nPhrase: string;
+  i18nPhrase?: string;
   i18nProps?: any;
 }
 

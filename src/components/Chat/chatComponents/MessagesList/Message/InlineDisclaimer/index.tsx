@@ -9,13 +9,15 @@ import { getMessageProps } from "utils/helpers";
 import { ILocalMessage } from "utils/types";
 import { useTheme } from "styled-components";
 import { DefaultThemeType } from "utils/theme/default";
+import { useTranslation } from "react-i18next";
 
 interface IInlineDisclaimerProps {
   message: ILocalMessage;
 }
 
 export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
-  const { inlineDisclaimer, PPLinkUrl, PPLinkInnerText, currentLanguage } =
+  const { t } = useTranslation();
+  const { inlineDisclaimer, PPLinkUrl, currentLanguage, companyName } =
     useChatMessenger();
   const messageProps = { ...getMessageProps(message) };
 
@@ -73,7 +75,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
               options={{
                 render: () => (
                   <Link target="_blank" href={PPLinkUrl || ""}>
-                    {PPLinkInnerText}
+                    {t("labels:privacy_policy", { companyName })}
                   </Link>
                 ),
               }}

@@ -107,7 +107,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     clearJobFilters,
     isChatInputAvailable,
     setEmployeeId,
-    referralCompanyName,
+    companyName: referralCompanyName,
     setRefBirth,
     setRefLastName,
     refLastName,
@@ -134,6 +134,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setIsCandidateWithEmail,
     setEmailAddress,
     PPLinkUrl,
+    footerPrivacyLink,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -976,10 +977,12 @@ export const ChatInput: FC<IChatInputProps> = ({
     },
   };
 
+  const withFooterPP = !!PPLinkUrl && !!footerPrivacyLink?.enabled;
+
   return (
-    <S.Wrapper withPPLink={!!PPLinkUrl}>
+    <S.Wrapper withPPLink={withFooterPP}>
       <S.MessagesInput
-        withBottomLink={!!PPLinkUrl}
+        withBottomLink={withFooterPP}
         marginTop={marginTop}
         $isFrLang={currentLanguage === "fr"}
       >

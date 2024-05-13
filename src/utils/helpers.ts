@@ -1,5 +1,4 @@
 import { profile } from "contexts/mockData";
-import { IUser } from "contexts/types";
 import { CSSProperties } from "react";
 import { Buffer } from "buffer";
 import moment from "moment";
@@ -10,7 +9,6 @@ import unionBy from "lodash/unionBy";
 import sortBy from "lodash/sortBy";
 import filter from "lodash/filter";
 import remove from "lodash/remove";
-import some from "lodash/some";
 import find from "lodash/find";
 import map from "lodash/map";
 import libPhoneNumber from "google-libphonenumber";
@@ -24,12 +22,12 @@ import {
   IContent,
   IGetUpdatedMessages,
   IFilterItemsWithType,
-  IRequisition,
   IPushMessage,
   ISnapshot,
   IParsedTheme,
   IApiThemeResponse,
   IPopMessage,
+  IPrivacyPolicy,
 } from "./types";
 import { COLORS } from "./colors";
 import {
@@ -40,9 +38,9 @@ import {
   SessionStorage,
   EventIds,
   TryAgainTypes,
+  MessageOptionTypes,
 } from "./constants";
 import {
-  ContactType,
   IMessage,
   IMessageOptions,
   ISearchJobsPayload,
@@ -53,6 +51,7 @@ import {
 import i18n from "services/localization";
 
 window.Buffer = Buffer;
+const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
 
 interface ICreateMessage {
   text: string;
@@ -147,23 +146,24 @@ export const getActionTypeByOption = (
   }
 };
 
+interface IResMessages {
+  i18n?: string;
+  subType?: MessageType;
+  text?: string;
+  isOwn?: boolean;
+  isChatMessage?: boolean;
+  i18nProps?: Object | null;
+  optionList?: null | IMessageOptions;
+}
+
 export const getParsedMessages = (
-  messages: {
-    i18n?: string;
-    subType?: MessageType;
-    text?: string;
-    isOwn?: boolean;
-    isChatMessage?: boolean;
-    i18nProps?: Object | null;
-  }[]
+  messages: IResMessages[]
 ): ILocalMessage[] => {
   const responseMessages = [];
   for (const msg of messages) {
-    const dateCreated = { seconds: moment().unix() };
     const localId = generateLocalId();
     const message: ILocalMessage = {
       _id: localId,
-      dateCreated,
       content: {
         subType: msg.subType || MessageType.TEXT,
         text: msg.text,
@@ -172,6 +172,7 @@ export const getParsedMessages = (
       },
       localId,
       isOwn: !!msg.isOwn,
+      optionList: msg.optionList,
     };
 
     responseMessages.push(message);
@@ -344,12 +345,68 @@ const initialMessages = (isReferralEnabled: boolean) =>
     },
   ]);
 
+const createConsentInMsg = ({
+  currentLanguage,
+  consentOptIn,
+  companyName,
+  t,
+}: {
+  currentLanguage: string;
+  consentOptIn: IPrivacyPolicy | null;
+  t: TFunction;
+  companyName?: string | null;
+}) => {
+  let consentOptInText = undefined;
+  switch (currentLanguage) {
+    case "en":
+      if (consentOptIn?.content_en) consentOptInText = consentOptIn?.content_en;
+      break;
+    case "fr":
+      if (consentOptIn?.content_fr) consentOptInText = consentOptIn?.content_fr;
+      break;
+    default:
+      break;
+  }
+  const consentOptInOptionList: IMessageOptions = {
+    isActive: true,
+    type: MessageOptionTypes.Consent,
+    options: [
+      {
+        id: 1,
+        itemId: 1,
+        isSelected: false,
+        text: t("labels:privacy_policy", { companyName }),
+      },
+      {
+        id: 2,
+        itemId: 2,
+        isSelected: false,
+        text: t("labels:wish_continue"),
+      },
+    ],
+  };
+
+  const consentInMessage = getParsedMessages([
+    {
+      subType: MessageType.TEXT,
+      text: consentOptInText,
+      optionList: consentOptInOptionList,
+    },
+  ])[0];
+
+  return consentInMessage;
+};
+
 export const pushMessage = ({
   action,
   messages,
   setMessages,
   isReferralEnabled,
-  inlineDisclaimer,
+  chatConsent,
+  currentLanguage,
+  companyName,
+  consentOptIn,
+  t,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
 
@@ -376,33 +433,26 @@ export const pushMessage = ({
   });
 
   if (message?.content.subType !== MessageType.TEXT || !!text) {
-    if (
-      inlineDisclaimer?.enabled &&
-      !some(
-        updatedMessages,
-        (m) => m.content.subType === MessageType.INLINE_DISCLAIMER
-      )
-    ) {
-      const disclaimerMess: ILocalMessage = {
-        _id: generateLocalId(),
-        localId: generateLocalId(),
-        content: {
-          text: "",
-          subType: MessageType.INLINE_DISCLAIMER,
-          i18n: null,
-          i18nProps: null,
-        },
-      };
-      setMessages([disclaimerMess, message, ...updatedMessages]);
-    } else {
-      setMessages([message, ...updatedMessages]);
-    }
+    const consentInMessage = createConsentInMsg({
+      consentOptIn,
+      currentLanguage,
+      companyName,
+      t,
+    });
+
+    setMessages(
+      messages.length
+        ? [message, ...updatedMessages]
+        : chatConsent
+        ? updatedMessages
+        : [consentInMessage, ...updatedMessages]
+    );
   }
 
   return updatedMessages;
 };
 
-const popMessage = ({ type, messages }: IPopMessage) =>
+const popMessage = ({ type, messages }: IPopMessage): ILocalMessage[] =>
   !type ? messages : filter(messages, (msg) => msg?.content.subType !== type);
 
 export const replaceItemsWithType = ({
@@ -506,40 +556,6 @@ export const getSearchJobsData = (
   };
 };
 
-export const getCreateCandidateData = ({
-  user,
-  prefferedJob,
-}: {
-  user: IUser;
-  prefferedJob: IRequisition | null;
-}) => ({
-  firstName: user.name!.split("")[0]!,
-  lastName: user.name!.split("")[1],
-  profile: {
-    currentJobTitle: prefferedJob?.title!,
-    currentEmployer: "",
-  },
-  typeId: "",
-  contactMethods: [
-    {
-      address: user.email!,
-      isPrimary: true,
-      location: "Home",
-      type: ContactType.EMAIL,
-    },
-  ],
-});
-
-export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
-  switch (type) {
-    // case CHAT_ACTIONS.APPLY_AGE:
-    case CHAT_ACTIONS.SET_WORK_PERMIT:
-      return false; // TODO: test
-    default:
-      return true;
-  }
-};
-
 export const getFormattedDate = (date: string) => {
   return moment(date).format("MM/DD/YYYY");
 };
@@ -603,10 +619,6 @@ export const getInputType = (actionType: CHAT_ACTIONS | null) => {
     : TextFieldTypes.Select;
 };
 
-export const isResults = (draftMessage: string | null, searchItems: string[]) =>
-  !draftMessage ||
-  !!searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
-
 export const getMatchedItem = (
   draftMessage: string | null,
   searchItems: string[]
@@ -643,21 +655,6 @@ export const getStorageValue = (
   const value = item && typeof item == "object" ? JSON.parse(item) : item;
 
   return value || defaultValue;
-};
-
-export const validateFields = (email: string, text: string) => {
-  const errors = [];
-  const emailError = validateEmail(email);
-
-  if (emailError) {
-    errors.push({ name: "email", text: emailError });
-  }
-
-  if (!text) {
-    errors.push({ name: "description", text: "Required" });
-  }
-
-  return errors;
 };
 
 export const validationUserContacts = ({
@@ -829,8 +826,6 @@ export const isValidColor = (strColor?: string): boolean => {
     return false;
   }
 };
-
-const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
 
 const parse = (number: string, iso2?: string) => {
   try {

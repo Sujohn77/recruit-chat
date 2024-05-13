@@ -15,7 +15,7 @@ import {
 import { EventIds, SessionStorage, isMobile } from "utils/constants";
 import { COLORS } from "utils/colors";
 
-interface IParentMessage {
+export interface IParentMessage {
   guid?: string;
   style?: IApiThemeResponse;
   token?: string;
@@ -66,12 +66,7 @@ export const ChatBotRoot: FC = () => {
     useState<IPrivacyPolicy | null>(null);
   const [footerPrivacyLink, setFooterPrivacyLink] =
     useState<IPrivacyPolicy | null>(null);
-  const [PPLinkInnerText, setPPLinkInnerText] = useState<string | null>(null);
   const [PPLinkUrl, setPPLinkUrl] = useState<string | null>(null);
-  const [
-    consentOptInContinueLinkInnerText,
-    setConsentOptInContinueLinkInnerText,
-  ] = useState<string | null>(null);
 
   useEffect(() => {
     postMessToParent(EventIds.IsMobile, { isMobile: isMobile });
@@ -98,10 +93,8 @@ export const ChatBotRoot: FC = () => {
           defaultLanguage,
 
           consentOptIn,
-          consentOptInContinueLinkInnerText,
           footerPrivacyLink,
           inlineDisclaimer,
-          privacyPolicyLinkInnerText,
           privacyPolicyLinkUrl,
         } = props;
 
@@ -134,13 +127,6 @@ export const ChatBotRoot: FC = () => {
           setInlineDisclaimer(JSON.parse(inlineDisclaimer));
         }
 
-        consentOptInContinueLinkInnerText &&
-          setConsentOptInContinueLinkInnerText(
-            consentOptInContinueLinkInnerText
-          );
-
-        privacyPolicyLinkInnerText &&
-          setPPLinkInnerText(privacyPolicyLinkInnerText);
         privacyPolicyLinkUrl && setPPLinkUrl(privacyPolicyLinkUrl);
       }
 
@@ -190,10 +176,8 @@ export const ChatBotRoot: FC = () => {
     <Container id="chat-bot" isMobile={isMobile}>
       {chatBotID && (
         <ChatProvider
-          PPLinkInnerText={PPLinkInnerText}
           PPLinkUrl={PPLinkUrl}
           inlineDisclaimer={inlineDisclaimer}
-          consentOptInContinueLinkInnerText={consentOptInContinueLinkInnerText}
           footerPrivacyLink={footerPrivacyLink}
           consentOptIn={consentOptIn}
           chatQueueId={chatQueueId}

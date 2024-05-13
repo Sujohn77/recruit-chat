@@ -27,8 +27,13 @@ export const MessagesList: FC<IMessagesListProps> = ({
   const messagesRef = useRef<HTMLDivElement>(null);
 
   const { isFileDownloading, isJobSearchingLoading } = useFileUploadContext();
-  const { messages, currentMsgType, nextMessages, isChatLoading, PPLinkUrl } =
-    useChatMessenger();
+  const {
+    messages,
+    currentMsgType,
+    nextMessages,
+    isChatLoading,
+    footerPrivacyLink,
+  } = useChatMessenger();
 
   useEffect(() => {
     if (currentMsgType !== null && !nextMessages.length) {
@@ -50,9 +55,11 @@ export const MessagesList: FC<IMessagesListProps> = ({
     isFileDownloading || isJobSearchingLoading || isChatLoading;
 
   return (
-    <S.MessagesArea withPPLink={!!PPLinkUrl}>
+    <S.MessagesArea withPPLink={!!footerPrivacyLink?.enabled}>
       <S.MessageListContainer
-        resultsHeight={PPLinkUrl ? resultsHeight + 30 : resultsHeight}
+        resultsHeight={
+          !!footerPrivacyLink?.enabled ? resultsHeight + 30 : resultsHeight
+        }
         id={MESSAGE_SCROLL_LIST_DIV_ID}
         ref={messagesRef}
         isMobile={isMobile}

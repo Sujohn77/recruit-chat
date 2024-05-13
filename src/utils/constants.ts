@@ -1,4 +1,6 @@
 import MobileDetect from "mobile-detect";
+import some from "lodash/some";
+
 import i18n from "services/localization";
 import { getParsedMessages } from "./helpers";
 import {
@@ -6,6 +8,7 @@ import {
   HTTPStatusCodes,
   IGetChatResponseProps,
   ILocalMessage,
+  IPrivacyPolicy,
   MessageType,
 } from "./types";
 import { getQuestions } from "contexts/data";
@@ -33,6 +36,23 @@ export enum ChatScreens {
   MakeReferral = "MakeReferral",
 }
 
+export enum MessageOptionTypes {
+  Referral = "referral",
+  AvailableJobs = "available_job",
+  Consent = "consent",
+}
+
+export enum MessageStatuses {
+  ok = "ok",
+  warning = "warning",
+  error = "error",
+}
+
+export enum TryAgainTypes {
+  Validate = "Validate",
+  SendReferral = "SendReferral",
+}
+
 export const HTTP_RESPONSES = {
   UNAUTHORIZED_401: 401,
   FORBIDDEN_403: 403,
@@ -49,14 +69,40 @@ export enum ChannelName {
   SMS = "SMS",
 }
 
-const getChatActionMessages = (
-  type: CHAT_ACTIONS,
-  withReferralFlow: boolean,
-  referralCompanyName: string | null,
-  param?: string,
-  withoutDefaultQuestions?: boolean,
-  employeeId?: number
-) => {
+interface IGetChatActionMessages {
+  type: CHAT_ACTIONS | null;
+  withReferralFlow: boolean;
+  referralCompanyName: string | null;
+  chatConsent: boolean;
+  param?: string;
+  withoutDefaultQuestions?: boolean;
+  employeeId?: number;
+  inlineDisclaimer: IPrivacyPolicy | null;
+  consentOptIn: IPrivacyPolicy | null;
+  messages: ILocalMessage[];
+}
+
+export const getChatActionMessages = ({
+  type,
+  chatConsent,
+  referralCompanyName,
+  withReferralFlow,
+  employeeId,
+  param,
+  withoutDefaultQuestions,
+  inlineDisclaimer,
+  consentOptIn,
+  messages,
+}: IGetChatActionMessages) => {
+  if (!chatConsent) {
+    return [];
+  }
+
+  const withInlineDisclaimer =
+    !consentOptIn?.enabled &&
+    inlineDisclaimer?.enabled &&
+    !some(messages, (m) => m.content.subType === MessageType.INLINE_DISCLAIMER);
+
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
       return [
@@ -168,7 +214,7 @@ const getChatActionMessages = (
         },
       ];
     case CHAT_ACTIONS.FIND_JOB:
-      return [
+      const defMessage = [
         {
           subType: MessageType.BUTTON,
           text: i18n.t("messages:answerQuestions"),
@@ -189,6 +235,16 @@ const getChatActionMessages = (
           i18n: "messages:please_choose",
         },
       ];
+      return withInlineDisclaimer
+        ? [
+            ...defMessage,
+            {
+              subType: MessageType.INLINE_DISCLAIMER,
+              text: inlineDisclaimer.content_en,
+              isChatMessage: true,
+            },
+          ]
+        : defMessage;
     case CHAT_ACTIONS.ASK_QUESTION:
       return withoutDefaultQuestions
         ? []
@@ -298,6 +354,24 @@ const getChatActionMessages = (
               i18n: "referral:friend_first_name",
             },
           ]
+        : withInlineDisclaimer
+        ? [
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:employeeId", {
+                companyName: referralCompanyName,
+              }),
+              i18n: "messages:employeeId",
+              i18nProps: {
+                companyName: referralCompanyName,
+              },
+            },
+            {
+              subType: MessageType.INLINE_DISCLAIMER,
+              text: inlineDisclaimer.content_en,
+              isChatMessage: true,
+            },
+          ]
         : [
             {
               subType: MessageType.TEXT,
@@ -349,6 +423,12 @@ export const getChatActionResponse = ({
   isQuestion = false,
   employeeId,
   i18nPhrase,
+  chatConsent,
+  PPLinkUrl,
+  consentOptIn,
+  currentLanguage,
+  inlineDisclaimer,
+  messages,
 }: IGetChatResponseProps): ILocalMessage[] => {
   if (
     additionalCondition !== null &&
@@ -365,17 +445,28 @@ export const getChatActionResponse = ({
       withReferralFlow,
       referralCompanyName,
       i18nPhrase,
+      chatConsent,
+      PPLinkUrl,
+      consentOptIn,
+      currentLanguage,
+      inlineDisclaimer,
+      messages,
     });
   }
 
-  const responseMessages = getChatActionMessages(
+  const responseMessages = getChatActionMessages({
     type,
     withReferralFlow,
     referralCompanyName,
     param,
-    isQuestion,
-    employeeId
-  );
+    withoutDefaultQuestions: isQuestion,
+    employeeId,
+    chatConsent,
+    inlineDisclaimer,
+    consentOptIn,
+    messages,
+  });
+
   return getParsedMessages(responseMessages);
 };
 
@@ -439,20 +530,4 @@ export enum ReferralResponse {
   NotPreviouslyReferred = 0,
   PreviouslyReferredToGivenJob = 1,
   PreviouslyReferredNonJobSpecific = 2,
-}
-
-export enum MessageOptionTypes {
-  Referral = "referral",
-  AvailableJobs = "available_job",
-}
-
-export enum MessageStatuses {
-  ok = "ok",
-  warning = "warning",
-  error = "error",
-}
-
-export enum TryAgainTypes {
-  Validate = "Validate",
-  SendReferral = "SendReferral",
 }
