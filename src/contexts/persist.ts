@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import browserStorage from "store";
 
 // This hook receives two parameters:
@@ -10,10 +10,12 @@ interface IUsePersisState<T> {
   initialState: T;
 }
 
-export const usePersisState = <T>({
-  initialState,
-  storageKey,
-}: IUsePersisState<T>) => {
+type UsePersisStateType = <T>(
+  props: IUsePersisState<T>
+) => [T, Dispatch<SetStateAction<T>>];
+
+export const usePersisState: UsePersisStateType = (props) => {
+  const { initialState, storageKey } = props;
   const [state, setInternalState] = useState(initialState);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect } from "react";
 
 import { ChatMessengerContextKeys, IUser } from "contexts/types";
 import { IRequisitionType } from "services/hooks";
@@ -69,40 +69,6 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     queueChatId,
     setQueueChatId,
   } = useChatMessenger();
-  // const store = useChatMessenger();
-  // const storeWithoutFn = Object.fromEntries(
-  //   Object.entries(store).filter(([key, value]) => typeof value !== "function")
-  // );
-  // const storeKeys = Object.keys(storeWithoutFn) as ChatMessengerContextKeys[];
-  // const storeKeysEnum = useMemo(() => {
-  //   const keysEnum: { [key in ChatMessengerContextKeys]?: string } = {};
-  //   return storeKeys.forEach((k) => (keysEnum[k] = k));
-  // }, [storeKeys]);
-
-  // useEffect(() => {
-  //   for (const key in storeWithoutFn) {
-  //     const storeItem = store[key as ChatMessengerContextKeys];
-  //     if (storeItem) {
-  //       sessionStorage.setItem(
-  //        hostname +  key,
-  //         typeof storeItem === "string" ? storeItem : JSON.stringify(storeItem)
-  //       );
-  //     }
-  //   }
-  // }, [store]);
-
-  // useEffect(() => {
-  //   storeKeys.forEach((k) => {
-  //     if (storeWithoutFn[k]) {
-  //       sessionStorage.setItem(
-  //        hostname +  k,
-  //         typeof storeWithoutFn[k] === "string"
-  //           ? storeWithoutFn[k]
-  //           : JSON.stringify(storeWithoutFn[k])
-  //       );
-  //     }
-  //   });
-  // }, [storeWithoutFn, storeKeys]);
 
   useEffect(() => {
     localStorage.setItem(hostname + "lastActivity", new Date().toString());
@@ -122,32 +88,26 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       const storedUserData = localStorage.getItem(hostname + "requisitions");
       storedUserData &&
         setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
-      //   console.log(storedUserData, "storedUserData");
 
       const storedMessages = localStorage.getItem(hostname + "messages");
       storedMessages &&
         setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
-      //   console.log(storedMessages, "storedMessages");
 
       const storedCurrentMsgType = localStorage.getItem(
         hostname + "currentMsgType"
       );
       storedCurrentMsgType &&
         setCurrentMsgType(storedCurrentMsgType as CHAT_ACTIONS);
-      //   console.log(storedCurrentMsgType, "storedCurrentMsgType");
 
       const storedUser = localStorage.getItem(hostname + "user");
       storedUser && setUser(JSON.parse(storedUser) as IUser);
-      // console.log(storedUser, "storedUser");
 
       const storedChatScreen = localStorage.getItem(hostname + "chatScreen");
       storedChatScreen && setChatScreen(storedChatScreen as ChatScreens);
-      // console.log(storedChatScreen, "storedChatScreen");
 
       const storedOfferJobs = localStorage.getItem(hostname + "offerJobs");
       storedOfferJobs &&
         setOfferJobs(JSON.parse(storedOfferJobs) as IRequisition[]);
-      // console.log(storedOfferJobs, "storedOfferJobs");
 
       const storedSearchLocations = localStorage.getItem(
         hostname + "searchLocations"
