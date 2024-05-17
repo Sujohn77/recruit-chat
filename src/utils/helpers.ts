@@ -183,9 +183,12 @@ export const getParsedMessages = (
 
 // CONTEXT
 
-export const validateEmail = (value: string) => {
+export const validateEmail = (
+  value: string,
+  requiredPhrase?: string
+): string => {
   if (!value) {
-    return i18n.t("labels:required");
+    return requiredPhrase || i18n.t(`labels:required`);
   }
   if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
     return i18n.t("labels:email_invalid");

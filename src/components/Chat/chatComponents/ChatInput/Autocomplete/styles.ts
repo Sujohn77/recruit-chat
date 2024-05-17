@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { TextField } from "@mui/material";
 import { COLORS } from "utils/colors";
 
-export const FormInput = styled(TextField)`
+export const FormInput = styled(TextField)<{ validationError?: boolean }>`
   input,
   textarea {
-    background: ${COLORS.CONCRETE};
+    background: ${({ validationError }) =>
+      COLORS[validationError ? "FAIR_PINK" : "CONCRETE"]};
     border-radius: 10px;
     padding: 10px;
     font-weight: 400;

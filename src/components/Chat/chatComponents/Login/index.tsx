@@ -26,25 +26,36 @@ export const Login: FC<ILoginProps> = ({
   const { t } = useTranslation();
   const { dispatch } = useChatMessenger();
 
+  const [error, setError] = useState("");
   const [emailError, setEmailError] = useState<string>("");
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [touched, setTouched] = useState(false);
+
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [height, setHeight] = useState<Height>(0);
 
   const onLogin = useCallback(() => {
-    const errorText = validateEmail(email);
+    const emailError = validateEmail(email, t("labels:login_validation"));
+    const fNameError = !firstName.trim();
+    const lNameError = !lastName.trim();
 
-    if (errorText) {
-      setEmailError(errorText);
-    } else if (!firstName.trim()) {
-      setFirstNameError(t("labels:required"));
-    } else if (!lastName.trim()) {
-      setLastNameError(t("labels:required"));
-    } else {
+    if (fNameError) {
+      setFirstNameError(t("labels:login_validation"));
+      setError(t("labels:login_validation"));
+    }
+    if (lNameError) {
+      setLastNameError(t("labels:login_validation"));
+      setError(t("labels:login_validation"));
+    }
+    if (emailError) {
+      setEmailError(emailError);
+      setError(emailError);
+    }
+
+    if (!fNameError && !lNameError && !emailError) {
       dispatch({
         type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
         payload: {
@@ -75,11 +86,12 @@ export const Login: FC<ILoginProps> = ({
   }, [onLogin, showLoginScreen]);
 
   useEffect(() => {
-    setHeight(emailError ? "auto" : 0);
-  }, [emailError]);
+    setHeight(error ? "auto" : 0);
+  }, [error]);
 
   const onChange = useCallback(
     (type: number) => (e: any) => {
+      setError("");
       switch (type) {
         case 1:
           setFirstName(e.target.value);
@@ -105,39 +117,42 @@ export const Login: FC<ILoginProps> = ({
       <S.Wrapper>
         <S.CloseLogin height="25px" onClick={() => setShowLoginScreen(false)} />
 
-        <S.HeaderTitle>{t("messages:provideName")}</S.HeaderTitle>
+        <S.HeaderTitle>{t("labels:login")}</S.HeaderTitle>
 
         <FormControl aria-expanded={height !== 0} aria-controls={ANIMATION_ID}>
           <FormInput
             value={firstName}
             onChange={onChange(1)}
-            error={!!firstNameError}
-            helperText={firstNameError}
+            // error={!!firstNameError}
+            // helperText={firstNameError}
             onClick={() => setTouched(!touched)}
             placeholder={t("labels:first_name")}
+            validationError={!!firstNameError}
           />
 
           <FormInput
             value={lastName}
             onChange={onChange(2)}
-            error={!!lastNameError}
-            helperText={lastNameError}
+            // error={!!lastNameError}
+            // helperText={lastNameError}
             onClick={() => setTouched(!touched)}
             placeholder={t("labels:last_name")}
+            validationError={!!lastNameError}
           />
 
           <FormInput
             value={email}
             onChange={onChange(3)}
-            error={!!emailError}
+            // error={!!emailError}
             onClick={() => setTouched(!touched)}
             placeholder="Email"
+            validationError={!!emailError}
           />
 
           <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
             <S.Error>
               <S.WarningImg src={IMAGES.WARN} alt="" />
-              {emailError}
+              {error}
             </S.Error>
           </AnimateHeight>
         </FormControl>

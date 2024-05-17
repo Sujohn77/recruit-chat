@@ -698,7 +698,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         const isError = isPhone
           ? validateEmailOrPhone(value)
           : validateEmail(value);
-        !isError.trim() && setError(null);
+        !isError?.trim() && setError(null);
       }
     }
 

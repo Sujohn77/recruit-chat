@@ -46,6 +46,9 @@ export const en = {
     log_out: "Log out",
     wish_continue: "I wish to continue",
     privacy_policy: "{{companyName}} Privacy Policy",
+    login:
+      "Please complete the following form to start the application process:",
+    login_validation: "Please complete all required fields",
   },
   languages: {
     en: "English",

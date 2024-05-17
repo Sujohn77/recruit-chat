@@ -47,6 +47,9 @@ export const fr = {
     log_out: "Déconnexion",
     wish_continue: "Je souhaite continuer",
     privacy_policy: "Politique de confidentialité de {{companyName}}",
+    login:
+      "Veuillez remplir le formulaire suivant pour entamer la procédure de candidature :",
+    login_validation: "Veuillez remplir tous les champs requis",
   },
   languages: {
     en: "Anglais",
