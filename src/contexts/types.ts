@@ -251,10 +251,8 @@ export interface IEmailLogin {
 
 export interface ISendNewMessage {
   message: string;
-  i18n?: string;
   optionId?: number;
   chatItemId?: number;
-  i18nProps?: Object | null;
   isLiveChat?: boolean;
 }
 

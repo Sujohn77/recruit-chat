@@ -1146,8 +1146,6 @@ const ChatProvider = ({
     message,
     optionId,
     chatItemId,
-    i18n,
-    i18nProps,
     isLiveChat = false,
   }: ISendNewMessage) => {
     if (isLiveChat && candidateId && queueId) {

@@ -23,7 +23,7 @@ export const MessageOptions: FC<IOptionListProps> = ({
   const { t, i18n } = useTranslation();
 
   const onSelectOption = useCallback(
-    async ({ text, id, i18nPhrase, i18nProps }: IMessageOption) => {
+    async ({ text, id }: IMessageOption) => {
       if (text && isLastMess) {
         setSelectedReferralJobId(undefined);
         try {
@@ -31,8 +31,6 @@ export const MessageOptions: FC<IOptionListProps> = ({
             message: text,
             optionId: id,
             chatItemId: message.chatItemId,
-            i18n: i18nPhrase,
-            i18nProps: i18nProps,
           });
         } catch (error) {}
       }
