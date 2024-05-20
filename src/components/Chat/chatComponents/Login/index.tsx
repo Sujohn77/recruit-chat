@@ -89,6 +89,19 @@ export const Login: FC<ILoginProps> = ({
     setHeight(error ? "auto" : 0);
   }, [error]);
 
+  useEffect(() => {
+    // clear state
+    if (!showLoginScreen) {
+      setEmail("");
+      setEmailError("");
+      setFirstName("");
+      setFirstNameError("");
+      setLastName("");
+      setLastNameError("");
+      setError("");
+    }
+  }, [showLoginScreen]);
+
   const onChange = useCallback(
     (type: number) => (e: any) => {
       setError("");
