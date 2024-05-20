@@ -44,11 +44,13 @@ import {
   IMessage,
   IMessageOptions,
   ISearchJobsPayload,
+  ISendAnswerRequest,
   I_id,
   LocationType,
   SnapshotType,
 } from "services/types";
 import i18n from "services/localization";
+import { ISendNewMessage } from "contexts/types";
 
 window.Buffer = Buffer;
 const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
@@ -90,6 +92,13 @@ export interface IMessageProps {
 interface IUserContact {
   isPhoneType: boolean;
   contact: string | undefined | null;
+}
+
+export interface ICreateSendMessPayload extends ISendNewMessage {
+  candidateId: number;
+  queueId: number | null;
+  subscriberWorkflowId?: number;
+  flowId?: number;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
@@ -889,3 +898,38 @@ export const createTextMess = ({
   dateCreated,
   optionList,
 });
+
+export const createSendMessPayload = (
+  props: ICreateSendMessPayload
+): ISendAnswerRequest => {
+  const {
+    candidateId,
+    message,
+    chatItemId,
+    isLiveChat,
+    localId,
+    optionId,
+    subscriberWorkflowId,
+    queueId,
+    flowId,
+  } = props;
+  if (isLiveChat && queueId) {
+    return {
+      candidateId,
+      message,
+      queueId,
+    };
+  } else if (flowId && subscriberWorkflowId) {
+    return {
+      SubscriberWorkflowID: subscriberWorkflowId,
+      localId: generateLocalId(),
+      FlowID: flowId,
+      candidateId,
+      message,
+      optionId,
+      chatItemId,
+    };
+  } else {
+    return { candidateId, message, localId };
+  }
+};

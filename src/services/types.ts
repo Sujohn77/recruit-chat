@@ -479,9 +479,9 @@ export interface IApplyJobResponse extends ISuccessResponse {
 }
 
 export interface ISendAnswerRequest {
-  FlowID?: number; //from previous api call
-  SubscriberWorkflowID?: number; //from previous api call
-  message: string; // ("yes")  the user's typed response/answer
+  FlowID?: number;
+  SubscriberWorkflowID?: number;
+  message: string;
   candidateId: number;
   localId?: string;
   optionId?: number;

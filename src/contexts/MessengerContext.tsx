@@ -69,6 +69,7 @@ import {
   getParsedSnapshots,
   getProcessedSnapshots,
   createTextMess,
+  createSendMessPayload,
 } from "utils/helpers";
 import {
   IChatMessengerContext,
@@ -1141,47 +1142,19 @@ const ChatProvider = ({
     [nextMessages]
   );
 
-  // for sending answer (after "Apply job")
-  const sendNewMessage = async ({
-    message,
-    optionId,
-    chatItemId,
-    isLiveChat = false,
-  }: ISendNewMessage) => {
-    if (isLiveChat && candidateId && queueId) {
-      setIsChatLoading(true);
-      try {
-        const payload: ISendAnswerRequest = {
-          candidateId,
-          message,
-          queueId,
-        };
-        const answerResponse: ApiResponse<IFollowingResponse> =
-          await apiInstance.sendAnswer(payload);
+  const sendNewMessage = async (props: ISendNewMessage) => {
+    if (candidateId) {
+      const payload = createSendMessPayload({
+        ...props,
+        isLiveChat,
+        candidateId,
+        queueId,
+        flowId,
+        subscriberWorkflowId,
+      });
 
-        if (answerResponse.data?.success) {
-          return Promise.resolve(answerResponse.data);
-        } else {
-          return Promise.reject(answerResponse);
-        }
-      } catch (error) {
-        return Promise.reject(error?.message);
-      } finally {
-        setIsChatLoading(false);
-      }
-    } else if (flowId && subscriberWorkflowId && candidateId) {
       try {
         setIsChatLoading(true);
-        const payload: ISendAnswerRequest = {
-          SubscriberWorkflowID: subscriberWorkflowId,
-          localId: generateLocalId(),
-          FlowID: isLiveChat ? undefined : flowId,
-          candidateId,
-          message,
-          optionId,
-          chatItemId,
-        };
-
         const answerResponse: ApiResponse<IFollowingResponse> =
           await apiInstance.sendAnswer(payload);
 

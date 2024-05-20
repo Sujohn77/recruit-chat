@@ -254,6 +254,7 @@ export interface ISendNewMessage {
   optionId?: number;
   chatItemId?: number;
   isLiveChat?: boolean;
+  localId?: string;
 }
 
 export interface IPPKeys {
