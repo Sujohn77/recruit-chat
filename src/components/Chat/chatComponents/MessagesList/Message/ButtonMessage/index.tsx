@@ -13,18 +13,21 @@ interface IButtonMessageProps {
 }
 
 export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
-  const { chooseButtonOption, messages, chatId, chatQueueId } =
+  const { chooseButtonOption, messages, chatId, chatQueueId, sendNewMessage } =
     useChatMessenger();
   const messageText = useGetMessageText(mess);
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
-  const onClick = useCallback(() => {
+  const onClick = useCallback(async () => {
     if (mess?.content.subType === MessageType.BUTTON && mess?.content?.text) {
       if (mess.content.text === "can i speak to someone?") {
         connectToLiveChat();
       } else {
         chooseButtonOption(mess.content.text as ButtonsOptions);
       }
+      await sendNewMessage({
+        message: mess.content.text,
+      });
     }
   }, [messages.length]);
 

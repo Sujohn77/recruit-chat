@@ -41,6 +41,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
     refURL,
     employeeLocationID,
     employeeJobFamilyNames,
+    sendNewMessage,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
@@ -102,6 +103,9 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             break;
           case 4:
             setSelectedReferralJobId(undefined);
+            await sendNewMessage({
+              message: t("referral:general_referral"),
+            });
             chooseButtonOption(
               ButtonsOptions.MAKE_REFERRAL,
               t("referral:general_referral"),

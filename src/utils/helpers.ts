@@ -933,3 +933,14 @@ export const createSendMessPayload = (
     return { candidateId, message, localId };
   }
 };
+
+export const withSendNewMess = (
+  messageValue: string | null,
+  currentMsgType: CHAT_ACTIONS | null,
+  isApplyJobFlow: boolean
+): boolean =>
+  messageValue?.trim() === "can i speak to someone?" ||
+  currentMsgType === CHAT_ACTIONS.LIVE_CHAT ||
+  currentMsgType === CHAT_ACTIONS.GET_EMAIL ||
+  currentMsgType === CHAT_ACTIONS.ASK_QUESTION ||
+  isApplyJobFlow;

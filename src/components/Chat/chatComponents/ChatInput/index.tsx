@@ -45,6 +45,7 @@ import {
   isValidNumber,
   validateEmail,
   validateEmailOrPhone,
+  withSendNewMess,
 } from "utils/helpers";
 import {
   ButtonsOptions,
@@ -294,6 +295,13 @@ export const ChatInput: FC<IChatInputProps> = ({
           setSearchLocations(items.length ? items : [message!]);
           setInputValues([]);
 
+          const text = matchedSearchItem ? items.join("\r") : message;
+          if (text) {
+            await sendNewMessage({
+              message: text,
+            });
+          }
+
           if (!emailAddress) {
             setMessages((prevMessages) => [
               alertEmailMess,
@@ -317,6 +325,18 @@ export const ChatInput: FC<IChatInputProps> = ({
             setSearchLocations(items);
           }
 
+          const text = items.length ? items.join("\r\n") : message;
+          if (text) {
+            try {
+              await sendNewMessage({
+                message: text,
+              });
+              setMessageValue("");
+            } catch (error) {
+              console.log(error);
+            }
+          }
+
           dispatch({
             type: actionType,
             payload: { items: items.length ? items : [message] },
@@ -328,6 +348,18 @@ export const ChatInput: FC<IChatInputProps> = ({
           isOwn: true,
           text: message || "",
         });
+
+        const text = currentMess.content.text;
+        if (text) {
+          try {
+            await sendNewMessage({
+              message: text,
+            });
+            setMessageValue("");
+          } catch (error) {
+            console.log(error);
+          }
+        }
 
         if (
           (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
@@ -749,10 +781,25 @@ export const ChatInput: FC<IChatInputProps> = ({
       }
     }
   };
-
   const onSendMessageHandler = async () => {
-    // LOG(isLiveChat, "isLiveChat", undefined, undefined, true);
     if (!isChatLoading) {
+      const withSendMessToSever = withSendNewMess(
+        messageValue,
+        currentMsgType,
+        isApplyJobFlow
+      );
+
+      if (withSendMessToSever && messageValue) {
+        try {
+          await sendNewMessage({
+            message: messageValue,
+          });
+          setMessageValue("");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
       if (messageValue?.trim() === "can i speak to someone?") {
         setMessageValue("");
         setIsOpenBurgerMenu(false);
@@ -899,15 +946,6 @@ export const ChatInput: FC<IChatInputProps> = ({
           } finally {
             setIsChatLoading(false);
           }
-        }
-      } else if (isApplyJobFlow && messageValue) {
-        try {
-          await sendNewMessage({
-            message: messageValue,
-          });
-          setMessageValue("");
-        } catch (error) {
-          console.log(error);
         }
       } else {
         const isSendMess =
