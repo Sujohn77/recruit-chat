@@ -15,12 +15,14 @@ import {
 import { EventIds, SessionStorage, isMobile } from "utils/constants";
 import { COLORS } from "utils/colors";
 
+type BooleanInString = "true" | "false";
+
 export interface IParentMessage {
   guid?: string;
   style?: IApiThemeResponse;
   token?: string;
   props?: {
-    referralEnabled?: "true" | "false";
+    referralEnabled?: BooleanInString;
     companyName?: string;
     referralListDomain?: string;
     clientApiToken?: string;
@@ -37,6 +39,7 @@ export interface IParentMessage {
     inlineDisclaimer?: string;
     privacyPolicyLinkInnerText?: string;
     privacyPolicyLinkUrl?: string;
+    jobsearchEnabled?: BooleanInString;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -59,6 +62,7 @@ export const ChatBotRoot: FC = () => {
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
+  const [withFindJobFeature, setWithFindJobFeature] = useState(true);
 
   // PP
   const [consentOptIn, setConsentOptIn] = useState<IPrivacyPolicy | null>(null);
@@ -96,8 +100,12 @@ export const ChatBotRoot: FC = () => {
           footerPrivacyLink,
           inlineDisclaimer,
           privacyPolicyLinkUrl,
+          jobsearchEnabled,
         } = props;
 
+        if (jobsearchEnabled === "false") {
+          setWithFindJobFeature(false);
+        }
         alertTemplateId && setAlertTemplateId(+alertTemplateId);
         queueId && setChatQueueId(+queueId);
         setIsReferralEnabled(referralEnabled === "true");
@@ -193,6 +201,7 @@ export const ChatBotRoot: FC = () => {
           isMultiLanguage={isMultiLanguage}
           alertTemplateId={alertTemplateId}
           defaultLanguage={defaultLanguage}
+          withFindJob={withFindJobFeature}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

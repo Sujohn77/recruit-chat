@@ -64,6 +64,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setIsChatLoading,
     setCurrentMsgType,
     messages,
+    withFindJob,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -76,8 +77,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
     let defaultItems =
       withSendTranscript || isCandidateWithEmail
-        ? menuForCandidateWithEmail(languages, isMultiLanguage)
-        : menuItems(languages, isMultiLanguage);
+        ? menuForCandidateWithEmail(languages, isMultiLanguage, withFindJob)
+        : menuItems(languages, isMultiLanguage, withFindJob);
     if (isReferralEnabled && !!employeeId) {
       return baseWithRef(languages, isMultiLanguage);
     }
@@ -95,6 +96,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     isLiveChat,
     currentMsgType,
     messages,
+    withFindJob,
   ]);
 
   useEffect(() => {

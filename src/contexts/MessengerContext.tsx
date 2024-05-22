@@ -34,7 +34,6 @@ import {
   IAskAQuestionResponse,
   ICreateCandidateResponse,
   ICreateChatResponse,
-  ISendAnswerRequest,
   IFollowingResponse,
   IMessage,
   ISendTranscriptResponse,
@@ -105,6 +104,7 @@ interface IChatProviderProps extends IPPKeys {
   chatQueueId: number | null;
   alertTemplateId: undefined | number;
   defaultLanguage: string;
+  withFindJob: boolean;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -130,6 +130,7 @@ const ChatProvider = ({
   consentOptIn,
   footerPrivacyLink,
   inlineDisclaimer,
+  withFindJob,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -1448,6 +1449,7 @@ const ChatProvider = ({
     consentOptIn,
     footerPrivacyLink,
     inlineDisclaimer,
+    withFindJob,
   };
 
   return (

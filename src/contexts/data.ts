@@ -116,6 +116,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   PPLinkUrl: null,
   chatConsent: false,
   setChatConsent() {},
+  withFindJob: true,
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [

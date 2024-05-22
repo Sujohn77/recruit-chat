@@ -5,7 +5,7 @@ import { useTheme } from "styled-components";
 import map from "lodash/map";
 
 import * as S from "./styles";
-import { optionWithReferral, options } from "./data";
+import { optionWithReferral, defOptions, askQuestionOption } from "./data";
 import { DefaultThemeType } from "utils/theme/default";
 import { IScreenOption } from "utils/types";
 
@@ -18,6 +18,7 @@ export const Initialization: FC = () => {
     setChatScreen,
     currentLanguage,
     sendNewMessage,
+    withFindJob,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
@@ -42,6 +43,12 @@ export const Initialization: FC = () => {
     `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
   );
 
+  const list = isReferralEnabled
+    ? optionWithReferral
+    : withFindJob
+    ? defOptions
+    : askQuestionOption;
+
   return (
     <S.Wrapper isFrench={isFr}>
       {isFr ? (
@@ -51,19 +58,16 @@ export const Initialization: FC = () => {
             <S.Question isFrench={isFr}>{question}</S.Question>
           </S.Header>
           <S.Options isFrench>
-            {map(
-              isReferralEnabled ? optionWithReferral : options,
-              (opt, index) => (
-                <S.Message
-                  key={`chat-option-${index}`}
-                  isFrench={isFr}
-                  onClick={() => onSelectOption(opt)}
-                >
-                  <S.Image src={opt.icon} size={opt.size} alt={""} />
-                  <S.Text>{t(opt.i18n)}</S.Text>
-                </S.Message>
-              )
-            )}
+            {map(list, (opt, index) => (
+              <S.Message
+                key={`chat-option-${index}`}
+                isFrench={isFr}
+                onClick={() => onSelectOption(opt)}
+              >
+                <S.Image src={opt.icon} size={opt.size} alt={""} />
+                <S.Text>{t(opt.i18n)}</S.Text>
+              </S.Message>
+            ))}
           </S.Options>
         </S.InfoContent>
       ) : (
@@ -73,19 +77,16 @@ export const Initialization: FC = () => {
             <S.Question isFrench={isFr}>{question}</S.Question>
 
             <S.Options isFrench={false}>
-              {map(
-                isReferralEnabled ? optionWithReferral : options,
-                (opt, index) => (
-                  <S.Message
-                    key={`chat-option-${index}`}
-                    isFrench={isFr}
-                    onClick={() => onSelectOption(opt)}
-                  >
-                    <S.Image src={opt.icon} size={opt.size} alt={""} />
-                    <S.Text>{t(opt.i18n)}</S.Text>
-                  </S.Message>
-                )
-              )}
+              {map(list, (opt, index) => (
+                <S.Message
+                  key={`chat-option-${index}`}
+                  isFrench={isFr}
+                  onClick={() => onSelectOption(opt)}
+                >
+                  <S.Image src={opt.icon} size={opt.size} alt={""} />
+                  <S.Text>{t(opt.i18n)}</S.Text>
+                </S.Message>
+              ))}
             </S.Options>
           </S.InfoContent>
         </>

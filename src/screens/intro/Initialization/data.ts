@@ -2,7 +2,7 @@ import { ICONS } from "assets";
 import { ChatScreens } from "utils/constants";
 import { CHAT_ACTIONS, IScreenOption } from "utils/types";
 
-export const options: IScreenOption[] = [
+export const defOptions: IScreenOption[] = [
   {
     icon: ICONS.SEARCH_ICON,
     type: CHAT_ACTIONS.FIND_JOB,
@@ -11,6 +11,17 @@ export const options: IScreenOption[] = [
     i18n: "buttons:find_job",
     i18nProps: null,
   },
+  {
+    icon: ICONS.QUESTION,
+    type: CHAT_ACTIONS.ASK_QUESTION,
+    size: "16px",
+    screen: ChatScreens.QnA,
+    i18n: "buttons:ask_questions",
+    i18nProps: null,
+  },
+];
+
+export const askQuestionOption: IScreenOption[] = [
   {
     icon: ICONS.QUESTION,
     type: CHAT_ACTIONS.ASK_QUESTION,

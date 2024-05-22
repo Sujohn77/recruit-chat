@@ -65,19 +65,31 @@ export const baseWithRef = (languages: string[], isMultiLanguage: boolean) => {
     : base;
 };
 
-export const menuItems = (languages: string[], isMultiLanguage: boolean) => {
-  const base = [
-    {
-      type: CHAT_ACTIONS.FIND_JOB,
-      text: i18n.t("chat_menu:find_job"),
-      i18n: "chat_menu:find_job",
-    },
-    {
-      type: CHAT_ACTIONS.ASK_QUESTION,
-      text: i18n.t("chat_menu:ask_question"),
-      i18n: "chat_menu:ask_question",
-    },
-  ];
+export const menuItems = (
+  languages: string[],
+  isMultiLanguage: boolean,
+  withFindJob: boolean
+) => {
+  const base = withFindJob
+    ? [
+        {
+          type: CHAT_ACTIONS.FIND_JOB,
+          text: i18n.t("chat_menu:find_job"),
+          i18n: "chat_menu:find_job",
+        },
+        {
+          type: CHAT_ACTIONS.ASK_QUESTION,
+          text: i18n.t("chat_menu:ask_question"),
+          i18n: "chat_menu:ask_question",
+        },
+      ]
+    : [
+        {
+          type: CHAT_ACTIONS.ASK_QUESTION,
+          text: i18n.t("chat_menu:ask_question"),
+          i18n: "chat_menu:ask_question",
+        },
+      ];
 
   return isMultiLanguage
     ? [
@@ -95,26 +107,40 @@ export const menuItems = (languages: string[], isMultiLanguage: boolean) => {
 
 export const menuForCandidateWithEmail = (
   languages: string[],
-  isMultiLanguage: boolean
+  isMultiLanguage: boolean,
+  withFindJob: boolean
 ) => {
-  const base = [
-    {
-      type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
-      text: i18n.t("chat_menu:save_transcript"),
-      i18n: "chat_menu:save_transcript",
-    },
+  const base = withFindJob
+    ? [
+        {
+          type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
+          text: i18n.t("chat_menu:save_transcript"),
+          i18n: "chat_menu:save_transcript",
+        },
 
-    {
-      type: CHAT_ACTIONS.FIND_JOB,
-      text: i18n.t("chat_menu:find_job"),
-      i18n: "chat_menu:find_job",
-    },
-    {
-      type: CHAT_ACTIONS.ASK_QUESTION,
-      text: i18n.t("chat_menu:ask_question"),
-      i18n: "chat_menu:ask_question",
-    },
-  ];
+        {
+          type: CHAT_ACTIONS.FIND_JOB,
+          text: i18n.t("chat_menu:find_job"),
+          i18n: "chat_menu:find_job",
+        },
+        {
+          type: CHAT_ACTIONS.ASK_QUESTION,
+          text: i18n.t("chat_menu:ask_question"),
+          i18n: "chat_menu:ask_question",
+        },
+      ]
+    : [
+        {
+          type: CHAT_ACTIONS.SAVE_TRANSCRIPT,
+          text: i18n.t("chat_menu:save_transcript"),
+          i18n: "chat_menu:save_transcript",
+        },
+        {
+          type: CHAT_ACTIONS.ASK_QUESTION,
+          text: i18n.t("chat_menu:ask_question"),
+          i18n: "chat_menu:ask_question",
+        },
+      ];
 
   return isMultiLanguage
     ? [
