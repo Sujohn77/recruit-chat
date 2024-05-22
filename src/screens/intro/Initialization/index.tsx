@@ -12,17 +12,26 @@ import { IScreenOption } from "utils/types";
 export const Initialization: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme() as DefaultThemeType;
-  const { dispatch, isReferralEnabled, setChatScreen, currentLanguage } =
-    useChatMessenger();
+  const {
+    dispatch,
+    isReferralEnabled,
+    setChatScreen,
+    currentLanguage,
+    sendNewMessage,
+  } = useChatMessenger();
 
   const onSelectOption = useCallback(
-    ({ type, screen, i18n, i18nProps }: IScreenOption) => {
+    async ({ type, screen, i18n, i18nProps }: IScreenOption) => {
       setChatScreen(screen);
       dispatch({
         type,
         payload: { item: t(i18n), isChatMessage: true },
         i18nProps: i18nProps,
         i18n: i18n,
+      });
+
+      await sendNewMessage({
+        message: t(i18n),
       });
     },
     []

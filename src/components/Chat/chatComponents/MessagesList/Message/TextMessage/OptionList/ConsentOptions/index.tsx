@@ -25,10 +25,11 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
     inlineDisclaimer,
     messages,
     consentOptIn,
+    sendNewMessage,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
-    (option: IMessageOption) => {
+    async (option: IMessageOption) => {
       const optId = option.id;
       switch (optId) {
         case 1:
@@ -37,6 +38,11 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
           break;
         case 2:
           if (isLastMess) {
+            if (option.text) {
+              await sendNewMessage({
+                message: option.text,
+              });
+            }
             setChatConsent(true);
             const responseMessages = getParsedMessages(
               getChatActionMessages({

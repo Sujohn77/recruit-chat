@@ -781,13 +781,10 @@ export const ChatInput: FC<IChatInputProps> = ({
       }
     }
   };
+
   const onSendMessageHandler = async () => {
     if (!isChatLoading) {
-      const withSendMessToSever = withSendNewMess(
-        messageValue,
-        currentMsgType,
-        isApplyJobFlow
-      );
+      const withSendMessToSever = withSendNewMess(messageValue, currentMsgType);
 
       if (withSendMessToSever && messageValue) {
         try {
@@ -947,6 +944,11 @@ export const ChatInput: FC<IChatInputProps> = ({
             setIsChatLoading(false);
           }
         }
+      } else if (isApplyJobFlow && messageValue) {
+        setMessageValue("");
+        await sendNewMessage({
+          message: messageValue,
+        });
       } else {
         const isSendMess =
           currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length;
