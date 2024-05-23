@@ -131,7 +131,10 @@ export const Image = styled.img<{ size?: string }>`
 export const IntroImage = styled(Image)<IImgProps>`
   max-width: 34px;
   border-radius: 50%;
-  border: ${(props) => `1px solid ${props.theme.primaryColor}`};
+  border: ${({ theme }) =>
+    theme.avatarBorderStyle
+      ? theme.avatarBorderStyle
+      : `1px solid ${theme.primaryColor}`};
   box-sizing: border-box;
 
   ${({ isFrench }) => isFrench && "margin-right: 10px;"};
