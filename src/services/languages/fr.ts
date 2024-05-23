@@ -58,6 +58,7 @@ export const fr = {
   },
   messages: {
     initialMessage: "Bonjour ! Êtes-vous à la recherche d'un poste ?",
+    initialMessage2: "Bonjour, je suis l'assistante virtuelle de GMS !",
     refInitialMessage:
       "Bonjour ! Je suis là pour vous aider avec les recommandations !",
     uploadCV: "Télécharger un CV",

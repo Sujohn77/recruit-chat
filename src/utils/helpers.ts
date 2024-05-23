@@ -317,6 +317,7 @@ export const getMessagesOnAction = ({
   messages,
   responseMessages,
   isReferralEnabled,
+  withFindJob,
 }: IGetUpdatedMessages) => {
   const { type } = action;
   let updatedMessages = messages;
@@ -329,7 +330,10 @@ export const getMessagesOnAction = ({
     updatedMessages = popMessage({
       type: getReplaceMessageType(type),
       messages: !updatedMessages.length
-        ? [...updatedMessages, ...initialMessages(isReferralEnabled)]
+        ? [
+            ...updatedMessages,
+            ...initialMessages(isReferralEnabled, withFindJob),
+          ]
         : updatedMessages,
     });
   }
@@ -343,15 +347,25 @@ export const getMessagesOnAction = ({
   return [...responseMessages, ...updatedMessages];
 };
 
-const initialMessages = (isReferralEnabled: boolean) =>
+const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
   getParsedMessages([
     {
       text: i18n.t(
-        `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
+        `messages:${
+          isReferralEnabled
+            ? "refInitialMessage"
+            : withFindJob
+            ? "initialMessage"
+            : "initialMessage2"
+        }`
       ),
       isChatMessage: true,
       i18n: `messages:${
-        isReferralEnabled ? "refInitialMessage" : "initialMessage"
+        isReferralEnabled
+          ? "refInitialMessage"
+          : withFindJob
+          ? "initialMessage"
+          : "initialMessage2"
       }`,
       i18nProps: null,
     },
@@ -419,6 +433,7 @@ export const pushMessage = ({
   companyName,
   consentOptIn,
   t,
+  withFindJob,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
 
@@ -440,7 +455,7 @@ export const pushMessage = ({
   const updatedMessages = popMessage({
     type: getReplaceMessageType(type),
     messages: !messages.length
-      ? [...messages, ...initialMessages(isReferralEnabled)]
+      ? [...messages, ...initialMessages(isReferralEnabled, withFindJob)]
       : messages,
   });
 

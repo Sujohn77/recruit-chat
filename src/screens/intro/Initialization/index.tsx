@@ -40,7 +40,13 @@ export const Initialization: FC = () => {
 
   const isFr = currentLanguage === "fr";
   const question = t(
-    `messages:${isReferralEnabled ? "refInitialMessage" : "initialMessage"}`
+    `messages:${
+      isReferralEnabled
+        ? "refInitialMessage"
+        : withFindJob
+        ? "initialMessage"
+        : "initialMessage2"
+    }`
   );
 
   const list = isReferralEnabled

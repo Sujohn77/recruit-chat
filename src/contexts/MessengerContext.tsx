@@ -741,6 +741,7 @@ const ChatProvider = ({
             currentLanguage,
             companyName,
             t,
+            withFindJob,
           });
         }
 
@@ -756,6 +757,7 @@ const ChatProvider = ({
       consentOptIn,
       currentLanguage,
       PPLinkUrl,
+      withFindJob,
     ]
   );
 
@@ -1091,6 +1093,7 @@ const ChatProvider = ({
         messages: updatedMessages,
         responseMessages,
         isReferralEnabled,
+        withFindJob,
       });
 
       // Simulate chat bot reaction
@@ -1112,6 +1115,7 @@ const ChatProvider = ({
       requisitions.length,
       chatBotId,
       companyName,
+      withFindJob,
     ]
   );
 

@@ -214,6 +214,7 @@ export interface IGetUpdatedMessages {
   messages: ILocalMessage[];
   responseMessages: ILocalMessage[];
   isReferralEnabled: boolean;
+  withFindJob: boolean;
 }
 
 export interface IPushMessage {
@@ -226,6 +227,7 @@ export interface IPushMessage {
   consentOptIn: IPrivacyPolicy | null;
   companyName?: string | null;
   t: TFunction;
+  withFindJob: boolean;
 }
 
 export interface IGetChatResponseProps {
