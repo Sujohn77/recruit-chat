@@ -88,6 +88,7 @@ import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { chatMessengerDefaultState, getQuestions } from "./data";
 import { COLORS } from "utils/colors";
+import { usePersistStore } from "utils/hooks";
 
 interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
@@ -353,7 +354,7 @@ const ChatProvider = ({
     if (isApplyJobSuccessfully) {
       LOG(chatId, "chatId", undefined, undefined, true);
       LOG(
-        `.collection("chats").doc(chatId?.toString()).collection("messages")`,
+        `.collection("chats").doc(${chatId}?.toString()).collection("messages")`,
         `chatId=${chatId}`,
         undefined,
         undefined,
@@ -416,8 +417,8 @@ const ChatProvider = ({
   useEffect(() => {
     let savedSocketConnection: any;
     // LOG(isLiveChat, "isLiveChat", COLORS.BLACK, COLORS.WHITE, true);
-    LOG(queueId, "queueId", COLORS.BLACK, COLORS.WHITE, true);
-    LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
+    // LOG(queueId, "queueId", COLORS.BLACK, COLORS.WHITE, true);
+    // LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
     LOG(isTabActive, "isTabActive", COLORS.WHITE, COLORS.BLACK, true);
 
     if (isLiveChat && queueId && queueChatId && isTabActive) {
@@ -1129,7 +1130,7 @@ const ChatProvider = ({
 
   const submitMessage = ({ type, messageId }: ISubmitMessageProps) => {
     const updatedMessages = map(messages, (msg) =>
-      msg?.content.subType === type && !msg._id
+      msg?.content?.subType === type && !msg._id
         ? { ...msg, _id: messageId }
         : msg
     );
@@ -1372,9 +1373,11 @@ const ChatProvider = ({
     firebaseToken,
     isAuthInFirebase,
     setIsAuthInFirebase,
+    isApplyJobSuccessfully,
     setIsApplyJobSuccessfully,
     isApplyJobFlow,
     setFlowId,
+    subscriberWorkflowId,
     setSubscriberWorkflowId,
     sendNewMessage,
     setIsApplyJobFlow,
@@ -1454,6 +1457,7 @@ const ChatProvider = ({
     footerPrivacyLink,
     inlineDisclaimer,
     withFindJob,
+    flowId,
   };
 
   return (

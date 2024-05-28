@@ -105,9 +105,9 @@ export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
   const padding =
-    msg?.content.subType === MessageType.FILE ? "8px" : "12px 16px";
+    msg?.content?.subType === MessageType.FILE ? "8px" : "12px 16px";
   const cursor =
-    msg?.content.subType === MessageType.BUTTON ? "pointer" : "initial";
+    msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial";
 
   if (!msg.isOwn) {
     return {
@@ -293,7 +293,7 @@ export const getParsedMessage = ({
 export const getServerParsedMessages = (messages: IMessage[]) => {
   const parsedMessages = map(messages, (msg) => {
     const content: IContent = {
-      subType: msg?.content.subType,
+      subType: msg?.content?.subType,
       text: msg?.content.text,
       i18n: msg.content.i18n,
       i18nProps: msg.content.i18nProps,
@@ -480,7 +480,7 @@ export const pushMessage = ({
 };
 
 const popMessage = ({ type, messages }: IPopMessage): ILocalMessage[] =>
-  !type ? messages : filter(messages, (msg) => msg?.content.subType !== type);
+  !type ? messages : filter(messages, (msg) => msg?.content?.subType !== type);
 
 export const replaceItemsWithType = ({
   type,
@@ -495,11 +495,11 @@ export const replaceItemsWithType = ({
 
   const item = find(
     messages,
-    (msg) => msg?.content.subType === type && msg.content.text === excludeItem
+    (msg) => msg?.content?.subType === type && msg.content.text === excludeItem
   );
   const updatedMessages = filter(
     messages,
-    (msg) => msg?.content.subType !== type
+    (msg) => msg?.content?.subType !== type
   );
 
   if (item) {

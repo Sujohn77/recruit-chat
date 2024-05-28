@@ -783,7 +783,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   };
 
   const onSendMessageHandler = async () => {
-    if (!isChatLoading) {
+    if (!isChatLoading && isTabActive) {
       const withSendMessToSever = withSendNewMess(messageValue, currentMsgType);
 
       if (withSendMessToSever && messageValue) {

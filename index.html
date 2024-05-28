@@ -65,7 +65,7 @@
 
     const currentPage = window.location.pathname;
     const availablePages = strToArray(props?.pages);
-    const showChatbot = availablePages?.some((p) => p === currentPage);
+    const showChatbot = availablePages?.some((p) => currentPage.includes(p));
 
     if (showChatbot) {
       document.body?.appendChild(ifrm);

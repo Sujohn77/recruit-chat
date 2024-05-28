@@ -80,10 +80,11 @@ export interface IChatMessengerContext extends IPPKeys {
   firebaseToken: string | null;
   isAuthInFirebase: boolean;
   setIsAuthInFirebase: (isAuth: boolean) => void;
+  isApplyJobSuccessfully: boolean;
   setIsApplyJobSuccessfully: (isSuccessful: boolean) => void;
   isApplyJobFlow: boolean;
-  setFlowId: (flowId: number) => void;
-  setSubscriberWorkflowId: (id: number) => void;
+  setFlowId: (flowId?: number) => void;
+  setSubscriberWorkflowId: (id?: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
   sendNewMessage: (props: ISendNewMessage) => Promise<any>;
   emailAddress: string;
@@ -164,6 +165,8 @@ export interface IChatMessengerContext extends IPPKeys {
   chatConsent: boolean;
   setChatConsent: (accepted: boolean) => void;
   withFindJob: boolean;
+  flowId: number | undefined;
+  subscriberWorkflowId: number | undefined;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

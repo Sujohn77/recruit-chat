@@ -1,5 +1,5 @@
 import { ISearchRequisition } from "contexts/types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import browserStorage from "store";
 import firebase from "firebase";
@@ -9,6 +9,7 @@ import "firebase/auth";
 import { CHAT_ACTIONS, ILocalMessage } from "./types";
 import { getFormattedLocations } from "./helpers";
 import { useChatMessenger } from "contexts/MessengerContext";
+import { IRequisitionType, useIsTabActive } from "services/hooks";
 import i18n from "services/localization";
 
 interface IUseTextField {
@@ -74,22 +75,6 @@ export const useTextField = () => {
   });
 };
 
-export const useApiKey = () => {
-  const url: any = new URL(window.location.href);
-  let apiKey: undefined | string = undefined;
-
-  for (const p of url.searchParams.entries()) {
-    const [key, value] = p;
-
-    if (key === "apikey") {
-      apiKey = value;
-      break;
-    }
-  }
-
-  return apiKey;
-};
-
 export const useFirebaseSignIn = () => {
   const { firebaseToken, setIsAuthInFirebase } = useChatMessenger();
 
@@ -152,27 +137,46 @@ export const useGetMessageText = (mess: ILocalMessage) => {
 // This hook receives two parameters:
 // storageKey: This is the name of our storage that gets used when we retrieve/save our persistent data.
 // initialState: This is our default value, but only if the store doesn't exist, otherwise it gets overwritten by the store.
-export const usePersistStore = (storageKey: string, initialState: any) => {
+export const usePersistStore = <StateType>(
+  storageKey: string,
+  initialState: StateType,
+  hostname: string
+): [
+  state: StateType,
+  setState: React.Dispatch<React.SetStateAction<StateType>>
+] => {
+  const isTabActive = useIsTabActive();
   // Initiate the internal state.
-  const [state, setInternalState] = useState(initialState);
+  const [state, setInternalState] = useState<StateType>(initialState);
 
   // Only on our initial load, retrieve the data from the store and set the state to that data.
   useEffect(() => {
-    // Retrieve the data from the store.
-    const storageInBrowser = browserStorage.get(storageKey);
+    if (isTabActive) {
+      // Retrieve the data from the store.
+      const storageInBrowser = browserStorage.get(storageKey);
+      //if StateType includes null
 
-    // If the store exists, overwrite the state with the store's data.
-    // Otherwise if the store doesn't exist then "initialState" remains our default value.
-    if (storageInBrowser) {
-      setInternalState(storageInBrowser);
+      // If the store exists, overwrite the state with the store's data.
+      // Otherwise if the store doesn't exist then "initialState" remains our default value.
+      if (storageKey === hostname + "requisitions") {
+        // @ts-ignore
+        setInternalState(JSON.parse(storageInBrowser) as IRequisitionType[]);
+      } else if (storageInBrowser) {
+        setInternalState(storageInBrowser);
+      }
     }
-  }, []);
+  }, [isTabActive]);
 
   // Create a replacement method that will set the state like normal, but that also saves the new state into the store.
-  const setState = (newState: any) => {
-    browserStorage.set(storageKey, newState);
-    setInternalState(newState);
-  };
+  const setState = useCallback(
+    (newState: StateType) => {
+      if (isTabActive) {
+        browserStorage.set(storageKey, newState);
+        setInternalState(newState);
+      }
+    },
+    [isTabActive]
+  );
 
   return [state, setState];
 };

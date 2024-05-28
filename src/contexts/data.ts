@@ -117,6 +117,9 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   chatConsent: false,
   setChatConsent() {},
   withFindJob: true,
+  isApplyJobSuccessfully: false,
+  flowId: undefined,
+  subscriberWorkflowId: undefined,
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [

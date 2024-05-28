@@ -68,6 +68,14 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setQueueId,
     queueChatId,
     setQueueChatId,
+    isApplyJobFlow,
+    setIsApplyJobFlow,
+    isApplyJobSuccessfully,
+    setIsApplyJobSuccessfully,
+    flowId,
+    setFlowId,
+    subscriberWorkflowId,
+    setSubscriberWorkflowId,
   } = useChatMessenger();
 
   useEffect(() => {
@@ -185,6 +193,28 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       storedQueueId && setQueueId(+storedQueueId);
       const storedQueueChatId = localStorage.getItem(hostname + "queueChatId");
       storedQueueChatId && setQueueChatId(+storedQueueChatId);
+
+      const storedIsApplyJobFlow = localStorage.getItem(
+        hostname + "isApplyJobFlow"
+      );
+      storedIsApplyJobFlow &&
+        setIsApplyJobFlow(storedIsApplyJobFlow === "true");
+
+      const storedSsApplyJobSuccessfully = localStorage.getItem(
+        hostname + "isApplyJobSuccessfully"
+      );
+      storedSsApplyJobSuccessfully &&
+        setIsApplyJobSuccessfully(storedSsApplyJobSuccessfully === "true");
+
+      const storedFlowId = localStorage.getItem(hostname + "flowId");
+      setFlowId(storedFlowId ? +storedFlowId : undefined);
+
+      const storedSubscriberWorkflowId = localStorage.getItem(
+        hostname + "subscriberWorkflowId"
+      );
+      setSubscriberWorkflowId(
+        storedSubscriberWorkflowId ? +storedSubscriberWorkflowId : undefined
+      );
     }
   }, []);
 
@@ -245,10 +275,35 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       localStorage.setItem(hostname + "queueChatId", queueChatId?.toString());
     localStorage.setItem(hostname + "isLiveChat", isLiveChat?.toString());
 
+    localStorage.setItem(
+      hostname + "isApplyJobFlow",
+      isApplyJobFlow?.toString()
+    );
+
+    localStorage.setItem(
+      hostname + "isApplyJobSuccessfully",
+      isApplyJobSuccessfully?.toString()
+    );
+
     if (viewJob) {
       localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
     } else {
       localStorage.removeItem(hostname + "viewJob");
+    }
+
+    if (flowId) {
+      localStorage.setItem(hostname + "flowId", flowId.toString());
+    } else {
+      localStorage.removeItem(hostname + "flowId");
+    }
+
+    if (subscriberWorkflowId) {
+      localStorage.setItem(
+        hostname + "subscriberWorkflowId",
+        subscriberWorkflowId.toString()
+      );
+    } else {
+      localStorage.removeItem(hostname + "subscriberWorkflowId");
     }
   }, [
     messages,
@@ -278,6 +333,10 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     queueChatId,
     queueId,
     isLiveChat,
+    isApplyJobFlow,
+    isApplyJobSuccessfully,
+    flowId,
+    subscriberWorkflowId,
   ]);
 
   useEffect(() => {
