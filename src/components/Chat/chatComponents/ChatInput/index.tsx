@@ -35,7 +35,7 @@ import {
   TryAgainTypes,
 } from "utils/constants";
 import {
-  LOG,
+  createConsentInMsg,
   createTextMess,
   generateLocalId,
   getInputType,
@@ -43,6 +43,7 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
+  parsePathname,
   validateEmail,
   validateEmailOrPhone,
   withSendNewMess,
@@ -54,7 +55,7 @@ import {
   MessageType,
 } from "utils/types";
 import { COLORS } from "utils/colors";
-import { useFirebaseSignIn, useTextField } from "utils/hooks";
+import { useFirebaseSignIn, usePersistStore, useTextField } from "utils/hooks";
 import {
   ISubmitReferral,
   useConnectToLiveChat,
@@ -63,11 +64,12 @@ import {
 } from "contexts/hooks";
 import { MultiSelectInput, Autocomplete, BurgerMenu } from "components/Layout";
 import {
-  ISendTranscriptResponse,
+  IApplyJobResponse,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
 import { PrivacyPolicy } from "./PrivacyPolicy";
+import { useSetUserData } from "./hooks";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -136,11 +138,18 @@ export const ChatInput: FC<IChatInputProps> = ({
     setEmailAddress,
     PPLinkUrl,
     footerPrivacyLink,
+    consentOptIn,
+    companyName,
+    setIsApplyJobSuccessfully,
+    setFlowId,
+    setSubscriberWorkflowId,
+    parentPathname,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
   const isTabActive = useIsTabActive();
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
+  const setUserData = useSetUserData();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
@@ -165,6 +174,12 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [refError, setRefError] = useState("");
+
+  const [isAcceptedApplyJob, setIsAcceptedApplyJob] = usePersistStore<boolean>(
+    hostname + "isAccepted",
+    false,
+    hostname
+  );
 
   const inputType = getInputType(currentMsgType);
 
@@ -924,24 +939,168 @@ export const ChatInput: FC<IChatInputProps> = ({
 
             if (res?.success) {
               setEmailAddress(messageValue.trim());
-              setIsCandidateWithEmail(true);
-            }
-
-            if (res?.success) {
-              setEmailAddress(messageValue.trim());
               setUserFirstName(userFName);
               setUserLastName(userLName);
               setIsCandidateWithEmail(true);
             }
 
-            const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-              await apiInstance.sendTranscript({
-                ChatID: chatId!,
-              });
+            await apiInstance.sendTranscript({
+              ChatID: chatId!,
+            });
             setCurrentMsgType(CHAT_ACTIONS.LIVE_CHAT);
           } catch (error) {
           } finally {
             setIsChatLoading(false);
+          }
+        }
+      } else if (
+        currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
+        messageValue
+      ) {
+        setMessageValue("");
+
+        if (
+          messageValue.trim().toLowerCase().startsWith("ye") &&
+          !isAcceptedApplyJob
+        ) {
+          const answer = createTextMess({ text: messageValue, isOwn: true });
+          const resMess = createTextMess({ text: t("messages:great_apply") });
+          const consentInMessage = createConsentInMsg({
+            consentOptIn,
+            currentLanguage,
+            companyName,
+            t,
+          });
+          setMessages((prev) => [consentInMessage, resMess, answer, ...prev]);
+          setIsAcceptedApplyJob(true);
+          setUserFirstName(messageValue.trim());
+        } else {
+          if (!userFName) {
+            setFName(messageValue.trim());
+            setMessages((prev) => [
+              createTextMess({ isOwn: true, text: messageValue }),
+              ...prev,
+            ]);
+
+            setIsChatLoading(true);
+            setTimeout(() => {
+              setIsChatLoading(false);
+              setMessages((prevMessages) => [
+                createTextMess({
+                  text: t("messages:provide_lastname"),
+                  i18n: "messages:provide_lastname",
+                }),
+                ...prevMessages,
+              ]);
+            }, 500);
+            return;
+          } else if (!userLName) {
+            setLName(messageValue.trim());
+            setUserLastName(messageValue.trim());
+            setMessages((prev) => [
+              createTextMess({
+                text: t("messages:provideEmail"),
+                i18n: "messages:provideEmail",
+              }),
+              createTextMess({
+                isOwn: true,
+                text: messageValue,
+              }),
+              ...prev,
+            ]);
+            setMessageValue("");
+          } else if (!emailAddress) {
+            setEmailAddress(messageValue);
+            setUserEmail(messageValue);
+
+            const candidatePayload: IUpdateOrMergeCandidateRequest = {
+              firstName: userFName,
+              lastName: userLName,
+              emailAddress: messageValue.trim(),
+              candidateId: candidateId!,
+              chatId: chatId!,
+              skipEmailCheck: false,
+            };
+
+            setIsChatLoading(true);
+            try {
+              const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+                await apiInstance.updateOrMargeCandidate(candidatePayload);
+
+              const response = candidateRes?.data;
+
+              if (
+                response?.success &&
+                response?.updateChatBotCandidateId &&
+                response?.candidateId
+              ) {
+                setCandidateId(response.candidateId);
+                setIsCandidateAnonym(false);
+              }
+
+              if (response?.success) {
+                setEmailAddress(messageValue.trim());
+                setUserFirstName(userFName);
+                setUserLastName(userLName);
+                setIsCandidateWithEmail(true);
+              }
+
+              if (response?.success && response.candidateId && chatId) {
+                try {
+                  const { jobId } = parsePathname(parentPathname);
+                  if (jobId) {
+                    const res: ApiResponse<IApplyJobResponse> =
+                      await apiInstance.applyJob(
+                        jobId,
+                        response.candidateId,
+                        chatId
+                      );
+
+                    if (
+                      res.data?.success &&
+                      res.data?.FlowID &&
+                      res.data?.SubscriberWorkflowID
+                    ) {
+                      setIsApplyJobSuccessfully(true);
+                      setFlowId(res.data.FlowID);
+                      setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
+                    } else {
+                      if (res.data?.statusCode === 105) {
+                      } else {
+                        setMessages((prev) => [
+                          createTextMess({
+                            text:
+                              res.data?.errors[0]?.trim() ||
+                              t(
+                                `errors:${
+                                  res.data?.statusCode === 105
+                                    ? "something_went_wrong"
+                                    : "not_possible_to_start"
+                                }`
+                              ),
+                            isError: true,
+                          }),
+                          ...prev,
+                        ]);
+                      }
+                    }
+                  }
+                } catch (error) {
+                  if (error.message) {
+                    setMessages((prev) => [
+                      createTextMess({
+                        text: error.message,
+                        isError: true,
+                      }),
+                      ...prev,
+                    ]);
+                  }
+                }
+              }
+            } catch (error) {
+            } finally {
+              setIsChatLoading(false);
+            }
           }
         }
       } else if (isApplyJobFlow && messageValue) {

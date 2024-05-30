@@ -34,6 +34,7 @@ export enum ChatScreens {
   QnA = "AskAQuestion",
   FindAJob = "FindAJob",
   MakeReferral = "MakeReferral",
+  ApplyJob = "ApplyJob",
 }
 
 export enum MessageOptionTypes {

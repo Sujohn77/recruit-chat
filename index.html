@@ -6,7 +6,7 @@
   // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
   // const chatbotSrc = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`; // zustand
   const guid = "f466faec-ea83-4122-8c23-458ab21e96be"; // qa guid
-  const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com";
+  const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com"; // TODO: replace with your chatbotSrc
 
   const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
   const logStyle =
@@ -67,6 +67,8 @@
     const availablePages = strToArray(props?.pages);
     const showChatbot = availablePages?.some((p) => currentPage.includes(p));
 
+    LOG(showChatbot, "showChatbot", undefined, undefined, true);
+
     if (showChatbot) {
       document.body?.appendChild(ifrm);
       ifrm.addEventListener("load", () => {
@@ -80,6 +82,7 @@
             referralListDomain,
             clientApiToken,
             hostname: window.location.hostname,
+            pathname: window.location.pathname,
           },
           ifrm.src
         );
@@ -198,6 +201,7 @@
               referralListDomain: chatBotReferralListDomain,
               clientApiToken: chatBotClientApiToken,
               hostname: window.location.hostname,
+              pathname: window.location.pathname,
             },
             chatbotSrc
           );

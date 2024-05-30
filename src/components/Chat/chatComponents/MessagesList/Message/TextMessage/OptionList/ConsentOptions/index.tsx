@@ -1,12 +1,13 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
 import * as S from "../styles";
 import { IMessageOption } from "services/types";
-import { ILocalMessage } from "utils/types";
 import { getChatActionMessages } from "utils/constants";
-import { getParsedMessages } from "utils/helpers";
+import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
+import { createTextMess, getParsedMessages } from "utils/helpers";
 
 interface IConsentOptionsProps {
   message: ILocalMessage;
@@ -27,6 +28,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
     consentOptIn,
     sendNewMessage,
   } = useChatMessenger();
+  const { t } = useTranslation();
 
   const onSelectOption = useCallback(
     async (option: IMessageOption) => {
@@ -44,18 +46,30 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
               });
             }
             setChatConsent(true);
-            const responseMessages = getParsedMessages(
-              getChatActionMessages({
-                chatConsent: true,
-                referralCompanyName: "",
-                withReferralFlow: false,
-                type: currentMsgType,
-                inlineDisclaimer,
-                consentOptIn,
-                messages,
-              })
-            );
-            setMessages((prev) => [...responseMessages, ...prev]);
+            switch (currentMsgType) {
+              case CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE:
+                const resMess = createTextMess({
+                  text: t("messages:apply_job_provide_firstname"),
+                  i18n: "messages:apply_job_provide_firstname",
+                });
+                setMessages((prev) => [resMess, ...prev]);
+                break;
+
+              default:
+                const responseMessages = getParsedMessages(
+                  getChatActionMessages({
+                    chatConsent: true,
+                    referralCompanyName: "",
+                    withReferralFlow: false,
+                    type: currentMsgType,
+                    inlineDisclaimer,
+                    consentOptIn,
+                    messages,
+                  })
+                );
+                setMessages((prev) => [...responseMessages, ...prev]);
+                break;
+            }
           }
           break;
         default:

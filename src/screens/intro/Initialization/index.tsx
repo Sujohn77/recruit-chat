@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
 import map from "lodash/map";
@@ -8,6 +8,7 @@ import * as S from "./styles";
 import { optionWithReferral, defOptions, askQuestionOption } from "./data";
 import { DefaultThemeType } from "utils/theme/default";
 import { IScreenOption } from "utils/types";
+import { useSearchJobFromParentSite } from "contexts/hooks";
 
 export const Initialization: FC = () => {
   const { t } = useTranslation();
@@ -19,7 +20,15 @@ export const Initialization: FC = () => {
     currentLanguage,
     sendNewMessage,
     withFindJob,
+    parentPathname,
   } = useChatMessenger();
+  const searchJob = useSearchJobFromParentSite();
+
+  useEffect(() => {
+    if (parentPathname.includes("job")) {
+      searchJob();
+    }
+  }, [parentPathname]);
 
   const onSelectOption = useCallback(
     async ({ type, screen, i18n, i18nProps }: IScreenOption) => {

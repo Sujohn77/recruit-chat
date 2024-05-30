@@ -106,6 +106,7 @@ interface IChatProviderProps extends IPPKeys {
   alertTemplateId: undefined | number;
   defaultLanguage: string;
   withFindJob: boolean;
+  parentPathname: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -132,6 +133,7 @@ const ChatProvider2 = ({
   footerPrivacyLink,
   inlineDisclaimer,
   withFindJob,
+  parentPathname,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -1597,6 +1599,7 @@ const ChatProvider2 = ({
     inlineDisclaimer,
     withFindJob,
     flowId,
+    parentPathname,
   };
 
   return (

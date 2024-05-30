@@ -57,8 +57,10 @@ export const fr = {
     ua: "Ukrainien",
   },
   messages: {
+    great_apply: "Parfait, je peux vous aider à postuler...",
     initialMessage: "Bonjour ! Êtes-vous à la recherche d'un poste ?",
     initialMessage2: "Bonjour, je suis l'assistante virtuelle de GMS !",
+    initialMessage3: "Bonjour, cet emploi vous intéresse ?",
     refInitialMessage:
       "Bonjour ! Je suis là pour vous aider avec les recommandations !",
     uploadCV: "Télécharger un CV",

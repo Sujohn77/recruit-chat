@@ -156,13 +156,31 @@ export const usePersistStore = <StateType>(
       const storageInBrowser = browserStorage.get(storageKey);
       //if StateType includes null
 
+      const stateType = typeof initialState;
+
       // If the store exists, overwrite the state with the store's data.
       // Otherwise if the store doesn't exist then "initialState" remains our default value.
       if (storageKey === hostname + "requisitions") {
         // @ts-ignore
         setInternalState(JSON.parse(storageInBrowser) as IRequisitionType[]);
       } else if (storageInBrowser) {
-        setInternalState(storageInBrowser);
+        switch (stateType) {
+          case "string":
+            setInternalState(storageInBrowser);
+            break;
+          case "boolean":
+            if (typeof storageInBrowser === "string") {
+              // @ts-ignore
+              setInternalState(storageInBrowser === "true");
+            }
+            break;
+          case "number":
+            // @ts-ignore
+            setInternalState(Number(storageInBrowser));
+            break;
+          default:
+            break;
+        }
       }
     }
   }, [isTabActive]);

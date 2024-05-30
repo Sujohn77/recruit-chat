@@ -56,8 +56,10 @@ export const en = {
     ua: "Ukrainian",
   },
   messages: {
+    great_apply: "Great, I can help you apply...",
     initialMessage: "Hi! Are you looking for a job?",
     initialMessage2: "Hi! I'm the GMS Virtual Assistant!",
+    initialMessage3: "Hi! Are you interested in this job?",
     refInitialMessage: "Hi! I'm here to help with referrals!",
     uploadCV: "Upload resume",
     dragAndDrop: "Drag and drop a resume file here",
@@ -125,6 +127,7 @@ export const en = {
     provide_lastname: "What's your last name?",
     please_choose:
       "Please choose one of the following options to begin your job search",
+    apply_job_provide_firstname: "So to kick off, what's your first name?",
   },
   chat_item_description: {
     title: "Career bot",

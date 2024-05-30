@@ -9,14 +9,16 @@ import { apiInstance } from "services/api";
 import {
   IAskAQuestionResponse,
   IContactPersonRes,
+  IRequisitionsResponse,
   ISubmitReferralResponse,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
+import { ChatScreens } from "utils/constants";
 import { CHAT_ACTIONS, IReferralData } from "utils/types";
-import { createTextMess } from "utils/helpers";
+import { createTextMess, parsePathname } from "utils/helpers";
 
 export interface ISubmitReferral {
   referralSourceTypeId: number;
@@ -241,4 +243,40 @@ export const useConnectToLiveChat = (
       return;
     }
   }, [chatQueueId, chatId, queueId, firstName, lastName]);
+};
+
+export const useSearchJobFromParentSite = () => {
+  const { t } = useTranslation();
+  const { parentPathname, setMessages, setCurrentMsgType, setChatScreen } =
+    useChatMessenger();
+
+  return useCallback(async () => {
+    const { jobId, keyword } = parsePathname(parentPathname);
+
+    if (jobId && keyword) {
+      try {
+        const res: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions({
+            pageSize: 50,
+            keyword,
+          });
+
+        if (res.data?.requisitions.length) {
+          const currentRequisition = res.data.requisitions.find(
+            (r) => +r.id === jobId
+          );
+
+          if (currentRequisition) {
+            setChatScreen(ChatScreens.ApplyJob);
+            setCurrentMsgType(CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE);
+            const initMess = createTextMess({
+              text: t("messages:initialMessage3"),
+              i18n: "messages:initialMessage3",
+            });
+            setMessages(() => [initMess]);
+          }
+        }
+      } catch (error) {}
+    }
+  }, [parentPathname]);
 };

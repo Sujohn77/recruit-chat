@@ -45,6 +45,7 @@ export interface IParentMessage {
   referralListDomain?: string;
   clientApiToken?: string;
   hostname?: string;
+  pathname?: string;
 }
 
 export const ChatBotRoot: FC = () => {
@@ -63,6 +64,7 @@ export const ChatBotRoot: FC = () => {
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
   const [withFindJobFeature, setWithFindJobFeature] = useState(true);
+  const [parentPathname, setParenPathname] = useState("/");
 
   // PP
   const [consentOptIn, setConsentOptIn] = useState<IPrivacyPolicy | null>(null);
@@ -79,7 +81,7 @@ export const ChatBotRoot: FC = () => {
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
       LOG(data, "data", COLORS.BLACK, COLORS.WHITE, true);
-      const { props, style, hostname, token, guid } = data;
+      const { props, style, hostname, token, guid, pathname } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);
 
@@ -135,6 +137,7 @@ export const ChatBotRoot: FC = () => {
           setInlineDisclaimer(JSON.parse(inlineDisclaimer));
         }
 
+        pathname && setParenPathname(pathname);
         privacyPolicyLinkUrl && setPPLinkUrl(privacyPolicyLinkUrl);
       }
 
@@ -189,7 +192,6 @@ export const ChatBotRoot: FC = () => {
           footerPrivacyLink={footerPrivacyLink}
           consentOptIn={consentOptIn}
           chatQueueId={chatQueueId}
-          chatBotId={chatBotID}
           chatBotToken={chatBotToken}
           clientApiToken={clientApiToken}
           companyName={companyName}
@@ -202,6 +204,8 @@ export const ChatBotRoot: FC = () => {
           alertTemplateId={alertTemplateId}
           defaultLanguage={defaultLanguage}
           withFindJob={withFindJobFeature}
+          parentPathname={parentPathname}
+          chatBotId={chatBotID}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

@@ -167,6 +167,7 @@ export interface IChatMessengerContext extends IPPKeys {
   withFindJob: boolean;
   flowId: number | undefined;
   subscriberWorkflowId: number | undefined;
+  parentPathname: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

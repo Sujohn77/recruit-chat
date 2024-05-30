@@ -173,6 +173,7 @@ class Api {
     this.client.get<IUserSelf>("api/user/self", data);
   uploadCV = (data: IUploadCVPayload) =>
     this.client.post<IUploadResponse>("api/candidate/resume/upload", data);
+
   searchRequisitions = (data: ISearchJobsPayload) =>
     this.client.post<IRequisitionsResponse>("api/requisition/search", data);
   searchWithResume = (data: IResumeDataPayload) =>
@@ -180,6 +181,7 @@ class Api {
       "api/requisition/searchbyresume/",
       data
     );
+
   sendTranscript = (data: ISendTranscript) =>
     this.client.post<ISendTranscriptResponse>(
       "api/messenger/chat/transcript/send",

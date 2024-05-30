@@ -371,7 +371,7 @@ const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
     },
   ]);
 
-const createConsentInMsg = ({
+export const createConsentInMsg = ({
   currentLanguage,
   consentOptIn,
   companyName,
@@ -957,4 +957,26 @@ export const withSendNewMess = (
   messageValue?.trim() === "can i speak to someone?" ||
   currentMsgType === CHAT_ACTIONS.LIVE_CHAT ||
   currentMsgType === CHAT_ACTIONS.GET_EMAIL ||
-  currentMsgType === CHAT_ACTIONS.ASK_QUESTION;
+  currentMsgType === CHAT_ACTIONS.ASK_QUESTION ||
+  currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE;
+
+export const parsePathname = (
+  pathname: string
+): { keyword: string | null; jobId: number | null } => {
+  const pattern = /\/job\/([^-]+(?:-[^-]+)*)\/(\d+)/;
+  const match = pathname.match(pattern);
+
+  let keyword: null | string = null;
+  let jobId: null | number = null;
+
+  if (match) {
+    if (match[1]) {
+      keyword = match[1].replace(/-/g, " ");
+    }
+    if (match[2] && !isNaN(Number(match[2]))) {
+      jobId = Number(match[2]);
+    }
+  }
+
+  return { keyword, jobId };
+};

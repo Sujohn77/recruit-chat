@@ -88,7 +88,6 @@ import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { chatMessengerDefaultState, getQuestions } from "./data";
 import { COLORS } from "utils/colors";
-import { usePersistStore } from "utils/hooks";
 
 interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
@@ -106,6 +105,7 @@ interface IChatProviderProps extends IPPKeys {
   alertTemplateId: undefined | number;
   defaultLanguage: string;
   withFindJob: boolean;
+  parentPathname: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -132,6 +132,7 @@ const ChatProvider = ({
   footerPrivacyLink,
   inlineDisclaimer,
   withFindJob,
+  parentPathname,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -328,6 +329,7 @@ const ChatProvider = ({
       case CHAT_ACTIONS.SET_USER_EMAIL:
       case CHAT_ACTIONS.LIVE_CHAT:
       case CHAT_ACTIONS.GET_EMAIL:
+      case CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE:
         setIsChatInputAvailable(true);
         break;
       default:
@@ -352,7 +354,6 @@ const ChatProvider = ({
   useEffect(() => {
     let savedSocketConnection: any;
     if (isApplyJobSuccessfully) {
-      LOG(chatId, "chatId", undefined, undefined, true);
       LOG(
         `.collection("chats").doc(${chatId}?.toString()).collection("messages")`,
         `chatId=${chatId}`,
@@ -1458,6 +1459,7 @@ const ChatProvider = ({
     inlineDisclaimer,
     withFindJob,
     flowId,
+    parentPathname,
   };
 
   return (
