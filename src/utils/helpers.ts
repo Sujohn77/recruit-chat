@@ -381,7 +381,9 @@ export const createConsentInMsg = ({
   consentOptIn: IPrivacyPolicy | null;
   t: TFunction;
   companyName?: string | null;
-}) => {
+}): ILocalMessage | null => {
+  if (!consentOptIn) return null;
+
   let consentOptInText = undefined;
   switch (currentLanguage) {
     case "en":
@@ -472,7 +474,9 @@ export const pushMessage = ({
         ? [message, ...updatedMessages]
         : chatConsent
         ? updatedMessages
-        : [consentInMessage, ...updatedMessages]
+        : consentInMessage
+        ? [consentInMessage, ...updatedMessages]
+        : updatedMessages
     );
   }
 
@@ -979,4 +983,20 @@ export const parsePathname = (
   }
 
   return { keyword, jobId };
+};
+
+export const isConfirmationMessage = (message: string): boolean => {
+  const text = message.trim().toLowerCase();
+  return (
+    text === "ye" ||
+    text === "yes" ||
+    text === "yea" ||
+    text === "yep" ||
+    text === "yup" ||
+    text === "sure" ||
+    text === "definitely" ||
+    text === "definitely!" ||
+    text === "i sure am" ||
+    text === "maybe"
+  );
 };

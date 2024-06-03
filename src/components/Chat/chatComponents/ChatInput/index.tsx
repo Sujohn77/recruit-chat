@@ -42,6 +42,7 @@ import {
   getMatchedItem,
   getMatchedItems,
   getNextActionType,
+  isConfirmationMessage,
   isValidNumber,
   parsePathname,
   validateEmail,
@@ -958,11 +959,12 @@ export const ChatInput: FC<IChatInputProps> = ({
         messageValue
       ) {
         setMessageValue("");
+        const isConfirm = isConfirmationMessage(messageValue);
 
-        if (
-          messageValue.trim().toLowerCase().startsWith("ye") &&
-          !isAcceptedApplyJob
-        ) {
+        if (!isConfirm && !isAcceptedApplyJob) {
+          const answer = createTextMess({ text: messageValue, isOwn: true });
+          setMessages((prev) => [answer, ...prev]);
+        } else if (isConfirm && !isAcceptedApplyJob) {
           const answer = createTextMess({ text: messageValue, isOwn: true });
           const resMess = createTextMess({ text: t("messages:great_apply") });
           const consentInMessage = createConsentInMsg({
@@ -971,10 +973,14 @@ export const ChatInput: FC<IChatInputProps> = ({
             companyName,
             t,
           });
-          setMessages((prev) => [consentInMessage, resMess, answer, ...prev]);
+          setMessages((prev) =>
+            consentInMessage
+              ? [consentInMessage, resMess, answer, ...prev]
+              : [resMess, answer, ...prev]
+          );
           setIsAcceptedApplyJob(true);
           setUserFirstName(messageValue.trim());
-        } else {
+        } else if (isAcceptedApplyJob) {
           if (!userFName) {
             setFName(messageValue.trim());
             setMessages((prev) => [
