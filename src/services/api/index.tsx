@@ -12,6 +12,8 @@ import {
   ICreateAndSendPayload,
   ISubmitReferralResponse,
   IContactPersonRes,
+  ICheckAnswerResponse,
+  ICheckAnswerPayload,
 } from "services/types";
 
 import {
@@ -33,11 +35,8 @@ import {
   IUploadResponse,
   ISendTranscriptResponse,
   ISendTranscript,
-  IVerifyChatBotResponse,
-  IVerifyEmailRequest,
   IJobAlertRequest,
   IJobAlertResponse,
-  IVerifyEmailResponse,
   IResumeDataPayload,
   IAskAQuestionRequest,
   IAskAQuestionResponse,
@@ -229,6 +228,11 @@ class Api {
       "/api/referral/createandsend",
       data
     );
+
+  checkAnswer = ({ body }: ICheckAnswerPayload) =>
+    this.client.post<ICheckAnswerResponse>("/api/messenger/intent/boolean", {
+      body,
+    });
 
   clearAxiosConfig = () => {
     sessionStorage.removeItem(SessionStorage.Token);

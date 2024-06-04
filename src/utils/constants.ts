@@ -532,3 +532,9 @@ export enum ReferralResponse {
   PreviouslyReferredToGivenJob = 1,
   PreviouslyReferredNonJobSpecific = 2,
 }
+
+export enum IntentName {
+  Confirm = "Utilities.Confirm",
+  Reject = "Utilities.Reject",
+  Unsure = "Utilities.Unsure",
+}

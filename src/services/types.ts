@@ -1,6 +1,7 @@
 import { DocumentChangeType } from "@firebase/firestore-types";
 import {
   IUserLoginDataKeys,
+  IntentName,
   MessageOptionTypes,
   MessageStatuses,
   TryAgainTypes,
@@ -618,4 +619,18 @@ export interface ICreateAndSendPayload {
 export interface ISubmitReferralResponse {
   previouslyReferredState: number;
   subscriberReferralId: number | null;
+}
+
+export interface ICheckAnswerPayload {
+  body: string;
+}
+
+export interface ICheckAnswerResponse {
+  body: string;
+  intent: {
+    id: number;
+    name: IntentName;
+    score: number;
+  };
+  result: boolean | null;
 }

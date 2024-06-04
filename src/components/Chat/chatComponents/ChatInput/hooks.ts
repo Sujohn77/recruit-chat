@@ -1,7 +1,10 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { useCallback } from "react";
+import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
 
+import { apiInstance } from "services/api";
+import { ICheckAnswerResponse } from "services/types";
 import { createTextMess } from "utils/helpers";
 
 interface ISetUserDataProps {
@@ -48,5 +51,28 @@ export const useSetUserData = (): ((
       }
     },
     [firstName]
+  );
+};
+
+export const useCheckAnswer = () => {
+  return useCallback(
+    async (
+      messageValue: string,
+      isAcceptedApplyJob: boolean
+    ): Promise<boolean | null | undefined> => {
+      if (isAcceptedApplyJob) {
+        return Promise.resolve(false);
+      }
+      try {
+        const response: ApiResponse<ICheckAnswerResponse> =
+          await apiInstance.checkAnswer({
+            body: messageValue,
+          });
+        return Promise.resolve(response.data?.result);
+      } catch (error) {
+        Promise.resolve(false);
+      }
+    },
+    []
   );
 };

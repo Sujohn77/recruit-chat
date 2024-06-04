@@ -42,7 +42,6 @@ import {
   getMatchedItem,
   getMatchedItems,
   getNextActionType,
-  isConfirmationMessage,
   isValidNumber,
   parsePathname,
   validateEmail,
@@ -70,7 +69,7 @@ import {
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
 import { PrivacyPolicy } from "./PrivacyPolicy";
-import { useSetUserData } from "./hooks";
+import { useCheckAnswer, useSetUserData } from "./hooks";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -151,6 +150,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const isTabActive = useIsTabActive();
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
   const setUserData = useSetUserData();
+  const checkAnswer = useCheckAnswer();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
@@ -958,14 +958,15 @@ export const ChatInput: FC<IChatInputProps> = ({
         currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
         messageValue
       ) {
+        const answer = createTextMess({ text: messageValue, isOwn: true });
+        setMessages((prev) => [answer, ...prev]);
         setMessageValue("");
-        const isConfirm = isConfirmationMessage(messageValue);
+
+        const isConfirm = await checkAnswer(messageValue, isAcceptedApplyJob);
 
         if (!isConfirm && !isAcceptedApplyJob) {
-          const answer = createTextMess({ text: messageValue, isOwn: true });
-          setMessages((prev) => [answer, ...prev]);
+          // just set user message
         } else if (isConfirm && !isAcceptedApplyJob) {
-          const answer = createTextMess({ text: messageValue, isOwn: true });
           const resMess = createTextMess({ text: t("messages:great_apply") });
           const consentInMessage = createConsentInMsg({
             consentOptIn,
@@ -975,18 +976,14 @@ export const ChatInput: FC<IChatInputProps> = ({
           });
           setMessages((prev) =>
             consentInMessage
-              ? [consentInMessage, resMess, answer, ...prev]
-              : [resMess, answer, ...prev]
+              ? [consentInMessage, resMess, ...prev]
+              : [resMess, ...prev]
           );
           setIsAcceptedApplyJob(true);
           setUserFirstName(messageValue.trim());
         } else if (isAcceptedApplyJob) {
           if (!userFName) {
             setFName(messageValue.trim());
-            setMessages((prev) => [
-              createTextMess({ isOwn: true, text: messageValue }),
-              ...prev,
-            ]);
 
             setIsChatLoading(true);
             setTimeout(() => {
@@ -1008,104 +1005,106 @@ export const ChatInput: FC<IChatInputProps> = ({
                 text: t("messages:provideEmail"),
                 i18n: "messages:provideEmail",
               }),
-              createTextMess({
-                isOwn: true,
-                text: messageValue,
-              }),
               ...prev,
             ]);
             setMessageValue("");
           } else if (!emailAddress) {
-            setEmailAddress(messageValue);
-            setUserEmail(messageValue);
+            const emailError = validateEmail(messageValue);
+            if (emailError) {
+              const errorEmailMessage = createTextMess({
+                isError: true,
+                text: emailError,
+              });
+              setMessages((prev) => [errorEmailMessage, ...prev]);
+            } else {
+              const candidatePayload: IUpdateOrMergeCandidateRequest = {
+                firstName: userFName,
+                lastName: userLName,
+                emailAddress: messageValue.trim(),
+                candidateId: candidateId!,
+                chatId: chatId!,
+                skipEmailCheck: false,
+              };
 
-            const candidatePayload: IUpdateOrMergeCandidateRequest = {
-              firstName: userFName,
-              lastName: userLName,
-              emailAddress: messageValue.trim(),
-              candidateId: candidateId!,
-              chatId: chatId!,
-              skipEmailCheck: false,
-            };
+              setIsChatLoading(true);
+              try {
+                const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
+                  await apiInstance.updateOrMargeCandidate(candidatePayload);
 
-            setIsChatLoading(true);
-            try {
-              const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
-                await apiInstance.updateOrMargeCandidate(candidatePayload);
+                const response = candidateRes?.data;
 
-              const response = candidateRes?.data;
+                if (
+                  response?.success &&
+                  response?.updateChatBotCandidateId &&
+                  response?.candidateId
+                ) {
+                  setCandidateId(response.candidateId);
+                  setIsCandidateAnonym(false);
+                }
 
-              if (
-                response?.success &&
-                response?.updateChatBotCandidateId &&
-                response?.candidateId
-              ) {
-                setCandidateId(response.candidateId);
-                setIsCandidateAnonym(false);
-              }
+                if (response?.success) {
+                  setEmailAddress(messageValue.trim());
+                  setUserFirstName(userFName);
+                  setUserLastName(userLName);
+                  setIsCandidateWithEmail(true);
+                }
 
-              if (response?.success) {
-                setEmailAddress(messageValue.trim());
-                setUserFirstName(userFName);
-                setUserLastName(userLName);
-                setIsCandidateWithEmail(true);
-              }
-
-              if (response?.success && response.candidateId && chatId) {
-                try {
-                  const { jobId } = parsePathname(parentPathname);
-                  if (jobId) {
-                    const res: ApiResponse<IApplyJobResponse> =
-                      await apiInstance.applyJob(
-                        jobId,
-                        response.candidateId,
-                        chatId
-                      );
-
-                    if (
-                      res.data?.success &&
-                      res.data?.FlowID &&
-                      res.data?.SubscriberWorkflowID
-                    ) {
-                      setIsApplyJobSuccessfully(true);
-                      setFlowId(res.data.FlowID);
-                      setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
-                    } else {
-                      if (res.data?.statusCode === 105) {
+                if (response?.success && response.candidateId && chatId) {
+                  try {
+                    const { jobId } = parsePathname(parentPathname);
+                    if (jobId) {
+                      const res: ApiResponse<IApplyJobResponse> =
+                        await apiInstance.applyJob(
+                          jobId,
+                          response.candidateId,
+                          chatId
+                        );
+                      if (
+                        res.data?.success &&
+                        res.data?.FlowID &&
+                        res.data?.SubscriberWorkflowID
+                      ) {
+                        setIsApplyJobSuccessfully(true);
+                        setFlowId(res.data.FlowID);
+                        setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
                       } else {
-                        setMessages((prev) => [
-                          createTextMess({
-                            text:
-                              res.data?.errors[0]?.trim() ||
-                              t(
-                                `errors:${
-                                  res.data?.statusCode === 105
-                                    ? "something_went_wrong"
-                                    : "not_possible_to_start"
-                                }`
-                              ),
-                            isError: true,
-                          }),
-                          ...prev,
-                        ]);
+                        if (res.data?.statusCode === 105) {
+                        } else {
+                          setMessages((prev) => [
+                            createTextMess({
+                              text:
+                                res.data?.errors[0]?.trim() ||
+                                t(
+                                  `errors:${
+                                    res.data?.statusCode === 105
+                                      ? "something_went_wrong"
+                                      : "not_possible_to_start"
+                                  }`
+                                ),
+                              isError: true,
+                            }),
+                            ...prev,
+                          ]);
+                        }
                       }
                     }
-                  }
-                } catch (error) {
-                  if (error.message) {
-                    setMessages((prev) => [
-                      createTextMess({
-                        text: error.message,
-                        isError: true,
-                      }),
-                      ...prev,
-                    ]);
+                  } catch (error) {
+                    if (error.message) {
+                      setMessages((prev) => [
+                        createTextMess({
+                          text: error.message,
+                          isError: true,
+                        }),
+                        ...prev,
+                      ]);
+                    }
                   }
                 }
+              } catch (error) {
+              } finally {
+                setIsChatLoading(false);
               }
-            } catch (error) {
-            } finally {
-              setIsChatLoading(false);
+              setUserEmail(messageValue);
             }
           }
         }
