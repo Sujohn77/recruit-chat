@@ -87,7 +87,7 @@ export interface IChatMessengerContext extends IPPKeys {
   setSubscriberWorkflowId: (id?: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
   sendNewMessage: (props: ISendNewMessage) => Promise<any>;
-  sendNewChatbotMessage: (message: string) => Promise<any>;
+  sendNewChatbotMessage: (message?: string) => Promise<any>;
   emailAddress: string;
   firstName: string;
   lastName: string;

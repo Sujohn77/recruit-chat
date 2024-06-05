@@ -24,6 +24,7 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
     companyName: referralCompanyName,
     setMessages,
     setReferralStep,
+    sendNewChatbotMessage,
   } = useChatMessenger();
 
   const onTryAgainClick = useCallback(() => {
@@ -44,6 +45,8 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
             companyName: referralCompanyName,
           },
         });
+        sendNewChatbotMessage(tryAgain.content.text);
+        sendNewChatbotMessage(employeeQuestion.content.text);
         setMessages((prevMessages) => [
           employeeQuestion,
           tryAgain,
@@ -57,6 +60,8 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
         const userLastNameMess = getReferralQuestion(
           ReferralSteps.UserFirstName
         );
+        sendNewChatbotMessage(tryAgain.content.text);
+        sendNewChatbotMessage(userLastNameMess.content.text);
         setMessages((prevMessages) => [
           userLastNameMess,
           tryAgain,

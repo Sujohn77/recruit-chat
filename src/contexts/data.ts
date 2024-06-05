@@ -121,6 +121,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   flowId: undefined,
   subscriberWorkflowId: undefined,
   parentPathname: "",
+  sendNewChatbotMessage: (message) => Promise.resolve(null),
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [

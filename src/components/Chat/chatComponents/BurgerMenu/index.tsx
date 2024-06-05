@@ -66,6 +66,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     messages,
     withFindJobOption,
     chatConsent,
+    sendNewChatbotMessage,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -149,6 +150,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         refLastName,
         false
       );
+      sendNewChatbotMessage(resMess.content.text);
 
       const makeRefMess = createTextMess({
         text,
@@ -206,6 +208,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
                   text: t("messages:provideEmail"),
                   i18n: "messages:provideEmail",
                 });
+                sendNewChatbotMessage(chatbotMess.content.text);
 
                 setMessages((prev) => [chatbotMess, ...prev]);
               }, 500);

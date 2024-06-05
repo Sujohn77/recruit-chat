@@ -16,20 +16,21 @@ export const useSetUserData = (): ((
   props: ISetUserDataProps
 ) => Promise<void>) => {
   const { t } = useTranslation();
-  const { firstName, setFirstName, setMessages, setIsChatLoading } =
-    useChatMessenger();
+  const {
+    firstName,
+    setFirstName,
+    setMessages,
+    setIsChatLoading,
+    sendNewChatbotMessage,
+  } = useChatMessenger();
 
   const setResponseWithDelay = useCallback((text: string, i18n?: string) => {
     setIsChatLoading(true);
     setTimeout(() => {
       setIsChatLoading(false);
-      setMessages((prevMessages) => [
-        createTextMess({
-          text,
-          i18n,
-        }),
-        ...prevMessages,
-      ]);
+      const res = createTextMess({ text, i18n });
+      sendNewChatbotMessage(res.content.text);
+      setMessages((prevMessages) => [res, ...prevMessages]);
     }, 500);
   }, []);
 

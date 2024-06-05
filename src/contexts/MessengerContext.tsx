@@ -561,25 +561,27 @@ const ChatProvider = ({
             const responseMessage = createTextMess({
               text: successText || res.data,
             });
+
+            sendNewChatbotMessage(responseMessage.content.text);
             setMessages((prev) => [responseMessage, ...prev]);
             setCurrentMsgType(CHAT_ACTIONS.CREATED_JOB_ALERT);
           } else if (res.status !== 200) {
-            setMessages((prev) => [
-              createTextMess({
-                text: t("errors:something_went_wrong"),
-                i18n: "errors:something_went_wrong",
-              }),
-              ...prev,
-            ]);
+            const errorMess = createTextMess({
+              text: t("errors:something_went_wrong"),
+              i18n: "errors:something_went_wrong",
+            });
+
+            sendNewChatbotMessage(errorMess.content.text);
+            setMessages((prev) => [errorMess, ...prev]);
           }
         } catch (err) {
-          setMessages((prev) => [
-            createTextMess({
-              text: t("errors:something_went_wrong"),
-              i18n: t("errors:something_went_wrong"),
-            }),
-            ...prev,
-          ]);
+          const errorMess = createTextMess({
+            text: t("errors:something_went_wrong"),
+            i18n: t("errors:something_went_wrong"),
+          });
+
+          sendNewChatbotMessage(errorMess.content.text);
+          setMessages((prev) => [errorMess, ...prev]);
         } finally {
           setIsChatLoading(false);
           setSearchLocations([]);
@@ -1178,6 +1180,32 @@ const ChatProvider = ({
     }
   };
 
+  async function sendNewChatbotMessage(message?: string) {
+    if (candidateId && message) {
+      const payload = createSendMessPayload({
+        message,
+        candidateId,
+      });
+      try {
+        setIsChatLoading(true);
+        const answerResponse: ApiResponse<IFollowingResponse> =
+          await apiInstance.sendChatbotMessage(payload);
+
+        if (answerResponse.data?.success) {
+          return Promise.resolve(answerResponse.data);
+        } else {
+          return Promise.reject(answerResponse);
+        }
+      } catch (error) {
+        return Promise.reject(error?.message);
+      } finally {
+        setIsChatLoading(false);
+      }
+    } else {
+      return Promise.resolve("No candidate ID or message text");
+    }
+  }
+
   const chooseButtonOption = (
     excludeItem: ButtonsOptions | null,
     param?: string,
@@ -1216,6 +1244,10 @@ const ChatProvider = ({
           setIsChatInputAvailable(true);
           setCurrentMsgType(CHAT_ACTIONS.SET_CATEGORY);
           setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
+
+          responseMessages.forEach(
+            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+          );
           setTimeout(
             () => setMessages([...responseMessages, ...updatedMessages]),
             1000
@@ -1230,6 +1262,9 @@ const ChatProvider = ({
         case CHAT_ACTIONS.UPLOADED_CV:
           break;
         case CHAT_ACTIONS.MAKE_REFERRAL:
+          responseMessages.forEach(
+            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+          );
           setMessages(
             param
               ? [
@@ -1251,6 +1286,9 @@ const ChatProvider = ({
           );
           break;
         default:
+          responseMessages.forEach(
+            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+          );
           setMessages([...responseMessages, ...updatedMessages]);
           break;
       }
@@ -1381,6 +1419,7 @@ const ChatProvider = ({
     subscriberWorkflowId,
     setSubscriberWorkflowId,
     sendNewMessage,
+    sendNewChatbotMessage,
     setIsApplyJobFlow,
     emailAddress,
     firstName,

@@ -42,6 +42,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
     employeeLocationID,
     employeeJobFamilyNames,
     sendNewMessage,
+    sendNewChatbotMessage,
   } = useChatMessenger();
 
   const onSelectOption = useCallback(
@@ -79,6 +80,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
                 text: "",
                 subType: MessageType.JOB_POSITIONS,
               });
+              sendNewChatbotMessage(messWithJobs.content.text);
               setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;
@@ -95,6 +97,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
                 text: "",
                 subType: MessageType.JOB_POSITIONS,
               });
+              sendNewChatbotMessage(messWithJobs.content.text);
               setMessages((prev) => [messWithJobs, ...prev]);
             }
             break;

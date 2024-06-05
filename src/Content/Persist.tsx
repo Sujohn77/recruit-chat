@@ -6,6 +6,7 @@ import { IRequisitionType } from "services/hooks";
 import { ChatScreens, EventIds } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, IRequisition } from "utils/types";
 import { postMessToParent } from "utils/helpers";
+import { useTranslation } from "react-i18next";
 
 interface IStorePersistProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -77,6 +78,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     subscriberWorkflowId,
     setSubscriberWorkflowId,
   } = useChatMessenger();
+  const { t } = useTranslation();
 
   useEffect(() => {
     localStorage.setItem(hostname + "lastActivity", new Date().toString());
@@ -98,8 +100,19 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
         setRequisitions(JSON.parse(storedUserData) as IRequisitionType[]);
 
       const storedMessages = localStorage.getItem(hostname + "messages");
-      storedMessages &&
-        setMessages(JSON.parse(storedMessages) as ILocalMessage[]);
+
+      if (storedMessages) {
+        const messages = JSON.parse(storedMessages) as ILocalMessage[];
+
+        if (
+          messages.length === 1 &&
+          messages[0].content.text === t("messages:initialMessage3")
+        ) {
+          // nothing to do
+        } else {
+          setMessages(messages);
+        }
+      }
 
       const storedCurrentMsgType = localStorage.getItem(
         hostname + "currentMsgType"

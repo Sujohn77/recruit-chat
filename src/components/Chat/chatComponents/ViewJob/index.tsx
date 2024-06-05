@@ -36,6 +36,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     setSubscriberWorkflowId,
     setMessages,
     hostname,
+    sendNewChatbotMessage,
   } = useChatMessenger();
   const { t } = useTranslation();
   const lastBtn = useRef<null | ButtonType>(null);
@@ -121,7 +122,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     lastBtn.current = "interested_in";
     if ((!isAnonym || isCandidateWithEmail) && !isLoading && viewJob) {
       if (candidateId) {
-        let interestedInResMess: ILocalMessage;
+        let interestedInResMess: ILocalMessage = createTextMess({ text: "" });
 
         try {
           setIsLoading(true);
@@ -159,7 +160,14 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
           localStorage.removeItem(hostname + "viewJob");
           setViewJob(null);
-          setMessages((prevMessages) => [interestedInResMess, ...prevMessages]);
+
+          if (interestedInResMess.content.text) {
+            sendNewChatbotMessage(interestedInResMess.content.text);
+            setMessages((prevMessages) => [
+              interestedInResMess,
+              ...prevMessages,
+            ]);
+          }
           setIsLoading(false);
         } catch (error) {
           setIsLoading(false);

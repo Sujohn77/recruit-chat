@@ -27,6 +27,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
     messages,
     consentOptIn,
     sendNewMessage,
+    sendNewChatbotMessage,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -52,6 +53,8 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                   text: t("messages:apply_job_provide_firstname"),
                   i18n: "messages:apply_job_provide_firstname",
                 });
+
+                sendNewChatbotMessage(resMess.content.text);
                 setMessages((prev) => [resMess, ...prev]);
                 break;
 
@@ -66,6 +69,10 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                     consentOptIn,
                     messages,
                   })
+                );
+                responseMessages.forEach(
+                  (mess) =>
+                    !mess.isOwn && sendNewChatbotMessage(mess.content.text)
                 );
                 setMessages((prev) => [...responseMessages, ...prev]);
                 break;
