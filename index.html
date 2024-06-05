@@ -21,6 +21,7 @@
     IFRAME_HEIGHT: "iframe_height",
     GET_CHATBOT_DATA: "get_chatbot_data",
     IS_MOBILE: "is_mobile",
+    CHATBOT_VERSION: "chatbot_version",
   };
   // ---------------------------------------------------------------------- //
   let chatBotToken;
@@ -218,7 +219,12 @@
             chatBotIsMobile = false;
           }
           break;
-
+        case eventIds.CHATBOT_VERSION:
+          window.__chatbot = {
+            CODE_VERSION: event.data.payload.CODE_VERSION,
+            type: event.data.payload.ENV_TYPE,
+          };
+          break;
         default:
           break;
       }

@@ -45,7 +45,7 @@ import {
 export const FORM_URLENCODED = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 };
-const GUID = process.env.REACT_APP_GUID;
+
 export const LOCALE = "en_US"; // the chatbot UI language, use en_US for now
 
 class Api {
@@ -134,12 +134,6 @@ class Api {
     this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
 
   setAuthHeaderToNull = () => this.client.setHeader("Authorization", "");
-
-  refreshToken = (guid = GUID) => {
-    return this.client.post<string>("api/chatbot/token", {
-      ChatbotGuid: guid,
-    });
-  };
 
   askAQuestion = (data: IAskAQuestionRequest) =>
     this.client.post<IAskAQuestionResponse>(

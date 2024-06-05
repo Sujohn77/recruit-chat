@@ -525,6 +525,7 @@ export enum EventIds {
   GetChatBotData = "get_chatbot_data",
   HideSpinner = "hide_spinner",
   IsMobile = "is_mobile",
+  ChatbotVersion = "chatbot_version",
 }
 
 export enum ReferralResponse {

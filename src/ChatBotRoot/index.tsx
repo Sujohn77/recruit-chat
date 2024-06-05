@@ -76,6 +76,10 @@ export const ChatBotRoot: FC = () => {
 
   useEffect(() => {
     postMessToParent(EventIds.IsMobile, { isMobile: isMobile });
+    postMessToParent(EventIds.ChatbotVersion, {
+      CODE_VERSION: process.env.REACT_APP_CODE_VERSION,
+      ENV_TYPE: process.env.REACT_APP_ENV_TYPE,
+    });
   }, []);
 
   useEffect(() => {
