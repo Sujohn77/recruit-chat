@@ -19,18 +19,6 @@ export interface IUpdateMessagesResponse {
   success: boolean;
   unreadMsgCount: number;
 }
-export interface ISendMessageResponse {
-  chatId: number;
-  chatItems: IMessage[];
-  errorOccurrenceId: null;
-  errors: [];
-  limits: { limits: [] };
-  message: null;
-  redirectUri: null;
-  status: null;
-  statusCode: null;
-  success: boolean;
-}
 
 export interface IVerifyChatBotResponse {
   isDomainVerified: boolean;
@@ -55,17 +43,6 @@ export interface ISendTranscript {
   ChatID: number;
   appKey?: string;
   codeVersion?: string;
-}
-
-export interface IApiMessage {
-  channelName: "SMS";
-  candidateId: number;
-  contextId: string | null;
-  msg: string | undefined;
-  // subType: MessageType;
-  images: Record<"url", string>[];
-  messageTemplateId?: string;
-  localId: string;
 }
 
 export enum UserLicenseTypes {

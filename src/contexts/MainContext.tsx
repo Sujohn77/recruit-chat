@@ -1303,7 +1303,7 @@ const ChatProvider2 = ({
       try {
         setIsChatLoading(true);
         const answerResponse: ApiResponse<IFollowingResponse> =
-          await apiInstance.sendAnswer(payload);
+          await apiInstance.sendMessage(payload);
 
         if (answerResponse.data?.success) {
           return Promise.resolve(answerResponse.data);

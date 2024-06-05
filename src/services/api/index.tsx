@@ -25,10 +25,8 @@ import {
 import { getStorageValue, postMessToParent } from "../../utils/helpers";
 import {
   AppKeyType,
-  IApiMessage,
   IRequisitionsResponse,
   ISearchJobsPayload,
-  ISendMessageResponse,
   IUpdateMessagesResponse,
   IUploadCVPayload,
   IUserSelf,
@@ -155,8 +153,6 @@ class Api {
       data
     );
 
-  sendMessage = (payload: IApiMessage) =>
-    this.client.post<ISendMessageResponse>("/api/messenger/chat/send", payload);
   markChatRead = (chatId?: number) =>
     this.client.post<IUpdateMessagesResponse>(
       "/api/messenger/chat/acknowledge",
@@ -200,7 +196,7 @@ class Api {
       chatID: chatID,
       locale: LOCALE,
     });
-  sendAnswer = (data: ISendAnswerRequest) =>
+  sendMessage = (data: ISendAnswerRequest) =>
     this.client.post<IFollowingResponse>(
       "/api/chatbot/send-chatbot-message",
       data

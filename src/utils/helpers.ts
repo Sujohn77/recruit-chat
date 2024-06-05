@@ -96,7 +96,7 @@ interface IUserContact {
 
 export interface ICreateSendMessPayload extends ISendNewMessage {
   candidateId: number;
-  queueId: number | null;
+  queueId?: number | null;
   subscriberWorkflowId?: number;
   flowId?: number;
 }
@@ -962,7 +962,9 @@ export const createSendMessPayload = (
       chatItemId,
     };
   } else {
-    return { candidateId, message, localId };
+    return localId
+      ? { candidateId, message, localId }
+      : { candidateId, message };
   }
 };
 
