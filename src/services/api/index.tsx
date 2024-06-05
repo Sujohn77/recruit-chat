@@ -202,7 +202,7 @@ class Api {
       data
     );
   sendChatbotMessage = (data: ISendAnswerRequest) =>
-    this.client.post<IFollowingResponse>("/api/chatbot/receive", {
+    this.client.post<IFollowingResponse>("/api/messenger/chat/receive", {
       ...data,
       isChatbot: true,
     });
