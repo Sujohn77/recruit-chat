@@ -164,7 +164,7 @@ export interface IChatMessengerContext extends IPPKeys {
   setIsCandidateWithEmail: (withEmail: boolean) => void;
   chatConsent: boolean;
   setChatConsent: (accepted: boolean) => void;
-  withFindJob: boolean;
+  withFindJobOption: boolean;
   flowId: number | undefined;
   subscriberWorkflowId: number | undefined;
   parentPathname: string;

@@ -104,7 +104,7 @@ interface IChatProviderProps extends IPPKeys {
   chatQueueId: number | null;
   alertTemplateId: undefined | number;
   defaultLanguage: string;
-  withFindJob: boolean;
+  withFindJobOption: boolean;
   parentPathname: string;
 }
 
@@ -131,7 +131,7 @@ const ChatProvider = ({
   consentOptIn,
   footerPrivacyLink,
   inlineDisclaimer,
-  withFindJob,
+  withFindJobOption,
   parentPathname,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
@@ -743,7 +743,7 @@ const ChatProvider = ({
             currentLanguage,
             companyName,
             t,
-            withFindJob,
+            withFindJob: withFindJobOption,
           });
         }
 
@@ -759,7 +759,7 @@ const ChatProvider = ({
       consentOptIn,
       currentLanguage,
       PPLinkUrl,
-      withFindJob,
+      withFindJobOption,
     ]
   );
 
@@ -1095,7 +1095,7 @@ const ChatProvider = ({
         messages: updatedMessages,
         responseMessages,
         isReferralEnabled,
-        withFindJob,
+        withFindJob: withFindJobOption,
       });
 
       // Simulate chat bot reaction
@@ -1117,7 +1117,7 @@ const ChatProvider = ({
       requisitions.length,
       chatBotId,
       companyName,
-      withFindJob,
+      withFindJobOption,
     ]
   );
 
@@ -1457,7 +1457,7 @@ const ChatProvider = ({
     consentOptIn,
     footerPrivacyLink,
     inlineDisclaimer,
-    withFindJob,
+    withFindJobOption,
     flowId,
     parentPathname,
   };

@@ -1597,7 +1597,7 @@ const ChatProvider2 = ({
     consentOptIn,
     footerPrivacyLink,
     inlineDisclaimer,
-    withFindJob,
+    withFindJobOption: withFindJob,
     flowId,
     parentPathname,
   };

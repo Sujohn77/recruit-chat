@@ -469,6 +469,18 @@ export const pushMessage = ({
       t,
     });
 
+    // let newMessages: ILocalMessage[] = updatedMessages;
+    // if (messages.length) {
+    //   newMessages = [message, ...updatedMessages];
+    // } else if (chatConsent) {
+    //   newMessages = updatedMessages;
+    // } else if (consentInMessage) {
+    //   newMessages = [consentInMessage, ...updatedMessages];
+    // } else {
+    //   newMessages = updatedMessages;
+    // }
+    // setMessages(newMessages);
+
     setMessages(
       messages.length
         ? [message, ...updatedMessages]

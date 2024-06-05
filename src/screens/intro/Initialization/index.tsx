@@ -19,7 +19,7 @@ export const Initialization: FC = () => {
     setChatScreen,
     currentLanguage,
     sendNewMessage,
-    withFindJob,
+    withFindJobOption,
     parentPathname,
   } = useChatMessenger();
   const searchJob = useSearchJobFromParentSite();
@@ -52,7 +52,7 @@ export const Initialization: FC = () => {
     `messages:${
       isReferralEnabled
         ? "refInitialMessage"
-        : withFindJob
+        : withFindJobOption
         ? "initialMessage"
         : "initialMessage2"
     }`
@@ -60,7 +60,7 @@ export const Initialization: FC = () => {
 
   const list = isReferralEnabled
     ? optionWithReferral
-    : withFindJob
+    : withFindJobOption
     ? defOptions
     : askQuestionOption;
 

@@ -116,7 +116,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   PPLinkUrl: null,
   chatConsent: false,
   setChatConsent() {},
-  withFindJob: true,
+  withFindJobOption: true,
   isApplyJobSuccessfully: false,
   flowId: undefined,
   subscriberWorkflowId: undefined,

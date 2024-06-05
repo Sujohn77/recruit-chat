@@ -64,7 +64,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setIsChatLoading,
     setCurrentMsgType,
     messages,
-    withFindJob,
+    withFindJobOption,
+    chatConsent,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -74,6 +75,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       currentMsgType === CHAT_ACTIONS.LIVE_CHAT &&
       isLiveChat &&
       messages[0].dateCreated?.seconds;
+
+    const withFindJob = withFindJobOption && chatConsent;
 
     let defaultItems =
       withSendTranscript || isCandidateWithEmail
@@ -96,7 +99,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     isLiveChat,
     currentMsgType,
     messages,
-    withFindJob,
+    withFindJobOption,
+    chatConsent,
   ]);
 
   useEffect(() => {
@@ -210,6 +214,28 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
             console.log("Send Transcript ERROR", error);
           }
         }
+        break;
+      case CHAT_ACTIONS.ASK_QUESTION:
+        if (!chatConsent) {
+          // setIsChatLoading(true);
+          // setTimeout(() => {
+          //   setIsChatLoading(false);
+          //   setMessages((prev) => [
+          //     ...getParsedMessages(
+          //       getQuestions(isReferralEnabled, companyName)
+          //     ),
+          //     ...prev,
+          //   ]);
+          // }, 1000);
+        } else {
+          dispatch({
+            type,
+            payload: { item: text, isChatMessage: true },
+            i18nProps: null,
+          });
+        }
+
+        setIsShowResults(false);
         break;
       default:
         dispatch({
