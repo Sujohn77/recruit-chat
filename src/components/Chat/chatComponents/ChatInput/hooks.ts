@@ -21,7 +21,7 @@ export const useSetUserData = (): ((
     setFirstName,
     setMessages,
     setIsChatLoading,
-    sendNewChatbotMessage,
+    sendNewMessage,
   } = useChatMessenger();
 
   const setResponseWithDelay = useCallback((text: string, i18n?: string) => {
@@ -29,7 +29,10 @@ export const useSetUserData = (): ((
     setTimeout(() => {
       setIsChatLoading(false);
       const res = createTextMess({ text, i18n });
-      sendNewChatbotMessage(res.content.text);
+      sendNewMessage({
+        isOwn: false,
+        message: res.content.text,
+      });
       setMessages((prevMessages) => [res, ...prevMessages]);
     }, 500);
   }, []);

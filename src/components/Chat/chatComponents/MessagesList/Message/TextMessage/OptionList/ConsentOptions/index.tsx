@@ -27,7 +27,6 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
     messages,
     consentOptIn,
     sendNewMessage,
-    sendNewChatbotMessage,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -41,11 +40,15 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
           break;
         case 2:
           if (isLastMess) {
-            if (option.text) {
-              await sendNewMessage({
-                message: option.text,
-              });
-            }
+            sendNewMessage({
+              message: message.content.text,
+              isOwn: false,
+            });
+            sendNewMessage({
+              message: option.text,
+              isOwn: true,
+            });
+
             setChatConsent(true);
             switch (currentMsgType) {
               case CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE:
@@ -54,7 +57,10 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                   i18n: "messages:apply_job_provide_firstname",
                 });
 
-                sendNewChatbotMessage(resMess.content.text);
+                sendNewMessage({
+                  isOwn: false,
+                  message: resMess.content.text,
+                });
                 setMessages((prev) => [resMess, ...prev]);
                 break;
 
@@ -72,9 +78,23 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                 );
                 responseMessages.forEach(
                   (mess) =>
-                    !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+                    !mess.isOwn &&
+                    sendNewMessage({
+                      isOwn: false,
+                      message: mess.content.text,
+                    })
                 );
-                setMessages((prev) => [...responseMessages, ...prev]);
+
+                setMessages((prev) => {
+                  const text = option.text;
+                  const userMess = createTextMess({
+                    text: text || "",
+                    isOwn: true,
+                  });
+                  return !text
+                    ? [...responseMessages, ...prev]
+                    : [...responseMessages, userMess, ...prev];
+                });
                 break;
             }
           }
@@ -90,6 +110,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
       inlineDisclaimer,
       PPLinkUrl,
       consentOptIn,
+      sendNewMessage,
     ]
   );
 

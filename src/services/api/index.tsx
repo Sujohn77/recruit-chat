@@ -201,11 +201,6 @@ class Api {
       "/api/chatbot/send-chatbot-message",
       data
     );
-  sendChatbotMessage = (data: ISendAnswerRequest) =>
-    this.client.post<IFollowingResponse>("/api/messenger/chat/receive", {
-      ...data,
-      isChatbot: true,
-    });
   // -------------------------------------------------------------------- //
   updateOrMargeCandidate = (data: IUpdateOrMergeCandidateRequest) =>
     this.client.post<IUpdateOrMergeCandidateResponse>(

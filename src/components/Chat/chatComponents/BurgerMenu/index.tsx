@@ -16,8 +16,9 @@ import {
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 import { ISendTranscriptResponse } from "services/types";
 import { apiInstance } from "services/api";
-import { createTextMess } from "utils/helpers";
+import { createTextMess, getParsedMessages } from "utils/helpers";
 import { CHAT_ACTIONS, IMenuItem } from "utils/types";
+import i18n from "services/localization";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -66,7 +67,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     messages,
     withFindJobOption,
     chatConsent,
-    sendNewChatbotMessage,
+    sendNewMessage,
+    setCurrentLanguage,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -150,13 +152,14 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         refLastName,
         false
       );
-      sendNewChatbotMessage(resMess.content.text);
-
       const makeRefMess = createTextMess({
         text,
         i18n: "buttons:make_referral",
         isOwn: true,
       });
+
+      sendNewMessage({ isOwn: true, message: makeRefMess.content.text });
+      sendNewMessage({ isOwn: false, message: resMess.content.text });
 
       setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
       return;
@@ -208,7 +211,11 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
                   text: t("messages:provideEmail"),
                   i18n: "messages:provideEmail",
                 });
-                sendNewChatbotMessage(chatbotMess.content.text);
+
+                sendNewMessage({
+                  isOwn: false,
+                  message: chatbotMess.content.text,
+                });
 
                 setMessages((prev) => [chatbotMess, ...prev]);
               }, 500);
@@ -239,6 +246,24 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         }
 
         setIsShowResults(false);
+        break;
+      case CHAT_ACTIONS.CHANGE_LANG:
+        setCurrentLanguage(text);
+        await i18n.changeLanguage(text);
+        const userMess = getParsedMessages([
+          {
+            text: t("messages:changeLang", { lang: text }),
+            i18n: "messages:changeLang",
+            i18nProps: { lang: text },
+            isOwn: true,
+          },
+        ])[0];
+        sendNewMessage({
+          isOwn: true,
+          message: userMess.content.text,
+        });
+        setMessages((prev) => [userMess, ...prev]);
+        localStorage.setItem(hostname + "currentLanguage", text);
         break;
       default:
         dispatch({

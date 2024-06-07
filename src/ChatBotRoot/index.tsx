@@ -63,7 +63,7 @@ export const ChatBotRoot: FC = () => {
   const [isMultiLanguage, seTisMultiLanguage] = useState(false);
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
-  const [withFindJobOption, setWithFindJobOption] = useState(true);
+  const [withFindJobOption, setWithFindJobOption] = useState(false);
   const [parentPathname, setParenPathname] = useState("/");
 
   // PP
@@ -109,8 +109,8 @@ export const ChatBotRoot: FC = () => {
           jobsearchEnabled,
         } = props;
 
-        if (jobsearchEnabled === "false") {
-          setWithFindJobOption(false);
+        if (jobsearchEnabled === "true") {
+          setWithFindJobOption(true);
         }
         alertTemplateId && setAlertTemplateId(+alertTemplateId);
         queueId && setChatQueueId(+queueId);

@@ -69,18 +69,15 @@ interface ICreateMessage {
   optionList?: null | IMessageOptions;
   locations?: string[];
 }
-
 interface IGetMatchedItems {
   searchStr: string | null;
   searchItems: string[];
 }
-
 interface IIsResultType {
   type: CHAT_ACTIONS | null;
   matchedItems: string[];
   value?: string;
 }
-
 export interface IMessageProps {
   backgroundColor?: string | null;
   isOwn?: boolean;
@@ -88,17 +85,20 @@ export interface IMessageProps {
   cursor?: string;
   flexDirection?: CSSProperties["flexDirection"];
 }
-
 interface IUserContact {
   isPhoneType: boolean;
   contact: string | undefined | null;
 }
-
+interface IParseParentPathName {
+  keyword: string | null;
+  jobId: number | null;
+}
 export interface ICreateSendMessPayload extends ISendNewMessage {
   candidateId: number;
   queueId?: number | null;
   subscriberWorkflowId?: number;
   flowId?: number;
+  directionId: 1 | 2;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
@@ -318,6 +318,7 @@ export const getMessagesOnAction = ({
   responseMessages,
   isReferralEnabled,
   withFindJob,
+  sendNewMessage,
 }: IGetUpdatedMessages) => {
   const { type } = action;
   let updatedMessages = messages;
@@ -343,6 +344,14 @@ export const getMessagesOnAction = ({
     `color: ${COLORS.PASTEL_GRIN}; background-color: ${COLORS.BLACK};`,
     responseMessages,
     updatedMessages
+  );
+  responseMessages.forEach(
+    (mess) =>
+      !mess.isOwn &&
+      sendNewMessage({
+        isOwn: false,
+        message: mess.content.text,
+      })
   );
   return [...responseMessages, ...updatedMessages];
 };
@@ -436,6 +445,7 @@ export const pushMessage = ({
   consentOptIn,
   t,
   withFindJob,
+  sendNewMessage,
 }: IPushMessage) => {
   const { type, payload, i18n, i18nProps } = action;
 
@@ -469,27 +479,28 @@ export const pushMessage = ({
       t,
     });
 
-    // let newMessages: ILocalMessage[] = updatedMessages;
-    // if (messages.length) {
-    //   newMessages = [message, ...updatedMessages];
-    // } else if (chatConsent) {
-    //   newMessages = updatedMessages;
-    // } else if (consentInMessage) {
-    //   newMessages = [consentInMessage, ...updatedMessages];
-    // } else {
-    //   newMessages = updatedMessages;
-    // }
-    // setMessages(newMessages);
+    let newMessages: ILocalMessage[] = updatedMessages;
+    if (messages.length) {
+      newMessages = [message, ...updatedMessages];
+    } else if (chatConsent) {
+      // newMessages = updatedMessages;
+    } else if (consentInMessage) {
+      sendNewMessage({ isOwn: false, message: consentInMessage.content.text });
+      newMessages = [consentInMessage, ...updatedMessages];
+    } else {
+      // newMessages = updatedMessages;
+    }
+    setMessages(newMessages);
 
-    setMessages(
-      messages.length
-        ? [message, ...updatedMessages]
-        : chatConsent
-        ? updatedMessages
-        : consentInMessage
-        ? [consentInMessage, ...updatedMessages]
-        : updatedMessages
-    );
+    // setMessages(
+    //   messages.length
+    //     ? [message, ...updatedMessages]
+    //     : chatConsent
+    //     ? updatedMessages
+    //     : consentInMessage
+    //     ? [consentInMessage, ...updatedMessages]
+    //     : updatedMessages
+    // );
   }
 
   return updatedMessages;
@@ -933,7 +944,11 @@ export const createTextMess = ({
 
 export const createSendMessPayload = (
   props: ICreateSendMessPayload
-): ISendAnswerRequest => {
+): ISendAnswerRequest | null => {
+  if (!props.message) {
+    return null;
+  }
+
   const {
     candidateId,
     message,
@@ -944,12 +959,14 @@ export const createSendMessPayload = (
     subscriberWorkflowId,
     queueId,
     flowId,
+    directionId,
   } = props;
   if (isLiveChat && queueId) {
     return {
       candidateId,
       message,
       queueId,
+      directionId,
     };
   } else if (flowId && subscriberWorkflowId) {
     return {
@@ -960,11 +977,12 @@ export const createSendMessPayload = (
       message,
       optionId,
       chatItemId,
+      directionId,
     };
   } else {
     return localId
-      ? { candidateId, message, localId }
-      : { candidateId, message };
+      ? { candidateId, message, localId, directionId }
+      : { candidateId, message, directionId };
   }
 };
 
@@ -978,10 +996,8 @@ export const withSendNewMess = (
   currentMsgType === CHAT_ACTIONS.ASK_QUESTION ||
   currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE;
 
-export const parsePathname = (
-  pathname: string
-): { keyword: string | null; jobId: number | null } => {
-  const pattern = /\/job\/([^-]+(?:-[^-]+)*)\/(\d+)/;
+export const parsePathname = (pathname: string): IParseParentPathName => {
+  const pattern = /\/job\/([^-]+(?:-[^-]*)*)\/(\d+)/;
   const match = pathname.match(pattern);
 
   let keyword: null | string = null;

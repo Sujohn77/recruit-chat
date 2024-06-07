@@ -26,7 +26,7 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     employeeId,
     employeeJobCategory,
     employeeFullName,
-    sendNewChatbotMessage,
+    sendNewMessage,
   } = useChatMessenger();
 
   const onMakeReferral = () => {
@@ -41,8 +41,10 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
         text: t("buttons:make_referral"),
         i18n: "buttons:make_referral",
       });
-
-      sendNewChatbotMessage(resMess.content.text);
+      sendNewMessage({
+        isOwn: false,
+        message: resMess.content.text,
+      });
       setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
     } else {
       chooseButtonOption(

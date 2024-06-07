@@ -36,7 +36,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     setSubscriberWorkflowId,
     setMessages,
     hostname,
-    sendNewChatbotMessage,
+    sendNewMessage,
   } = useChatMessenger();
   const { t } = useTranslation();
   const lastBtn = useRef<null | ButtonType>(null);
@@ -162,7 +162,11 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
           setViewJob(null);
 
           if (interestedInResMess.content.text) {
-            sendNewChatbotMessage(interestedInResMess.content.text);
+            sendNewMessage({
+              isOwn: false,
+              message: interestedInResMess.content.text,
+            });
+
             setMessages((prevMessages) => [
               interestedInResMess,
               ...prevMessages,

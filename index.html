@@ -141,12 +141,12 @@
         refreshToken(getChatBotStyle);
       } else {
         appendChatBot(
-          data.style,
+          data?.style,
           token,
-          data.props,
-          data.props?.companyName,
-          data.props?.referralListDomain,
-          data.props?.clientApiToken
+          data?.props,
+          data?.props?.companyName,
+          data?.props?.referralListDomain,
+          data?.props?.clientApiToken
         );
       }
     } catch (error) {

@@ -153,9 +153,16 @@ const ChatProvider = ({
   const [preferredJob, setPreferredJob] = useState<IRequisition | null>(null);
   const [alertCategories, setAlertCategories] = useState<string[] | null>([]);
   const [user, setUser] = useState<IUser | null>(null);
+
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
+  const [queueForSendingMessages, setQueueForSendingMessages] = useState<
+    (() => Promise<void>)[]
+  >([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const [serverMessages, setServerMessages] = useState<IMessage[]>([]);
   const [nextMessages, setNextMessages] = useState<IPortionMessages[]>([]);
+
   const [currentMsgType, setCurrentMsgType] = useState<CHAT_ACTIONS | null>(
     null
   );
@@ -562,7 +569,10 @@ const ChatProvider = ({
               text: successText || res.data,
             });
 
-            sendNewChatbotMessage(responseMessage.content.text);
+            sendNewMessage({
+              isOwn: false,
+              message: responseMessage.content.text,
+            });
             setMessages((prev) => [responseMessage, ...prev]);
             setCurrentMsgType(CHAT_ACTIONS.CREATED_JOB_ALERT);
           } else if (res.status !== 200) {
@@ -571,7 +581,10 @@ const ChatProvider = ({
               i18n: "errors:something_went_wrong",
             });
 
-            sendNewChatbotMessage(errorMess.content.text);
+            sendNewMessage({
+              isOwn: false,
+              message: errorMess.content.text,
+            });
             setMessages((prev) => [errorMess, ...prev]);
           }
         } catch (err) {
@@ -580,7 +593,10 @@ const ChatProvider = ({
             i18n: t("errors:something_went_wrong"),
           });
 
-          sendNewChatbotMessage(errorMess.content.text);
+          sendNewMessage({
+            isOwn: false,
+            message: errorMess.content.text,
+          });
           setMessages((prev) => [errorMess, ...prev]);
         } finally {
           setIsChatLoading(false);
@@ -597,6 +613,53 @@ const ChatProvider = ({
       emailAddress,
       alertTemplateId,
     ]
+  );
+
+  const sendNewMessage = useCallback(
+    async (props: ISendNewMessage) => {
+      if (!candidateId || !props.message) {
+        return Promise.resolve();
+      }
+      const payload = createSendMessPayload({
+        ...props,
+        isLiveChat,
+        candidateId,
+        queueId,
+        flowId,
+        subscriberWorkflowId,
+        directionId: props.isOwn ? 1 : 2,
+      });
+
+      if (!payload) {
+        return Promise.resolve();
+      }
+
+      return new Promise<void>((resolve, reject) => {
+        const task = async () => {
+          if (candidateId && props.message) {
+            try {
+              if (props.isOwn) setIsChatLoading(true);
+              const answerResponse: ApiResponse<IFollowingResponse> =
+                await apiInstance.sendMessage(payload);
+
+              setIsChatLoading(false);
+              if (answerResponse.data?.success) {
+                resolve();
+              } else {
+                reject();
+              }
+            } catch (error) {
+              setIsChatLoading(false);
+              reject();
+            }
+          } else {
+            resolve();
+          }
+        };
+        addToQueue(task);
+      });
+    },
+    [isLiveChat, candidateId, queueId, flowId, subscriberWorkflowId]
   );
 
   // Initiate an action & set state
@@ -690,15 +753,15 @@ const ChatProvider = ({
           setUser({ ...user, name: payload?.item! });
           break;
         }
-        case CHAT_ACTIONS.CHANGE_LANG: {
-          if (payload?.item) {
-            const lang = payload.item.toLowerCase();
-            i18n.changeLanguage(lang);
-            setCurrentLanguage(lang);
-            localStorage.setItem(hostname + "currentLanguage", lang);
-          }
-          break;
-        }
+        // case CHAT_ACTIONS.CHANGE_LANG: {
+        //   if (payload?.item) {
+        //     const lang = payload.item.toLowerCase();
+        //     i18n.changeLanguage(lang);
+        //     setCurrentLanguage(lang);
+        //     localStorage.setItem(hostname + "currentLanguage", lang);
+        //   }
+        //   break;
+        // }
         case CHAT_ACTIONS.APPLY_EMAIL:
         case CHAT_ACTIONS.GET_USER_EMAIL:
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {
@@ -746,6 +809,7 @@ const ChatProvider = ({
             companyName,
             t,
             withFindJob: withFindJobOption,
+            sendNewMessage,
           });
         }
 
@@ -762,6 +826,7 @@ const ChatProvider = ({
       currentLanguage,
       PPLinkUrl,
       withFindJobOption,
+      sendNewMessage,
     ]
   );
 
@@ -1098,6 +1163,7 @@ const ChatProvider = ({
         responseMessages,
         isReferralEnabled,
         withFindJob: withFindJobOption,
+        sendNewMessage,
       });
 
       // Simulate chat bot reaction
@@ -1120,6 +1186,7 @@ const ChatProvider = ({
       chatBotId,
       companyName,
       withFindJobOption,
+      sendNewMessage,
     ]
   );
 
@@ -1151,60 +1218,26 @@ const ChatProvider = ({
     [nextMessages]
   );
 
-  const sendNewMessage = async (props: ISendNewMessage) => {
-    if (candidateId) {
-      const payload = createSendMessPayload({
-        ...props,
-        isLiveChat,
-        candidateId,
-        queueId,
-        flowId,
-        subscriberWorkflowId,
-      });
+  const addToQueue = useCallback((task: () => Promise<void>) => {
+    setQueueForSendingMessages((prevQueue) => [...prevQueue, task]);
+  }, []);
 
-      try {
-        setIsChatLoading(true);
-        const answerResponse: ApiResponse<IFollowingResponse> =
-          await apiInstance.sendMessage(payload);
+  const processQueue = useCallback(async () => {
+    if (isProcessing || queueForSendingMessages.length === 0) return;
+    setIsProcessing(true);
 
-        if (answerResponse.data?.success) {
-          return Promise.resolve(answerResponse.data);
-        } else {
-          return Promise.reject(answerResponse);
-        }
-      } catch (error) {
-        return Promise.reject(error?.message);
-      } finally {
-        setIsChatLoading(false);
-      }
+    const nextTask = queueForSendingMessages[0];
+    await nextTask();
+
+    setQueueForSendingMessages((prevQueue) => prevQueue.slice(1));
+    setIsProcessing(false);
+  }, [isProcessing, queueForSendingMessages]);
+
+  useEffect(() => {
+    if (!isProcessing && queueForSendingMessages.length > 0) {
+      processQueue();
     }
-  };
-
-  async function sendNewChatbotMessage(message?: string) {
-    if (candidateId && message) {
-      const payload = createSendMessPayload({
-        message,
-        candidateId,
-      });
-      try {
-        setIsChatLoading(true);
-        const answerResponse: ApiResponse<IFollowingResponse> =
-          await apiInstance.sendChatbotMessage(payload);
-
-        if (answerResponse.data?.success) {
-          return Promise.resolve(answerResponse.data);
-        } else {
-          return Promise.reject(answerResponse);
-        }
-      } catch (error) {
-        return Promise.reject(error?.message);
-      } finally {
-        setIsChatLoading(false);
-      }
-    } else {
-      return Promise.resolve("No candidate ID or message text");
-    }
-  }
+  }, [queueForSendingMessages, isProcessing, processQueue]);
 
   const chooseButtonOption = (
     excludeItem: ButtonsOptions | null,
@@ -1246,7 +1279,12 @@ const ChatProvider = ({
           setSearchRequisitionsTrigger((prevValue) => prevValue + 1);
 
           responseMessages.forEach(
-            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+            (mess) =>
+              !mess.isOwn &&
+              sendNewMessage({
+                isOwn: false,
+                message: mess.content.text,
+              })
           );
           setTimeout(
             () => setMessages([...responseMessages, ...updatedMessages]),
@@ -1263,7 +1301,12 @@ const ChatProvider = ({
           break;
         case CHAT_ACTIONS.MAKE_REFERRAL:
           responseMessages.forEach(
-            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+            (mess) =>
+              !mess.isOwn &&
+              sendNewMessage({
+                isOwn: false,
+                message: mess.content.text,
+              })
           );
           setMessages(
             param
@@ -1287,7 +1330,12 @@ const ChatProvider = ({
           break;
         default:
           responseMessages.forEach(
-            (mess) => !mess.isOwn && sendNewChatbotMessage(mess.content.text)
+            (mess) =>
+              !mess.isOwn &&
+              sendNewMessage({
+                isOwn: false,
+                message: mess.content.text,
+              })
           );
           setMessages([...responseMessages, ...updatedMessages]);
           break;
@@ -1419,7 +1467,6 @@ const ChatProvider = ({
     subscriberWorkflowId,
     setSubscriberWorkflowId,
     sendNewMessage,
-    sendNewChatbotMessage,
     setIsApplyJobFlow,
     emailAddress,
     firstName,

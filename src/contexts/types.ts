@@ -87,7 +87,6 @@ export interface IChatMessengerContext extends IPPKeys {
   setSubscriberWorkflowId: (id?: number) => void;
   setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
   sendNewMessage: (props: ISendNewMessage) => Promise<any>;
-  sendNewChatbotMessage: (message?: string) => Promise<any>;
   emailAddress: string;
   firstName: string;
   lastName: string;
@@ -256,7 +255,8 @@ export interface IEmailLogin {
 }
 
 export interface ISendNewMessage {
-  message: string;
+  isOwn: boolean;
+  message?: string;
   optionId?: number;
   chatItemId?: number;
   isLiveChat?: boolean;

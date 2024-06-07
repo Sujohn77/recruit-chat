@@ -13,7 +13,7 @@ export const InputWrapper = styled.div<IInputWrapperProps>`
   gap: 8px;
   align-items: baseline;
   max-height: 71px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -50,6 +50,9 @@ export const TagWrapper = styled.div`
   color: ${({ theme: { message } }) => message.primaryColor};
   font-size: 14px;
   line-height: 17px;
+  margin-bottom: 5px;
+  width: fit-content;
+  max-width: 95%;
 
   div {
     cursor: pointer;

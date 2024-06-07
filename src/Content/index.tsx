@@ -18,14 +18,15 @@ import { MobileIntroImg } from "screens/Intro/styles";
 import { DefaultThemeType } from "utils/theme/default";
 
 export const Content: FC = () => {
-  const { setIsApplyJobFlow, chatScreen } = useChatMessenger();
+  const { setIsApplyJobFlow, chatScreen, messages } = useChatMessenger();
   const firstTime = useRef<Date>(new Date());
   const theme = useTheme() as DefaultThemeType;
 
   const [showLoader, setShowLoader] = useState(true);
   const [showIcon, setShowIcon] = useState(isMobile);
 
-  const isSelectedOption = !!chatScreen && chatScreen !== ChatScreens.Default;
+  const isSelectedOption =
+    !!chatScreen && chatScreen !== ChatScreens.Default && !!messages.length;
 
   useEffect(() => {
     setTimeout(() => setShowLoader(false), 1000);

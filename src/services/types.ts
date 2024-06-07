@@ -457,6 +457,7 @@ export interface IApplyJobResponse extends ISuccessResponse {
 }
 
 export interface ISendAnswerRequest {
+  directionId: 1 | 2;
   FlowID?: number;
   SubscriberWorkflowID?: number;
   message: string;

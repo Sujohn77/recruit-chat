@@ -1,4 +1,4 @@
-import { ITriggerActionProps } from "contexts/types";
+import { ISendNewMessage, ITriggerActionProps } from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
 import { TFunction } from "react-i18next";
@@ -216,6 +216,7 @@ export interface IGetUpdatedMessages {
   responseMessages: ILocalMessage[];
   isReferralEnabled: boolean;
   withFindJob: boolean;
+  sendNewMessage: (props: ISendNewMessage) => Promise<any>;
 }
 
 export interface IPushMessage {
@@ -229,6 +230,7 @@ export interface IPushMessage {
   companyName?: string | null;
   t: TFunction;
   withFindJob: boolean;
+  sendNewMessage: (props: ISendNewMessage) => Promise<any>;
 }
 
 export interface IGetChatResponseProps {

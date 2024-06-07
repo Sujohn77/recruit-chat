@@ -116,12 +116,11 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   PPLinkUrl: null,
   chatConsent: false,
   setChatConsent() {},
-  withFindJobOption: true,
+  withFindJobOption: false,
   isApplyJobSuccessfully: false,
   flowId: undefined,
   subscriberWorkflowId: undefined,
   parentPathname: "",
-  sendNewChatbotMessage: (message) => Promise.resolve(null),
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [

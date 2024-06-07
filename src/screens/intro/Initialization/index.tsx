@@ -18,7 +18,6 @@ export const Initialization: FC = () => {
     isReferralEnabled,
     setChatScreen,
     currentLanguage,
-    sendNewMessage,
     withFindJobOption,
     parentPathname,
   } = useChatMessenger();
@@ -38,10 +37,6 @@ export const Initialization: FC = () => {
         payload: { item: t(i18n), isChatMessage: true },
         i18nProps: i18nProps,
         i18n: i18n,
-      });
-
-      await sendNewMessage({
-        message: t(i18n),
       });
     },
     []

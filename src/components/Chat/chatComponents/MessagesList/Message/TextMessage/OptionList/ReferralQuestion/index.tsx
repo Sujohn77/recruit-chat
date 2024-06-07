@@ -32,7 +32,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
     chooseButtonOption,
     setViewJob,
     hostname,
-    sendNewChatbotMessage,
+    sendNewMessage,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -62,7 +62,11 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
               false,
               true
             );
-            sendNewChatbotMessage(newReferWithRefHistory.content.text);
+
+            sendNewMessage({
+              isOwn: false,
+              message: newReferWithRefHistory.content.text,
+            });
             const answer2 = createTextMess({
               isOwn: true,
               text: t("labels:no"),

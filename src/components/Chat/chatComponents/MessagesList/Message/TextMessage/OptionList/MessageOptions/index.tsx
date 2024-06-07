@@ -31,6 +31,7 @@ export const MessageOptions: FC<IOptionListProps> = ({
             message: text,
             optionId: id,
             chatItemId: message.chatItemId,
+            isOwn: true,
           });
         } catch (error) {}
       }

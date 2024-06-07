@@ -247,12 +247,16 @@ export const useConnectToLiveChat = (
 
 export const useSearchJobFromParentSite = () => {
   const { t } = useTranslation();
-  const { parentPathname, setMessages, setCurrentMsgType, setChatScreen } =
-    useChatMessenger();
+  const {
+    parentPathname,
+    setMessages,
+    setCurrentMsgType,
+    setChatScreen,
+    sendNewMessage,
+  } = useChatMessenger();
 
   return useCallback(async () => {
     const { jobId, keyword } = parsePathname(parentPathname);
-
     if (jobId && keyword) {
       try {
         const res: ApiResponse<IRequisitionsResponse> =
@@ -273,10 +277,11 @@ export const useSearchJobFromParentSite = () => {
               text: t("messages:initialMessage3"),
               i18n: "messages:initialMessage3",
             });
+            sendNewMessage({ isOwn: false, message: initMess.content.text });
             setMessages(() => [initMess]);
           }
         }
       } catch (error) {}
     }
-  }, [parentPathname]);
+  }, [parentPathname, sendNewMessage]);
 };

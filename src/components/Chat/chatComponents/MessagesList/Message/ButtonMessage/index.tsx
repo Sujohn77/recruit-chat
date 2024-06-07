@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback } from "react";
 
@@ -13,23 +12,25 @@ interface IButtonMessageProps {
 }
 
 export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
-  const { chooseButtonOption, messages, chatId, chatQueueId, sendNewMessage } =
+  const { chooseButtonOption, chatId, chatQueueId, sendNewMessage } =
     useChatMessenger();
   const messageText = useGetMessageText(mess);
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
-  const onClick = useCallback(async () => {
+  const onClick = useCallback(() => {
     if (mess?.content.subType === MessageType.BUTTON && mess?.content?.text) {
+      sendNewMessage({
+        message: mess.content.text,
+        isOwn: true,
+      });
+
       if (mess.content.text === "can i speak to someone?") {
         connectToLiveChat();
       } else {
         chooseButtonOption(mess.content.text as ButtonsOptions);
       }
-      await sendNewMessage({
-        message: mess.content.text,
-      });
     }
-  }, [messages.length]);
+  }, [sendNewMessage]);
 
   return (
     <S.MessageButton onClick={onClick} {...getMessageProps(mess)}>
