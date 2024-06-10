@@ -11,12 +11,12 @@ import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInp
 
 interface IMakeReferralProps {
   message: ILocalMessage;
-  isLastMessage: boolean;
+  isLastMess: boolean;
 }
 
 export const MakeReferralMess: FC<IMakeReferralProps> = ({
   message,
-  isLastMessage,
+  isLastMess,
 }) => {
   const { t } = useTranslation();
   const {
@@ -62,7 +62,7 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
         <DarkButton
           width="100%"
           onClick={onMakeReferral}
-          disabled={!isLastMessage}
+          disabled={!isLastMess}
         >
           {t("buttons:make_referral")}
         </DarkButton>

@@ -79,10 +79,10 @@ import {
   ITriggerActionProps,
   IUser,
 } from "./types";
+import { useCreateAnonymCandidate } from "./hooks";
 import { useIsTabActive, useRequisitions } from "services/hooks";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
-import { userAPI } from "services/api/user.api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
@@ -277,6 +277,19 @@ const ChatProvider = ({
   );
   const [queueId, setQueueId] = useState<null | number>(null);
 
+  const createAnonymCandidate = useCreateAnonymCandidate({
+    chatBotToken,
+    hostname,
+    setCandidateId,
+    setChatId,
+    setFirebaseToken,
+    setIsLoadedMessages,
+  });
+
+  useEffect(() => {
+    createAnonymCandidate();
+  }, []);
+
   useEffect(() => {
     const storedCurrentLanguage = localStorage.getItem(
       hostname + "currentLanguage"
@@ -467,54 +480,6 @@ const ChatProvider = ({
       savedSocketConnection?.unsubscribe();
     };
   }, [isLiveChat, queueId, queueChatId, isTabActive]);
-
-  const createAnonymCandidate = useCallback(async () => {
-    const storedCandidateId = localStorage.getItem(hostname + "candidateId");
-    const storedChatId = localStorage.getItem(hostname + "chatId");
-
-    storedCandidateId && setCandidateId(Number(storedCandidateId));
-    storedChatId && setChatId(Number(storedChatId));
-
-    if (!storedCandidateId?.trim()) {
-      setIsLoadedMessages(true);
-      try {
-        if (chatBotToken) {
-          userAPI.setAuthHeader(chatBotToken);
-        }
-
-        const res: ApiResponse<ICreateCandidateResponse> =
-          await userAPI.createAnonymCandidate({
-            firstName: "Anonymous",
-            lastName: "ChatbotUser",
-            typeId: 17,
-          });
-
-        if (res.data?.id) {
-          setCandidateId(res.data.id);
-
-          const firebaseTokenResponse: ApiResponse<string> =
-            await userAPI.getFirebaseAccessToken(res.data?.id);
-
-          if (firebaseTokenResponse.data) {
-            setFirebaseToken(firebaseTokenResponse.data);
-          }
-
-          if (!storedChatId) {
-            const chatRes: ApiResponse<ICreateChatResponse> =
-              await userAPI.createChatByAnonymUser(res.data.id);
-            chatRes.data?.chatId && setChatId(chatRes.data?.chatId);
-          }
-        }
-      } catch (error) {
-      } finally {
-        setIsLoadedMessages(false);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    createAnonymCandidate();
-  }, []);
 
   useEffect(() => {
     let timeout: undefined | NodeJS.Timeout;

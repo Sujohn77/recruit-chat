@@ -26,7 +26,6 @@ import { InlineDisclaimer } from "./InlineDisclaimer";
 
 interface IMessageProps {
   message: ILocalMessage;
-  withoutMargin?: boolean;
   setSelectedReferralJobId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -34,20 +33,20 @@ interface IMessageProps {
 
 export const Message: FC<IMessageProps> = ({
   message,
-  withoutMargin,
   setSelectedReferralJobId,
 }) => {
   const { messages } = useChatMessenger();
   const subType = message?.content?.subType;
-  const messageProps = { ...getMessageProps(message) };
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
   const isLastMess = messageIndex === 0;
+  const defProps = { isLastMess, message };
+  const messageProps = { ...getMessageProps(message) };
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
       return <S.InitialMessage>{message?.content?.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
-      return <UploadCV withoutMargin={withoutMargin} />;
+      return <UploadCV />;
     case MessageType.EMAIL_FORM: {
       return <EmailForm />;
     }
@@ -67,16 +66,15 @@ export const Message: FC<IMessageProps> = ({
     case MessageType.CHAT_CREATED:
       return (
         <TextMessage
-          message={message}
-          isLastMess={isLastMess}
+          {...defProps}
           setSelectedReferralJobId={setSelectedReferralJobId}
         />
       );
     case MessageType.BUTTON: {
-      return <ButtonMessage message={message} />;
+      return <ButtonMessage {...defProps} />;
     }
     case MessageType.INTERESTED_IN:
-      return <InterestedIn message={message} />;
+      return <InterestedIn {...defProps} />;
     case MessageType.TEXT_WITH_CHOICE: {
       return <TextWithOptions message={message} {...messageProps} />;
     }
@@ -89,15 +87,15 @@ export const Message: FC<IMessageProps> = ({
       return <NoMatchJob />;
     }
     case MessageType.SUBMIT_FILE:
-      return <SearchJob message={message} />;
+      return <SearchJob {...defProps} />;
     case MessageType.UPLOADED_CV:
-      return <UploadedFile message={message} />;
+      return <UploadedFile {...defProps} />;
     case MessageType.TRY_AGAIN:
-      return <TryAgain message={message} isLastMessage={isLastMess} />;
+      return <TryAgain {...defProps} />;
     case MessageType.REFERRAL:
-      return <MakeReferralMess message={message} isLastMessage={isLastMess} />;
+      return <MakeReferralMess {...defProps} />;
     case MessageType.INLINE_DISCLAIMER:
-      return <InlineDisclaimer message={message} />;
+      return <InlineDisclaimer {...defProps} />;
     default: {
       return null;
     }

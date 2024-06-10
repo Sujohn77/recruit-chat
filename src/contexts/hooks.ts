@@ -9,6 +9,8 @@ import { apiInstance } from "services/api";
 import {
   IAskAQuestionResponse,
   IContactPersonRes,
+  ICreateCandidateResponse,
+  ICreateChatResponse,
   IRequisitionsResponse,
   ISubmitReferralResponse,
   IUpdateOrMergeCandidateRequest,
@@ -19,6 +21,7 @@ import {
 import { ChatScreens } from "utils/constants";
 import { CHAT_ACTIONS, IReferralData } from "utils/types";
 import { createTextMess, parsePathname } from "utils/helpers";
+import { userAPI } from "services/api/user.api";
 
 export interface ISubmitReferral {
   referralSourceTypeId: number;
@@ -30,6 +33,15 @@ export interface ISubmitReferral {
   };
   jobId?: number;
   jobSourceID?: string;
+}
+
+export interface IUseCreateAnonymCandidate {
+  chatBotToken: string;
+  hostname: string;
+  setCandidateId: (id: number) => void;
+  setChatId: (id: number) => void;
+  setFirebaseToken: (token: string) => void;
+  setIsLoadedMessages: (isLoading: boolean) => void;
 }
 
 export const useValidateReferral = () => {
@@ -285,3 +297,55 @@ export const useSearchJobFromParentSite = () => {
     }
   }, [parentPathname, sendNewMessage]);
 };
+
+export const useCreateAnonymCandidate = ({
+  chatBotToken,
+  hostname,
+  setCandidateId,
+  setChatId,
+  setFirebaseToken,
+  setIsLoadedMessages,
+}: IUseCreateAnonymCandidate) =>
+  useCallback(async () => {
+    const storedCandidateId = localStorage.getItem(hostname + "candidateId");
+    const storedChatId = localStorage.getItem(hostname + "chatId");
+
+    storedCandidateId && setCandidateId(Number(storedCandidateId));
+    storedChatId && setChatId(Number(storedChatId));
+
+    if (!storedCandidateId?.trim()) {
+      setIsLoadedMessages(true);
+      try {
+        if (chatBotToken) {
+          userAPI.setAuthHeader(chatBotToken);
+        }
+
+        const res: ApiResponse<ICreateCandidateResponse> =
+          await userAPI.createAnonymCandidate({
+            firstName: "Anonymous",
+            lastName: "ChatbotUser",
+            typeId: 17,
+          });
+
+        if (res.data?.id) {
+          setCandidateId(res.data.id);
+
+          const firebaseTokenResponse: ApiResponse<string> =
+            await userAPI.getFirebaseAccessToken(res.data?.id);
+
+          if (firebaseTokenResponse.data) {
+            setFirebaseToken(firebaseTokenResponse.data);
+          }
+
+          if (!storedChatId) {
+            const chatRes: ApiResponse<ICreateChatResponse> =
+              await userAPI.createChatByAnonymUser(res.data.id);
+            chatRes.data?.chatId && setChatId(chatRes.data?.chatId);
+          }
+        }
+      } catch (error) {
+      } finally {
+        setIsLoadedMessages(false);
+      }
+    }
+  }, [hostname, chatBotToken]);

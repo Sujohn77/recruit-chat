@@ -7,7 +7,6 @@ import * as S from "./styles";
 import { Message } from "./Message";
 import { infiniteScrollStyle } from "./styles";
 import { InfiniteScrollView } from "components";
-import { MessageType } from "utils/types";
 import { isMobile } from "utils/constants";
 import { Loader } from "components/Layout/Loader";
 
@@ -70,26 +69,13 @@ export const MessagesList: FC<IMessagesListProps> = ({
           style={infiniteScrollStyle}
           inverse
         >
-          {map(messages, (message, index) => {
-            let withoutMargin = undefined;
-            const isNextMessCVFile =
-              messages[index - 1] &&
-              messages[index - 1]?.content?.subType === MessageType.UPLOADED_CV;
-            if (
-              message?.content?.subType === MessageType.UPLOAD_CV &&
-              isNextMessCVFile
-            ) {
-              withoutMargin = true;
-            }
-            return (
-              <Message
-                key={`${message?.localId}-${message?._id}-${message.dateCreated}-${message.sender?.firstName}`}
-                message={message}
-                withoutMargin={withoutMargin}
-                setSelectedReferralJobId={setSelectedReferralJobId}
-              />
-            );
-          })}
+          {map(messages, (message) => (
+            <Message
+              key={`${message?.localId}-${message?._id}-${message.dateCreated}-${message.sender?.firstName}`}
+              message={message}
+              setSelectedReferralJobId={setSelectedReferralJobId}
+            />
+          ))}
         </InfiniteScrollView>
       </S.MessageListContainer>
 

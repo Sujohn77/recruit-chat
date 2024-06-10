@@ -230,7 +230,6 @@ export const ChatInput: FC<IChatInputProps> = ({
   );
 
   const isWriteAccess =
-    file ||
     (inputType === TextFieldTypes.Select && messageValue) ||
     !!inputValues.length ||
     (referralStep === ReferralSteps.UserMobileNumber && isValidNumber(phone));

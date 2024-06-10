@@ -15,10 +15,10 @@ import {
 
 interface ITryAgainProps {
   message: ILocalMessage;
-  isLastMessage: boolean;
+  isLastMess: boolean;
 }
 
-export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
+export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMess }) => {
   const { t } = useTranslation();
   const {
     companyName: referralCompanyName,
@@ -96,7 +96,7 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMessage }) => {
       <S.MessageText>{message.content.text}</S.MessageText>
       <DarkButton
         onClick={onTryAgainClick}
-        disabled={!isLastMessage}
+        disabled={!isLastMess}
         width="35%"
         fontWeight={500}
         fontColor={COLORS.WHITE}

@@ -40,10 +40,15 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
           break;
         case 2:
           if (isLastMess) {
-            sendNewMessage({
-              message: message.content.text,
-              isOwn: false,
-            });
+            const messagesCopy = [...messages];
+            messagesCopy.reverse().forEach(
+              (mess: ILocalMessage) =>
+                !mess.isOwn &&
+                sendNewMessage({
+                  isOwn: false,
+                  message: mess.content.text,
+                })
+            );
             sendNewMessage({
               message: option.text,
               isOwn: true,

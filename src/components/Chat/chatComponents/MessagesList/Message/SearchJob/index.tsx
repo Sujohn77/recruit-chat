@@ -12,10 +12,10 @@ import { useGetMessageText } from "utils/hooks";
 
 interface IProps {
   message: ILocalMessage;
-  isLastMessage?: boolean;
+  isLastMess: boolean;
 }
 
-export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
+export const SearchJob: FC<IProps> = ({ message, isLastMess }) => {
   const { t } = useTranslation();
   const { chooseButtonOption } = useChatMessenger();
   const { resetFile, searchWithResume, isJobSearchingLoading, file } =
@@ -23,7 +23,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
   const messageText = useGetMessageText(message);
 
   const onSearchWithResume = () => {
-    if (isLastMessage) {
+    if (isLastMess) {
       if (file?.name) {
         chooseButtonOption(ButtonsOptions.UPLOADED_CV, file?.name);
       }
@@ -32,7 +32,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
   };
 
   const onResetResume = () => {
-    if (isLastMessage) {
+    if (isLastMess) {
       const resumeInput = document.getElementById(
         resumeElementId
       ) as HTMLInputElement;
@@ -52,7 +52,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
 
       <S.ActionButton
         onClick={onSearchWithResume}
-        disabled={isJobSearchingLoading || !isLastMessage}
+        disabled={isJobSearchingLoading || !isLastMess}
       >
         {t("buttons:searchJobs")}
       </S.ActionButton>
@@ -61,7 +61,7 @@ export const SearchJob: FC<IProps> = ({ message, isLastMessage }) => {
 
       <S.Cancel
         onClick={onResetResume}
-        disabled={isJobSearchingLoading || !isLastMessage}
+        disabled={isJobSearchingLoading || !isLastMess}
       >
         {t("buttons:cancel")}
       </S.Cancel>

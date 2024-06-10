@@ -3,7 +3,7 @@ import { COLORS } from "utils/colors";
 import { IMAGES } from "assets";
 
 export const Wrapper = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 `;
 
 export const UploadImg = styled.div`

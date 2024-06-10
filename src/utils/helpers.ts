@@ -485,7 +485,7 @@ export const pushMessage = ({
     } else if (chatConsent) {
       // newMessages = updatedMessages;
     } else if (consentInMessage) {
-      sendNewMessage({ isOwn: false, message: consentInMessage.content.text });
+      // sendNewMessage({ isOwn: false, message: consentInMessage.content.text });
       newMessages = [consentInMessage, ...updatedMessages];
     } else {
       // newMessages = updatedMessages;
