@@ -894,51 +894,19 @@ const ChatProvider = ({
         }
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
           // Currently unused
-          setIsChatLoading(true);
-          try {
-            if (chatId) {
-              if (candidateId && payload?.candidateData) {
-                const candidateData: IUpdateOrMergeCandidateRequest = {
-                  ...payload.candidateData,
-                  candidateId: candidateId,
-                  chatId: chatId,
-                  skipEmailCheck: !payload.candidateData.emailAddress,
-                };
-
-                const candidateRes: ApiResponse<IUpdateOrMergeCandidateResponse> =
-                  await apiInstance.updateOrMargeCandidate(candidateData);
-
-                const res = candidateRes?.data;
-
-                if (
-                  res?.success &&
-                  res?.updateChatBotCandidateId &&
-                  res?.candidateId
-                ) {
-                  setCandidateId(res.candidateId);
-                  setIsCandidateAnonym(false);
-                }
-
-                if (res?.success) {
-                  candidateData.emailAddress &&
-                    setEmailAddress(candidateData.emailAddress);
-                  setFirstName(candidateData.firstName);
-                  setLastName(candidateData.lastName);
-                  setIsCandidateWithEmail(true);
-                }
-
-                payload.candidateData.callback?.();
-
-                const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-                  await apiInstance.sendTranscript({
-                    ChatID: chatId,
-                  });
+          if (chatId) {
+            setIsChatLoading(true);
+            try {
+              if (chatId) {
+                await apiInstance.sendTranscript({
+                  ChatID: chatId,
+                });
               }
+            } catch (error) {
+              LOG(error, "Send Transcript Response ERROR");
+            } finally {
+              setIsChatLoading(false);
             }
-          } catch (error) {
-            LOG(error, "Send Transcript Response ERROR");
-          } finally {
-            setIsChatLoading(false);
           }
           break;
         }
@@ -1014,10 +982,7 @@ const ChatProvider = ({
               text: payload.question?.trim(),
               i18n,
             });
-            // hiringProcessMessage for another phase
-            // const hiringProcessMessage = getChatActionResponse({
-            //   type: CHAT_ACTIONS.HIRING_PROCESS,
-            // });
+
             const lastMessIsButton =
               messages[0]?.content.subType === MessageType.BUTTON;
 
@@ -1050,21 +1015,30 @@ const ChatProvider = ({
                     },
                     isOwn: false,
                     localId: generateLocalId(),
-                    _id: null,
+                    _id: generateLocalId(),
                     dateCreated: { seconds: moment().unix() },
                   })
                 );
-                updatedMessages = [
-                  // ...hiringProcessMessage,
-                  ...answers,
-                  questionMess,
-                  ...messages,
-                ];
+
+                answers.forEach(
+                  (mess: ILocalMessage) =>
+                    !mess.isOwn &&
+                    sendNewMessage({
+                      isOwn: false,
+                      message: mess.content.text,
+                    })
+                );
+
+                updatedMessages = [...answers, questionMess, ...messages];
               } else if (!response.data?.answers.length) {
                 const withoutAnswer = createTextMess({
                   text: t("messages:dont_have_answer"),
                   i18n: "messages:dont_have_answer",
                   dateCreated: { seconds: moment().unix() },
+                });
+                sendNewMessage({
+                  isOwn: false,
+                  message: withoutAnswer.content.text,
                 });
 
                 updatedMessages = [
@@ -1079,6 +1053,10 @@ const ChatProvider = ({
                 text: t("messages:dont_have_answer"),
                 i18n: "messages:dont_have_answer",
                 dateCreated: { seconds: moment().unix() },
+              });
+              sendNewMessage({
+                isOwn: false,
+                message: withoutAnswer.content.text,
               });
               updatedMessages = lastMessIsButton
                 ? // ? [...hiringProcessMessage, withoutAnswer, ...messages]
