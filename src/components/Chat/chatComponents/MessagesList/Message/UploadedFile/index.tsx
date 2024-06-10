@@ -14,10 +14,10 @@ export const UploadedFile: FC<IUploadedCvProps> = ({ message }) => {
   const messageText = useGetMessageText(message);
 
   return (
-    <S.Notification>
+    <S.Wrapper>
       {message?.content.text && <S.Icon src={ICONS.ATTACHED_FILE} />}
 
-      <S.NotificationText>{messageText}</S.NotificationText>
-    </S.Notification>
+      <S.ResumeName>{messageText}</S.ResumeName>
+    </S.Wrapper>
   );
 };

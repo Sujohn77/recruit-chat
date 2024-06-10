@@ -180,22 +180,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         if (chatId) {
           try {
             if (emailAddress) {
-              dispatch({
-                type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
-                payload: {
-                  candidateData: {
-                    emailAddress,
-                    firstName,
-                    lastName,
-                  },
-                },
-                i18nProps: null,
+              await apiInstance.sendTranscript({
+                ChatID: chatId,
               });
-              const sendTranscriptRes: ApiResponse<ISendTranscriptResponse> =
-                await apiInstance.sendTranscript({
-                  ChatID: chatId,
-                });
-              console.log("Send Transcript Response", sendTranscriptRes);
             } else {
               const saveTranscriptMess = createTextMess({
                 text,

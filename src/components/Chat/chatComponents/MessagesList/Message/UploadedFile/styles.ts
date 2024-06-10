@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { COLORS } from "utils/colors";
 
-export const Notification = styled.div`
+export const Wrapper = styled.div`
   background: ${COLORS.PASTEL_GRIN};
   display: flex;
   gap: 8px;
@@ -12,9 +12,10 @@ export const Notification = styled.div`
   width: 240px;
   border-radius: 10px;
   position: relative;
+  top: -24px;
 `;
 
-export const NotificationText = styled.p`
+export const ResumeName = styled.p`
   margin-left: 0.5em;
   text-overflow: ellipsis;
   overflow: hidden;

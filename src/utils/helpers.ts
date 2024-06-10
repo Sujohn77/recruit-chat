@@ -129,9 +129,6 @@ export const getActionTypeByOption = (
   t: TFunction
 ) => {
   switch (excludeItem?.toLowerCase()) {
-    // case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
-    //   return CHAT_ACTIONS.HIRING_PROCESS;
-    // }
     case t("messages:uploadCV").toLowerCase():
     case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
       return CHAT_ACTIONS.UPLOAD_CV;
@@ -993,7 +990,6 @@ export const withSendNewMess = (
   messageValue?.trim() === "can i speak to someone?" ||
   currentMsgType === CHAT_ACTIONS.LIVE_CHAT ||
   currentMsgType === CHAT_ACTIONS.GET_EMAIL ||
-  currentMsgType === CHAT_ACTIONS.ASK_QUESTION ||
   currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE;
 
 export const parsePathname = (pathname: string): IParseParentPathName => {
