@@ -13,7 +13,6 @@ export const InputWrapper = styled.div<IInputWrapperProps>`
   gap: 8px;
   align-items: baseline;
   max-height: 71px;
-  /* overflow-y: auto; */
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

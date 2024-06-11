@@ -40,9 +40,9 @@ export const MessagesInput = styled(Box)<IMessageWrapperProps>`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 10px ${({ $isFrLang }) => ($isFrLang ? 0 : 16)}px;
+  padding: 10px 16px;
   padding-bottom: ${({ withBottomLink, $isFrLang }) =>
-    withBottomLink ? 40 : $isFrLang ? 0 : 16}px;
+    withBottomLink ? 40 : 10}px;
   box-sizing: border-box;
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;

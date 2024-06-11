@@ -37,6 +37,10 @@ export const TextInput = styled.input<IInputProps>`
   border-radius: ${({ theme }) =>
     theme === InputTheme.Default ? "10px" : "0"};
   padding: ${({ theme }) => (theme === InputTheme.Default ? "0 10px" : "0")};
+
+  &::placeholder {
+    font-size: 14px;
+  }
 `;
 
 export const TextAreaInput = styled.textarea<IInputProps>`

@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
-  width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 8px;
 `;
 
 export const MenuItemsWrapper = styled.div`

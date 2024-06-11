@@ -1041,12 +1041,7 @@ const ChatProvider = ({
                   message: withoutAnswer.content.text,
                 });
 
-                updatedMessages = [
-                  // ...hiringProcessMessage,
-                  withoutAnswer,
-                  questionMess,
-                  ...messages,
-                ];
+                updatedMessages = [withoutAnswer, questionMess, ...messages];
               }
             } catch (error) {
               const withoutAnswer = createTextMess({
@@ -1059,14 +1054,8 @@ const ChatProvider = ({
                 message: withoutAnswer.content.text,
               });
               updatedMessages = lastMessIsButton
-                ? // ? [...hiringProcessMessage, withoutAnswer, ...messages]
-                  [withoutAnswer, ...messages]
-                : [
-                    // ...hiringProcessMessage,
-                    withoutAnswer,
-                    questionMess,
-                    ...messages,
-                  ];
+                ? [withoutAnswer, ...messages]
+                : [withoutAnswer, questionMess, ...messages];
             } finally {
               setIsChatLoading(false);
             }
