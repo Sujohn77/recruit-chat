@@ -13,7 +13,6 @@ import * as S from "./styles";
 import { IMAGES } from "assets";
 import { INPUT_TYPES, InputTheme } from "utils/constants";
 import { Image } from "screens/Intro/styles";
-import { useChatMessenger } from "contexts/MessengerContext";
 
 interface IInputProps {
   value: string;
@@ -49,7 +48,6 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
     },
     ref
   ) => {
-    const { currentLanguage } = useChatMessenger();
     const [isFocus, setIsFocus] = useState(false);
 
     if (type === INPUT_TYPES.TEXTAREA) {
@@ -65,8 +63,6 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
             onClick={() => setIsShowResults?.(true)}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
-            isFrLanguage={currentLanguage === "fr"}
-            withValue={!!value}
           />
           {error && <S.ErrorText>{error}</S.ErrorText>}
         </S.TextAreaInputWrapper>
@@ -87,8 +83,6 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
           onClick={() => setIsShowResults?.(true)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
-          isFrLanguage={currentLanguage === "fr"}
-          withValue={!!value}
         />
 
         {!!error?.trim() && (

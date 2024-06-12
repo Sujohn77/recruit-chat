@@ -7,7 +7,7 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
-import { useAutocomplete } from "@mui/material";
+import { useAutocomplete, Tooltip } from "@mui/material";
 import { useDebounce } from "use-debounce";
 import filter from "lodash/filter";
 import map from "lodash/map";
@@ -121,32 +121,41 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
         />
       )}
 
-      <S.InputWrapper
-        ref={setAnchorEl}
-        className={focused ? "focused" : ""}
-        isFrLanguage={currentLanguage === "fr"}
-      >
-        {map(
-          filter(selectedValues, (option) => !!option),
-          (option: string, index: number) => (
-            <Tag
-              label={option}
-              {...getTagProps({ index })}
-              onDelete={() => onDelete(index)}
-            />
-          )
-        )}
+      <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
+        <div style={{ maxHeight: "45px", overflow: "auto" }}>
+          {map(
+            filter(selectedValues, (option) => !!option),
+            (option: string, index: number) => (
+              <Tag
+                label={option}
+                {...getTagProps({ index })}
+                onDelete={() => onDelete(index)}
+              />
+            )
+          )}
+        </div>
 
-        <TextInput
-          {...autocompleteInputProps}
-          onFocus={onInputFocus}
-          placeholder={placeHolder}
-          value={value}
-          onClick={onInputClick}
-          onChange={onChangeHandler}
-          isFrLanguage={currentLanguage === "fr"}
-          withValue={!!value}
-        />
+        {currentLanguage === "fr" ? (
+          <Tooltip title={placeHolder} hidden={!!value.length}>
+            <TextInput
+              {...autocompleteInputProps}
+              onFocus={onInputFocus}
+              placeholder={placeHolder}
+              value={value}
+              onClick={onInputClick}
+              onChange={onChangeHandler}
+            />
+          </Tooltip>
+        ) : (
+          <TextInput
+            {...autocompleteInputProps}
+            onFocus={onInputFocus}
+            placeholder={placeHolder}
+            value={value}
+            onClick={onInputClick}
+            onChange={onChangeHandler}
+          />
+        )}
       </S.InputWrapper>
     </S.Wrapper>
   );

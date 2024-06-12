@@ -3,11 +3,6 @@ import styled from "styled-components";
 import { COLORS } from "utils/colors";
 import { InputTheme } from "utils/constants";
 
-interface IInputProps {
-  isFrLanguage: boolean;
-  withValue: boolean;
-}
-
 export const Wrapper = styled.div`
   width: 100%;
   position: relative;
@@ -23,7 +18,7 @@ export const Wrapper = styled.div`
 
 export const TextAreaInputWrapper = styled.div``;
 
-export const TextInput = styled.input<IInputProps>`
+export const TextInput = styled.input`
   color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: ${({ theme }) =>
@@ -31,8 +26,7 @@ export const TextInput = styled.input<IInputProps>`
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  width: ${({ isFrLanguage, withValue }) =>
-    isFrLanguage ? (withValue ? 281 : 323) : 250}px !important;
+  width: 250px !important;
   height: ${({ theme }) => (theme === InputTheme.Default ? "38px" : "40px")};
   border-radius: ${({ theme }) =>
     theme === InputTheme.Default ? "10px" : "0"};
@@ -43,15 +37,14 @@ export const TextInput = styled.input<IInputProps>`
   }
 `;
 
-export const TextAreaInput = styled.textarea<IInputProps>`
+export const TextAreaInput = styled.textarea`
   color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: none;
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  width: ${({ isFrLanguage, withValue }) =>
-    isFrLanguage ? (withValue ? 281 : 323) : 250}px !important;
+  width: 250px !important;
 `;
 
 export const ErrorText = styled.span`

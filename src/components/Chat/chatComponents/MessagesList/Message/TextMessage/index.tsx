@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { useTheme } from "styled-components";
 import Linkify from "linkify-react";
 
@@ -35,11 +35,12 @@ export const TextMessage: FC<ITextMessageProps> = ({
     companyName: referralCompanyName,
     offerJobs,
     currentLanguage,
+    consentOptIn,
   } = useChatMessenger();
   const altMessText = useGetMessageText(message);
   const { t, i18n } = useTranslation();
 
-  const messageText = useMemo(() => {
+  const messageText = useMemo((): ReactNode => {
     const { content } = message;
     const withMaxTextWidth =
       message.optionList?.type !== MessageOptionTypes.AvailableJobs;
@@ -47,7 +48,15 @@ export const TextMessage: FC<ITextMessageProps> = ({
       (o) => o.id.toString() === message.jobId?.toString()
     );
 
-    if (jobOffer?.title && content?.text?.includes(jobOffer?.title)) {
+    if (message.optionList?.type === MessageOptionTypes.Consent) {
+      return (
+        <S.MessageText>
+          {currentLanguage === "en" && consentOptIn?.content_en
+            ? consentOptIn?.content_en
+            : consentOptIn?.content_fr || altMessText}
+        </S.MessageText>
+      );
+    } else if (jobOffer?.title && content?.text?.includes(jobOffer?.title)) {
       const index = content?.text?.indexOf(jobOffer?.title);
       return (
         <S.MessageText>
@@ -56,9 +65,10 @@ export const TextMessage: FC<ITextMessageProps> = ({
           {content?.text?.substring(index + jobOffer?.title.length)}
         </S.MessageText>
       );
-    }
-
-    if (referralCompanyName && content?.text?.includes(referralCompanyName)) {
+    } else if (
+      referralCompanyName &&
+      content?.text?.includes(referralCompanyName)
+    ) {
       let text = content?.text;
       let index = text.indexOf(referralCompanyName);
 
@@ -83,7 +93,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
         </S.MessageText>
       );
     }
-  }, [currentLanguage]);
+  }, [currentLanguage, consentOptIn]);
 
   const isErrorMessage = message.content.isError;
   const messageProps = { ...getMessageProps(message) };

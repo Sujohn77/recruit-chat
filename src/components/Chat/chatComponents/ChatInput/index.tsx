@@ -48,16 +48,12 @@ import {
   validateEmailOrPhone,
   withSendNewMess,
 } from "utils/helpers";
-import {
-  ButtonsOptions,
-  CHAT_ACTIONS,
-  ILocalMessage,
-  MessageType,
-} from "utils/types";
+import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
 import { COLORS } from "utils/colors";
 import { useFirebaseSignIn, usePersistStore, useTextField } from "utils/hooks";
 import {
   ISubmitReferral,
+  useAksQuestion,
   useConnectToLiveChat,
   useSubmitReferral,
   useValidateReferral,
@@ -97,7 +93,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     setError,
     error,
     requisitions,
-    chooseButtonOption,
     isChatLoading,
     isApplyJobFlow,
     sendNewMessage,
@@ -151,6 +146,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
   const setUserData = useSetUserData();
   const checkAnswer = useCheckAnswer();
+  const askQuestionHandler = useAksQuestion();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
@@ -887,14 +883,23 @@ export const ChatInput: FC<IChatInputProps> = ({
       const withSendMessToSever = withSendNewMess(messageValue, currentMsgType);
 
       if (withSendMessToSever && messageValue) {
+        if (
+          currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
+          messageValue &&
+          messages.length === 1
+        ) {
+          sendNewMessage({ isOwn: false, message: messages[0].content.text });
+        }
+
         try {
           sendNewMessage({
             message: messageValue,
             isOwn: true,
           });
-          setMessageValue("");
         } catch (error) {
           console.log(error);
+        } finally {
+          setMessageValue("");
         }
       }
 
@@ -1063,6 +1068,36 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         if (!isConfirm && !isAcceptedApplyJob) {
           // just set user message
+          const chatbotMess = createTextMess({
+            text: t("messages:select_option"),
+            isOwn: false,
+            optionList: {
+              isActive: true,
+              type: MessageOptionTypes.DefaultOptions,
+              status: MessageStatuses.ok,
+              options: [
+                {
+                  id: 1,
+                  itemId: 1,
+                  isSelected: false,
+                  name: t("buttons:find_another_job"),
+                  text: t("buttons:find_another_job"),
+                  i18nPhrase: "buttons:find_another_job",
+                },
+                {
+                  id: 2,
+                  itemId: 2,
+                  isSelected: false,
+                  name: t("buttons:ask_questions"),
+                  text: t("buttons:ask_questions"),
+                  i18nPhrase: "buttons:ask_questions",
+                },
+              ],
+            },
+          });
+
+          sendNewMessage({ isOwn: false, message: chatbotMess.content.text });
+          setMessages((prev) => [chatbotMess, ...prev]);
         } else if (isConfirm && !isAcceptedApplyJob) {
           const resMess = createTextMess({ text: t("messages:great_apply") });
           const consentInMessage = createConsentInMsg({
@@ -1076,12 +1111,6 @@ export const ChatInput: FC<IChatInputProps> = ({
             isOwn: false,
             message: resMess.content.text,
           });
-          if (consentInMessage) {
-            sendNewMessage({
-              isOwn: false,
-              message: consentInMessage.content.text,
-            });
-          }
 
           setMessages((prev) =>
             consentInMessage
@@ -1240,7 +1269,9 @@ export const ChatInput: FC<IChatInputProps> = ({
         });
       } else {
         const isSendMess =
-          currentMsgType !== CHAT_ACTIONS.SET_CATEGORY || requisitions.length;
+          (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
+            currentMsgType !== CHAT_ACTIONS.ASK_QUESTION) ||
+          requisitions.length;
         if (isSendMess) {
           sendMessage(messageValue);
           setIsShowResults(false);
@@ -1248,7 +1279,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         switch (currentMsgType) {
           case CHAT_ACTIONS.ASK_QUESTION:
-            messageValue && chooseButtonOption(messageValue as ButtonsOptions);
+            askQuestionHandler(setMessageValue, messageValue);
             break;
           default:
             break;
@@ -1278,8 +1309,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     if (currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE) {
       return t("placeHolders:default");
     }
-    console.log("messages", messages);
-    console.log("messages[0]", messages?.[0]);
     if (
       messages?.[0]?.content?.text ===
       t("messages:employeeId", {

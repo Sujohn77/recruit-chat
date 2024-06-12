@@ -1,13 +1,9 @@
 import styled from "styled-components";
 
-interface IInputWrapperProps {
-  isFrLanguage: boolean;
-}
-
 export const Wrapper = styled.div``;
 
-export const InputWrapper = styled.div<IInputWrapperProps>`
-  ${({ isFrLanguage }) => (isFrLanguage ? "" : "width: 270px;")}
+export const InputWrapper = styled.div`
+  width: 270px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;

@@ -142,21 +142,16 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
   );
 
   return (
-    <S.ReferralOptionList>
+    <S.OptionListWrapper>
       {map(message.optionList?.options, (o, i) => (
         <S.OptionButton
           onClick={() => onSelectOption(o)}
           isSelected={o.isSelected}
           disabled={!isLastMess}
         >
-          {/* {i === 1
-            ? t("referral:jobs", {
-                title: employeeJobCategory,
-              })
-            : o.text} */}
           {i === 1 ? employeeJobCategory + " jobs" : o.text}
         </S.OptionButton>
       ))}
-    </S.ReferralOptionList>
+    </S.OptionListWrapper>
   );
 };

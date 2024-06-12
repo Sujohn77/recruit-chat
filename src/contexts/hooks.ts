@@ -4,6 +4,8 @@ import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
 import isNumber from "lodash/isNumber";
 import some from "lodash/some";
+import map from "lodash/map";
+import moment from "moment";
 
 import { apiInstance } from "services/api";
 import {
@@ -18,9 +20,14 @@ import {
   IValidateRefPayload,
   IValidateRefResponse as IValidateRefRes,
 } from "services/types";
-import { ChatScreens } from "utils/constants";
-import { CHAT_ACTIONS, IReferralData } from "utils/types";
-import { createTextMess, parsePathname } from "utils/helpers";
+import { ChatScreens, REFERRAL_OFFER_TEXT } from "utils/constants";
+import {
+  CHAT_ACTIONS,
+  ILocalMessage,
+  IReferralData,
+  MessageType,
+} from "utils/types";
+import { createTextMess, generateLocalId, parsePathname } from "utils/helpers";
 import { userAPI } from "services/api/user.api";
 
 export interface ISubmitReferral {
@@ -349,3 +356,103 @@ export const useCreateAnonymCandidate = ({
       }
     }
   }, [hostname, chatBotToken]);
+
+export const useAksQuestion = () => {
+  const { t } = useTranslation();
+  const { setIsChatLoading, setMessages, sendNewMessage } = useChatMessenger();
+
+  return useCallback(
+    async (
+      setMessageValue: (value: string) => void,
+      question?: string | null,
+      i18n?: string
+    ) => {
+      if (!question) return;
+
+      const questionMess = createTextMess({
+        isOwn: true,
+        text: question?.trim(),
+        i18n,
+      });
+
+      sendNewMessage({
+        message: questionMess.content.text,
+        isOwn: true,
+      });
+      setMessageValue("");
+      setMessages((prev) => [questionMess, ...prev]);
+
+      try {
+        setIsChatLoading(true);
+        const data = {
+          question: question?.trim(),
+          languageCode: "en",
+          options: {
+            answersNumber: 1,
+            includeUnstructuredSources: true,
+            confidenceScoreThreshold: 0.5,
+          },
+        };
+
+        const response: ApiResponse<IAskAQuestionResponse> =
+          await apiInstance.askAQuestion(data);
+
+        if (response.data?.answers.length) {
+          const answers: ILocalMessage[] = map(
+            response.data?.answers,
+            (answer) => ({
+              content: {
+                subType:
+                  answer === REFERRAL_OFFER_TEXT
+                    ? MessageType.REFERRAL
+                    : MessageType.TEXT,
+                text: answer,
+                i18n: i18n || null,
+                i18nProps: null,
+              },
+              isOwn: false,
+              localId: generateLocalId(),
+              _id: generateLocalId(),
+              dateCreated: { seconds: moment().unix() },
+            })
+          );
+          answers.forEach(
+            (mess: ILocalMessage) =>
+              !mess.isOwn &&
+              sendNewMessage({
+                isOwn: false,
+                message: mess.content.text,
+              })
+          );
+          setMessages((prev) => [...answers, ...prev]);
+        } else if (!response.data?.answers.length) {
+          const withoutAnswer = createTextMess({
+            text: t("messages:dont_have_answer"),
+            i18n: "messages:dont_have_answer",
+            dateCreated: { seconds: moment().unix() },
+          });
+          setMessages((prev) => [withoutAnswer, ...prev]);
+          sendNewMessage({
+            isOwn: false,
+            message: withoutAnswer.content.text,
+          });
+        }
+      } catch (error) {
+        const withoutAnswer = createTextMess({
+          text: t("messages:dont_have_answer"),
+          i18n: "messages:dont_have_answer",
+          dateCreated: { seconds: moment().unix() },
+        });
+        sendNewMessage({
+          isOwn: false,
+          message: withoutAnswer.content.text,
+        });
+
+        setMessages((prev) => [withoutAnswer, ...prev]);
+      } finally {
+        setIsChatLoading(false);
+      }
+    },
+    []
+  );
+};

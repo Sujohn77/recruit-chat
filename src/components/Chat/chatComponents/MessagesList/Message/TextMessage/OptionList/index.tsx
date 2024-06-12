@@ -6,6 +6,7 @@ import { ReferralJobOptions } from "./ReferralJobOptions";
 import { ReferralQuestion } from "./ReferralQuestion";
 import { MessageOptions } from "./MessageOptions";
 import { ConsentOptions } from "./ConsentOptions";
+import { DefOptions } from "./DefaultQuestion";
 
 interface IOptionListProps {
   message: ILocalMessage;
@@ -27,6 +28,8 @@ export const OptionList: FC<IOptionListProps> = (props) => {
       return <ReferralQuestion {...props} />;
     case MessageOptionTypes.Consent:
       return <ConsentOptions {...props} />;
+    case MessageOptionTypes.DefaultOptions:
+      return <DefOptions {...props} />;
     default:
       return <MessageOptions {...props} />;
   }
