@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
@@ -16,8 +16,10 @@ interface IDefOptions {
 export const DefOptions: FC<IDefOptions> = ({ message }) => {
   const { t } = useTranslation();
   const { dispatch, setChatScreen, sendNewMessage } = useChatMessenger();
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const onSelectOption = useCallback((option: IMessageOption) => {
+    setSelectedId(option.id);
     const isFindJob = option.id === 1;
     const isOnlyQnA = message.optionList?.options.length === 1;
     const screen =
@@ -40,7 +42,10 @@ export const DefOptions: FC<IDefOptions> = ({ message }) => {
   return (
     <S.OptionListWrapper>
       {map(message.optionList?.options, (o) => (
-        <S.ConsentOptionButton onClick={() => onSelectOption(o)}>
+        <S.ConsentOptionButton
+          onClick={() => onSelectOption(o)}
+          isSelected={o.id === selectedId}
+        >
           {getMessageOptionText(o, t)}
         </S.ConsentOptionButton>
       ))}
