@@ -718,15 +718,6 @@ const ChatProvider = ({
           setUser({ ...user, name: payload?.item! });
           break;
         }
-        // case CHAT_ACTIONS.CHANGE_LANG: {
-        //   if (payload?.item) {
-        //     const lang = payload.item.toLowerCase();
-        //     i18n.changeLanguage(lang);
-        //     setCurrentLanguage(lang);
-        //     localStorage.setItem(hostname + "currentLanguage", lang);
-        //   }
-        //   break;
-        // }
         case CHAT_ACTIONS.APPLY_EMAIL:
         case CHAT_ACTIONS.GET_USER_EMAIL:
         case CHAT_ACTIONS.SET_ALERT_EMAIL: {

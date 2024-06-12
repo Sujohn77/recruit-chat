@@ -8,6 +8,7 @@ export const fr = {
     set_job_alert: "Définir une alerte d'emploi",
     refine_search: "Chercher à nouveau",
     find_job: "Trouver un poste",
+    find_another_job: "Trouver un autre emploi",
     ask_questions: "Poser des questions",
     searchJobs: "Rechercher des postes avec un CV",
     make_referral: "Faire une recommandation",
@@ -134,6 +135,8 @@ export const fr = {
     provide_lastname: "Quel est votre nom ?",
     please_choose:
       "Veuillez choisir l'une des options suivantes pour commencer votre recherche d'emploi",
+    select_option:
+      "D'accord, si vous ne souhaitez pas postuler à cet emploi, je peux vous aider pour ce qui suit :",
   },
   chat_item_description: {
     title: "Robot de carrière",

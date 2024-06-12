@@ -42,6 +42,7 @@ import {
 } from "./constants";
 import {
   IMessage,
+  IMessageOption,
   IMessageOptions,
   ISearchJobsPayload,
   ISendAnswerRequest,
@@ -401,6 +402,7 @@ export const createConsentInMsg = ({
     default:
       break;
   }
+
   const consentOptInOptionList: IMessageOptions = {
     isActive: true,
     type: MessageOptionTypes.Consent,
@@ -477,8 +479,10 @@ export const pushMessage = ({
     });
 
     let newMessages: ILocalMessage[] = updatedMessages;
-    if (messages.length) {
+    if (messages.length && chatConsent) {
       newMessages = [message, ...updatedMessages];
+    } else if (messages.length && !chatConsent && consentInMessage) {
+      newMessages = [consentInMessage, message, ...updatedMessages];
     } else if (chatConsent) {
       // newMessages = updatedMessages;
     } else if (consentInMessage) {
@@ -1025,4 +1029,12 @@ export const isConfirmationMessage = (message: string): boolean => {
     text === "i sure am" ||
     text === "maybe"
   );
+};
+
+export const getMessageOptionText = (option: IMessageOption, t: TFunction) => {
+  if (option.i18nProps && option.i18nPhrase) {
+    return t(option.i18nPhrase, option.i18nProps);
+  } else if (option.i18nPhrase) {
+    return t(option.i18nPhrase);
+  } else return option.text;
 };

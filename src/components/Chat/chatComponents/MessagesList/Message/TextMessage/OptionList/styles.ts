@@ -30,7 +30,7 @@ export const List = styled.div`
   width: 100%;
 `;
 
-export const ReferralOptionList = styled(List)`
+export const OptionListWrapper = styled(List)`
   width: 100%;
   flex-direction: column;
 `;
@@ -66,11 +66,10 @@ export const ConsentOptionButton = styled(DarkButton)`
   font-weight: 500 !important;
   margin-bottom: 8px !important;
   min-height: 35px !important;
-  padding: 8px 0 !important;
+  padding: 8px !important;
   width: 100%;
   height: auto;
-
-  ${({ isSelected }) => isSelected && "opacity: 0.3 !important;"}
+  ${({ isSelected }) => isSelected && "opacity: 0.3 !important;"};
 `;
 
 export const OptionButton = styled(DarkButton)`

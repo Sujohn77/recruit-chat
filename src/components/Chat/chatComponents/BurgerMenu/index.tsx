@@ -237,19 +237,6 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       case CHAT_ACTIONS.CHANGE_LANG:
         setCurrentLanguage(text);
         await i18n.changeLanguage(text);
-        const userMess = getParsedMessages([
-          {
-            text: t("messages:changeLang", { lang: text }),
-            i18n: "messages:changeLang",
-            i18nProps: { lang: text },
-            isOwn: true,
-          },
-        ])[0];
-        sendNewMessage({
-          isOwn: true,
-          message: userMess.content.text,
-        });
-        setMessages((prev) => [userMess, ...prev]);
         localStorage.setItem(hostname + "currentLanguage", text);
         break;
       default:

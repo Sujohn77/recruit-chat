@@ -8,6 +8,7 @@ export const en = {
     set_job_alert: "Set Job Alert",
     refine_search: "Search Again",
     find_job: "Find a job",
+    find_another_job: "Find another job",
     ask_questions: "Ask questions",
     searchJobs: "Search jobs with resume",
     make_referral: "Make a referral",
@@ -128,6 +129,8 @@ export const en = {
     please_choose:
       "Please choose one of the following options to begin your job search",
     apply_job_provide_firstname: "So to kick off, what's your first name?",
+    select_option:
+      "OK, if you do not wish to apply for this job, I can help you with the following:",
   },
   chat_item_description: {
     title: "Career bot",

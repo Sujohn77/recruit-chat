@@ -30,7 +30,7 @@ export const Initialization: FC = () => {
   }, [parentPathname]);
 
   const onSelectOption = useCallback(
-    async ({ type, screen, i18n, i18nProps }: IScreenOption) => {
+    ({ type, screen, i18n, i18nProps }: IScreenOption) => {
       setChatScreen(screen);
       dispatch({
         type,

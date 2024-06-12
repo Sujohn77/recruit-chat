@@ -40,15 +40,24 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
           break;
         case 2:
           if (isLastMess) {
-            const messagesCopy = [...messages];
-            messagesCopy.reverse().forEach(
-              (mess: ILocalMessage) =>
-                !mess.isOwn &&
-                sendNewMessage({
-                  isOwn: false,
-                  message: mess.content.text,
-                })
-            );
+            const messagesCopy = [...messages].reverse();
+
+            if (messagesCopy.length === 2) {
+              messagesCopy.forEach(
+                (mess: ILocalMessage) =>
+                  !mess.isOwn &&
+                  sendNewMessage({
+                    isOwn: false,
+                    message: mess.content.text,
+                  })
+              );
+            } else {
+              sendNewMessage({
+                isOwn: false,
+                message: messagesCopy[messagesCopy.length - 1].content.text,
+              });
+            }
+
             sendNewMessage({
               message: option.text,
               isOwn: true,
@@ -120,7 +129,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
   );
 
   return (
-    <S.ReferralOptionList>
+    <S.OptionListWrapper>
       {map(message.optionList?.options, (o) => (
         <S.ConsentOptionButton
           onClick={() => onSelectOption(o)}
@@ -129,6 +138,6 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
           {o.text}
         </S.ConsentOptionButton>
       ))}
-    </S.ReferralOptionList>
+    </S.OptionListWrapper>
   );
 };

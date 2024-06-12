@@ -41,6 +41,7 @@ export enum MessageOptionTypes {
   Referral = "referral",
   AvailableJobs = "available_job",
   Consent = "consent",
+  DefaultOptions = "default_options",
 }
 
 export enum MessageStatuses {
