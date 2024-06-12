@@ -60,18 +60,17 @@ export const TextTitle = styled.h3`
 `;
 
 export const ViewShortInfo = styled.div`
-  padding: 0 0 16px;
   border-bottom: 1px solid ${COLORS.ALTO};
-  margin-bottom: 24px;
+  margin-bottom: 15px;
 `;
 
 export const ShortItems = styled.div`
-  padding: 0 0 12px;
+  margin-bottom: 15px;
 `;
 
 export const InfoItem = styled(MenuItemWrapper)`
   border-bottom: none !important;
-  margin-bottom: 8px;
+  margin-top: 8px;
   padding: 0;
   color: ${COLORS.BLACK};
 
@@ -136,16 +135,18 @@ export const SubmitButton = styled(DarkButton)`
 export const Error = styled.div`
   display: flex;
   align-items: center;
-  margin: 8px 0px;
+  background: ${COLORS.PIPPIN};
+  border: 1px solid ${COLORS.NEW_YORK_PINK};
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 15px;
 `;
 
 export const ErrorText = styled.span`
-  color: ${COLORS.PERSIAN_RED};
-`;
-
-export const WarningImg = styled.img`
-  width: 12px;
-  height: 12px;
+  color: ${COLORS.NEW_YORK_PINK};
+  font-size: 14px;
+  width: 85%;
+  padding-left: 14px;
 `;
 
 export const LoaderWrapper = styled.div`
@@ -158,5 +159,5 @@ export const LoaderWrapper = styled.div`
 export const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: auto;
+  margin-bottom: 15px;
 `;

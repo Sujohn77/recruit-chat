@@ -6,8 +6,7 @@ import { ApiResponse } from "apisauce";
 import parse from "html-react-parser";
 
 import * as S from "./styles";
-import { IMAGES } from "assets";
-import { Loader } from "components/Layout";
+import { ErrorIcon, Loader } from "components/Layout";
 import { apiInstance } from "services/api";
 import { ILocalMessage } from "utils/types";
 import { createTextMess, getFormattedDate } from "utils/helpers";
@@ -42,7 +41,9 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const lastBtn = useRef<null | ButtonType>(null);
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
-  const [applyJobError, setApplyJobError] = useState<string | null>(null);
+  const [applyJobError, setApplyJobError] = useState<string | null>(
+    "Sorry, it's not been possible to start your application for this job. Please try again or contact support@loopworks.com"
+  );
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
   const [jobIdWithoutFlowId, setJobIdWithoutFlowId] = useState<number>();
@@ -283,7 +284,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
         <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
           {applyJobError && (
             <S.Error>
-              <S.WarningImg src={IMAGES.WARN} alt="" />
+              <ErrorIcon />
               <S.ErrorText>{applyJobError}</S.ErrorText>
             </S.Error>
           )}
@@ -320,7 +321,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
 
       <AnimateHeight id={ANIMATION_ID} duration={500} height={height}>
         <S.Error>
-          <S.WarningImg src={IMAGES.WARN} alt="" />
+          <ErrorIcon />
           <S.ErrorText>{applyJobError}</S.ErrorText>
         </S.Error>
       </AnimateHeight>
