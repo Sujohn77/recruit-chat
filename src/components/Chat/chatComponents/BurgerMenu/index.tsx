@@ -1,7 +1,6 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiResponse } from "apisauce";
 import map from "lodash/map";
 
 import * as S from "./styles";
@@ -14,9 +13,8 @@ import {
   menuItems,
 } from "./data";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
-import { ISendTranscriptResponse } from "services/types";
 import { apiInstance } from "services/api";
-import { createTextMess, getParsedMessages } from "utils/helpers";
+import { createTextMess } from "utils/helpers";
 import { CHAT_ACTIONS, IMenuItem } from "utils/types";
 import i18n from "services/localization";
 
@@ -44,8 +42,6 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setIsApplyJobFlow,
     isCandidateWithEmail,
     emailAddress,
-    firstName,
-    lastName,
     setViewJob,
     isReferralEnabled,
     employeeId,
@@ -69,6 +65,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     chatConsent,
     sendNewMessage,
     setCurrentLanguage,
+    setIsApplyJobSuccessfully,
+    setFlowId,
+    setSubscriberWorkflowId,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -123,28 +122,33 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     };
   }, []);
 
-  const handleItemClick = async (item: IMenuItem) => {
+  const refreshInputStateIfNeed = useCallback(
+    (type: CHAT_ACTIONS) => {
+      type === CHAT_ACTIONS.MAKE_REFERRAL &&
+        setSelectedReferralJobId(undefined);
+
+      if (
+        type === CHAT_ACTIONS.ASK_QUESTION ||
+        type === CHAT_ACTIONS.FIND_JOB ||
+        type === CHAT_ACTIONS.MAKE_REFERRAL
+      ) {
+        setIsApplyJobFlow(false);
+        setIsApplyJobSuccessfully(false);
+        localStorage.removeItem(hostname + "viewJob");
+        setViewJob(null);
+        cleanInputValue();
+        setIsLiveChat(false);
+        setFlowId();
+        setSubscriberWorkflowId();
+      }
+    },
+    [cleanInputValue]
+  );
+
+  const onSelectOption = async (item: IMenuItem) => {
     const { type, text } = item;
     setIsOpen(false);
-
-    if (type === CHAT_ACTIONS.ASK_QUESTION || type === CHAT_ACTIONS.FIND_JOB) {
-      setIsApplyJobFlow(false);
-      localStorage.removeItem(hostname + "viewJob");
-      setViewJob(null);
-      cleanInputValue();
-      setIsLiveChat(false);
-    }
-
-    if (
-      type === CHAT_ACTIONS.ASK_QUESTION ||
-      type === CHAT_ACTIONS.MAKE_REFERRAL
-    ) {
-      setSelectedReferralJobId(undefined);
-      localStorage.removeItem(hostname + "viewJob");
-      setViewJob(null);
-      cleanInputValue();
-      setIsLiveChat(false);
-    }
+    refreshInputStateIfNeed(type);
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
       const resMess = getValidationRefResponse(
@@ -261,7 +265,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
             <MenuItem
               key={`menu-item-${index}`}
               item={item}
-              onClick={handleItemClick}
+              onClick={onSelectOption}
               onSelectLanguage={handleBurgerClick}
             />
           ))}
