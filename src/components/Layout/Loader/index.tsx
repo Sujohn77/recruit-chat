@@ -1,37 +1,20 @@
-import React from 'react';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import { FC } from "react";
+import * as S from "./styles";
 
-export const Dot = styled.span`
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: ${({ theme: { message } }) => message.backgroundColor};
-  animation: fade 1.5s infinite;
-  @keyframes fade {
-    0% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-`;
+interface ILoaderProps {
+  showLoader: boolean;
+  absolutePosition?: boolean;
+}
 
-export const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: absolute;
-  bottom: 10px;
-  left: 16px;
-`;
-
-export const Loader = () => {
-  const dots = Array.from({ length: 3 }).map((v, index) => <Dot key={'dot-' + index} />);
-
-  return <Wrapper>{dots}</Wrapper>;
-};
+// Chat Typing Animation
+export const Loader: FC<ILoaderProps> = ({
+  showLoader,
+  absolutePosition = true,
+}) =>
+  showLoader ? (
+    <S.Wrapper absolutePosition={absolutePosition}>
+      {Array.from({ length: 3 }).map((v, index) => (
+        <S.Dot key={"dot-" + index} />
+      ))}
+    </S.Wrapper>
+  ) : null;

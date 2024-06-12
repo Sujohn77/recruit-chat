@@ -1,92 +1,15 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { FC } from "react";
 
-import * as S from './styles';
+import * as S from "./styles";
+import { Initialization } from "./Initialization";
+import { isMobile } from "utils/constants";
 
-import { ICONS } from '../../utils/constants';
-
-import { useChatMessenger } from 'contexts/MessangerContext';
-import i18n from 'services/localization';
-import { CHAT_ACTIONS } from 'utils/types';
-
-import { useTheme } from 'styled-components';
-import { ThemeType } from 'utils/theme/default';
-import { EmailForm } from 'components/Intro/EmailLogin/Email';
-import { TrialPassword } from 'components/Intro/TrialPassword';
-import { DefaultButton } from 'components/Layout/Buttons';
-import { ButtonsTheme } from 'components/Layout/Buttons/types';
-import { SupportForm } from 'components/Intro/SupportForm';
-import { DefaultMessages } from 'components/Intro/DefautMessages';
-import { useAuthContext } from 'contexts/AuthContext';
-
-export enum CHAT_OPTIONS {
-    FIND_JOB = 'FIND JOB',
-    ASK_QUESTION = 'ASK QUESTION',
+interface IIntroScreenProps {
+  isSelectedOption: boolean | null;
 }
 
-type PropsType = {
-    setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
-    isSelectedOption: boolean | boolean | null;
-};
-
-export const Intro: FC<PropsType> = ({ setIsSelectedOption, isSelectedOption }) => {
-    const { isVerified } = useAuthContext();
-    const [isEmailForm, setIsEmailForm] = useState(false);
-    const [isNeedSupport, setIsNeedSupport] = useState(false);
-    const [isQuestionSubmit, setIsQuestionSubmit] = useState(false);
-
-    const handleSupportClick = () => {
-        setIsNeedSupport(true);
-    };
-
-    const lookingForJobTxt = i18n.t('messages:initialMessage');
-    const continueTxt = i18n.t('messages:wantContinue');
-
-    // const isOtpMessages = isOTPpSent && !isNeedSupport;
-
-    return (
-        <S.Wrapper isClosed={!!isSelectedOption}>
-            <DefaultMessages
-                setIsEmailForm={setIsEmailForm}
-                text={lookingForJobTxt}
-                isOptions={!isQuestionSubmit}
-                setIsSelectedOption={setIsSelectedOption}
-            />
-
-            {/* {isEmailForm && !isOtpMessages && !isVerified && <EmailForm setIsEmailForm={setIsEmailForm} />}
-
-            {isOtpMessages && !isVerified && <TrialPassword />} */}
-
-            {!isNeedSupport && isEmailForm && !isVerified && (
-                <DefaultButton
-                    variant="outlined"
-                    value="Support"
-                    style={{
-                        width: '250px',
-                        margin: '0 auto 16px',
-                        display: 'block',
-                        animation: 'fadeHeight 0.6s ease-in',
-                        background: '#fff',
-                    }}
-                    theme={ButtonsTheme.Purple}
-                    onClick={handleSupportClick}
-                />
-            )}
-
-            {isNeedSupport && !isVerified && (
-                <SupportForm
-                    isQuestionSubmit={isQuestionSubmit}
-                    setIsQuestionSubmit={setIsQuestionSubmit}
-                    setIsSupportForm={setIsNeedSupport}
-                />
-            )}
-
-            {isQuestionSubmit && (
-                <DefaultMessages
-                    setIsEmailForm={setIsEmailForm}
-                    text={continueTxt}
-                    setIsSelectedOption={setIsSelectedOption}
-                />
-            )}
-        </S.Wrapper>
-    );
-};
+export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => (
+  <S.Wrapper isClosed={!!isSelectedOption} isMobile={isMobile}>
+    <Initialization />
+  </S.Wrapper>
+);

@@ -1,713 +1,1040 @@
-import randomString from 'random-string';
+import { profile } from "contexts/mockData";
+import { CSSProperties } from "react";
+import { Buffer } from "buffer";
+import moment from "moment";
+import randomString from "random-string";
+import capitalize from "lodash/capitalize";
+import findIndex from "lodash/findIndex";
+import unionBy from "lodash/unionBy";
+import sortBy from "lodash/sortBy";
+import filter from "lodash/filter";
+import remove from "lodash/remove";
+import find from "lodash/find";
+import map from "lodash/map";
+import libPhoneNumber from "google-libphonenumber";
+import { TFunction } from "react-i18next";
+
 import {
-    MessageType,
-    ILocalMessage,
-    CHAT_ACTIONS,
-    USER_INPUTS,
-    IContent,
-    QueuesState,
-    UpdateQueueChatRoomMessagesAction,
-    IQueueChatRoom,
-    IMessageID,
-    IGetUpdatedMessages,
-    IFilterItemsWithType,
-    IReplaceLocalMessages,
-    IRequisition,
-    IPushMessage,
-} from './types';
-import { colors } from './colors';
-import moment from 'moment';
-
-import { IChatMessengerContext, IFileUploadContext, IUser } from 'contexts/types';
+  MessageType,
+  ILocalMessage,
+  CHAT_ACTIONS,
+  ButtonsOptions,
+  IContent,
+  IGetUpdatedMessages,
+  IFilterItemsWithType,
+  IPushMessage,
+  ISnapshot,
+  IParsedTheme,
+  IApiThemeResponse,
+  IPopMessage,
+  IPrivacyPolicy,
+} from "./types";
+import { COLORS } from "./colors";
 import {
-    ContactType,
-    IApiMessage,
-    IMessage,
-    ISearchJobsPayload,
-    IUserSelf,
-    LocationType,
-    ServerMessageType,
-} from 'services/types';
+  getReplaceMessageType,
+  isPushMessageType,
+  LocalStorage,
+  TextFieldTypes,
+  SessionStorage,
+  EventIds,
+  TryAgainTypes,
+  MessageOptionTypes,
+} from "./constants";
+import {
+  IMessage,
+  IMessageOption,
+  IMessageOptions,
+  ISearchJobsPayload,
+  ISendAnswerRequest,
+  I_id,
+  LocationType,
+  SnapshotType,
+} from "services/types";
+import i18n from "services/localization";
+import { ISendNewMessage } from "contexts/types";
 
-import { capitalize, findIndex, sortBy } from 'lodash';
-import { getProcessedSnapshots } from '../firebase/config';
-import { profile } from 'contexts/mockData';
-
-import i18n from 'services/localization';
-import { getReplaceMessageType, isPushMessageType, LocalStorage, TextFieldTypes, SessionStorage } from './constants';
-import { IApiThemeResponse } from './api';
-import { Buffer } from 'buffer';
-import jwt_decode from 'jwt-decode';
 window.Buffer = Buffer;
+const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
 
-const emptyFunc = () => console.log();
-
+interface ICreateMessage {
+  text: string;
+  isOwn?: boolean;
+  i18n?: string;
+  i18nProps?: Object;
+  isError?: boolean;
+  subType?: MessageType;
+  tryAgainType?: TryAgainTypes;
+  _id?: string | null;
+  localId?: string;
+  dateCreated?: { seconds: number };
+  optionList?: null | IMessageOptions;
+  locations?: string[];
+}
+interface IGetMatchedItems {
+  searchStr: string | null;
+  searchItems: string[];
+}
+interface IIsResultType {
+  type: CHAT_ACTIONS | null;
+  matchedItems: string[];
+  value?: string;
+}
 export interface IMessageProps {
-    color?: string;
-    backColor?: string;
-    isOwn?: boolean;
-    padding?: string;
-    cursor?: string;
-    isLastMessage?: boolean;
+  backgroundColor?: string | null;
+  isOwn?: boolean;
+  padding?: string;
+  cursor?: string;
+  flexDirection?: CSSProperties["flexDirection"];
+}
+interface IUserContact {
+  isPhoneType: boolean;
+  contact: string | undefined | null;
+}
+interface IParseParentPathName {
+  keyword: string | null;
+  jobId: number | null;
+}
+export interface ICreateSendMessPayload extends ISendNewMessage {
+  candidateId: number;
+  queueId?: number | null;
+  subscriberWorkflowId?: number;
+  flowId?: number;
+  directionId: 1 | 2;
 }
 
 export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
-    const padding = msg.content.subType === MessageType.FILE ? '8px' : '12px 16px';
-    const cursor = msg.content.subType === MessageType.BUTTON ? 'pointer' : 'initial';
+  const padding =
+    msg?.content?.subType === MessageType.FILE ? "8px" : "12px 16px";
+  const cursor =
+    msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial";
 
-    if (!msg.isOwn) {
-        return {
-            color: colors.dustyGray,
-            backColor: colors.alto,
-            isOwn: !!msg.isOwn,
-            padding,
-            cursor,
-        };
-    }
+  if (!msg.isOwn) {
     return {
-        color: msg.content.subType === MessageType.BUTTON ? colors.tundora : colors.white,
-        backColor: msg.content.subType === MessageType.BUTTON ? colors.alto : colors.boulder,
-        padding,
-        isOwn: !!msg.isOwn,
-        cursor,
+      isOwn: !!msg.isOwn,
+      padding,
+      cursor,
     };
+  } else {
+    return {
+      padding,
+      isOwn: !!msg.isOwn,
+      cursor,
+    };
+  }
 };
 
-export const isTokenExpired = (token: string) => {
-    let decodedToken: { exp: number } = jwt_decode(token);
-    let currentDate = new Date();
-
-    return decodedToken.exp * 1000 < currentDate.getTime();
-};
-export const getActionTypeByOption = (option: USER_INPUTS) => {
-    switch (option.toLowerCase()) {
-        case USER_INPUTS.UPLOAD_CV.toLowerCase(): {
-            return CHAT_ACTIONS.UPLOAD_CV;
-        }
-        case USER_INPUTS.HIRING_PROCESS.toLowerCase(): {
-            return CHAT_ACTIONS.HIRING_PROCESS;
-        }
-        case USER_INPUTS.ANSWER_QUESTIONS.toLowerCase(): {
-            return CHAT_ACTIONS.ANSWER_QUESTIONS;
-        }
-
-        default: {
-            return null;
-        }
+export const getActionTypeByOption = (
+  excludeItem: ButtonsOptions | null | string,
+  t: TFunction
+) => {
+  switch (excludeItem?.toLowerCase()) {
+    case t("messages:uploadCV").toLowerCase():
+    case ButtonsOptions.UPLOAD_CV.toLowerCase(): {
+      return CHAT_ACTIONS.UPLOAD_CV;
     }
+    case t("messages:answerQuestions").toLowerCase():
+    case ButtonsOptions.ANSWER_QUESTIONS.toLowerCase(): {
+      return CHAT_ACTIONS.ANSWER_QUESTIONS;
+    }
+    case ButtonsOptions.UPLOADED_CV: {
+      return CHAT_ACTIONS.UPLOADED_CV;
+    }
+    case ButtonsOptions.CANCEL_JOB_SEARCH_WITH_RESUME:
+      return CHAT_ACTIONS.CANCEL_JOB_SEARCH_WITH_RESUME;
+    case t("buttons:make_referral").toLowerCase():
+    case ButtonsOptions.MAKE_REFERRAL.toLowerCase():
+      return CHAT_ACTIONS.MAKE_REFERRAL;
+
+    default: {
+      return null;
+    }
+  }
 };
+
+interface IResMessages {
+  i18n?: string;
+  subType?: MessageType;
+  text?: string;
+  isOwn?: boolean;
+  isChatMessage?: boolean;
+  i18nProps?: Object | null;
+  optionList?: null | IMessageOptions;
+}
 
 export const getParsedMessages = (
-    messages: {
-        subType?: MessageType;
-        text?: string;
-        isOwn?: boolean;
-        isChatMessage?: boolean;
-    }[]
+  messages: IResMessages[]
 ): ILocalMessage[] => {
-    const responseMessages = [];
-    for (const msg of messages) {
-        const dateCreated = { seconds: moment().unix() };
-        const localId = generateLocalId();
-        const message: ILocalMessage = {
-            _id: !!msg.isChatMessage ? localId : null,
-            dateCreated,
-            content: {
-                subType: msg.subType || MessageType.TEXT,
-            },
-            localId,
-            isOwn: !!msg.isOwn,
-        };
-        if (msg.text) {
-            message.content.text = msg.text;
-        }
-        responseMessages.push(message);
-    }
-
-    return responseMessages;
-};
-
-export const MessageTypeId: Record<ServerMessageType, number> = {
-    /* Default text */
-    [MessageType.TEXT]: 1,
-
-    /* Events */
-    [MessageType.DATE]: 2,
-    [MessageType.UNREAD_MESSAGES]: 2,
-    [MessageType.TRANSCRIPT]: 2,
-    [MessageType.CHAT_CREATED]: 2,
-
-    /* Files */
-    [MessageType.VIDEO]: 2,
-    [MessageType.DOCUMENT]: 2,
-    [MessageType.FILE]: 2,
-};
-
-export const MessageSubtypeId: Record<ServerMessageType, number | null> = {
-    /* Default text hasn't subtype */
-    [MessageType.TEXT]: null,
-
-    /* Each of file types has subtype */
-    [MessageType.DATE]: 98,
-    [MessageType.UNREAD_MESSAGES]: 99,
-    [MessageType.VIDEO]: 2,
-    [MessageType.DOCUMENT]: 4,
-    [MessageType.FILE]: 5,
-
-    /* Each of events has subtype */
-    [MessageType.TRANSCRIPT]: 1,
-    [MessageType.CHAT_CREATED]: 3,
-};
-
-export const getLocalMessage = (requestMessage: IApiMessage, sender: IUserSelf): IMessage => {
-    const currentUnixTime = moment().unix();
-
-    return {
-        chatItemId: -1,
-        localId: requestMessage.localId,
-        content: {
-            typeId: MessageTypeId.text,
-            // subType: requestMessage.subType,
-            subType: MessageType.TEXT,
-            contextId: requestMessage.contextId || null,
-            text: requestMessage.msg,
-            url: null,
-        },
-        dateCreated: {
-            seconds: currentUnixTime,
-        },
-        dateModified: {
-            seconds: currentUnixTime,
-        },
-        isEdited: false,
-        isOwn: false,
-        sender,
-        searchValue: '',
+  const responseMessages = [];
+  for (const msg of messages) {
+    const localId = generateLocalId();
+    const message: ILocalMessage = {
+      _id: localId,
+      content: {
+        subType: msg.subType || MessageType.TEXT,
+        text: msg.text,
+        i18n: msg.i18n || "",
+        i18nProps: msg.i18nProps || null,
+      },
+      localId,
+      isOwn: !!msg.isOwn,
+      optionList: msg.optionList,
     };
-};
 
-export const capitalizeFirstLetter = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    responseMessages.push(message);
+  }
+
+  return responseMessages;
 };
 
 // CONTEXT
 
-export const chatMessengerDefaultState: IChatMessengerContext = {
-    messages: [],
-    status: null,
-    category: null,
-    user: null,
-    searchLocations: [],
-    requisitions: [],
-    locations: [],
-    offerJobs: [],
-    currentMsgType: null,
-    alertCategories: null,
-    error: null,
-    viewJob: null,
-    prefferedJob: null,
-    nextMessages: [],
-    chooseButtonOption: emptyFunc,
-    triggerAction: emptyFunc,
-    setSnapshotMessages: emptyFunc,
-    setCurrentMsgType: emptyFunc,
-    setError: emptyFunc,
-    setViewJob: emptyFunc,
-    submitMessage: emptyFunc,
-    setIsInitialized: emptyFunc,
-    setJobPositions: emptyFunc,
-    resumeName: '',
-};
-
-export const fileUploadDefaultState: IFileUploadContext = {
-    file: null,
-    notification: null,
-    resetFile: emptyFunc,
-    showFile: emptyFunc,
-    searchWithResume: emptyFunc,
-    setNotification: emptyFunc,
-    resumeData: null,
-};
-
-export const validateEmail = (value: string) => {
-    if (!value) {
-        return i18n.t('labels:required');
-    }
-    if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-        return i18n.t('labels:email_invalid');
-    }
-    return '';
+export const validateEmail = (
+  value: string,
+  requiredPhrase?: string
+): string => {
+  if (!value) {
+    return requiredPhrase || i18n.t(`labels:required`);
+  }
+  if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+    return i18n.t("labels:email_invalid");
+  }
+  return "";
 };
 
 export const validateEmailOrPhone = (value: string) => {
-    if (!value) {
-        return i18n.t('labels:required');
-    }
-    const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
-    const phoneRegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  if (!value) {
+    return i18n.t("labels:required");
+  }
 
-    if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
-        return i18n.t('labels:email_or_phone_invalid');
-    }
-    return '';
+  const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
+  const phoneRegExp =
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+
+  if (!emailRegExp.test(value) && !phoneRegExp.test(value)) {
+    return i18n.t("labels:email_or_phone_invalid");
+  }
+
+  return "";
 };
 
-interface IIsMatches {
-    item: string;
-    compareItem: string;
+function advancedSearch(
+  searchTerm: string | null,
+  searchItems: string[]
+): string[] {
+  if (!searchTerm?.trim()) {
+    return searchItems;
+  }
+  const searchTerms = searchTerm?.toLowerCase().split(" ");
+  return searchItems.filter((item) => {
+    const lowerItem = item.toLowerCase();
+    return searchTerms?.every(
+      (term) =>
+        lowerItem.includes(term) ||
+        lowerItem.split(" ").some((word) => word.startsWith(term))
+    );
+  });
 }
-const isMatches = ({ item, compareItem }: IIsMatches) => {
-    const compareWord = compareItem.toLowerCase();
-    const searchItem = item.toLowerCase();
 
-    return searchItem.slice(0, compareWord.length) === compareWord && searchItem.includes(compareItem);
-};
+export const getMatchedItems = ({
+  searchStr,
+  searchItems,
+}: IGetMatchedItems): { matchedItems: string[]; matchedPart: string } => {
+  const searchText = searchStr?.toLowerCase()?.trim() || "";
+  const matchedItems = advancedSearch(searchStr, searchItems);
 
-interface IGetMatchedItems {
-    message: string | null;
-    searchItems: string[];
-    searchLocations: string[];
-}
-export const getMatchedItems = ({ message, searchItems, searchLocations }: IGetMatchedItems) => {
-    const compareItem = message?.toLowerCase() || '';
-    const matchedPositions = searchItems.filter((item) => isMatches({ item, compareItem }));
+  const matchedPart =
+    matchedItems.length && searchStr?.length
+      ? searchText[0].toUpperCase() + searchText.slice(1, searchText.length)
+      : "";
 
-    const matchedPart = matchedPositions.length && message?.length ? matchedPositions[0].slice(0, message.length) : '';
-    const matchedItems = matchedPositions
-        .filter((p) => {
-            return !searchLocations.includes(p);
-        })
-        .map((item) => item.slice(message?.length, item.length));
-
-    return {
-        matchedItems,
-        matchedPart,
-    };
+  return {
+    matchedItems,
+    matchedPart,
+  };
 };
 
 export const getParsedMessage = ({
-    text,
-    subType,
-    isOwn = true,
-    isChatMessage = false,
-    localId = generateLocalId(),
+  text,
+  subType,
+  isOwn = true,
+  isChatMessage = false,
+  localId = generateLocalId(),
+  i18nPhrase = "",
+  i18nProps,
 }: {
-    text: string;
-    subType: MessageType;
-    isOwn?: boolean;
-    localId?: string;
-    isChatMessage?: boolean;
+  text: string;
+  subType: MessageType;
+  isOwn?: boolean;
+  localId?: string;
+  isChatMessage?: boolean;
+  i18nPhrase: string;
+  i18nProps: Object | null;
 }) => {
-    const dateCreated = { seconds: moment().unix() };
-    const content: IContent = {
-        subType: subType || MessageType.TEXT,
-        text,
-    };
-    return {
-        dateCreated,
-        content,
-        isOwn: !!isOwn,
-        localId,
-        _id: !isChatMessage ? null : localId,
-    };
+  const dateCreated = { seconds: moment().unix() };
+  const content: IContent = {
+    subType: subType || MessageType.TEXT,
+    text,
+    i18n: i18nPhrase,
+    i18nProps,
+  };
+  return {
+    dateCreated,
+    content,
+    isOwn: !!isOwn,
+    localId,
+    _id: !isChatMessage ? null : localId,
+  };
 };
 
 export const getServerParsedMessages = (messages: IMessage[]) => {
-    const parsedMessages = messages.map((msg) => {
-        const content: IContent = {
-            subType: msg.content.subType,
-            text: msg.content.text,
-        };
-        return {
-            dateCreated: msg.dateCreated,
-            content,
-            isOwn: msg.sender.id === profile.id,
-            localId: msg.localId,
-            _id: msg.chatItemId,
-        };
-    });
-    return parsedMessages;
-};
-
-type Handler<A> = (state: QueuesState, action: A) => QueuesState;
-export const updateChatRoomMessages: Handler<UpdateQueueChatRoomMessagesAction> = (
-    state,
-    { messagesSnapshots, chatId, queueId }
-) => {
-    const chatRooms: IQueueChatRoom[] = [...state.rooms[queueId]];
-
-    // Find room
-    const foundRoomIndex = findIndex(state.rooms[queueId], (room) => room.chatId?.toString() === chatId);
-
-    if (foundRoomIndex !== -1) {
-        // Update whole room (link) with new messages
-        const processedSnapshots = sortBy(
-            getProcessedSnapshots<IMessageID, IMessage>(
-                chatRooms[foundRoomIndex].messages || [],
-                messagesSnapshots,
-                'chatItemId',
-                [],
-                'localId'
-            ),
-            (message) => -message.dateCreated.seconds
-        );
-
-        chatRooms[foundRoomIndex] = {
-            ...chatRooms[foundRoomIndex],
-            messages: processedSnapshots,
-        };
-    }
-
-    return { ...state, rooms: { ...state.rooms, [queueId]: chatRooms } };
-};
-
-const responseMessages = {
-    refineSearch: "Let's try again to find a job",
-    changeLang: 'You changed the \n language to ',
-};
-
-export const getMessageBySubtype = ({ subType, value }: { subType: string | undefined; value?: string }) => {
-    if (!subType) {
-        return undefined;
-    }
-    switch (subType) {
-        case CHAT_ACTIONS.REFINE_SEARCH:
-            return responseMessages.refineSearch;
-        case CHAT_ACTIONS.CHANGE_LANG:
-            return responseMessages.changeLang + value;
-        default:
-            return null;
-    }
-};
-
-export const getItemById = (items: any[], id: string) => {
-    return items.find((job) => job.id === Number(id));
-};
-export const isValidEmailOrText = (type: CHAT_ACTIONS, item: string) => {
-    switch (type) {
-        case CHAT_ACTIONS.SET_ALERT_EMAIL:
-        case CHAT_ACTIONS.GET_USER_EMAIL:
-        case CHAT_ACTIONS.APPLY_EMAIL: {
-            return !validateEmail(item).length;
-        }
-    }
-    return true;
-};
-export const getMessagesOnAction = ({
-    action,
-    messages,
-    responseMessages,
-    additionalCondition,
-}: IGetUpdatedMessages) => {
-    const { type } = action;
-    let updatedMessages = messages;
-    if (type === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
-        updatedMessages = popMessage({ type: MessageType.UPLOAD_CV, messages });
-        updatedMessages = popMessage({ type: MessageType.SUBMIT_FILE, messages });
-    }
-
-    if (!isPushMessageType(type)) {
-        updatedMessages = popMessage({
-            type: getReplaceMessageType(type),
-            messages: !updatedMessages.length ? [...updatedMessages, ...initialMessages] : updatedMessages,
-        });
-    }
-
-    // if (isReversePush(type)) {
-    //     const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
-    //     const message = getParsedMessage({
-    //         text,
-    //         subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
-    //         isChatMessage: !!action.payload?.isChatMessage,
-    //     });
-    //     return [message, ...responseAction.newMessages, ...updatedMessages];
-    // }
-    console.log('push', responseMessages, updatedMessages);
-    return [...responseMessages, ...updatedMessages];
-};
-
-const initialMessages = getParsedMessages([
-    {
-        text: i18n.t('messages:initialMessage'),
-        isChatMessage: true,
-    },
-]);
-
-export const pushMessage = ({ action, messages, setMessages }: IPushMessage) => {
-    const { type, payload } = action;
-    const text = payload?.item ? payload.item : payload?.items?.join('\r\n') || '';
-
-    const message = getParsedMessage({
-        text,
-        subType: type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ? MessageType.FILE : MessageType.TEXT,
-        isChatMessage: !!action.payload?.isChatMessage,
-    });
-
-    const updatedMessages = popMessage({
-        type: getReplaceMessageType(type),
-        messages: !messages.length ? [...messages, ...initialMessages] : messages,
-    });
-
-    if (message.content.subType !== MessageType.TEXT || !!text) setMessages([message, ...updatedMessages]);
-
-    if (message.content.text) {
-        // Push initial message
-        // TODO: uncomment when backend is ready
-        // const isInitialMessage = !messages.length;
-        // const serverMessage = {
-        //     ...defaultServerMessage,
-        //     msg: isInitialMessage ? initialMessages[0].content.text : message.content.text,
-        //     // subType: isInitialMessage ? initialMessages[0].content.subType : message.content.subType,
-        //     // msg: initialMessages[0].content.text || '',
-        //     localId: `${initialMessages[0].localId}`,
-        // };
-        // sendMessage(serverMessage);
-    }
-
-    return updatedMessages;
-};
-
-export const popMessage = ({ type, messages }: { type: MessageType | null; messages: ILocalMessage[] }) => {
-    if (!type) {
-        return messages;
-    }
-
-    const updatedMessages = !type ? messages : messages.filter((msg) => msg.content.subType !== type);
-
-    !type && updatedMessages.shift();
-
-    return updatedMessages;
-};
-
-export const replaceItemsWithType = ({ type, messages, excludeItem }: IFilterItemsWithType) => {
-    const item = messages.find((msg) => msg.content.subType === type && msg.content.text === excludeItem);
-    const updatedMessages = messages.filter((msg, index) => msg.content.subType !== type);
-    if (item) {
-        item.content.subType = MessageType.TEXT;
-        return [item, ...updatedMessages];
-    }
-
-    return updatedMessages;
-};
-
-export const replaceLocalMessages = ({ messages, parsedMessages }: IReplaceLocalMessages) => {
-    return messages.map((msg) => {
-        if (!msg._id) {
-            const updatedMessage = parsedMessages.find((updateMsg) => updateMsg.localId === msg.localId);
-            return updatedMessage || msg;
-        }
-        return msg;
-    });
-};
-
-export const getNextActionType = (chatMsgType: CHAT_ACTIONS | null) => {
-    switch (chatMsgType) {
-        case CHAT_ACTIONS.REFINE_SEARCH:
-        case CHAT_ACTIONS.FIND_JOB:
-        case CHAT_ACTIONS.APPLY_ETHNIC:
-        case CHAT_ACTIONS.GET_USER_EMAIL:
-        case CHAT_ACTIONS.SEARCH_WITH_RESUME:
-            return CHAT_ACTIONS.SET_CATEGORY;
-        case CHAT_ACTIONS.SET_ALERT_EMAIL:
-            return CHAT_ACTIONS.SET_CATEGORY;
-        case CHAT_ACTIONS.INTERESTED_IN:
-            return CHAT_ACTIONS.GET_USER_NAME;
-        case CHAT_ACTIONS.GET_USER_NAME:
-            return CHAT_ACTIONS.GET_USER_EMAIL;
-        case CHAT_ACTIONS.APPLY_POSITION:
-            return CHAT_ACTIONS.APPLY_NAME;
-        case CHAT_ACTIONS.APPLY_NAME:
-            return CHAT_ACTIONS.APPLY_EMAIL;
-        case CHAT_ACTIONS.APPLY_EMAIL:
-            return CHAT_ACTIONS.APPLY_AGE;
-        case CHAT_ACTIONS.APPLY_AGE:
-            return CHAT_ACTIONS.SET_WORK_PERMIT;
-        case CHAT_ACTIONS.SET_SALARY:
-            return CHAT_ACTIONS.APPLY_ETHNIC;
-        case CHAT_ACTIONS.SET_JOB_ALERT:
-            return CHAT_ACTIONS.SET_ALERT_CATEGORIES;
-        case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
-            return CHAT_ACTIONS.SEND_ALERT_CATEGORIES;
-        case CHAT_ACTIONS.SEND_ALERT_CATEGORIES:
-            return CHAT_ACTIONS.SET_ALERT_EMAIL;
-        case CHAT_ACTIONS.SET_CATEGORY:
-            return CHAT_ACTIONS.SET_LOCATIONS;
-        case CHAT_ACTIONS.SET_LOCATIONS:
-            return CHAT_ACTIONS.SEND_LOCATIONS;
-        case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
-            return CHAT_ACTIONS.SEARCH_WITH_RESUME;
-        default:
-            return chatMsgType;
-    }
-};
-
-export const getSearchJobsData = (category: string, city: string): ISearchJobsPayload => {
+  const parsedMessages = map(messages, (msg) => {
+    const content: IContent = {
+      subType: msg?.content?.subType,
+      text: msg?.content.text,
+      i18n: msg.content.i18n,
+      i18nProps: msg.content.i18nProps,
+    };
     return {
-        pageSize: 10,
-        page: 0,
-        keyword: '*',
-        // companyId: '6591',
-        minDatePosted: '2016-11-13T00:00:00',
-        categories: [category],
-        location: {
-            city,
+      dateCreated: msg.dateCreated,
+      content,
+      isOwn: msg.sender.id === profile.id,
+      localId: msg.localId,
+      _id: msg.chatItemId,
+    };
+  });
+  return parsedMessages;
+};
+
+export const getItemById = (items: any[], id: string) =>
+  find(items, (job) => job.id === Number(id));
+
+export const getMessagesOnAction = ({
+  action,
+  messages,
+  responseMessages,
+  isReferralEnabled,
+  withFindJob,
+  sendNewMessage,
+}: IGetUpdatedMessages) => {
+  const { type } = action;
+  let updatedMessages = messages;
+  if (type === CHAT_ACTIONS.SEARCH_WITH_RESUME) {
+    updatedMessages = popMessage({ type: MessageType.UPLOAD_CV, messages });
+    updatedMessages = popMessage({ type: MessageType.SUBMIT_FILE, messages });
+  }
+
+  if (!isPushMessageType(type)) {
+    updatedMessages = popMessage({
+      type: getReplaceMessageType(type),
+      messages: !updatedMessages.length
+        ? [
+            ...updatedMessages,
+            ...initialMessages(isReferralEnabled, withFindJob),
+          ]
+        : updatedMessages,
+    });
+  }
+
+  console.log(
+    "%c   push   ",
+    `color: ${COLORS.PASTEL_GRIN}; background-color: ${COLORS.BLACK};`,
+    responseMessages,
+    updatedMessages
+  );
+  responseMessages.forEach(
+    (mess) =>
+      !mess.isOwn &&
+      sendNewMessage({
+        isOwn: false,
+        message: mess.content.text,
+      })
+  );
+  return [...responseMessages, ...updatedMessages];
+};
+
+const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
+  getParsedMessages([
+    {
+      text: i18n.t(
+        `messages:${
+          isReferralEnabled
+            ? "refInitialMessage"
+            : withFindJob
+            ? "initialMessage"
+            : "initialMessage2"
+        }`
+      ),
+      isChatMessage: true,
+      i18n: `messages:${
+        isReferralEnabled
+          ? "refInitialMessage"
+          : withFindJob
+          ? "initialMessage"
+          : "initialMessage2"
+      }`,
+      i18nProps: null,
+    },
+  ]);
+
+export const createConsentInMsg = ({
+  currentLanguage,
+  consentOptIn,
+  companyName,
+  t,
+}: {
+  currentLanguage: string;
+  consentOptIn: IPrivacyPolicy | null;
+  t: TFunction;
+  companyName?: string | null;
+}): ILocalMessage | null => {
+  if (!consentOptIn) return null;
+
+  let consentOptInText = undefined;
+  switch (currentLanguage) {
+    case "en":
+      if (consentOptIn?.content_en) consentOptInText = consentOptIn?.content_en;
+      break;
+    case "fr":
+      if (consentOptIn?.content_fr) consentOptInText = consentOptIn?.content_fr;
+      break;
+    default:
+      break;
+  }
+
+  const consentOptInOptionList: IMessageOptions = {
+    isActive: true,
+    type: MessageOptionTypes.Consent,
+    options: [
+      {
+        id: 1,
+        itemId: 1,
+        isSelected: false,
+        text: t("labels:privacy_policy", { companyName }),
+      },
+      {
+        id: 2,
+        itemId: 2,
+        isSelected: false,
+        text: t("labels:wish_continue"),
+      },
+    ],
+  };
+
+  const consentInMessage = getParsedMessages([
+    {
+      subType: MessageType.TEXT,
+      text: consentOptInText,
+      optionList: consentOptInOptionList,
+    },
+  ])[0];
+
+  return consentInMessage;
+};
+
+export const pushMessage = ({
+  action,
+  messages,
+  setMessages,
+  isReferralEnabled,
+  chatConsent,
+  currentLanguage,
+  companyName,
+  consentOptIn,
+  t,
+  withFindJob,
+  sendNewMessage,
+}: IPushMessage) => {
+  const { type, payload, i18n, i18nProps } = action;
+
+  const text = payload?.item
+    ? payload.item
+    : payload?.items?.join("\r\n") || "";
+
+  const message = getParsedMessage({
+    text,
+    subType:
+      type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV
+        ? MessageType.FILE
+        : MessageType.TEXT,
+    isChatMessage: !!action.payload?.isChatMessage,
+    i18nPhrase: i18n || "",
+    i18nProps,
+  });
+
+  const updatedMessages = popMessage({
+    type: getReplaceMessageType(type),
+    messages: !messages.length
+      ? [...messages, ...initialMessages(isReferralEnabled, withFindJob)]
+      : messages,
+  });
+
+  if (message?.content.subType !== MessageType.TEXT || !!text) {
+    const consentInMessage = createConsentInMsg({
+      consentOptIn,
+      currentLanguage,
+      companyName,
+      t,
+    });
+
+    let newMessages: ILocalMessage[] = updatedMessages;
+    if (messages.length && chatConsent) {
+      newMessages = [message, ...updatedMessages];
+    } else if (messages.length && !chatConsent && consentInMessage) {
+      newMessages = [consentInMessage, message, ...updatedMessages];
+    } else if (chatConsent) {
+      // newMessages = updatedMessages;
+    } else if (consentInMessage) {
+      // sendNewMessage({ isOwn: false, message: consentInMessage.content.text });
+      newMessages = [consentInMessage, ...updatedMessages];
+    } else {
+      // newMessages = updatedMessages;
+    }
+    setMessages(newMessages);
+
+    // setMessages(
+    //   messages.length
+    //     ? [message, ...updatedMessages]
+    //     : chatConsent
+    //     ? updatedMessages
+    //     : consentInMessage
+    //     ? [consentInMessage, ...updatedMessages]
+    //     : updatedMessages
+    // );
+  }
+
+  return updatedMessages;
+};
+
+const popMessage = ({ type, messages }: IPopMessage): ILocalMessage[] =>
+  !type ? messages : filter(messages, (msg) => msg?.content?.subType !== type);
+
+export const replaceItemsWithType = ({
+  type,
+  messages,
+  excludeItem,
+  withoutFiltering = false,
+}: IFilterItemsWithType) => {
+  // for ask questions
+  if (withoutFiltering) {
+    return messages;
+  }
+
+  const item = find(
+    messages,
+    (msg) => msg?.content?.subType === type && msg.content.text === excludeItem
+  );
+  const updatedMessages = filter(
+    messages,
+    (msg) => msg?.content?.subType !== type
+  );
+
+  if (item) {
+    item.content.subType = MessageType.TEXT;
+    return [item, ...updatedMessages];
+  }
+
+  return updatedMessages;
+};
+
+export const getNextActionType = (
+  chatMsgType: CHAT_ACTIONS | null,
+  excludeItem?: ButtonsOptions | null | string
+): CHAT_ACTIONS | null => {
+  if (excludeItem === ButtonsOptions.JOBS_IN_MY_AREA) {
+    return CHAT_ACTIONS.SEND_REFERRAL_LOCATIONS;
+  }
+
+  switch (chatMsgType) {
+    case CHAT_ACTIONS.REFINE_SEARCH:
+    case CHAT_ACTIONS.ANSWER_QUESTIONS:
+    case CHAT_ACTIONS.GET_USER_EMAIL:
+    case CHAT_ACTIONS.SEARCH_WITH_RESUME:
+      return CHAT_ACTIONS.SET_CATEGORY;
+    case CHAT_ACTIONS.SET_ALERT_EMAIL:
+      return null;
+    case CHAT_ACTIONS.INTERESTED_IN:
+      return CHAT_ACTIONS.GET_USER_NAME;
+    case CHAT_ACTIONS.GET_USER_NAME:
+      return CHAT_ACTIONS.GET_USER_EMAIL;
+
+    case CHAT_ACTIONS.SET_JOB_ALERT:
+      return CHAT_ACTIONS.SET_ALERT_CATEGORIES;
+    case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
+      return CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
+    case CHAT_ACTIONS.SEND_ALERT_JOB_LOCATIONS:
+      return CHAT_ACTIONS.SET_ALERT_EMAIL;
+    case CHAT_ACTIONS.SET_CATEGORY:
+      return CHAT_ACTIONS.SET_LOCATIONS;
+    case CHAT_ACTIONS.SET_LOCATIONS:
+      return CHAT_ACTIONS.SEND_LOCATIONS;
+    case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
+      return CHAT_ACTIONS.SEARCH_WITH_RESUME;
+    default:
+      return chatMsgType;
+  }
+};
+
+export const getSearchJobsData = (
+  category?: string | string[],
+  city?: string,
+  country?: string,
+  employeeLocationID?: string,
+  employeeJobFamilyNames?: string[]
+): ISearchJobsPayload => {
+  return {
+    page: 0,
+    pageSize: 50,
+    keyword: typeof category === "string" ? category : "*",
+    minDatePosted: "2016-11-13T00:00:00",
+    uniqueTitles: true,
+    categories: employeeJobFamilyNames?.length
+      ? employeeJobFamilyNames
+      : undefined,
+    location:
+      !employeeLocationID && city
+        ? {
+            city: city,
             state: null,
             postalCode: null,
-            country: null,
+            country: country?.trim() || null,
             latitude: null,
             longitude: null,
             radius: null,
-            radiusUnit: 'km',
-        },
-        externalSystemId: 789,
-    };
-};
-
-export const getCreateCandidateData = ({ user, prefferedJob }: { user: IUser; prefferedJob: IRequisition | null }) => {
-    return {
-        firstName: user.name!.split('')[0]!,
-        lastName: user.name!.split('')[1],
-        profile: {
-            currentJobTitle: prefferedJob?.title!,
-            currentEmployer: '',
-        },
-        typeId: '',
-        contactMethods: [
-            {
-                address: user.email!,
-                isPrimary: true,
-                location: 'Home',
-                type: ContactType.EMAIL,
-            },
-        ],
-    };
-};
-
-export const getAccessWriteType = (type: CHAT_ACTIONS | null) => {
-    switch (type) {
-        // case CHAT_ACTIONS.APPLY_AGE:
-        case CHAT_ACTIONS.SET_WORK_PERMIT:
-        case CHAT_ACTIONS.SET_SALARY:
-            return false; // TODO: test
-        default:
-            return true;
-    }
+            radiusUnit: "km",
+          }
+        : undefined,
+    customData: employeeLocationID
+      ? [{ name: "Custom2", value: employeeLocationID }]
+      : undefined,
+  };
 };
 
 export const getFormattedDate = (date: string) => {
-    return moment(date).format('MM/DD/YYYY');
-};
-
-export const getFormattedLocations = (locations: LocationType[]) => {
-    const items = locations
-        .filter((location) => !!location?.city)
-        .map((item) => {
-            if (!item.country) {
-                return item.city;
-            }
-            if (item.state) {
-                return `${item.city}, ${item.state}, ${item.country.slice(0, 13)}`;
-            }
-            return `${item.city}, ${item.country.slice(0, 13)}`;
-        });
-    return getUniqueItems(items);
+  return moment(date).format("MM/DD/YYYY");
 };
 
 export const getUniqueItems = (items: string[]) => {
-    const uniqueItems: string[] = [];
-    items.forEach((item) => {
-        if (uniqueItems.indexOf(item) === -1) {
-            uniqueItems.push(item);
-        }
-    });
-    return uniqueItems;
-};
-interface IIsResultType {
-    type: CHAT_ACTIONS | null;
-    matchedItems: string[];
-    value?: string;
-}
-export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
-    const isAllowedType =
-        !type ||
-        type === CHAT_ACTIONS.SEARCH_WITH_RESUME ||
-        type === CHAT_ACTIONS.FIND_JOB ||
-        type === CHAT_ACTIONS.ASK_QUESTION ||
-        type === CHAT_ACTIONS.SET_JOB_ALERT ||
-        type === CHAT_ACTIONS.SET_CATEGORY ||
-        type === CHAT_ACTIONS.REFINE_SEARCH ||
-        type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
-        type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
-        type === CHAT_ACTIONS.SEND_LOCATIONS ||
-        type === CHAT_ACTIONS.UPLOAD_CV ||
-        type === CHAT_ACTIONS.SET_LOCATIONS ||
-        type === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
-
-    return isAllowedType && !!matchedItems.length;
-};
-
-export const isMultiSelectType = (type: CHAT_ACTIONS | null) => {
-    return type === CHAT_ACTIONS.SET_LOCATIONS || type === CHAT_ACTIONS.SET_ALERT_CATEGORIES;
-};
-
-export const getInputType = ({
-    actionType,
-    category,
-}: {
-    actionType: CHAT_ACTIONS | null;
-    category: string | null;
-}) => {
-    return isMultiSelectType(actionType) ? TextFieldTypes.MultiSelect : TextFieldTypes.Select;
-};
-
-export const isResults = ({ draftMessage, searchItems }: { draftMessage: string | null; searchItems: string[] }) => {
-    return !draftMessage || !!searchItems.find((s) => s.toLowerCase() === draftMessage.toLowerCase());
-};
-
-export const getMatchedItem = ({
-    searchItems,
-    draftMessage,
-}: {
-    draftMessage: string | null;
-    searchItems: string[];
-}) => {
-    return searchItems.find((l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || ''));
-};
-
-export const parseThemeResponse = (res: IApiThemeResponse) => {
-    return {
-        primaryColor: res.client_primary_colour,
-        secondaryColor: res.client_secondary_color,
-        imageUrl: res.chatbot_logo_URL,
-        borderStyle: res.chatbot_border_style,
-        borderWidth: res.chatbot_border_thickness,
-        borderColor: res.chatbot_border_color,
-        headerColor: res.chatbot_header_color,
-        messageButtonColor: res.chatbot_bubble_color,
-        buttonSecondaryColor: res.chat_button_secondary_color,
-        searchResultsColor: res.chat_search_results_color,
-        chatbotName: res.chatbot_name,
-        chatbotHeaderTextColor: res.chatbot_header_text_colour,
-    };
-};
-
-export const getStorageValue = (key: LocalStorage | SessionStorage, defaultValue?: string | number | null) => {
-    const item = localStorage.getItem(key) || sessionStorage.getItem(key);
-    const value = item && typeof item == 'object' ? JSON.parse(item) : item;
-    return value || defaultValue;
-};
-
-export const generateOtp = ({ length = 6 }: { length?: number }) => {
-    const digits = '0123456789';
-    let otp = '';
-
-    for (let i = 1; i <= length; i++) {
-        const index = Math.floor(Math.random() * digits.length);
-
-        otp = otp + digits[index];
+  const uniqueItems: string[] = [];
+  items.forEach((item) => {
+    if (uniqueItems?.indexOf(item) === -1) {
+      uniqueItems.push(item);
     }
+  });
 
-    return otp;
+  return uniqueItems;
+};
+
+export const getFormattedLocations = (locations: LocationType[]) => {
+  const items = map(
+    filter(locations, (location) => !!location?.city),
+    (item) => {
+      if (!item.country) {
+        return item.city;
+      }
+      if (item.state) {
+        return `${item.city}, ${item.state}, ${item.country}`;
+      }
+      return `${item.city}, ${item.country}`;
+    }
+  );
+
+  return getUniqueItems(items);
+};
+
+export const isResultsType = ({ type, matchedItems }: IIsResultType) => {
+  const isAllowedType =
+    !type ||
+    // type === CHAT_ACTIONS.ASK_QUESTION ||
+    type === CHAT_ACTIONS.SEARCH_WITH_RESUME ||
+    type === CHAT_ACTIONS.FIND_JOB ||
+    type === CHAT_ACTIONS.SET_JOB_ALERT ||
+    type === CHAT_ACTIONS.SET_CATEGORY ||
+    type === CHAT_ACTIONS.REFINE_SEARCH ||
+    type === CHAT_ACTIONS.SUCCESS_UPLOAD_CV ||
+    type === CHAT_ACTIONS.ANSWER_QUESTIONS ||
+    type === CHAT_ACTIONS.SEND_LOCATIONS ||
+    type === CHAT_ACTIONS.UPLOAD_CV ||
+    type === CHAT_ACTIONS.SET_LOCATIONS ||
+    type === CHAT_ACTIONS.SET_ALERT_CATEGORIES ||
+    type === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
+
+  return isAllowedType && !!matchedItems.length;
+};
+
+export const getInputType = (actionType: CHAT_ACTIONS | null) => {
+  const isMultiselectInput =
+    actionType === CHAT_ACTIONS.SET_LOCATIONS ||
+    actionType === CHAT_ACTIONS.SET_ALERT_CATEGORIES ||
+    actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS;
+
+  return isMultiselectInput
+    ? TextFieldTypes.MultiSelect
+    : TextFieldTypes.Select;
+};
+
+export const getMatchedItem = (
+  draftMessage: string | null,
+  searchItems: string[]
+) =>
+  find(
+    searchItems,
+    (l) => l.slice(0, draftMessage?.length) === capitalize(draftMessage || "")
+  );
+
+export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
+  primaryColor: theme.client_primary_colour,
+  secondaryColor: theme.client_secondary_color,
+  imageUrl: theme.chatbot_logo_URL,
+  borderStyle: theme.chatbot_border_style,
+  borderWidth: theme.chatbot_border_thickness,
+  borderColor: theme.chatbot_border_color,
+  headerColor: theme.chatbot_header_color,
+  messageButtonColor: theme.chatbot_bubble_color,
+  buttonSecondaryColor: theme.chat_button_secondary_color,
+  searchResultsColor: theme.chat_search_results_color,
+  chatbotName: theme.chatbot_name,
+  chatbotHeaderTextColor: theme.chatbot_header_text_colour,
+  messageTextColor: theme.chatbot_bubble_text_color,
+  buttonPrimaryColor: theme.chat_button_primary_colour,
+  linkColor:
+    theme.chatbot_bubble_link_colour || theme.chatbot_bubble_link_color,
+  avatarBorderStyle: theme.avatar_border_style,
+});
+
+export const getStorageValue = (
+  key: LocalStorage | SessionStorage,
+  defaultValue?: string | number | null
+) => {
+  const item = localStorage.getItem(key) || sessionStorage.getItem(key);
+  const value = item && typeof item == "object" ? JSON.parse(item) : item;
+
+  return value || defaultValue;
+};
+
+export const validationUserContacts = ({
+  isPhoneType,
+  contact,
+}: IUserContact) => {
+  if (!contact) return "";
+
+  return isPhoneType ? validateEmailOrPhone(contact) : validateEmail(contact);
+};
+
+// ---------------------------------------------------------------------------- //
+
+export const LOG = (
+  logObj: any,
+  description?: string,
+  color = COLORS.PURPLE,
+  background = COLORS.BLACK,
+  log = false
+) => {
+  if (description && log) {
+    console.log(
+      `%c   ${description}   `,
+      `color: ${color}; font-size: 14px; background-color: ${background};`,
+      logObj
+    );
+  } else {
+    console.log(
+      `%c   ___   `,
+      `color: ${
+        description?.includes("ERROR") ? COLORS.TORCH_RED : color
+      }; font-size: 14px; background-color: ${background};`,
+      logObj
+    );
+  }
+  console.log("_____________________________________________________________");
+};
+
+export const parseFirebaseMessages = (
+  fMessages: IMessage[],
+  candidateId?: number
+): ILocalMessage[] => {
+  console.log("====================================");
+  console.log(fMessages, "fMessages");
+  console.log(candidateId, "candidateId");
+  console.log("====================================");
+  return unionBy(
+    map(
+      filter(fMessages, (mess) => mess?.content.subType !== "chat_created"),
+      (mess) => ({
+        dateCreated: mess.dateCreated,
+        content: mess.content,
+        isOwn: mess.sender.id === candidateId,
+        localId: mess.localId,
+        optionList: mess?.optionList,
+        _id: mess.chatItemId,
+        chatItemId: mess.chatItemId,
+        sender: mess.sender,
+      })
+    ),
+    "chatItemId"
+  );
+};
+
+export const getProcessedSnapshots = <TId, TItem extends TId>(
+  initialItems: TItem[],
+  snapshots: ISnapshot<TItem>[],
+  idField: keyof TId, // chatItemId
+  fieldsToSave: (keyof TItem)[] = [], // []
+  localIdField: keyof TItem | null = null // localId
+): TItem[] => {
+  let newItemsArray: TItem[] = initialItems.slice();
+  snapshots.forEach((snapshot) => {
+    const { type: snapshotType, data: snapshotData } = snapshot;
+    /* Skipping objects without id field */
+    if (!snapshotData[idField]) {
+      return;
+    }
+    const updateItem = () => {
+      let foundItemIndex: number = findIndex(
+        newItemsArray,
+        (item) => item[idField] === snapshotData[idField]
+      );
+
+      // // Try to find object with localId
+      if (foundItemIndex === -1 && localIdField && snapshotData[localIdField]) {
+        foundItemIndex = findIndex(
+          newItemsArray,
+          (item) => item[localIdField] === snapshotData[localIdField]
+        );
+      }
+
+      if (foundItemIndex !== -1) {
+        fieldsToSave.forEach((field) => {
+          snapshotData[field] = newItemsArray[foundItemIndex][field];
+        });
+
+        newItemsArray = [
+          ...newItemsArray.slice(0, foundItemIndex),
+          snapshotData,
+          ...newItemsArray.slice(foundItemIndex + 1),
+        ];
+      } else {
+        fieldsToSave.forEach((field) => {
+          if (!snapshotData[field]) {
+            // @ts-ignore
+            snapshotData[field] = [];
+          }
+        });
+
+        newItemsArray = [snapshotData, ...newItemsArray];
+      }
+    };
+
+    const removeItem = () => {
+      remove(
+        newItemsArray,
+        (item: any) => item[idField] === snapshotData[idField]
+      );
+    };
+
+    switch (snapshotType) {
+      case SnapshotType.Added:
+        // case SnapshotType.Modified: // TODO: test
+        updateItem();
+        break;
+      case SnapshotType.Removed:
+        removeItem();
+        break;
+      default:
+        break;
+    }
+  });
+
+  return newItemsArray;
+};
+
+export const getParsedSnapshots = ({ serverMessages, nextMessages }: any) => {
+  const processedSnapshots: IMessage[] = sortBy(
+    getProcessedSnapshots<I_id, IMessage>(
+      serverMessages || [],
+      nextMessages,
+      "chatItemId",
+      []
+    ),
+    (message: any) => -message.dateCreated.seconds
+  );
+  return processedSnapshots;
+};
+
+export const postMessToParent = (eventId: EventIds, payload?: object) => {
+  window.parent.postMessage(
+    JSON.parse(
+      JSON.stringify({
+        event_id: eventId,
+        payload,
+      })
+    ),
+    "*"
+  );
+};
+
+export const isValidColor = (strColor?: string): boolean => {
+  if (strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color !== "";
+  } else {
+    return false;
+  }
+};
+
+const parse = (number: string, iso2?: string) => {
+  try {
+    return phoneUtil.parse(number, iso2);
+  } catch (err) {
+    // @ts-ignore
+    console.log(`Exception was thrown: ${err.toString()}`);
+    return null;
+  }
+};
+
+export const isValidNumber = (number: string, iso2?: string) => {
+  const phoneInfo = parse(number, iso2);
+
+  if (phoneInfo) {
+    return phoneUtil.isValidNumber(phoneInfo);
+  }
+
+  return false;
+};
+
+export const isStringArray = (property: any): property is string[] => {
+  if (!Array.isArray(property)) return false;
+  return property.every((item) => typeof item === "string");
+};
+
+export const locationsStrToArray = (str?: string): string[] =>
+  !str?.trim()
+    ? []
+    : str?.replace(/"/g, "")?.replace("{", "")?.replace("}", "")?.split(",");
+
+export const createTextMess = ({
+  text,
+  i18n,
+  i18nProps,
+  isOwn,
+  isError,
+  tryAgainType,
+  dateCreated,
+  optionList,
+  locations,
+  _id = generateLocalId(),
+  localId = generateLocalId(),
+  subType = MessageType.TEXT,
+}: ICreateMessage): ILocalMessage => ({
+  isOwn,
+  _id,
+  localId,
+  content: {
+    text: text.trim(),
+    i18n: i18n || null,
+    i18nProps: i18nProps || null,
+    subType,
+    isError,
+    tryAgainType,
+    locations,
+  },
+  dateCreated,
+  optionList,
+});
+
+export const createSendMessPayload = (
+  props: ICreateSendMessPayload
+): ISendAnswerRequest | null => {
+  if (!props.message) {
+    return null;
+  }
+
+  const {
+    candidateId,
+    message,
+    chatItemId,
+    isLiveChat,
+    localId,
+    optionId,
+    subscriberWorkflowId,
+    queueId,
+    flowId,
+    directionId,
+  } = props;
+  if (isLiveChat && queueId) {
+    return {
+      candidateId,
+      message,
+      queueId,
+      directionId,
+    };
+  } else if (flowId && subscriberWorkflowId) {
+    return {
+      SubscriberWorkflowID: subscriberWorkflowId,
+      localId: generateLocalId(),
+      FlowID: flowId,
+      candidateId,
+      message,
+      optionId,
+      chatItemId,
+      directionId,
+    };
+  } else {
+    return localId
+      ? { candidateId, message, localId, directionId }
+      : { candidateId, message, directionId };
+  }
+};
+
+export const withSendNewMess = (
+  messageValue: string | null,
+  currentMsgType: CHAT_ACTIONS | null
+): boolean =>
+  messageValue?.trim() === "can i speak to someone?" ||
+  currentMsgType === CHAT_ACTIONS.LIVE_CHAT ||
+  currentMsgType === CHAT_ACTIONS.GET_EMAIL ||
+  currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE;
+
+export const parsePathname = (pathname: string): IParseParentPathName => {
+  const pattern = /\/job\/([^-]+(?:-[^-]*)*)\/(\d+)/;
+  const match = pathname.match(pattern);
+
+  let keyword: null | string = null;
+  let jobId: null | number = null;
+
+  if (match) {
+    if (match[1]) {
+      keyword = match[1].replace(/-/g, " ");
+    }
+    if (match[2] && !isNaN(Number(match[2]))) {
+      jobId = Number(match[2]);
+    }
+  }
+
+  return { keyword, jobId };
+};
+
+export const isConfirmationMessage = (message: string): boolean => {
+  const text = message.trim().toLowerCase();
+  return (
+    text === "ye" ||
+    text === "yes" ||
+    text === "yea" ||
+    text === "yep" ||
+    text === "yup" ||
+    text === "sure" ||
+    text === "definitely" ||
+    text === "definitely!" ||
+    text === "i sure am" ||
+    text === "maybe"
+  );
+};
+
+export const getMessageOptionText = (option: IMessageOption, t: TFunction) => {
+  if (option.i18nProps && option.i18nPhrase) {
+    return t(option.i18nPhrase, option.i18nProps);
+  } else if (option.i18nPhrase) {
+    return t(option.i18nPhrase);
+  } else return option.text;
 };

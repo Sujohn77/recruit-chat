@@ -1,33 +1,49 @@
-import { ButtonBase } from '@mui/material';
-import styled from 'styled-components';
-import { colors } from 'utils/colors';
+import styled from "styled-components";
+import { ButtonBase } from "@mui/material";
 
-export const DefaultButton = styled(ButtonBase)`
+interface IDarkButtonProps {
+  fontWeight?: number;
+  backgroundColor?: string;
+  fontColor?: string;
+  width?: string;
+  isSelected?: boolean;
+  height?: string;
+  marginBottom?: string;
+  fontSize?: number;
+}
+
+export const StyledButton = styled(ButtonBase)`
   display: flex;
   align-items: center;
-  height: 40px;
   justify-content: center;
+  height: 40px;
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter-Medium;
+  background: ${({ theme }) => theme.buttonPrimaryColor || theme.primaryColor};
 `;
 
-export const DarkButton = styled(DefaultButton)`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  justify-content: center;
-  width: 100%;
-  font-size: 14px;
+export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
+  height: ${({ height = "30px" }) => height};
+  width: ${({ width = "calc(50% - 5px)" }) => width};
+  background: ${({ theme, backgroundColor }) =>
+    backgroundColor ||
+    theme.buttonPrimaryColor ||
+    theme.primaryColor} !important;
+  color: ${({ theme: { button }, fontColor }) =>
+    fontColor || button.secondaryColor} !important;
+  border-radius: 8px !important;
+  font-size: ${({ fontSize = 14 }) => fontSize}px;
   line-height: 17px;
-  font-family: Inter-SemiBold;
-  background-color: ${(props) => props.theme.primaryColor}!important;
-  border-radius: 100px !important;
-  color: ${({ theme: { button } }) => button.secondaryColor}!important;
+  font-weight: ${({ fontWeight = 700 }) => fontWeight};
+  margin-bottom: ${({ marginBottom }) => marginBottom} !important;
+
+  &:disabled {
+    ${({ isSelected }) => (isSelected ? "" : "opacity: 0.3; cursor: default;")}
+  }
 `;
 
-export const PrimaryButton = styled(DefaultButton)`
+export const PrimaryButton = styled(StyledButton)`
   display: flex;
   align-items: center;
   height: 40px;
@@ -35,7 +51,7 @@ export const PrimaryButton = styled(DefaultButton)`
   width: 100%;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter-SemiBold;
+  /* font-family: Inter-SemiBold; */
   margin: 0 0 16px !important;
   color: ${(props) => props.theme.primaryColor}!important;
   border: 1px solid ${(props) => props.theme.primaryColor}!important;

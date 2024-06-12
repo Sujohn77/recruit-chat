@@ -1,136 +1,271 @@
-import { Dispatch, SetStateAction } from 'react';
-import { IMessage, ISnapshot, LocationType } from 'services/types';
-import { Status } from 'utils/constants';
-import { CHAT_ACTIONS, MessageType, ILocalMessage, USER_INPUTS, IRequisition } from 'utils/types';
-import { IResumeData } from './FileUploadContext';
+import { Dispatch, SetStateAction } from "react";
+import { IRequisitionType } from "services/hooks";
+import {
+  IMessage,
+  IQuestionOptions,
+  ISnapshot,
+  LocationType,
+} from "services/types";
+import { ChatScreens, Status } from "utils/constants";
+import {
+  CHAT_ACTIONS,
+  MessageType,
+  ILocalMessage,
+  IRequisition,
+  IJobAlertData,
+  ButtonsOptions,
+  IPrivacyPolicy,
+} from "utils/types";
+import { IResumeData } from "./FileUploadContext";
+import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 
 export interface ISearchRequisition {
-    title: string;
-    category: string;
+  title: string;
+  category: string;
 }
 
-export interface IChatMessengerContext {
-    messages: ILocalMessage[];
-    requisitions: ISearchRequisition[];
-    category: string | null;
-    user: IUser | null;
-    status: Status | null;
-    chooseButtonOption: (text: string) => void;
-    triggerAction: (action: ITriggerActionProps) => void;
-    searchLocations: string[];
-    locations: LocationType[];
-    setSnapshotMessages: (messsageSnapshots: ISnapshot<IMessage>[]) => void;
-    setCurrentMsgType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
-    currentMsgType: CHAT_ACTIONS | null;
-    offerJobs: IRequisition[];
-    alertCategories: string[] | null;
-    error: string | null;
-    setError: Dispatch<React.SetStateAction<string | null>>;
-    viewJob: IRequisition | null;
-    setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
-    prefferedJob: IRequisition | null;
-    submitMessage: ({ type, messageId }: { type: MessageType; messageId: number }) => void;
-    nextMessages: IPortionMessages[];
-    setJobPositions: (requisitions: IRequisition[]) => void;
-    setIsInitialized: Dispatch<SetStateAction<boolean>>;
-    resumeName: string;
+export enum ChatStoreKeys {
+  messages = "messages",
+  requisitions = "requisitions",
+  category = "category",
+  user = "user",
 }
+
+export interface IChatMessengerContext extends IPPKeys {
+  messages: ILocalMessage[];
+  requisitions: ISearchRequisition[];
+  category: string | null;
+  user: IUser | null;
+  status: Status | null;
+  chooseButtonOption: (
+    text: ButtonsOptions | null,
+    param?: string,
+    i18nPhrase?: string
+  ) => void;
+  dispatch: (action: ITriggerActionProps) => void;
+  searchLocations: string[];
+  locations: LocationType[];
+  setLocations: (locations: LocationType[]) => void;
+  setSnapshotMessages: (messageSnapshots: ISnapshot<IMessage>[]) => void;
+  setCurrentMsgType: React.Dispatch<React.SetStateAction<CHAT_ACTIONS>>;
+  currentMsgType: CHAT_ACTIONS | null;
+  offerJobs: IRequisition[];
+  alertCategories: string[] | null;
+  error: string | null;
+  setError: Dispatch<React.SetStateAction<string | null>>;
+  viewJob: IRequisition | null;
+  setViewJob: Dispatch<React.SetStateAction<IRequisition | null>>;
+  prefferedJob: IRequisition | null;
+  submitMessage: ({
+    type,
+    messageId,
+  }: {
+    type: MessageType;
+    messageId: number;
+  }) => void;
+  nextMessages: IPortionMessages[];
+  setJobPositions: (requisitions: IRequisition[]) => void;
+  setIsInitialized: Dispatch<SetStateAction<boolean>>;
+  resumeName: string;
+  isChatLoading: boolean;
+  setMessages: React.Dispatch<React.SetStateAction<ILocalMessage[]>>;
+  showJobAutocompleteBox: boolean;
+  setShowJobAutocompleteBox: (show: boolean) => void;
+  candidateId?: number;
+  chatId?: number;
+  isAnonym: boolean;
+  shouldCallAgain: boolean;
+  isCandidateWithEmail: boolean;
+  chatBotToken?: string;
+  firebaseToken: string | null;
+  isAuthInFirebase: boolean;
+  setIsAuthInFirebase: (isAuth: boolean) => void;
+  isApplyJobSuccessfully: boolean;
+  setIsApplyJobSuccessfully: (isSuccessful: boolean) => void;
+  isApplyJobFlow: boolean;
+  setFlowId: (flowId?: number) => void;
+  setSubscriberWorkflowId: (id?: number) => void;
+  setIsApplyJobFlow: (isApplyJobFlow: boolean) => void;
+  sendNewMessage: (props: ISendNewMessage) => Promise<any>;
+  emailAddress: string;
+  firstName: string;
+  lastName: string;
+  setEmailAddress: (email: string) => void;
+  setFirstName: (name: string) => void;
+  setLastName: (name: string) => void;
+  setSearchLocations: (locations: string[]) => void;
+  logout: () => void;
+  createJobAlert: (payload: IJobAlertData) => void;
+  clearJobFilters: () => void;
+  isChatInputAvailable: boolean;
+  setIsChatInputAvailable: (isAvailable: boolean) => void;
+  requisitionsPage: number;
+  setRequisitionsPage: (page: number) => void;
+  setIsChatLoading: (isLoading: boolean) => void;
+  setCandidateId: (candidateId: number) => void;
+  setIsCandidateAnonym: (isAnonym: boolean) => void;
+  setEmployeeId: (employeeId: number) => void;
+  employeeId?: number;
+  companyName: string | null;
+  isReferralEnabled: boolean;
+  setRefLastName: (lastName: string) => void;
+  setRefBirth: (birth: string) => void;
+  refLastName: string;
+  refBirth: string;
+  refURL: string;
+  clientApiToken?: string;
+
+  chatScreen: ChatScreens | null;
+  setChatScreen: (status: ChatScreens | null) => void;
+
+  employeeJobCategory: string;
+  employeeLocation: string;
+  setEmployeeJobCategory: (category: string) => void;
+  setEmployeeLocation: (location: string) => void;
+  searchRequisitions: (
+    searchCategory?: string | string[],
+    searchLocation?: string,
+    searchCountry?: string,
+    employeeLocationID?: string,
+    employeeJobFamilyNames?: string[]
+  ) => Promise<null | boolean>;
+  employeeFullName: string;
+  setEmployeeFullName: (name: string) => void;
+  setUser: (user: IUser | null) => void;
+  setRequisitions: (requisition: IRequisitionType[]) => void;
+  setFirebaseToken: (token: string) => void;
+  setAlertCategories: (categories: string[] | null) => void;
+  setOfferJobs: (offers: IRequisition[]) => void;
+  setChatId: (chatId: number) => void;
+  setCategory: (category: string | null) => void;
+  employeeLocationID: string;
+  setEmployeeLocationID: (id: string) => void;
+  jobSourceID: string;
+  employeeJobFamilyNames: string[];
+  setEmployeeJobFamilyNames: (names: string[]) => void;
+  referralStep: ReferralSteps;
+  setReferralStep: (step: ReferralSteps) => void;
+  hostname: string;
+  searchRequisitionsByKeyword: (keyword: string) => Promise<any>;
+  searchLocation: (keyword: string) => Promise<any>;
+  categoriesForAlert: string[];
+  languages: string[];
+  isMultiLanguage: boolean;
+  currentLanguage: string;
+  setCurrentLanguage: (lang: string) => void;
+  isLiveChat: boolean;
+  setIsLiveChat: (isLiveChat: boolean) => void;
+  queueId: null | number;
+  setQueueId: (queueId: null | number) => void;
+  queueChatId: null | number;
+  setQueueChatId: (id: null | number) => void;
+  chatQueueId: number | null;
+  alertTemplateId?: number;
+  setIsCandidateWithEmail: (withEmail: boolean) => void;
+  chatConsent: boolean;
+  setChatConsent: (accepted: boolean) => void;
+  withFindJobOption: boolean;
+  flowId: number | undefined;
+  subscriberWorkflowId: number | undefined;
+  parentPathname: string;
+}
+
+export type ChatMessengerContextKeys = keyof IChatMessengerContext;
 
 export interface IFileUploadContext {
-    file: File | null;
-    showFile: Dispatch<SetStateAction<File | null>>;
-    searchWithResume: () => void;
-    resetFile: () => void;
-    notification: string | null;
-    setNotification: Dispatch<SetStateAction<string | null>>;
-    resumeData: IResumeData | null;
+  file: File | null;
+  showFile: Dispatch<SetStateAction<File | null>>;
+  notification: string | null;
+  resumeData: IResumeData | null;
+  isFileDownloading: boolean;
+  isJobSearchingLoading: boolean;
+  resetFile: () => void;
+  searchWithResume: () => void;
+  setNotification: Dispatch<SetStateAction<string | null>>;
+  showJobTitles: boolean;
 }
 
 export interface IAuthContext {
-    setError: (error: string | null) => void;
-    loginByEmail: ({ email, oneTimePassword }: { email?: string; oneTimePassword?: string }) => void;
-    error: string | null;
+  setError: (error: string | null) => void;
+  loginByEmail: ({
+    email,
+    oneTimePassword,
+  }: {
+    email?: string;
+    oneTimePassword?: string;
+  }) => void;
+  error: string | null;
 
-    mobileSubscribeId: number | null;
-    isVerified: boolean;
-    isOTPpSent: boolean;
-    verifyEmail: string | null;
-    clearAuthConfig: () => void;
+  mobileSubscribeId: number | null;
+  isVerified: boolean;
+  isOTPpSent: boolean;
+  verifyEmail: string | null;
+  clearAuthConfig: () => void;
 }
 
-export interface IFileData {
-    lastModified: number;
-    name: string;
-    readonly size: number;
-    readonly type: string;
-    arrayBuffer(): Promise<ArrayBuffer>;
-    slice(start?: number, end?: number, contentType?: string): Blob;
-    stream(): ReadableStream;
-    text(): Promise<string>;
-}
+export type IPayloadType = {
+  item?: string | null;
+  items?: any[];
+  isChatMessage?: boolean;
 
-export interface IAddMessageProps {
-    text: string;
-    subType?: MessageType;
-    isChatMessage?: boolean;
-}
-type PayloadType = {
-    item?: string | null;
-    items?: any[];
-    isChatMessage?: boolean;
+  // ------- ask question ------- //
+  question?: string;
+  languageCode?: string | null;
+  options?: null | IQuestionOptions;
+  // ----------------------------- //
+
+  // - update or merge candidate - //
+  candidateData?: {
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    callback?: Function;
+  };
+
+  // ----------------------------- //
 };
+
 export interface ITriggerActionProps {
-    type: CHAT_ACTIONS;
-    payload?: PayloadType;
-}
-
-export type IResponseAction = {
-    [key in CHAT_ACTIONS]?: {
-        replaceLatest?: boolean;
-        messages: ILocalMessage[];
-    };
-};
-export type IResponseInput = {
-    [key in USER_INPUTS]?: {
-        replaceLatest?: boolean;
-        messages: ILocalMessage[];
-    };
-};
-
-export enum ServerMessageType {
-    Text = 'text',
-    Transcript = 'transcript_sent',
-    Video = 'video_uploaded',
-    ChatCreated = 'chat_created',
-    Document = 'document_uploaded',
-    File = 'resume_uploaded',
-    UnreadMessages = 'unread_messages',
-    Date = 'date',
+  type: CHAT_ACTIONS;
+  payload?: IPayloadType;
+  i18n?: string;
+  i18nProps: Object | null;
 }
 
 export interface IPortionMessages extends ISnapshot<IMessage> {}
 
-// export interface IRequisition {
-//   _id: number | string;
-//   title: string;
-//   location: string;
-//   postedDate: string;
-//   fullTime: string;
-//   introDescription: string;
-//   description: string;
-// }
-
 export interface ISubmitMessageProps {
-    type: MessageType;
-    messageId: number;
+  type: MessageType;
+  messageId: number;
 }
 
 export interface IUser {
-    name?: string;
-    email?: string;
-    phone?: string;
-    age?: string;
-    isPermitWork?: boolean;
-    wishSalary?: number;
-    salaryCurrency?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  age?: string;
+  isPermitWork?: boolean;
+  wishSalary?: number;
+  salaryCurrency?: string;
+}
+
+export interface IEmailLogin {
+  oneTimePassword?: string;
+  email?: string;
+}
+
+export interface ISendNewMessage {
+  isOwn: boolean;
+  message?: string;
+  optionId?: number;
+  chatItemId?: number;
+  isLiveChat?: boolean;
+  localId?: string;
+}
+
+export interface IPPKeys {
+  consentOptIn: IPrivacyPolicy | null;
+  inlineDisclaimer: IPrivacyPolicy | null;
+  footerPrivacyLink: IPrivacyPolicy | null;
+  PPLinkUrl: string | null;
 }

@@ -1,60 +1,243 @@
-import { useEffect, useState } from 'react';
-import Api, { apiInstance } from 'services';
-import { IRequisition } from '../utils/types';
-import { APP_VERSION } from './auth';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import map from "lodash/map";
+import uniq from "lodash/uniq";
+import uniqBy from "lodash/uniqBy";
+import { ApiResponse } from "apisauce";
 
-import { IApiMessage, LocationType } from './types';
-import { handleRefreshToken } from './utils';
+import {
+  IAskAQuestionResponse,
+  IContactPersonRes,
+  IRequisitionsResponse,
+  LocationType,
+} from "./types";
+import { apiInstance } from "services/api";
+import {
+  CHAT_ACTIONS,
+  ILocalMessage,
+  IRequisition,
+  MessageType,
+} from "utils/types";
+import { isDevMode } from "utils/constants";
+import some from "lodash/some";
+import { useChatMessenger } from "contexts/MessengerContext";
+import { generateLocalId } from "utils/helpers";
 
-const apiInstanse = new Api();
+export interface IRequisitionType {
+  title: string;
+  category: string;
+}
 
-export const sendMessage = (message: IApiMessage) => {
-    handleRefreshToken(() => apiInstanse.sendMessage(message));
+const searchParams = {
+  pageSize: 25,
+  keyword: "*",
+  minDatePosted: "2016-11-13T00:00:00",
+  uniqueTitles: true,
 };
 
-export const apiPayload = {
-    appKey: '117BD5BC-857D-428B-97BE-A5EC7256E281',
-    codeVersion: APP_VERSION,
-};
+export const useRequisitions = (
+  searchRequisitionsTrigger: any,
+  setIsChatLoading: Dispatch<SetStateAction<boolean>>,
+  page: number,
+  setPage: Dispatch<SetStateAction<number>>,
+  setCategoriesForAlert: (c: string[]) => void,
+  categoriesForAlert: string[]
+) => {
+  const [requisitions, setRequisitions] = useState<IRequisitionType[]>([]);
+  const [locations, setLocations] = useState<LocationType[]>([]);
 
-const requisitionParams = {
-    pageSize: 20,
-    page: 1,
-    keyword: '*',
-    ...apiPayload,
-};
+  useEffect(() => {
+    (async function () {
+      if (searchRequisitionsTrigger !== 1) {
+        setIsChatLoading(true);
+        try {
+          const response: ApiResponse<IRequisitionsResponse> =
+            await apiInstance.searchRequisitions({
+              ...searchParams,
+              page,
+            });
+          setCategoriesForAlert?.(
+            uniq([
+              ...categoriesForAlert,
+              ...map(response.data?.facets.Categories, (c) => c.value),
+            ])
+          );
+          if (response?.data?.requisitions?.length) {
+            if (page !== 0) {
+              setRequisitions((prevRequisitions) => [
+                ...prevRequisitions,
+                ...map(response?.data?.requisitions, (c: IRequisition) => ({
+                  title: c.title,
+                  category: c.categories![0],
+                })),
+              ]);
 
-export const useRequisitions = () => {
-    const [requisitions, setRequisitions] = useState<{ title: string; category: string }[]>([]);
-    const [locations, setLocations] = useState<LocationType[]>([]);
+              if (response?.data?.requisitions.length) {
+                setLocations((prevLocations) => [
+                  ...prevLocations,
+                  ...map(response?.data?.requisitions, (r) => r.location),
+                ]);
+              }
+            } else {
+              setRequisitions(
+                map(response?.data?.requisitions, (c: IRequisition) => ({
+                  title: c.title,
+                  category: c.categories![0],
+                }))
+              );
 
-    const setJobPositions = (requisitions: IRequisition[]) => {
-        setRequisitions(
-            requisitions?.map((c: any) => ({
-                title: c.title,
-                category: c.categories[0],
-            })) as any
-        );
-        if (requisitions.length) {
-            setLocations(requisitions.map((r) => r.location));
-        }
-    };
-
-    useEffect(() => {
-        const getCategories = async () => {
-            try {
-                const response = await apiInstance.searchRequisitions(requisitionParams);
-
-                if (response?.data?.requisitions?.length) {
-                    const requisitions = response.data.requisitions;
-                    setJobPositions(requisitions);
-                }
-            } catch (err) {
-                process.env.NODE_ENV === 'development' && console.log(err);
+              if (response?.data?.requisitions.length) {
+                setLocations(
+                  map(response?.data?.requisitions, (r) => r.location)
+                );
+              }
             }
-        };
-        getCategories();
-    }, []);
+          }
+        } catch (err) {
+          isDevMode && console.log("searchRequisitions error:", err);
+        } finally {
+          setIsChatLoading(false);
+        }
+      }
+    })();
+  }, [searchRequisitionsTrigger, page]);
 
-    return { requisitions, locations, setJobPositions };
+  useEffect(() => {
+    setPage(0);
+  }, [searchRequisitionsTrigger]);
+
+  const setJobPositions = (requisitions: IRequisition[]) => {
+    if (page !== 0) {
+      setRequisitions((prevValue) => [
+        ...prevValue,
+        ...map(requisitions, (c: IRequisition) => ({
+          title: c.title,
+          category: c.categories![0],
+        })),
+      ]);
+
+      if (requisitions.length) {
+        setLocations((prevLocations) => [
+          ...prevLocations,
+          ...map(requisitions, (r) => r.location),
+        ]);
+      }
+    } else {
+      setRequisitions(
+        map(requisitions, (c: IRequisition) => ({
+          title: c.title,
+          category: c.categories![0],
+        }))
+      );
+
+      if (requisitions.length) {
+        setLocations(map(requisitions, (r) => r.location));
+      }
+    }
+  };
+
+  const searchRequisitions = async () => {
+    setIsChatLoading(true);
+    try {
+      const response = await apiInstance.searchRequisitions({
+        ...searchParams,
+        page,
+      });
+
+      if (response?.data?.requisitions?.length) {
+        setJobPositions(response.data.requisitions);
+        return response.data.requisitions;
+      }
+    } catch (err) {
+      isDevMode && console.log("searchRequisitions", err);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  const searchRequisitionsByKeyword = useCallback(async (keyword: string) => {
+    if (keyword) {
+      setIsChatLoading(true);
+      try {
+        const response: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions({ ...searchParams, keyword });
+        if (response.data?.requisitions.length) {
+          setRequisitions((prevRequisitions) =>
+            uniq([
+              ...prevRequisitions,
+              ...map(response?.data?.requisitions, (c: IRequisition) => ({
+                title: c.title,
+                category: c.categories![0],
+              })),
+            ])
+          );
+        }
+      } catch (error) {
+        isDevMode && console.log("searchRequisitionsByKeyword", error);
+      } finally {
+        setIsChatLoading(false);
+      }
+    }
+  }, []);
+
+  const searchLocation = useCallback(async (searchStr: string) => {
+    if (searchStr) {
+      setIsChatLoading(true);
+      try {
+        const response: ApiResponse<IRequisitionsResponse> =
+          await apiInstance.searchRequisitions({
+            ...searchParams,
+            keyword: searchStr,
+          });
+
+        if (response?.data?.requisitions.length) {
+          setLocations((preLocations) => [
+            ...preLocations,
+            ...map(
+              uniqBy(response?.data?.requisitions, (i) => i.location),
+              (r) => r.location
+            ),
+          ]);
+        }
+      } catch (error) {
+        isDevMode && console.log("searchRequisitionsByKeyword", error);
+      } finally {
+        setIsChatLoading(false);
+      }
+    }
+  }, []);
+
+  return {
+    requisitions,
+    locations,
+    setJobPositions,
+    searchRequisitions,
+    setPage,
+    setRequisitions,
+    setLocations,
+    searchRequisitionsByKeyword,
+    searchLocation,
+  };
+};
+
+export const useIsTabActive = (): boolean => {
+  const [isTabVisible, setIsTabVisible] = useState(true);
+
+  const handleVisibilityChange = useCallback(() => {
+    setIsTabVisible(document.visibilityState === "visible");
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  return isTabVisible;
 };

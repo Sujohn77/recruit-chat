@@ -1,130 +1,234 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useChatMessenger } from "./MessengerContext";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-import { IFileUploadContext } from './types';
-import { fileUploadDefaultState } from 'utils/helpers';
-import { useChatMessenger } from './MessangerContext';
-import { CHAT_ACTIONS, MessageType } from 'utils/types';
-import { apiInstance } from 'services';
+import { IFileUploadContext } from "./types";
+import { apiInstance } from "services/api";
+import { replaceItemsWithType } from "utils/helpers";
+import { getChatActionResponse } from "utils/constants";
+import { CHAT_ACTIONS, MessageType } from "utils/types";
 
-type PropsType = {
-    children: React.ReactNode;
-};
-
-export interface IResumeData {
-    candidateId: number;
-    fileName: string;
-    lastModified: string;
-    blob: string | ArrayBuffer;
+interface IFileUploadProviderProps {
+  children: React.ReactNode;
 }
 
-const FileUploadContext = createContext<IFileUploadContext>(fileUploadDefaultState);
+export interface IResumeData {
+  candidateId: number;
+  fileName: string;
+  lastModified: string;
+  blob: string | ArrayBuffer;
+}
 
-const FileUploadProvider = ({ children }: PropsType) => {
-    const { triggerAction, messages, submitMessage, currentMsgType, setJobPositions } = useChatMessenger();
-    const [file, setFile] = useState<File | null>(null);
-    const [resumeId, setResumeId] = useState<number | null>(null);
-    const [notification, setNotification] = useState<string | null>(null);
-    const [resumeData, setResumeData] = useState<IResumeData | null>(null);
+const fileUploadDefaultState: IFileUploadContext = {
+  file: null,
+  notification: null,
+  resumeData: null,
+  isFileDownloading: false,
+  isJobSearchingLoading: false,
+  showJobTitles: false,
+  resetFile: () => null,
+  showFile: () => null,
+  searchWithResume: () => null,
+  setNotification: () => null,
+};
 
-    const showSearchWithResumeMsg = (file: File, resumeData: IResumeData) => {
-        const isLastMsgEqualToUploadType = messages[0].content.subType === MessageType.UPLOAD_CV;
-        isLastMsgEqualToUploadType && triggerAction({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV });
-        saveResume(file, resumeData);
+const FileUploadContext = createContext<IFileUploadContext>(
+  fileUploadDefaultState
+);
+
+const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
+  const {
+    dispatch,
+    messages,
+    submitMessage,
+    currentMsgType,
+    setJobPositions,
+    setMessages: _setMessages,
+    candidateId,
+    isReferralEnabled,
+    companyName: referralCompanyName,
+    PPLinkUrl,
+    consentOptIn,
+    currentLanguage,
+    inlineDisclaimer,
+  } = useChatMessenger();
+
+  // ----------------------------- STATE ----------------------------- //
+  const [file, setFile] = useState<File | null>(null);
+  const [resumeId, setResumeId] = useState<number | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [resumeData, setResumeData] = useState<IResumeData | null>(null);
+  const [isFileDownloading, setIsFileDownloading] = useState(false);
+  const [isJobSearchingLoading, setIsJobSearchingLoading] = useState(false);
+  const [showJobTitles, setShowJobTitles] = useState(false);
+  // ---------------------------------------------------------------- //
+
+  useEffect(() => {
+    let timeout: undefined | NodeJS.Timeout;
+    // return trigger to the default state (if active)
+    if (showJobTitles) {
+      timeout = setTimeout(() => setShowJobTitles(false), 1000);
+    }
+
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, [showJobTitles]);
+
+  useEffect(() => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      if (file && reader.result && candidateId) {
+        const result = reader.result as string;
+
+        const resumeData = {
+          candidateId: candidateId,
+          fileName: file.name,
+          lastModified: `${new Date(file.lastModified).toISOString()}`,
+          blob: result.replace(`data:${file.type};base64,`, ""),
+        };
+        setResumeData(resumeData);
+        uploadCVHandler(resumeData);
+      }
     };
 
-    useEffect(() => {
-        let reader = new FileReader();
+    file && reader.readAsDataURL(file);
+  }, [file]);
 
-        reader.onloadend = () => {
-            if (file && reader.result) {
-                const result = reader.result as string;
+  useEffect(() => {
+    if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
+      setTimeout(() => setJobPositions([]), 3000);
+      resetFile();
+    }
+  }, [currentMsgType]);
 
-                const resumeData = {
-                    candidateId: 50994334,
-                    fileName: file.name,
-                    lastModified: `${new Date(file.lastModified).toISOString()}`,
-                    blob: result.replace(`data:${file.type};base64,`, ''),
-                };
-                setResumeData(resumeData);
-                showSearchWithResumeMsg(file, resumeData);
-            }
+  useEffect(() => {
+    if (resumeId) {
+      submitMessage({
+        type: MessageType.FILE,
+        messageId: resumeId,
+      });
+    }
+  }, [resumeId]);
+
+  const uploadCVHandler = async (resumeData: IResumeData) => {
+    setIsFileDownloading(true);
+    try {
+      const response = await apiInstance.uploadCV(resumeData);
+
+      if (response.data?.resumeId) {
+        setResumeId(response.data?.resumeId);
+
+        const isLastMsgEqualToUploadType =
+          messages[0]?.content.subType === MessageType.UPLOAD_CV;
+
+        if (isLastMsgEqualToUploadType) {
+          dispatch({ type: CHAT_ACTIONS.SUCCESS_UPLOAD_CV, i18nProps: null });
+        }
+      }
+    } catch (error) {
+      // TODO: add error handler
+    } finally {
+      setIsFileDownloading(false);
+    }
+  };
+
+  const searchWithResume = async () => {
+    if (resumeData && resumeId) {
+      setIsJobSearchingLoading(true);
+
+      try {
+        const { blob, ...data } = resumeData;
+        const payload = {
+          ...data,
+          resumeBlob: blob,
         };
 
-        file && reader.readAsDataURL(file);
-    }, [file]);
+        const response = await apiInstance.searchWithResume(payload);
 
-    useEffect(() => {
-        if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS) {
-            setJobPositions([]);
-            resetFile();
+        if (response.data) {
+          resetFile();
+          const updatedMessages = replaceItemsWithType({
+            type: MessageType.BUTTON,
+            messages,
+            excludeItem: CHAT_ACTIONS.UPLOADED_CV,
+          });
+          const responseMessages = getChatActionResponse({
+            type: CHAT_ACTIONS.UPLOADED_CV,
+            param: resumeData.fileName,
+            withReferralFlow: isReferralEnabled,
+            referralCompanyName,
+            i18nPhrase: "",
+            chatConsent: true,
+            consentOptIn,
+            currentLanguage,
+            PPLinkUrl,
+            inlineDisclaimer,
+            messages,
+          });
+          _setMessages([...responseMessages, ...updatedMessages]);
+          setShowJobTitles(true);
+
+          dispatch({
+            type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
+            payload: { items: response.data.requisitions },
+            i18nProps: null,
+          });
         }
-    }, [currentMsgType]);
+      } catch (error) {
+      } finally {
+        setIsJobSearchingLoading(false);
+      }
+    }
 
-    useEffect(() => {
-        if (resumeId) {
-            submitMessage({
-                type: MessageType.FILE,
-                messageId: resumeId,
-            });
-        }
-    }, [resumeId]);
+    // setFile(null);
+  };
 
-    const searchWithResume = async () => {
-        if (resumeData && resumeId) {
-            const { blob, ...data } = resumeData;
-            const payload = {
-                ...data,
-                resumeBlob: blob,
-            };
-
-            const response = await apiInstance.searchWithResume(payload);
-
-            response.data &&
-                triggerAction({
-                    type: CHAT_ACTIONS.SEARCH_WITH_RESUME,
-                    payload: { items: response.data.requisitions },
-                });
-        }
-
+  const showFile = useCallback(
+    (file: File) => {
+      if (file.size > 2097152) {
+        setNotification("File may not be more than 2MB");
         setFile(null);
-    };
 
-    const saveResume = async (file: File, resumeData: IResumeData) => {
-        const response = await apiInstance.uploadCV(resumeData);
-        response.data?.resumeId && setResumeId(response.data?.resumeId);
-    };
+        return;
+      }
 
-    const showFile = (file: File) => {
-        if (file.size > 2097152) {
-            setNotification('File may not be more than 2MB');
-            setFile(null);
-            return;
-        }
-        notification && setNotification(null);
-        setFile(file);
-    };
+      notification && setNotification(null);
+      setFile(file);
+    },
+    [notification]
+  );
 
-    const resetFile = () => {
-        setFile(null);
-        setNotification(null);
-    };
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setNotification(null);
+  }, []);
 
-    return (
-        <FileUploadContext.Provider
-            value={{
-                file,
-                showFile,
-                searchWithResume,
-                resetFile,
-                notification,
-                setNotification,
-                resumeData,
-            }}
-        >
-            {children}
-        </FileUploadContext.Provider>
-    );
+  return (
+    <FileUploadContext.Provider
+      value={{
+        file,
+        showFile,
+        searchWithResume,
+        resetFile,
+        notification,
+        setNotification,
+        resumeData,
+        isFileDownloading,
+        isJobSearchingLoading,
+        showJobTitles,
+      }}
+    >
+      {children}
+    </FileUploadContext.Provider>
+  );
 };
 
 const useFileUploadContext = () => useContext(FileUploadContext);

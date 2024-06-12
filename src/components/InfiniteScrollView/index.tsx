@@ -1,12 +1,12 @@
-import React from "react";
+import { FC } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { IInfiniteScrollViewProps } from "./props";
 
-const DEFAULT_SCROLL_THRESHOLD = 300;
+const DEFAULT_SCROLL_THRESHOLD = 200;
 const DEFAULT_LOADER = <div />;
 
-export const InfiniteScrollView: React.FC<IInfiniteScrollViewProps> = ({
+export const InfiniteScrollView: FC<IInfiniteScrollViewProps> = ({
   onLoadMore,
   children,
   hasMore = true,

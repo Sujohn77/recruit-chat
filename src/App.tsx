@@ -1,13 +1,6 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Home } from 'routes/Home';
+import { ChatBotRoot } from "ChatBotRoot";
+import React from "react";
 
-const App = () => {
-    return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-        </Routes>
-    );
-};
+const App: React.FC = () => <ChatBotRoot />;
 
 export default App;

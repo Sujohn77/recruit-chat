@@ -1,49 +1,116 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import { useChatMessenger } from "contexts/MessengerContext";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import isNull from "lodash/isNull";
 
-import { ChatHeader } from './ChatHeader';
-import * as S from './styles';
+import * as S from "./styles";
+import {
+  ChatHeader,
+  ChatInput,
+  MessagesList,
+  ReferralViewJob,
+  ViewJob,
+  Login,
+  Logout,
+} from "./ChatComponents";
+import { CHAT_ACTIONS } from "utils/types";
+import { postMessToParent } from "utils/helpers";
+import {
+  EventIds,
+  REFRESH_APP_TIMEOUT,
+  SESSION_WARNING_TIMEOUT,
+  isMobile,
+} from "utils/constants";
 
-import { MessageInput } from './MessageInput';
+interface IChatProps {
+  isShowChat: boolean;
+  setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
+  children?: React.ReactNode | React.ReactNode[];
+}
 
-import { MessagesList } from './MessagesList';
+export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
+  const { isReferralEnabled, currentMsgType, messages, chatScreen } =
+    useChatMessenger();
 
-import i18n from 'services/localization';
-import { ViewJob } from './ViewJob';
+  const [height, setHeight] = useState(480);
+  const [showLoginScreen, setShowLoginScreen] = useState(false);
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+  const [showSessionWarning, setShowSessionWarning] = useState(false);
+  const [isCanceledLogout, setIsCanceledLogout] = useState(false);
+  // Referral
+  const [selectedReferralJobId, setSelectedReferralJobId] = useState<number>();
 
-import { useChatMessenger } from 'contexts/MessangerContext';
-import { CHAT_ACTIONS, IRequisition } from 'utils/types';
-import { useTheme } from 'styled-components';
-import { ThemeType } from 'utils/theme/default';
+  useEffect(() => {
+    // REFRESH CHATBOT
+    let timeout: NodeJS.Timeout | undefined;
 
-type PropsType = {
-    setIsSelectedOption: Dispatch<SetStateAction<boolean>>;
-    children?: React.ReactNode | React.ReactNode[];
-    isSelectedOption: boolean;
-};
+    if (!isNull(chatScreen)) {
+      timeout = setTimeout(() => {
+        sessionStorage.clear();
+        localStorage.clear();
+        postMessToParent(EventIds.RefreshChatbot);
+      }, REFRESH_APP_TIMEOUT);
+    }
 
-export const chatId = 2433044;
+    return () => timeout && clearTimeout(timeout);
+  }, [chatScreen, messages.length, isCanceledLogout]);
 
-export const Chat: FC<PropsType> = ({ setIsSelectedOption, children, isSelectedOption }) => {
-    const theme = useTheme() as ThemeType;
-    const { viewJob, setViewJob, triggerAction } = useChatMessenger();
+  useEffect(() => {
+    // If live chat and the user is not interacting with the app
+    // then display a notification that the chatbot will be reloaded soon
+    let timeout: NodeJS.Timeout | undefined;
 
-    const title = viewJob
-        ? i18n.t('chat_item_description:view_job_title')
-        : theme.chatbotName || i18n.t('chat_item_description:title');
+    if (currentMsgType === CHAT_ACTIONS.LIVE_CHAT) {
+      timeout = setTimeout(() => {
+        setShowSessionWarning(true);
+        setShowConfirmLogout(true);
+      }, SESSION_WARNING_TIMEOUT);
+    }
 
-    const handleApplyJobClick = (viewJob: IRequisition | null) => {
-        setViewJob(null);
-        triggerAction({
-            type: CHAT_ACTIONS.APPLY_POSITION,
-        });
-    };
+    return () => timeout && clearTimeout(timeout);
+  }, [currentMsgType, messages.length, isCanceledLogout]);
 
-    return (
-        <S.Wrapper isOpened={!!isSelectedOption}>
-            <ChatHeader title={title} setIsSelectedOption={setIsSelectedOption} />
-            <MessagesList />
-            <ViewJob item={viewJob} onClick={() => handleApplyJobClick(viewJob)} />
-            <MessageInput />
-        </S.Wrapper>
-    );
+  const onContinueSession = useCallback(() => {
+    setShowConfirmLogout(false);
+    setShowSessionWarning(false);
+    setIsCanceledLogout((prev) => !prev);
+  }, []);
+
+  return (
+    <S.Wrapper isOpened={isShowChat} isMobile={isMobile}>
+      <ChatHeader
+        setShowConfirmLogout={setShowConfirmLogout}
+        showLoginScreen={showLoginScreen}
+        setShowLoginScreen={setShowLoginScreen}
+        setShowIcon={setShowIcon}
+      />
+      <MessagesList
+        resultsHeight={height}
+        setSelectedReferralJobId={setSelectedReferralJobId}
+      />
+
+      {/* -------------------------- PopUp's -------------------------- */}
+      <Login
+        showLoginScreen={showLoginScreen}
+        setShowLoginScreen={setShowLoginScreen}
+      />
+      <Logout
+        showSessionWarning={showSessionWarning}
+        onContinueSession={onContinueSession}
+        showLogoutScreen={showConfirmLogout}
+        setShowConfirmLogout={setShowConfirmLogout}
+      />
+
+      {isReferralEnabled ? (
+        <ReferralViewJob setJobId={setSelectedReferralJobId} />
+      ) : (
+        <ViewJob setShowLoginScreen={setShowLoginScreen} />
+      )}
+      {/* ------------------------------------------------------------- */}
+      <ChatInput
+        setHeight={setHeight}
+        selectedReferralJobId={selectedReferralJobId}
+        setSelectedReferralJobId={setSelectedReferralJobId}
+      />
+    </S.Wrapper>
+  );
 };
