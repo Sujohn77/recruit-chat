@@ -41,9 +41,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const lastBtn = useRef<null | ButtonType>(null);
 
   const [applyJobLoading, setApplyJobLoading] = useState(false);
-  const [applyJobError, setApplyJobError] = useState<string | null>(
-    "Sorry, it's not been possible to start your application for this job. Please try again or contact support@loopworks.com"
-  );
+  const [applyJobError, setApplyJobError] = useState<string | null>(null);
   const [height, setHeight] = useState<Height>(0);
   const [isClicked, setIsClicked] = useState(0);
   const [jobIdWithoutFlowId, setJobIdWithoutFlowId] = useState<number>();
