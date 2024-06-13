@@ -64,11 +64,8 @@
     );
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
-    const currentPage = window.location.pathname;
-    const availablePages = strToArray(props?.pages);
-    const showChatbot = availablePages?.some((p) => currentPage.includes(p));
-
-    LOG(showChatbot, "showChatbot", undefined, undefined, true);
+    const showChatbot = isChatbotAvailable(props?.pages);
+    LOG(showChatbot, "showChatbot");
 
     if (showChatbot) {
       document.body?.appendChild(ifrm);
@@ -163,10 +160,10 @@
 
       switch (event.data.event_id) {
         case eventIds.REFRESH_TOKEN:
-          refreshToken(event.data.callback)
+          refreshToken(event?.data?.callback)
             .then((data) => {
               if (data && chatbotIframe) {
-                chatbotIframe.contentWindow.postMessage(
+                chatbotIframe?.contentWindow?.postMessage(
                   { token: data },
                   chatbotSrc
                 );
@@ -232,13 +229,26 @@
   }
 
   function strToArray(str) {
-    if (!str.trim()) return [];
+    if (!str?.trim()) return [];
     return str
       ?.replace(/"/g, "")
       ?.replace("{", "")
       ?.replace("}", "")
       ?.split(", ")
       ?.map((p) => (p[0] === "/" ? p : "/" + p));
+  }
+
+  function isChatbotAvailable(pages) {
+    if (!pages) return false;
+
+    const pathname = window.location.pathname;
+    const availablePages = strToArray(pages);
+
+    if (pathname.length === 1) {
+      return availablePages?.some((p) => pathname === p);
+    } else {
+      return availablePages?.some((p) => p !== "/" && pathname.includes(p));
+    }
   }
 
   function LOG(logObj, description, color = "#3B96F0", background = "#90ee90") {
