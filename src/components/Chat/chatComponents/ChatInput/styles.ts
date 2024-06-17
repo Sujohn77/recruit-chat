@@ -8,7 +8,6 @@ interface IPlaneIconProps {
 
 interface IMessageWrapperProps {
   marginTop: string;
-  $isFrLang: boolean;
   $withBottomLink: boolean;
 }
 
@@ -41,8 +40,7 @@ export const MessagesInput = styled(Box)<IMessageWrapperProps>`
   display: flex;
   align-items: center;
   padding: 10px 16px;
-  padding-bottom: ${({ $withBottomLink: withBottomLink, $isFrLang }) =>
-    withBottomLink ? 40 : 10}px;
+  padding-bottom: ${({ $withBottomLink }) => ($withBottomLink ? 40 : 10)}px;
   box-sizing: border-box;
   background: ${({ theme: { input } }) => input.backgroundColor};
   border-bottom-left-radius: 5px;
