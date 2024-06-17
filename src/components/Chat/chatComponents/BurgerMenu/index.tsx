@@ -1,5 +1,12 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import map from "lodash/map";
 
@@ -15,8 +22,9 @@ import {
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { createTextMess } from "utils/helpers";
-import { CHAT_ACTIONS, IMenuItem, MessageType, NextMsgType } from "utils/types";
+import { CHAT_ACTIONS, IMenuItem, NextMsgType } from "utils/types";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
+import { ConfirmPanel } from "./ConfirmPanel";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -73,6 +81,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [nxtMsgType, setNxtMsgType] = useState<NextMsgType | null>(null);
 
   const list = useMemo(() => {
     const withSendTranscript =
@@ -147,13 +158,21 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     [cleanInputValue]
   );
 
-  const setConfirmationMsg = useCallback((type: NextMsgType) => {
-    const chatbotMsg = createTextMess({
-      text: "Do you want to terminate the current process ?",
-      subType: MessageType.CONFIRMATION,
-      nextMsgType: type,
-    });
-    setMessages((prev) => [chatbotMsg, ...prev]);
+  const onLeaveApplyJob = useCallback((type: NextMsgType) => {
+    setShowPopUp(true);
+    setNxtMsgType(type);
+
+    // 1
+    // const chatbotMsg = createTextMess({
+    //   text: "Do you want to terminate the current process ?",
+    //   subType: MessageType.CONFIRMATION,
+    //   nextMsgType: type,
+    // });
+    // setMessages((prev) => [chatbotMsg, ...prev]);
+
+    // 2
+    // setShowPopUp(true);
+    // setNxtMsgType(type);
   }, []);
 
   const onSelectOption = async (item: IMenuItem) => {
@@ -180,7 +199,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
         return;
       } else {
-        setConfirmationMsg(type);
+        onLeaveApplyJob(type);
       }
     }
 
@@ -248,7 +267,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
             });
           }
         } else {
-          setConfirmationMsg(type);
+          onLeaveApplyJob(type);
         }
 
         setIsShowResults(false);
@@ -261,7 +280,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
             i18nProps: null,
           });
         } else {
-          setConfirmationMsg(type);
+          onLeaveApplyJob(type);
         }
         setIsShowResults(false);
         break;
@@ -281,6 +300,13 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
   return (
     <S.Wrapper>
+      <ConfirmPanel
+        showPopUp={showPopUp}
+        setShowPopUp={setShowPopUp}
+        nxtMsgType={nxtMsgType}
+        setNxtMsgType={setNxtMsgType}
+      />
+
       {isOpen && (
         <S.MenuItemsWrapper ref={wrapperRef}>
           {map(list, (item, index) => (

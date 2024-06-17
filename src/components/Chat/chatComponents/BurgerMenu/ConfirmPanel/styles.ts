@@ -22,7 +22,7 @@ export const ButtonsWrapper = styled.div`
   justify-content: space-between;
   flex-direction: row;
   margin-top: 10px;
-  width: 40%;
+  width: 80%;
 `;
 
 export const Button = styled(DarkButton)`
@@ -30,6 +30,6 @@ export const Button = styled(DarkButton)`
   margin-bottom: 8px !important;
   min-height: 35px !important;
   padding: 8px !important;
-  width: 100%;
+  width: 40%;
   height: auto;
 `;

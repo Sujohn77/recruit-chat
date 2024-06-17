@@ -10,11 +10,9 @@ import { MessageType, ILocalMessage } from "utils/types";
 import { UploadCV } from "./UploadCV";
 import { EmailForm } from "./EmailForm";
 import { JobOffers } from "./JobOffers";
-
 import { NoMatchJob } from "./NoMatchJob";
 import { TextWithOptions } from "./TextWithOptions";
 import { TranscriptSent } from "./TranscriptSent";
-
 import { TextMessage } from "./TextMessage";
 import { InterestedIn } from "./InterestedIn";
 import { ButtonMessage } from "./ButtonMessage";
@@ -23,6 +21,7 @@ import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
 import { MakeReferralMess } from "./MakeReferralMess";
 import { InlineDisclaimer } from "./InlineDisclaimer";
+import { ConfirmationMessage } from "./ConfirmationMessage";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -96,6 +95,8 @@ export const Message: FC<IMessageProps> = ({
       return <MakeReferralMess {...defProps} />;
     case MessageType.INLINE_DISCLAIMER:
       return <InlineDisclaimer {...defProps} />;
+    case MessageType.CONFIRMATION:
+      return <ConfirmationMessage {...defProps} />;
     default: {
       return null;
     }

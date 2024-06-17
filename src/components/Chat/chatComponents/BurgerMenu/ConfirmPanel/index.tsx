@@ -54,12 +54,13 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
     <SlideUpPanel isOpen={showPopUp} setIsOpen={setShowPopUp}>
       <S.Wrapper>
         <S.TextWrapper>
+          {/* TODO: add translation */}
           <S.Text>Do you want to terminate the current process ?</S.Text>
         </S.TextWrapper>
 
         <S.ButtonsWrapper>
-          <S.Button onClick={onYes}>Yes</S.Button>
-          <S.Button onClick={onNo}>No</S.Button>
+          <S.Button onClick={onYes}>{t("labels:yes")}</S.Button>
+          <S.Button onClick={onNo}>{t("labels:cancel")}</S.Button>
         </S.ButtonsWrapper>
       </S.Wrapper>
     </SlideUpPanel>
