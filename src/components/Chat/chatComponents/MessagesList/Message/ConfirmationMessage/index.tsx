@@ -61,12 +61,10 @@ export const ConfirmationMessage: FC<IConfirmationMessageProps> = ({
     []
   );
 
-  const messageText = "Do you want to terminate the current process ?";
-
   return (
     <S.MessWrapper>
       <MessageBox {...messageProps}>
-        {messageText}
+        {"Do you want to terminate the current process ?"}
 
         {!isSelected && (
           <S.BtnWrapper>
