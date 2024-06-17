@@ -28,6 +28,7 @@ import {
   IApiThemeResponse,
   IPopMessage,
   IPrivacyPolicy,
+  NextMsgType,
 } from "./types";
 import { COLORS } from "./colors";
 import {
@@ -69,6 +70,7 @@ interface ICreateMessage {
   dateCreated?: { seconds: number };
   optionList?: null | IMessageOptions;
   locations?: string[];
+  nextMsgType?: NextMsgType;
 }
 interface IGetMatchedItems {
   searchStr: string | null;
@@ -923,6 +925,7 @@ export const createTextMess = ({
   dateCreated,
   optionList,
   locations,
+  nextMsgType,
   _id = generateLocalId(),
   localId = generateLocalId(),
   subType = MessageType.TEXT,
@@ -938,6 +941,7 @@ export const createTextMess = ({
     isError,
     tryAgainType,
     locations,
+    nextMsgType,
   },
   dateCreated,
   optionList,

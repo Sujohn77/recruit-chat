@@ -12,11 +12,11 @@ import {
   menuForCandidateWithEmail,
   menuItems,
 } from "./data";
-import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
+import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { createTextMess } from "utils/helpers";
-import { CHAT_ACTIONS, IMenuItem } from "utils/types";
-import i18n from "services/localization";
+import { CHAT_ACTIONS, IMenuItem, MessageType, NextMsgType } from "utils/types";
+import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -68,6 +68,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setIsApplyJobSuccessfully,
     setFlowId,
     setSubscriberWorkflowId,
+    isApplyJobFlow,
+    isApplyJobSuccessfully,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -138,35 +140,48 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         setViewJob(null);
         cleanInputValue();
         setIsLiveChat(false);
-        setFlowId();
-        setSubscriberWorkflowId();
+        setFlowId(undefined);
+        setSubscriberWorkflowId(undefined);
       }
     },
     [cleanInputValue]
   );
 
+  const setConfirmationMsg = useCallback((type: NextMsgType) => {
+    const chatbotMsg = createTextMess({
+      text: "Do you want to terminate the current process ?",
+      subType: MessageType.CONFIRMATION,
+      nextMsgType: type,
+    });
+    setMessages((prev) => [chatbotMsg, ...prev]);
+  }, []);
+
   const onSelectOption = async (item: IMenuItem) => {
     const { type, text } = item;
     setIsOpen(false);
-    refreshInputStateIfNeed(type);
+    !isApplyJobFlow && !isApplyJobSuccessfully && refreshInputStateIfNeed(type);
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
-      const resMess = getValidationRefResponse(
-        employeeJobCategory,
-        refLastName,
-        false
-      );
-      const makeRefMess = createTextMess({
-        text,
-        i18n: "buttons:make_referral",
-        isOwn: true,
-      });
+      if (!isApplyJobFlow && !isApplyJobSuccessfully) {
+        const resMess = getValidationRefResponse(
+          employeeJobCategory,
+          refLastName,
+          false
+        );
+        const makeRefMess = createTextMess({
+          text,
+          i18n: "buttons:make_referral",
+          isOwn: true,
+        });
 
-      sendNewMessage({ isOwn: true, message: makeRefMess.content.text });
-      sendNewMessage({ isOwn: false, message: resMess.content.text });
+        sendNewMessage({ isOwn: true, message: makeRefMess.content.text });
+        sendNewMessage({ isOwn: false, message: resMess.content.text });
 
-      setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
-      return;
+        setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
+        return;
+      } else {
+        setConfirmationMsg(type);
+      }
     }
 
     switch (type) {
@@ -216,32 +231,39 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           }
         }
         break;
+      case CHAT_ACTIONS.CHANGE_LANG:
+        setCurrentLanguage(text);
+        await i18n.changeLanguage(text);
+        localStorage.setItem(hostname + "currentLanguage", text);
+        break;
       case CHAT_ACTIONS.ASK_QUESTION:
-        if (!chatConsent) {
-          // setIsChatLoading(true);
-          // setTimeout(() => {
-          //   setIsChatLoading(false);
-          //   setMessages((prev) => [
-          //     ...getParsedMessages(
-          //       getQuestions(isReferralEnabled, companyName)
-          //     ),
-          //     ...prev,
-          //   ]);
-          // }, 1000);
+        if (!isApplyJobFlow && !isApplyJobSuccessfully) {
+          if (!chatConsent) {
+            // show chant consent msg
+          } else {
+            dispatch({
+              type,
+              payload: { item: text, isChatMessage: true },
+              i18nProps: null,
+            });
+          }
         } else {
+          setConfirmationMsg(type);
+        }
+
+        setIsShowResults(false);
+        break;
+      case CHAT_ACTIONS.FIND_JOB:
+        if (!isApplyJobFlow && !isApplyJobSuccessfully) {
           dispatch({
             type,
             payload: { item: text, isChatMessage: true },
             i18nProps: null,
           });
+        } else {
+          setConfirmationMsg(type);
         }
-
         setIsShowResults(false);
-        break;
-      case CHAT_ACTIONS.CHANGE_LANG:
-        setCurrentLanguage(text);
-        await i18n.changeLanguage(text);
-        localStorage.setItem(hostname + "currentLanguage", text);
         break;
       default:
         dispatch({
