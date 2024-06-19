@@ -376,10 +376,7 @@ const ChatProvider = ({
     if (isApplyJobSuccessfully) {
       LOG(
         `.collection("chats").doc(${chatId}?.toString()).collection("messages")`,
-        `chatId=${chatId}`,
-        undefined,
-        undefined,
-        true
+        `chatId=${chatId}`
       );
       messagesSocketConnection.current =
         new FirebaseSocketReactivePagination<IMessage>(
@@ -406,15 +403,6 @@ const ChatProvider = ({
               }
             }
           );
-
-          LOG(
-            processedSnapshots,
-            "Snapshots",
-            COLORS.PICTON_BLUE_LIGHT,
-            COLORS.NEW_YORK_PINK,
-            true
-          );
-
           setIsApplyJobFlow(true);
           _setFirebaseMessages(processedSnapshots);
         }
@@ -437,10 +425,6 @@ const ChatProvider = ({
 
   useEffect(() => {
     let savedSocketConnection: any;
-    // LOG(isLiveChat, "isLiveChat", COLORS.BLACK, COLORS.WHITE, true);
-    // LOG(queueId, "queueId", COLORS.BLACK, COLORS.WHITE, true);
-    // LOG(queueChatId, "queueChatId", COLORS.BLACK, COLORS.WHITE, true);
-    LOG(isTabActive, "isTabActive", COLORS.WHITE, COLORS.BLACK, true);
 
     if (isLiveChat && queueId && queueChatId && isTabActive) {
       queueMessagesSocketConnection.current =
@@ -475,10 +459,7 @@ const ChatProvider = ({
       );
     }
 
-    return () => {
-      LOG("unsubscribe", "", undefined, undefined, true);
-      savedSocketConnection?.unsubscribe();
-    };
+    return () => savedSocketConnection?.unsubscribe();
   }, [isLiveChat, queueId, queueChatId, isTabActive]);
 
   useEffect(() => {
@@ -517,7 +498,7 @@ const ChatProvider = ({
   }, [serverMessages.length, isInitialized]);
 
   const createJobAlert = useCallback(
-    async ({ email, type, successText, i18nPhrase = "" }: IJobAlertData) => {
+    async ({ email, type, successText }: IJobAlertData) => {
       if (type === CHAT_ACTIONS.SET_ALERT_EMAIL && candidateId) {
         setIsChatLoading(true);
         try {
@@ -630,8 +611,8 @@ const ChatProvider = ({
   // Initiate an action & set state
   const dispatch = useCallback(
     async (action: ITriggerActionProps) => {
-      LOG(action.type, "DISPATCH", "#ff8c00", undefined, true);
-      LOG(action.payload, "DISPATCH payload", "#ff8c00", undefined, true);
+      LOG(action.type, "DISPATCH", "#ff8c00");
+      LOG(action.payload, "DISPATCH payload", "#ff8c00");
 
       // Check if all previous actions were completed
       const { type, payload } = action;
@@ -832,12 +813,6 @@ const ChatProvider = ({
         }
         return !!res.data?.requisitions.length;
       } catch (err) {
-        isDevMode &&
-          console.log(
-            "%c getChatBotResponse (searchRequisitions) error ",
-            err,
-            `color: #ff8c00;`
-          );
         return null;
       } finally {
         setCategory(null);
@@ -864,23 +839,15 @@ const ChatProvider = ({
             const locations = searchLocations.length
               ? searchLocations[0]?.split(",")[0] || searchLocations[0]
               : payload?.items?.[0];
-            try {
-              additionalCondition = await searchRequisitions(
-                category,
-                locations
-              );
-            } catch {}
+            additionalCondition = await searchRequisitions(category, locations);
           }
           break;
         }
         case CHAT_ACTIONS.SEND_REFERRAL_LOCATIONS: {
-          try {
-            additionalCondition = await searchRequisitions(
-              undefined,
-              employeeLocation
-            );
-          } catch {}
-
+          additionalCondition = await searchRequisitions(
+            undefined,
+            employeeLocation
+          );
           break;
         }
         case CHAT_ACTIONS.SEND_TRANSCRIPT_EMAIL: {
@@ -894,7 +861,6 @@ const ChatProvider = ({
                 });
               }
             } catch (error) {
-              LOG(error, "Send Transcript Response ERROR");
             } finally {
               setIsChatLoading(false);
             }

@@ -72,10 +72,6 @@ class Api {
         const status = error?.response?.status;
         const originalRequest = error.config;
 
-        console.log("====================================");
-        console.log(" axios interceptors error", error);
-        console.log("====================================");
-
         if (status && status !== 401 && status !== 403) {
           // TODO: Add logic to display errors
         }

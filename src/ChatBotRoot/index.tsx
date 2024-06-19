@@ -84,7 +84,7 @@ export const ChatBotRoot: FC = () => {
 
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
-      LOG(data, "data", COLORS.BLACK, COLORS.WHITE, true);
+      LOG(data, "data", COLORS.BLACK, COLORS.WHITE);
       const { props, style, hostname, token, guid, pathname } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);

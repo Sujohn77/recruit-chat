@@ -731,7 +731,7 @@ export const LOG = (
   description?: string,
   color = COLORS.PURPLE,
   background = COLORS.BLACK,
-  log = false
+  log = true
 ) => {
   if (description && log) {
     console.log(
