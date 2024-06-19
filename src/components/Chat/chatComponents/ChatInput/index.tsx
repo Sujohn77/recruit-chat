@@ -834,7 +834,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setNotification(null);
   };
 
-  const onChangeAutocomplete = (
+  const onChangeMultiselect = (
     e: ChangeEvent<HTMLInputElement>,
     values: string[]
   ) => {
@@ -872,6 +872,21 @@ export const ChatInput: FC<IChatInputProps> = ({
           payload: { items: uniq(newValues) },
           i18nProps: null,
         });
+
+        // temporary solution, since the api can only search for vacancies in 1 location
+        // (if the api is updated, then remove this part)
+        if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS && newValues.length) {
+          const userMessWithLocation = createTextMess({
+            isOwn: true,
+            text: newValues[0],
+          });
+          setMessages((prev) => [userMessWithLocation, ...prev]);
+          sendNewMessage({
+            isOwn: true,
+            message: userMessWithLocation.content.text,
+          });
+          onSendMessageHandler();
+        }
       } else {
         setSearchLocations(uniq(newValues));
       }
@@ -1354,7 +1369,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           <MultiSelectInput
             {...inputProps}
             values={inputValues}
-            onChange={onChangeAutocomplete}
+            onChange={onChangeMultiselect}
           />
         ) : (
           <Autocomplete
