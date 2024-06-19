@@ -50,6 +50,7 @@ export const en = {
     login:
       "Please complete the following form to start the application process:",
     login_validation: "Please complete all required fields",
+    terminate_process: "Do you want to terminate the current process?",
   },
   languages: {
     en: "English",

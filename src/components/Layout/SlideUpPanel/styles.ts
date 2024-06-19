@@ -25,8 +25,7 @@ export const Overlay = styled.div<{ isOpen: boolean }>`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  background: rgb(255, 255, 255, 0.85);
   transition: opacity 0.3s ease;
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
   pointer-events: ${({ isOpen }) => (isOpen ? "auto" : "none")};

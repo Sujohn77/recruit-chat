@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback } from "react";
+import { CSSProperties, FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
@@ -11,6 +11,7 @@ interface IConfirmPanelProps {
   setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>;
   nxtMsgType: NextMsgType | null;
   setNxtMsgType: React.Dispatch<React.SetStateAction<NextMsgType | null>>;
+  contentStyle?: CSSProperties;
 }
 
 export const ConfirmPanel: FC<IConfirmPanelProps> = ({
@@ -18,6 +19,7 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
   setShowPopUp,
   nxtMsgType,
   setNxtMsgType,
+  contentStyle,
 }) => {
   const { t } = useTranslation();
   const { dispatch, setIsApplyJobFlow, setIsApplyJobSuccessfully } =
@@ -51,11 +53,14 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
   }, []);
 
   return (
-    <SlideUpPanel isOpen={showPopUp} setIsOpen={setShowPopUp}>
+    <SlideUpPanel
+      isOpen={showPopUp}
+      setIsOpen={setShowPopUp}
+      contentStyle={contentStyle}
+    >
       <S.Wrapper>
         <S.TextWrapper>
-          {/* TODO: add translation */}
-          <S.Text>Do you want to terminate the current process ?</S.Text>
+          <S.Text>{t("labels:terminate_process")}</S.Text>
         </S.TextWrapper>
 
         <S.ButtonsWrapper>
