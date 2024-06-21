@@ -83,6 +83,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               sendNewMessage({
                 isOwn: false,
                 message: messWithJobs.content.text,
+                localId: messWithJobs.localId,
               });
               setMessages((prev) => [messWithJobs, ...prev]);
             }
@@ -104,6 +105,7 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
               sendNewMessage({
                 isOwn: false,
                 message: messWithJobs.content.text,
+                localId: messWithJobs.localId,
               });
               setMessages((prev) => [messWithJobs, ...prev]);
             }
@@ -113,9 +115,10 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             break;
           case 4:
             setSelectedReferralJobId(undefined);
-            await sendNewMessage({
+            sendNewMessage({
               message: t("referral:general_referral"),
               isOwn: true,
+              localId: null,
             });
             chooseButtonOption(
               ButtonsOptions.MAKE_REFERRAL,

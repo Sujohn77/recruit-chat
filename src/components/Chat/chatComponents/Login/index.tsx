@@ -9,8 +9,8 @@ import { PopUp } from "..";
 import * as S from "./styles";
 import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
-import { FormInput } from "components/Chat/ChatComponents/ChatInput/Autocomplete/styles";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
+import { FormInput } from "components/Chat/ChatComponents/ChatInput/Autocomplete/styles";
 
 const ANIMATION_ID = "LOGIN_ANIMATION_ID";
 
@@ -24,7 +24,7 @@ export const Login: FC<ILoginProps> = ({
   setShowLoginScreen,
 }) => {
   const { t } = useTranslation();
-  const { dispatch } = useChatMessenger();
+  const { dispatch, isChatLoading } = useChatMessenger();
 
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState<string>("");
@@ -136,27 +136,20 @@ export const Login: FC<ILoginProps> = ({
           <FormInput
             value={firstName}
             onChange={onChange(1)}
-            // error={!!firstNameError}
-            // helperText={firstNameError}
             onClick={() => setTouched(!touched)}
             placeholder={t("labels:first_name")}
             validationError={!!firstNameError}
           />
-
           <FormInput
             value={lastName}
             onChange={onChange(2)}
-            // error={!!lastNameError}
-            // helperText={lastNameError}
             onClick={() => setTouched(!touched)}
             placeholder={t("labels:last_name")}
             validationError={!!lastNameError}
           />
-
           <FormInput
             value={email}
             onChange={onChange(3)}
-            // error={!!emailError}
             onClick={() => setTouched(!touched)}
             placeholder="Email"
             validationError={!!emailError}
@@ -170,7 +163,9 @@ export const Login: FC<ILoginProps> = ({
           </AnimateHeight>
         </FormControl>
 
-        <FormButton onClick={onLogin}>{t("buttons:send")}</FormButton>
+        <FormButton disabled={isChatLoading} onClick={onLogin}>
+          {t("buttons:send")}
+        </FormButton>
       </S.Wrapper>
     </PopUp>
   );

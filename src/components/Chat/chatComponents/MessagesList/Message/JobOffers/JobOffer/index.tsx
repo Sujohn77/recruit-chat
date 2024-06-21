@@ -21,8 +21,13 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   setSelectedReferralJobId,
 }) => {
   const { t } = useTranslation();
-  const { setViewJob, isReferralEnabled, chooseButtonOption, hostname } =
-    useChatMessenger();
+  const {
+    setViewJob,
+    isReferralEnabled,
+    chooseButtonOption,
+    hostname,
+    sendNewMessage,
+  } = useChatMessenger();
 
   const handleReadMore = useCallback(() => setViewJob(jobOffer), []);
 
@@ -30,6 +35,11 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
     jobOffer.id && setSelectedReferralJobId(+jobOffer.id);
     localStorage.removeItem(hostname + "viewJob");
     setViewJob(null);
+    sendNewMessage({
+      message: t("buttons:refer_friend"),
+      isOwn: true,
+      localId: null,
+    });
     chooseButtonOption(
       ButtonsOptions.MAKE_REFERRAL,
       t("buttons:refer_friend"),

@@ -311,6 +311,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             await sendNewMessage({
               message: text,
               isOwn: true,
+              localId: messWithLocations.localId,
             });
           }
 
@@ -318,6 +319,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: alertEmailMess.content.text,
+              localId: alertEmailMess.localId,
             });
             setMessages((prevMessages) => [
               alertEmailMess,
@@ -347,6 +349,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               await sendNewMessage({
                 message: text,
                 isOwn: true,
+                localId: null,
               });
               setMessageValue("");
             } catch (error) {
@@ -372,6 +375,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             await sendNewMessage({
               message: text,
               isOwn: true,
+              localId: currentMess.localId,
             });
             setMessageValue("");
           } catch (error) {
@@ -397,6 +401,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: alertMess.content.text,
+            localId: alertMess.localId,
           });
           setMessages((prev) => [alertMess, currentMess, ...prev]);
           setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
@@ -412,6 +417,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: alertMess.content.text,
+            localId: alertMess.localId,
           });
           setMessages((prev) => [alertMess, currentMess, ...prev]);
           setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
@@ -432,6 +438,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               sendNewMessage({
                 isOwn: false,
                 message: errorEmailMessage.content.text,
+                localId: errorEmailMessage.localId,
               });
               setMessages((prev) => [errorEmailMessage, ...prev]);
             } else {
@@ -494,6 +501,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: enterNamaMess.content.text,
+            localId: enterNamaMess.localId,
           });
           setIsChatLoading(false);
           setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
@@ -514,6 +522,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: enterBirthMess.content.text,
+            localId: enterBirthMess.localId,
           });
           setIsChatLoading(false);
           setMessages((prevMessages) => [enterBirthMess, ...prevMessages]);
@@ -532,6 +541,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: resMess.content.text,
+            localId: resMess.localId,
           });
           setMessages((prevMessages) => [resMess, ...prevMessages]);
 
@@ -553,6 +563,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: tryAgain.content.text,
+            localId: tryAgain.localId,
           });
           setMessages((prevMessages) => [tryAgain, ...prevMessages]);
         };
@@ -582,6 +593,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: userLastNameMess.content.text,
+            localId: userLastNameMess.localId,
           });
           setIsChatLoading(false);
           setMessages((prevMessages) => [userLastNameMess, ...prevMessages]);
@@ -601,6 +613,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: userEmailMess.content.text,
+            localId: userEmailMess.localId,
           });
           setMessages((prevMessages) => [userEmailMess, ...prevMessages]);
         }, 500);
@@ -623,6 +636,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: errorMessage.content.text,
+              localId: errorMessage.localId,
             });
             setMessages((prev) => [errorMessage, ...prev]);
           } else {
@@ -635,6 +649,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: userConfirmMess.content.text,
+              localId: userConfirmMess.localId,
             });
             setMessages((prevMessages) => [userConfirmMess, ...prevMessages]);
             setReferralStep(ReferralSteps.UserConfirmationEmail);
@@ -657,6 +672,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: userMobileMess.content.text,
+              localId: userMobileMess.localId,
             });
             setMessages((prevMessages) => [userMobileMess, ...prevMessages]);
           }, 500);
@@ -671,6 +687,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: errorMessage.content.text,
+            localId: errorMessage.localId,
           });
           setMessages((prev) => [errorMessage, ...prev]);
         }
@@ -756,6 +773,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: question.content.text,
+              localId: question.localId,
             });
             setMessages((prevMessages) => [question, ...prevMessages]);
             setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
@@ -773,6 +791,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: errorMess.content.text,
+              localId: errorMess.localId,
             });
             setMessages((prevMessages) => [errorMess, ...prevMessages]);
           };
@@ -789,6 +808,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: errorMessage.content.text,
+            localId: errorMessage.localId,
           });
           setMessages((prev) => [errorMessage, ...prev]);
         }
@@ -884,6 +904,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: true,
             message: userMessWithLocation.content.text,
+            localId: userMessWithLocation.localId,
           });
           onSendMessageHandler();
         }
@@ -903,13 +924,18 @@ export const ChatInput: FC<IChatInputProps> = ({
           messageValue &&
           messages.length === 1
         ) {
-          sendNewMessage({ isOwn: false, message: messages[0].content.text });
+          sendNewMessage({
+            isOwn: false,
+            message: messages[0].content.text,
+            localId: messages[0].localId,
+          });
         }
 
         try {
           sendNewMessage({
             message: messageValue,
             isOwn: true,
+            localId: null,
           });
         } catch (error) {
           console.log(error);
@@ -943,6 +969,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: chatbotMess.content.text,
+              localId: chatbotMess.localId,
             });
             setMessages((prevMessages) => [chatbotMess, ...prevMessages]);
           }, 500);
@@ -989,6 +1016,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               sendNewMessage({
                 isOwn: false,
                 message: thanksMess.content.text,
+                localId: thanksMess.localId,
               });
               setMessages((prev) => [thanksMess, ...prev]);
             }
@@ -1002,6 +1030,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             message: messageValue,
             isLiveChat: true,
             isOwn: true,
+            localId: null,
           });
         }
         setMessageValue("");
@@ -1025,6 +1054,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: errorMessage.content.text,
+              localId: errorMessage.localId,
             });
             setMessages((prev) => [errorMessage, ...prev]);
           }, 300);
@@ -1111,7 +1141,11 @@ export const ChatInput: FC<IChatInputProps> = ({
             },
           });
 
-          sendNewMessage({ isOwn: false, message: chatbotMess.content.text });
+          sendNewMessage({
+            isOwn: false,
+            message: chatbotMess.content.text,
+            localId: chatbotMess.localId,
+          });
           setMessages((prev) => [chatbotMess, ...prev]);
         } else if (isConfirm && !isAcceptedApplyJob) {
           const resMess = createTextMess({ text: t("messages:great_apply") });
@@ -1125,6 +1159,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             isOwn: false,
             message: resMess.content.text,
+            localId: resMess.localId,
           });
 
           setMessages((prev) =>
@@ -1149,6 +1184,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               sendNewMessage({
                 isOwn: false,
                 message: chatbotMess.content.text,
+                localId: chatbotMess.localId,
               });
               setMessages((prevMessages) => [chatbotMess, ...prevMessages]);
             }, 500);
@@ -1165,6 +1201,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             sendNewMessage({
               isOwn: false,
               message: chatbotMess.content.text,
+              localId: chatbotMess.localId,
             });
             setMessages((prev) => [chatbotMess, ...prev]);
             setMessageValue("");
@@ -1178,7 +1215,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
               sendNewMessage({
                 isOwn: false,
-                message: errorEmailMessage.content.text,
+                localId: errorEmailMessage.localId,
               });
               setMessages((prev) => [errorEmailMessage, ...prev]);
             } else {
@@ -1263,6 +1300,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                       sendNewMessage({
                         isOwn: false,
                         message: errorMess.content.text,
+                        localId: errorMess.localId,
                       });
                       setMessages((prev) => [errorMess, ...prev]);
                     }
@@ -1281,6 +1319,7 @@ export const ChatInput: FC<IChatInputProps> = ({
         await sendNewMessage({
           message: messageValue,
           isOwn: true,
+          localId: null,
         });
       } else {
         const isSendMess =

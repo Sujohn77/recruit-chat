@@ -41,6 +41,11 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
       if (isLastMess) {
         switch (answer.id) {
           case 1:
+            sendNewMessage({
+              message: t("labels:yes"),
+              isOwn: true,
+              localId: null,
+            });
             chooseButtonOption(
               ButtonsOptions.MAKE_REFERRAL,
               t("labels:yes"),
@@ -66,6 +71,7 @@ export const ReferralQuestion: FC<IOptionListProps> = ({
             sendNewMessage({
               isOwn: false,
               message: newReferWithRefHistory.content.text,
+              localId: newReferWithRefHistory.localId,
             });
             const answer2 = createTextMess({
               isOwn: true,

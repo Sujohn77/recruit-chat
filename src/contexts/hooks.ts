@@ -296,7 +296,11 @@ export const useSearchJobFromParentSite = () => {
               text: t("messages:initialMessage3"),
               i18n: "messages:initialMessage3",
             });
-            sendNewMessage({ isOwn: false, message: initMess.content.text });
+            sendNewMessage({
+              isOwn: false,
+              message: initMess.content.text,
+              localId: initMess.localId,
+            });
             setMessages(() => [initMess]);
           }
         }
@@ -378,6 +382,7 @@ export const useAksQuestion = () => {
       sendNewMessage({
         message: questionMess.content.text,
         isOwn: true,
+        localId: questionMess.localId,
       });
       setMessageValue("");
       setMessages((prev) => [questionMess, ...prev]);
@@ -422,6 +427,7 @@ export const useAksQuestion = () => {
               sendNewMessage({
                 isOwn: false,
                 message: mess.content.text,
+                localId: mess.localId,
               })
           );
           setMessages((prev) => [...answers, ...prev]);
@@ -435,6 +441,7 @@ export const useAksQuestion = () => {
           sendNewMessage({
             isOwn: false,
             message: withoutAnswer.content.text,
+            localId: withoutAnswer.localId,
           });
         }
       } catch (error) {
@@ -446,6 +453,7 @@ export const useAksQuestion = () => {
         sendNewMessage({
           isOwn: false,
           message: withoutAnswer.content.text,
+          localId: withoutAnswer.localId,
         });
 
         setMessages((prev) => [withoutAnswer, ...prev]);

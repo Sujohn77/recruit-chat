@@ -29,7 +29,11 @@ export const DefOptions: FC<IDefOptions> = ({ message }) => {
         isOnlyQnA ? "ASK_QUESTION" : isFindJob ? "FIND_JOB" : "ASK_QUESTION"
       ];
 
-    sendNewMessage({ isOwn: false, message: getMessageOptionText(option, t) });
+    sendNewMessage({
+      isOwn: false,
+      message: getMessageOptionText(option, t),
+      localId: null,
+    });
     setChatScreen(screen);
     dispatch({
       type,

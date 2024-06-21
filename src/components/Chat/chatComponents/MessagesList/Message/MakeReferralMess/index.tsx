@@ -44,9 +44,15 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
       sendNewMessage({
         isOwn: false,
         message: resMess.content.text,
+        localId: resMess.localId,
       });
       setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
     } else {
+      sendNewMessage({
+        message: t("buttons:make_referral"),
+        isOwn: true,
+        localId: null,
+      });
       chooseButtonOption(
         ButtonsOptions.MAKE_REFERRAL,
         t("buttons:make_referral"),

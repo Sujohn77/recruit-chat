@@ -363,7 +363,7 @@ const ChatProvider = ({
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseMessages, candidateId),
+          ...parseFirebaseMessages(_firebaseMessages, t, candidateId),
           ...prevMessages,
         ],
         "_id"
@@ -415,7 +415,7 @@ const ChatProvider = ({
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseQueueMessages, candidateId),
+          ...parseFirebaseMessages(_firebaseQueueMessages, t, candidateId),
           ...prevMessages,
         ],
         "_id"
@@ -518,6 +518,7 @@ const ChatProvider = ({
             sendNewMessage({
               isOwn: false,
               message: responseMessage.content.text,
+              localId: responseMessage.localId,
             });
             setMessages((prev) => [responseMessage, ...prev]);
             setCurrentMsgType(CHAT_ACTIONS.CREATED_JOB_ALERT);
@@ -530,6 +531,7 @@ const ChatProvider = ({
             sendNewMessage({
               isOwn: false,
               message: errorMess.content.text,
+              localId: errorMess.localId,
             });
             setMessages((prev) => [errorMess, ...prev]);
           }
@@ -542,6 +544,7 @@ const ChatProvider = ({
           sendNewMessage({
             isOwn: false,
             message: errorMess.content.text,
+            localId: errorMess.localId,
           });
           setMessages((prev) => [errorMess, ...prev]);
         } finally {
@@ -574,6 +577,7 @@ const ChatProvider = ({
         flowId,
         subscriberWorkflowId,
         directionId: props.isOwn ? 1 : 2,
+        localId: props.localId,
       });
 
       if (!payload) {
@@ -983,6 +987,7 @@ const ChatProvider = ({
                     sendNewMessage({
                       isOwn: false,
                       message: mess.content.text,
+                      localId: mess.localId,
                     })
                 );
 
@@ -996,6 +1001,7 @@ const ChatProvider = ({
                 sendNewMessage({
                   isOwn: false,
                   message: withoutAnswer.content.text,
+                  localId: withoutAnswer.localId,
                 });
 
                 updatedMessages = [withoutAnswer, questionMess, ...messages];
@@ -1009,6 +1015,7 @@ const ChatProvider = ({
               sendNewMessage({
                 isOwn: false,
                 message: withoutAnswer.content.text,
+                localId: withoutAnswer.localId,
               });
               updatedMessages = lastMessIsButton
                 ? [withoutAnswer, ...messages]
@@ -1173,6 +1180,7 @@ const ChatProvider = ({
               sendNewMessage({
                 isOwn: false,
                 message: mess.content.text,
+                localId: mess.localId,
               })
           );
           setTimeout(
@@ -1195,6 +1203,7 @@ const ChatProvider = ({
               sendNewMessage({
                 isOwn: false,
                 message: mess.content.text,
+                localId: mess.localId,
               })
           );
           setMessages(
@@ -1224,6 +1233,7 @@ const ChatProvider = ({
               sendNewMessage({
                 isOwn: false,
                 message: mess.content.text,
+                localId: mess.localId,
               })
           );
           setMessages([...responseMessages, ...updatedMessages]);

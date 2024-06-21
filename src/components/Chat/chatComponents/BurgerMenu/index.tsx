@@ -193,8 +193,16 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           isOwn: true,
         });
 
-        sendNewMessage({ isOwn: true, message: makeRefMess.content.text });
-        sendNewMessage({ isOwn: false, message: resMess.content.text });
+        sendNewMessage({
+          isOwn: true,
+          message: makeRefMess.content.text,
+          localId: makeRefMess.localId.toString(),
+        });
+        sendNewMessage({
+          isOwn: false,
+          message: resMess.content.text,
+          localId: resMess.localId,
+        });
 
         setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
         return;
@@ -240,6 +248,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
                 sendNewMessage({
                   isOwn: false,
                   message: chatbotMess.content.text,
+                  localId: chatbotMess.localId,
                 });
 
                 setMessages((prev) => [chatbotMess, ...prev]);

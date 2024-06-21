@@ -49,10 +49,12 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMess }) => {
         sendNewMessage({
           isOwn: false,
           message: tryAgain.content.text,
+          localId: tryAgain.localId,
         });
         sendNewMessage({
           isOwn: false,
           message: employeeQuestion.content.text,
+          localId: employeeQuestion.localId,
         });
 
         setMessages((prevMessages) => [
@@ -72,10 +74,12 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMess }) => {
         sendNewMessage({
           isOwn: false,
           message: tryAgain.content.text,
+          localId: tryAgain.localId,
         });
         sendNewMessage({
           isOwn: false,
           message: userLastNameMess.content.text,
+          localId: userLastNameMess.localId,
         });
 
         setMessages((prevMessages) => [

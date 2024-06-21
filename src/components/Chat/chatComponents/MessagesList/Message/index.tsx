@@ -21,7 +21,6 @@ import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
 import { MakeReferralMess } from "./MakeReferralMess";
 import { InlineDisclaimer } from "./InlineDisclaimer";
-import { ConfirmationMessage } from "./ConfirmationMessage";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -95,8 +94,7 @@ export const Message: FC<IMessageProps> = ({
       return <MakeReferralMess {...defProps} />;
     case MessageType.INLINE_DISCLAIMER:
       return <InlineDisclaimer {...defProps} />;
-    case MessageType.CONFIRMATION:
-      return <ConfirmationMessage {...defProps} />;
+
     default: {
       return null;
     }

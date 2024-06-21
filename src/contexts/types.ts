@@ -260,7 +260,7 @@ export interface ISendNewMessage {
   optionId?: number;
   chatItemId?: number;
   isLiveChat?: boolean;
-  localId?: string;
+  localId: string | number | null;
 }
 
 export interface IPPKeys {

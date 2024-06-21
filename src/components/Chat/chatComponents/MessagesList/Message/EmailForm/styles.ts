@@ -32,4 +32,8 @@ export const FormButton = styled(Button)`
   line-height: 17px !important;
   height: 40px;
   text-transform: initial !important;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;

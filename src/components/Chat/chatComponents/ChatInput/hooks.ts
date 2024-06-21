@@ -32,13 +32,14 @@ export const useSetUserData = (): ((
       sendNewMessage({
         isOwn: false,
         message: res.content.text,
+        localId: res.localId,
       });
       setMessages((prevMessages) => [res, ...prevMessages]);
     }, 500);
   }, []);
 
   return useCallback(
-    async ({ messageValue, withEmail }: ISetUserDataProps) => {
+    async ({ messageValue }: ISetUserDataProps) => {
       if (!firstName) {
         setFirstName(messageValue.trim());
         setMessages((prev) => [

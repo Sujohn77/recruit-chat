@@ -49,19 +49,16 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                   sendNewMessage({
                     isOwn: false,
                     message: mess.content.text,
+                    localId: mess.localId,
                   })
               );
             } else {
               sendNewMessage({
                 isOwn: false,
                 message: messagesCopy[messagesCopy.length - 1].content.text,
+                localId: messagesCopy[messagesCopy.length - 1].localId,
               });
             }
-
-            sendNewMessage({
-              message: option.text,
-              isOwn: true,
-            });
 
             setChatConsent(true);
             switch (currentMsgType) {
@@ -74,6 +71,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                 sendNewMessage({
                   isOwn: false,
                   message: resMess.content.text,
+                  localId: resMess.localId,
                 });
                 setMessages((prev) => [resMess, ...prev]);
                 break;
@@ -96,6 +94,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                     sendNewMessage({
                       isOwn: false,
                       message: mess.content.text,
+                      localId: mess.localId,
                     })
                 );
 
@@ -104,6 +103,11 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                   const userMess = createTextMess({
                     text: text || "",
                     isOwn: true,
+                  });
+                  sendNewMessage({
+                    message: option.text,
+                    isOwn: true,
+                    localId: userMess.localId,
                   });
                   return !text
                     ? [...responseMessages, ...prev]

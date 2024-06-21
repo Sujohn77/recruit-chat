@@ -351,6 +351,7 @@ export const getMessagesOnAction = ({
       sendNewMessage({
         isOwn: false,
         message: mess.content.text,
+        localId: mess?.localId?.toString(),
       })
   );
   return [...responseMessages, ...updatedMessages];
@@ -753,15 +754,29 @@ export const LOG = (
 
 export const parseFirebaseMessages = (
   fMessages: IMessage[],
+  t: TFunction,
   candidateId?: number
 ): ILocalMessage[] => {
+  let messages = fMessages;
+
+  if (fMessages.length > 1) {
+    const indexLastMess = fMessages.findIndex(
+      (m) => m.content.text === t("messages:jobRecommendations")
+    );
+
+    if (indexLastMess !== -1) {
+      messages = fMessages.slice(0, indexLastMess + 1);
+    }
+  }
+
   console.log("====================================");
   console.log(fMessages, "fMessages");
-  console.log(candidateId, "candidateId");
+  console.log(messages, "messages");
   console.log("====================================");
+
   return unionBy(
     map(
-      filter(fMessages, (mess) => mess?.content.subType !== "chat_created"),
+      filter(messages, (mess) => mess?.content.subType !== "chat_created"),
       (mess) => ({
         dateCreated: mess.dateCreated,
         content: mess.content,
@@ -967,16 +982,24 @@ export const createSendMessPayload = (
     directionId,
   } = props;
   if (isLiveChat && queueId) {
-    return {
-      candidateId,
-      message,
-      queueId,
-      directionId,
-    };
+    return localId
+      ? {
+          candidateId,
+          message,
+          queueId,
+          directionId,
+          localId: localId.toString(),
+        }
+      : {
+          candidateId,
+          message,
+          queueId,
+          directionId,
+        };
   } else if (flowId && subscriberWorkflowId) {
     return {
       SubscriberWorkflowID: subscriberWorkflowId,
-      localId: generateLocalId(),
+      localId: localId?.toString() || generateLocalId(),
       FlowID: flowId,
       candidateId,
       message,
@@ -986,7 +1009,7 @@ export const createSendMessPayload = (
     };
   } else {
     return localId
-      ? { candidateId, message, localId, directionId }
+      ? { candidateId, message, localId: localId.toString(), directionId }
       : { candidateId, message, directionId };
   }
 };

@@ -164,6 +164,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
             sendNewMessage({
               isOwn: false,
               message: interestedInResMess.content.text,
+              localId: interestedInResMess.localId,
             });
 
             setMessages((prevMessages) => [

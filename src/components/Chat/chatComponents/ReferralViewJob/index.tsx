@@ -13,12 +13,17 @@ interface IRefViewJobProps {
 }
 
 export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
-  const { viewJob, chooseButtonOption, setViewJob, hostname } =
+  const { viewJob, chooseButtonOption, setViewJob, hostname, sendNewMessage } =
     useChatMessenger();
   const { t } = useTranslation();
 
   const referFriendHandle = useCallback(() => {
     viewJob?.id && setJobId(+viewJob.id);
+    sendNewMessage({
+      message: t("buttons:refer_friend"),
+      isOwn: true,
+      localId: null,
+    });
     chooseButtonOption(
       ButtonsOptions.MAKE_REFERRAL,
       t("buttons:refer_friend"),

@@ -22,6 +22,7 @@ export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
       sendNewMessage({
         message: mess.content.text,
         isOwn: true,
+        localId: mess.localId,
       });
 
       if (mess.content.text === "can i speak to someone?") {
