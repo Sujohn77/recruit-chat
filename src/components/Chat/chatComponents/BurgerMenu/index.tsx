@@ -161,18 +161,6 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
   const onLeaveApplyJob = useCallback((type: NextMsgType) => {
     setShowPopUp(true);
     setNxtMsgType(type);
-
-    // 1
-    // const chatbotMsg = createTextMess({
-    //   text: "Do you want to terminate the current process ?",
-    //   subType: MessageType.CONFIRMATION,
-    //   nextMsgType: type,
-    // });
-    // setMessages((prev) => [chatbotMsg, ...prev]);
-
-    // 2
-    // setShowPopUp(true);
-    // setNxtMsgType(type);
   }, []);
 
   const onSelectOption = async (item: IMenuItem) => {

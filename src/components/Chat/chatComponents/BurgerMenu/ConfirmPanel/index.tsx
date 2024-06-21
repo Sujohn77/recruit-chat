@@ -1,10 +1,12 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { CSSProperties, FC, useCallback } from "react";
+import { CSSProperties, FC, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
+import { apiInstance } from "services/api";
 import { SlideUpPanel } from "components/Layout";
 import { CHAT_ACTIONS, NextMsgType } from "utils/types";
+import { createSendMessPayload, generateLocalId } from "utils/helpers";
 
 interface IConfirmPanelProps {
   showPopUp: boolean;
@@ -22,35 +24,72 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
   contentStyle,
 }) => {
   const { t } = useTranslation();
-  const { dispatch, setIsApplyJobFlow, setIsApplyJobSuccessfully } =
-    useChatMessenger();
+  const {
+    dispatch,
+    setIsApplyJobFlow,
+    setIsApplyJobSuccessfully,
+    flowId,
+    candidateId,
+    subscriberWorkflowId,
+  } = useChatMessenger();
 
-  const onYes = useCallback(() => {
-    setIsApplyJobFlow(false);
-    setIsApplyJobSuccessfully(false);
-    setShowPopUp(false);
-    setNxtMsgType(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    if (nxtMsgType) {
-      const text =
-        nxtMsgType === CHAT_ACTIONS.ASK_QUESTION
-          ? t("chat_menu:ask_question")
-          : nxtMsgType === CHAT_ACTIONS.FIND_JOB
-          ? t("chat_menu:find_job")
-          : t("buttons:make_referral");
+  const onYes = useCallback(async () => {
+    if (!isLoading) {
+      setIsApplyJobFlow(false);
+      setIsApplyJobSuccessfully(false);
+      setNxtMsgType(null);
 
-      dispatch({
-        type: nxtMsgType,
-        payload: { item: text, isChatMessage: true },
-        i18nProps: null,
-      });
+      // TODO: delete after adding a new endpoint for chat terminating !!!
+      if (candidateId && flowId && subscriberWorkflowId) {
+        try {
+          setIsLoading(true);
+          const payload = createSendMessPayload({
+            candidateId,
+            flowId,
+            subscriberWorkflowId,
+            directionId: 1,
+            localId: generateLocalId(),
+            isOwn: true,
+            message: "q",
+          });
+
+          if (payload) {
+            await apiInstance.sendMessage(payload);
+          }
+        } catch (error) {
+        } finally {
+          setShowPopUp(false);
+          setIsLoading(false);
+        }
+      }
+      // -------------------------------------------------------------------------- //
+
+      if (nxtMsgType) {
+        setShowPopUp(false);
+        const text =
+          nxtMsgType === CHAT_ACTIONS.ASK_QUESTION
+            ? t("chat_menu:ask_question")
+            : nxtMsgType === CHAT_ACTIONS.FIND_JOB
+            ? t("chat_menu:find_job")
+            : t("buttons:make_referral");
+
+        dispatch({
+          type: nxtMsgType,
+          payload: { item: text, isChatMessage: true },
+          i18nProps: null,
+        });
+      }
     }
-  }, [nxtMsgType]);
+  }, [nxtMsgType, isLoading, flowId, subscriberWorkflowId, candidateId]);
 
   const onNo = useCallback(() => {
-    setShowPopUp(false);
-    setNxtMsgType(null);
-  }, []);
+    if (!isLoading) {
+      setShowPopUp(false);
+      setNxtMsgType(null);
+    }
+  }, [isLoading]);
 
   return (
     <SlideUpPanel
@@ -64,8 +103,12 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
         </S.TextWrapper>
 
         <S.ButtonsWrapper>
-          <S.Button onClick={onYes}>{t("labels:yes")}</S.Button>
-          <S.Button onClick={onNo}>{t("labels:cancel")}</S.Button>
+          <S.Button disabled={isLoading} onClick={onYes}>
+            {t("labels:yes")}
+          </S.Button>
+          <S.Button disabled={isLoading} onClick={onNo}>
+            {t("labels:cancel")}
+          </S.Button>
         </S.ButtonsWrapper>
       </S.Wrapper>
     </SlideUpPanel>

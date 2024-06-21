@@ -32,4 +32,9 @@ export const Button = styled(DarkButton)`
   padding: 8px !important;
   width: 40%;
   height: auto;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
