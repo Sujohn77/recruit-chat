@@ -90,13 +90,12 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       currentMsgType === CHAT_ACTIONS.LIVE_CHAT &&
       isLiveChat &&
       messages[0].dateCreated?.seconds;
-
     const withFindJob = withFindJobOption && chatConsent;
-
     let defaultItems =
       withSendTranscript || isCandidateWithEmail
         ? menuForCandidateWithEmail(languages, isMultiLanguage, withFindJob)
         : menuItems(languages, isMultiLanguage, withFindJob);
+
     if (isReferralEnabled && !!employeeId) {
       return baseWithRef(languages, isMultiLanguage);
     }
@@ -127,7 +126,6 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         setTimeout(() => setIsOpen(false), 100);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
@@ -255,7 +253,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
       case CHAT_ACTIONS.ASK_QUESTION:
         if (!isApplyJobFlow && !isApplyJobSuccessfully) {
           if (!chatConsent) {
-            // show chant consent msg
+            // show chat consent msg
           } else {
             dispatch({
               type,
@@ -316,6 +314,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           ))}
         </S.MenuItemsWrapper>
       )}
+
       <Burger isOpen={isOpen} onBurgerClick={handleBurgerClick} />
     </S.Wrapper>
   );

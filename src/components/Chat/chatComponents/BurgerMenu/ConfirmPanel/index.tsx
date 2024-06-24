@@ -31,6 +31,9 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
     flowId,
     candidateId,
     subscriberWorkflowId,
+    setIsLiveChat,
+    setFlowId,
+    setSubscriberWorkflowId,
   } = useChatMessenger();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +43,9 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
       setIsApplyJobFlow(false);
       setIsApplyJobSuccessfully(false);
       setNxtMsgType(null);
+      setIsLiveChat(false);
+      setFlowId(undefined);
+      setSubscriberWorkflowId(undefined);
 
       // TODO: delete after adding a new endpoint for chat terminating !!!
       if (candidateId && flowId && subscriberWorkflowId) {
