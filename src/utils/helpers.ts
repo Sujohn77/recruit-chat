@@ -53,6 +53,7 @@ import {
 } from "services/types";
 import i18n from "services/localization";
 import { ISendNewMessage } from "contexts/types";
+import i18next from "i18next";
 
 window.Buffer = Buffer;
 const phoneUtil = libPhoneNumber.PhoneNumberUtil.getInstance();
@@ -763,16 +764,10 @@ export const parseFirebaseMessages = (
     const indexLastMess = fMessages.findIndex(
       (m) => m.content.text === t("messages:jobRecommendations")
     );
-
     if (indexLastMess !== -1) {
-      messages = fMessages.slice(0, indexLastMess + 1);
+      messages = fMessages.slice(0, indexLastMess);
     }
   }
-
-  console.log("====================================");
-  console.log(fMessages, "fMessages");
-  console.log(messages, "messages");
-  console.log("====================================");
 
   return unionBy(
     map(
@@ -1064,4 +1059,20 @@ export const getMessageOptionText = (option: IMessageOption, t: TFunction) => {
   } else if (option.i18nPhrase) {
     return t(option.i18nPhrase);
   } else return option.text;
+};
+
+export const checkTextInTranslations = async (
+  text: string,
+  key: string
+): Promise<boolean> => {
+  const languages: readonly string[] = i18next.languages;
+
+  for (const lang of languages) {
+    const translationExists = i18next.exists(key, { lng: lang });
+    if (translationExists && i18next.t(key, { lng: lang }) === text) {
+      return true;
+    }
+  }
+
+  return false;
 };
