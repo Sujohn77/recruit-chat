@@ -46,8 +46,12 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setIsShowResults,
   setHeight,
 }) => {
-  const { currentMsgType, searchLocation, currentLanguage } =
-    useChatMessenger();
+  const {
+    currentMsgType,
+    searchLocation,
+    currentLanguage,
+    isJobSearchLocationMultiSelect,
+  } = useChatMessenger();
   const {
     getInputProps,
     getTagProps,
@@ -122,18 +126,20 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
       )}
 
       <S.InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
-        <div style={{ maxHeight: "45px", overflow: "auto" }}>
-          {map(
-            filter(selectedValues, (option) => !!option),
-            (option: string, index: number) => (
-              <Tag
-                label={option}
-                {...getTagProps({ index })}
-                onDelete={() => onDelete(index)}
-              />
-            )
-          )}
-        </div>
+        {isJobSearchLocationMultiSelect && (
+          <div style={{ maxHeight: "45px", overflow: "auto" }}>
+            {map(
+              filter(selectedValues, (option) => !!option),
+              (option: string, index: number) => (
+                <Tag
+                  label={option}
+                  {...getTagProps({ index })}
+                  onDelete={() => onDelete(index)}
+                />
+              )
+            )}
+          </div>
+        )}
 
         {currentLanguage === "fr" ? (
           <Tooltip title={placeHolder} hidden={!!value.length}>

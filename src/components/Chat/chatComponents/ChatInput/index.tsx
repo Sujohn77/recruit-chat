@@ -139,6 +139,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setFlowId,
     setSubscriberWorkflowId,
     parentPathname,
+    isJobSearchLocationMultiSelect,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -895,7 +896,11 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         // temporary solution, since the api can only search for vacancies in 1 location
         // (if the api is updated, then remove this part)
-        if (currentMsgType === CHAT_ACTIONS.SET_LOCATIONS && newValues.length) {
+        if (
+          currentMsgType === CHAT_ACTIONS.SET_LOCATIONS &&
+          newValues.length &&
+          !isJobSearchLocationMultiSelect
+        ) {
           const userMessWithLocation = createTextMess({
             isOwn: true,
             text: newValues[0],

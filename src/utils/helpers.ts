@@ -768,6 +768,11 @@ export const parseFirebaseMessages = (
       messages = fMessages.slice(0, indexLastMess);
     }
   }
+  // console.log("====================================");
+  // console.log(fMessages, "fMessages");
+  // console.log(candidateId, "candidateId");
+  // console.log(messages, "messages");
+  // console.log("====================================");
 
   return unionBy(
     map(

@@ -263,7 +263,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     chatScreen && localStorage.setItem(hostname + "chatScreen", chatScreen);
     offerJobs.length &&
       localStorage.setItem(hostname + "offerJobs", JSON.stringify(offerJobs));
-    searchLocations.length &&
+    searchLocations?.length &&
       localStorage.setItem(
         hostname + "searchLocations",
         JSON.stringify(searchLocations)

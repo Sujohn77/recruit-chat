@@ -36,6 +36,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     setMessages,
     hostname,
     sendNewMessage,
+    setIsChatInputAvailable,
   } = useChatMessenger();
   const { t } = useTranslation();
   const lastBtn = useRef<null | ButtonType>(null);
@@ -210,8 +211,8 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
               setSubscriberWorkflowId(res.data.SubscriberWorkflowID);
               localStorage.removeItem(hostname + "viewJob");
               setViewJob(null);
+              setIsChatInputAvailable(true);
             } else {
-              // setShowApplyBtn(false);
               setApplyJobError(
                 res.data?.errors[0]?.trim() || t("errors:not_possible_to_start")
               );

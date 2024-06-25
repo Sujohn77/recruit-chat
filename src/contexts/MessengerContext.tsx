@@ -106,6 +106,7 @@ interface IChatProviderProps extends IPPKeys {
   defaultLanguage: string;
   withFindJobOption: boolean;
   parentPathname: string;
+  isJobSearchLocationMultiSelect: boolean;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -133,6 +134,7 @@ const ChatProvider = ({
   inlineDisclaimer,
   withFindJobOption,
   parentPathname,
+  isJobSearchLocationMultiSelect,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -359,11 +361,30 @@ const ChatProvider = ({
 
   // ----------------------------------------------------------------------------- //
 
+  //.filter((newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id))
+
+  // useEffect(() => {
+  //   setMessages((prevMessages) => {
+  //     const parsedFBMessages = parseFirebaseMessages(
+  //       _firebaseMessages,
+  //       t,
+  //       candidateId
+  //     ).filter((newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id));
+
+  //     return unionBy<ILocalMessage>(
+  //       [...parsedFBMessages, ...prevMessages],
+  //       "_id"
+  //     );
+  //   });
+  // }, [_firebaseMessages]);
+
   useEffect(() => {
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseMessages, t, candidateId),
+          ...parseFirebaseMessages(_firebaseMessages, t, candidateId).filter(
+            (newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id)
+          ),
           ...prevMessages,
         ],
         "_id"
@@ -843,7 +864,17 @@ const ChatProvider = ({
             const locations = searchLocations.length
               ? searchLocations[0]?.split(",")[0] || searchLocations[0]
               : payload?.items?.[0];
-            additionalCondition = await searchRequisitions(category, locations);
+            try {
+              setIsChatLoading(true);
+              additionalCondition = await searchRequisitions(
+                category,
+                locations
+              );
+            } catch (error) {
+            } finally {
+              setIsChatLoading(true);
+              setTimeout(() => setIsChatLoading(false), 1500);
+            }
           }
           break;
         }
@@ -1074,7 +1105,7 @@ const ChatProvider = ({
     },
     [
       messages,
-      searchLocations.length,
+      searchLocations?.length,
       currentMsgType,
       user,
       isInitialized,
@@ -1445,6 +1476,7 @@ const ChatProvider = ({
     withFindJobOption,
     flowId,
     parentPathname,
+    isJobSearchLocationMultiSelect,
   };
 
   return (

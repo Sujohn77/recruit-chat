@@ -40,6 +40,7 @@ export interface IParentMessage {
     privacyPolicyLinkInnerText?: string;
     privacyPolicyLinkUrl?: string;
     jobsearchEnabled?: BooleanInString;
+    jobSearchLocationMultiSelect?: BooleanInString;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -64,6 +65,8 @@ export const ChatBotRoot: FC = () => {
   const [chatQueueId, setChatQueueId] = useState<number | null>(null);
   const [alertTemplateId, setAlertTemplateId] = useState<number>();
   const [withFindJobOption, setWithFindJobOption] = useState(false);
+  const [isJobSearchLocationMultiSelect, setJobSearchLocationMultiSelect] =
+    useState(false);
   const [parentPathname, setParenPathname] = useState("/");
 
   // PP
@@ -107,14 +110,16 @@ export const ChatBotRoot: FC = () => {
           inlineDisclaimer,
           privacyPolicyLinkUrl,
           jobsearchEnabled,
+          jobSearchLocationMultiSelect,
         } = props;
 
-        if (jobsearchEnabled === "true") {
-          setWithFindJobOption(true);
-        }
+        setWithFindJobOption(jobsearchEnabled === "true");
+        setJobSearchLocationMultiSelect(
+          jobSearchLocationMultiSelect === "true"
+        );
+        setIsReferralEnabled(referralEnabled === "true");
         alertTemplateId && setAlertTemplateId(+alertTemplateId);
         queueId && setChatQueueId(+queueId);
-        setIsReferralEnabled(referralEnabled === "true");
         companyName && setReferralCompanyName(companyName);
         referralListDomain && setChatBotRefBaseURL(referralListDomain);
         clientApiToken && setClientApiToken(clientApiToken);
@@ -210,6 +215,7 @@ export const ChatBotRoot: FC = () => {
           withFindJobOption={withFindJobOption}
           parentPathname={parentPathname}
           chatBotId={chatBotID}
+          isJobSearchLocationMultiSelect={isJobSearchLocationMultiSelect}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>
