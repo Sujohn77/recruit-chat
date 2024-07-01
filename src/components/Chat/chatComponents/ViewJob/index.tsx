@@ -49,6 +49,13 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (!viewJob) {
+      setHeight(0);
+      setApplyJobError(null);
+    }
+  }, [viewJob]);
+
+  useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (isLoading) {
       timeout = setTimeout(() => setIsLoading(false), 3000);
@@ -71,8 +78,10 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
   }, [height, applyJobError]);
 
   useEffect(() => {
-    if (viewJob === null) {
+    if (!viewJob) {
       hideErrorAndShowApplyBtn();
+      setHeight(0);
+      setApplyJobError(null);
     }
 
     return () => {
