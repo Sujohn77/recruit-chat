@@ -5,9 +5,14 @@ import * as S from "./styles";
 import { SessionWarning } from "./SessionWarning";
 import { PopUp } from "..";
 import { EventIds } from "utils/constants";
-import { postMessToParent } from "utils/helpers";
+import {
+  createSendMessPayload,
+  generateLocalId,
+  postMessToParent,
+} from "utils/helpers";
 import { DarkButton } from "components/Layout/styles";
 import { useChatMessenger } from "contexts/MessengerContext";
+import { apiInstance } from "services/api";
 
 interface ILogoutProps {
   showSessionWarning: boolean;
@@ -23,12 +28,33 @@ export const Logout: FC<ILogoutProps> = ({
   onContinueSession,
 }) => {
   const { t } = useTranslation();
-  const { hostname } = useChatMessenger();
+  const { candidateId, hostname, flowId, subscriberWorkflowId } =
+    useChatMessenger();
 
-  const logoutHandle = useCallback(() => {
+  const logoutHandle = useCallback(async () => {
     postMessToParent(EventIds.RefreshChatbot);
     localStorage.clear();
     localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+
+    // TODO: delete after adding a new endpoint for chat terminating !!!
+    if (candidateId && flowId && subscriberWorkflowId) {
+      try {
+        const payload = createSendMessPayload({
+          candidateId,
+          flowId,
+          subscriberWorkflowId,
+          directionId: 1,
+          localId: generateLocalId(),
+          isOwn: true,
+          message: "q",
+        });
+
+        if (payload) {
+          await apiInstance.sendMessage(payload);
+        }
+      } catch (error) {}
+    }
+    // -------------------------------------------------------------------------- //
   }, []);
 
   return showLogoutScreen ? (
