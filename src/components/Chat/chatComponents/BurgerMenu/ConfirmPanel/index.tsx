@@ -110,7 +110,7 @@ export const ConfirmPanel: FC<IConfirmPanelProps> = ({
 
         <S.ButtonsWrapper>
           <S.Button disabled={isLoading} onClick={onYes}>
-            {t("labels:yes")}
+            {t("labels:confirm")}
           </S.Button>
           <S.Button disabled={isLoading} onClick={onNo}>
             {t("labels:cancel")}

@@ -51,7 +51,9 @@ export const fr = {
     login:
       "Veuillez remplir le formulaire suivant pour entamer la procédure de candidature :",
     login_validation: "Veuillez remplir tous les champs requis",
-    terminate_process: "Souhaitez-vous interrompre le processus en cours ?",
+    terminate_process:
+      "La sélection de cette option met fin à la procédure de présélection pour cet emploi.",
+    confirm: "Confirmer",
   },
   languages: {
     en: "Anglais",

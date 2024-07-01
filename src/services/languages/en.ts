@@ -50,7 +50,9 @@ export const en = {
     login:
       "Please complete the following form to start the application process:",
     login_validation: "Please complete all required fields",
-    terminate_process: "Do you want to terminate the current process?",
+    terminate_process:
+      "Selecting this option will end the prescreening process for this job.",
+    confirm: "Confirm",
   },
   languages: {
     en: "English",
