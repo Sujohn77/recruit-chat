@@ -13,6 +13,8 @@ import * as S from "./styles";
 import { IMAGES } from "assets";
 import { INPUT_TYPES, InputTheme } from "utils/constants";
 import { Image } from "screens/Intro/styles";
+import { useChatMessenger } from "contexts/MessengerContext";
+import { CHAT_ACTIONS } from "utils/types";
 
 interface IInputProps {
   value: string;
@@ -48,6 +50,7 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
     },
     ref
   ) => {
+    const { currentMsgType } = useChatMessenger();
     const [isFocus, setIsFocus] = useState(false);
 
     if (type === INPUT_TYPES.TEXTAREA) {
@@ -75,7 +78,7 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
           ref={ref}
           type={type}
           value={value}
-          placeholder={!isFocus && !error ? placeHolder : ""}
+          placeholder={!isFocus && !error?.trim() ? placeHolder : ""}
           onChange={onChange}
           theme={theme}
           style={style}
@@ -83,6 +86,11 @@ export const DefaultInput: FC<IInputProps> = forwardRef(
           onClick={() => setIsShowResults?.(true)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
+          disabledWithPlaceholder={
+            (disabled ||
+              (!isFocus && currentMsgType === CHAT_ACTIONS.ASK_QUESTION)) &&
+            !!placeHolder?.trim()
+          }
         />
 
         {!!error?.trim() && (

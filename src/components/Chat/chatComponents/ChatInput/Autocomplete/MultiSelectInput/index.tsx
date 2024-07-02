@@ -31,6 +31,7 @@ interface IMultiSelectInputProps {
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
   setHeight: Dispatch<SetStateAction<number>>;
+  disabled: boolean;
 }
 
 export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
@@ -45,6 +46,7 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   setInputValue,
   setIsShowResults,
   setHeight,
+  disabled,
 }) => {
   const {
     currentMsgType,
@@ -150,6 +152,10 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
               value={value}
               onClick={onInputClick}
               onChange={onChangeHandler}
+              disabledWithPlaceholder={
+                (disabled || currentMsgType === CHAT_ACTIONS.ASK_QUESTION) &&
+                !!placeHolder?.trim()
+              }
             />
           </Tooltip>
         ) : (

@@ -1,5 +1,5 @@
 import { useChatMessenger } from "./MessengerContext";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
 import isNumber from "lodash/isNumber";
@@ -364,15 +364,16 @@ export const useCreateAnonymCandidate = ({
 export const useAksQuestion = () => {
   const { t } = useTranslation();
   const { setIsChatLoading, setMessages, sendNewMessage } = useChatMessenger();
+  const [isAlreadyAsked, setIsAlreadyAsked] = useState(false);
 
-  return useCallback(
+  const askQuestionHandler = useCallback(
     async (
       setMessageValue: (value: string) => void,
       question?: string | null,
       i18n?: string
     ) => {
       if (!question) return;
-
+      setIsAlreadyAsked(true);
       const questionMess = createTextMess({
         isOwn: true,
         text: question?.trim(),
@@ -463,4 +464,6 @@ export const useAksQuestion = () => {
     },
     []
   );
+
+  return { askQuestionHandler, isAlreadyAsked };
 };

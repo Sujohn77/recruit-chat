@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useCallback } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
@@ -13,6 +13,7 @@ import {
 import { DarkButton } from "components/Layout/styles";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { apiInstance } from "services/api";
+import { Loader } from "components/Layout";
 
 interface ILogoutProps {
   showSessionWarning: boolean;
@@ -30,32 +31,45 @@ export const Logout: FC<ILogoutProps> = ({
   const { t } = useTranslation();
   const { candidateId, hostname, flowId, subscriberWorkflowId } =
     useChatMessenger();
+  const [loading, setLoading] = useState(false);
 
   const logoutHandle = useCallback(async () => {
+    const refreshChatbot = () => {
+      postMessToParent(EventIds.RefreshChatbot);
+      localStorage.clear();
+      localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+    };
     if (candidateId && flowId && subscriberWorkflowId) {
-      try {
-        const payload = createSendMessPayload({
-          candidateId,
-          flowId,
-          subscriberWorkflowId,
-          directionId: 1,
-          localId: generateLocalId(),
-          isOwn: true,
-          message: "q",
-        });
-        // TODO: delete after adding a new endpoint for chat terminating !!!
-        if (payload) {
-          await apiInstance.sendMessage(payload);
+      const payload = createSendMessPayload({
+        candidateId,
+        flowId,
+        subscriberWorkflowId,
+        directionId: 1,
+        localId: generateLocalId(),
+        isOwn: true,
+        message: "q",
+      });
+
+      if (payload) {
+        try {
+          setLoading(true);
+          // TODO: delete after adding a new endpoint for chat terminating !!!
+          if (payload) {
+            await apiInstance.sendMessage(payload);
+          }
+        } catch (error) {
+        } finally {
+          setLoading(false);
+          refreshChatbot();
         }
-      } catch (error) {
-      } finally {
-        postMessToParent(EventIds.RefreshChatbot);
-        localStorage.clear();
-        localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+      } else {
+        refreshChatbot();
       }
+    } else {
+      refreshChatbot();
     }
     // -------------------------------------------------------------------------- //
-  }, [candidateId, flowId, subscriberWorkflowId]);
+  }, [candidateId, flowId, subscriberWorkflowId, hostname]);
 
   return showLogoutScreen ? (
     showSessionWarning ? (
@@ -69,10 +83,18 @@ export const Logout: FC<ILogoutProps> = ({
           <S.Text>{t("messages:logout")}</S.Text>
 
           <S.ButtonsWrapper>
-            <DarkButton onClick={logoutHandle}>{t("labels:yes")}</DarkButton>
-            <DarkButton onClick={() => setShowConfirmLogout(false)}>
-              {t("labels:cancel")}
-            </DarkButton>
+            {loading ? (
+              <Loader showLoader absolutePosition={false} />
+            ) : (
+              <>
+                <DarkButton onClick={logoutHandle}>
+                  {t("labels:yes")}
+                </DarkButton>
+                <DarkButton onClick={() => setShowConfirmLogout(false)}>
+                  {t("labels:cancel")}
+                </DarkButton>
+              </>
+            )}
           </S.ButtonsWrapper>
         </S.Wrapper>
       </PopUp>

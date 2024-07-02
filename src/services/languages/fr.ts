@@ -25,6 +25,9 @@ export const fr = {
     startTyping: "Commencez à saisir pour sélectionner un intitulé de poste…",
     selectOption: "Veuillez sélectionner l'une des options",
     enter_employee_id: "Saisissez votre numéro d'employé",
+    click_menu: "Click the menu button left for more options",
+    aks_another_question:
+      "Ask another question or click the menu button at left for more options",
   },
   labels: {
     required: "Obligatoire",

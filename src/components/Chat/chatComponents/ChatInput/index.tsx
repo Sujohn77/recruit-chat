@@ -147,7 +147,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
   const setUserData = useSetUserData();
   const checkAnswer = useCheckAnswer();
-  const askQuestionHandler = useAksQuestion();
+  const { askQuestionHandler, isAlreadyAsked } = useAksQuestion();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
@@ -1359,15 +1359,30 @@ export const ChatInput: FC<IChatInputProps> = ({
   const disabled = !isChatInputAvailable || isLastMessageWithOptions;
 
   const getPlaceholder = (): string => {
-    if (inputType === TextFieldTypes.Select && disabled) {
+    if (
+      inputType === TextFieldTypes.Select &&
+      disabled &&
+      currentMsgType !== CHAT_ACTIONS.SUCCESS_INTERESTED_IN &&
+      currentMsgType !== CHAT_ACTIONS.CREATED_JOB_ALERT
+    ) {
       return "";
     }
     if (messages[0]?.optionList) {
       return t("placeHolders:selectOption");
     }
-    if (currentMsgType === CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE) {
-      return t("placeHolders:default");
+
+    switch (currentMsgType) {
+      case CHAT_ACTIONS.ASK_QUESTION:
+        return t(
+          `placeHolders:${isAlreadyAsked ? "aks_another_question" : "default"}`
+        );
+      case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
+        return t("placeHolders:default");
+      case CHAT_ACTIONS.SUCCESS_INTERESTED_IN:
+      case CHAT_ACTIONS.CREATED_JOB_ALERT:
+        return t("placeHolders:click_menu");
     }
+
     if (
       messages?.[0]?.content?.text ===
       t("messages:employeeId", {
@@ -1414,6 +1429,12 @@ export const ChatInput: FC<IChatInputProps> = ({
             {...inputProps}
             values={inputValues}
             onChange={onChangeMultiselect}
+            disabled={
+              disabled ||
+              (isChatLoading &&
+                currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
+                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS)
+            }
           />
         ) : (
           <Autocomplete
@@ -1423,10 +1444,10 @@ export const ChatInput: FC<IChatInputProps> = ({
             setPhoneValue={setPhone}
             onChange={onChangeCategory}
             disabled={
+              disabled ||
               (isChatLoading &&
                 currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
-                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS) ||
-              disabled
+                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS)
             }
             errorText={refError}
             isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}

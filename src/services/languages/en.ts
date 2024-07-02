@@ -25,6 +25,9 @@ export const en = {
     startTyping: "Start typing to select a job title...",
     selectOption: "Please select one of the options",
     enter_employee_id: "enter your Employee ID",
+    click_menu: "Click the menu button left for more options",
+    aks_another_question:
+      "Ask another question or click the menu button at left for more options",
   },
   labels: {
     required: "Required",

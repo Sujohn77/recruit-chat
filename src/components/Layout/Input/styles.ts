@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { COLORS } from "utils/colors";
 import { InputTheme } from "utils/constants";
 
+interface ITextInputProps {
+  disabledWithPlaceholder?: boolean;
+}
+
 export const Wrapper = styled.div`
   width: 100%;
   position: relative;
@@ -18,7 +22,7 @@ export const Wrapper = styled.div`
 
 export const TextAreaInputWrapper = styled.div``;
 
-export const TextInput = styled.input`
+export const TextInput = styled.input<ITextInputProps>`
   color: ${COLORS.SILVER_CHALICE};
   border: none;
   background: ${({ theme }) =>
@@ -26,7 +30,8 @@ export const TextInput = styled.input`
   font-size: 16px;
   line-height: 19px;
   outline: none;
-  width: 250px !important;
+  width: ${({ disabledWithPlaceholder }) =>
+    disabledWithPlaceholder ? 288 : 250}px !important;
   height: ${({ theme }) => (theme === InputTheme.Default ? "38px" : "40px")};
   border-radius: ${({ theme }) =>
     theme === InputTheme.Default ? "10px" : "0"};

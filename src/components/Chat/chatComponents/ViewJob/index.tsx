@@ -8,7 +8,7 @@ import parse from "html-react-parser";
 import * as S from "./styles";
 import { ErrorIcon, Loader } from "components/Layout";
 import { apiInstance } from "services/api";
-import { ILocalMessage } from "utils/types";
+import { CHAT_ACTIONS, ILocalMessage } from "utils/types";
 import { createTextMess, getFormattedDate } from "utils/helpers";
 import { IApplyJobResponse, ISuccessResponse } from "services/types";
 import { DarkButton } from "components/Layout/styles";
@@ -37,6 +37,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
     hostname,
     sendNewMessage,
     setIsChatInputAvailable,
+    setCurrentMsgType,
   } = useChatMessenger();
   const { t } = useTranslation();
   const lastBtn = useRef<null | ButtonType>(null);
@@ -150,6 +151,7 @@ export const ViewJob: FC<IViewJobProps> = ({ setShowLoginScreen }) => {
                 isRecall ? "short_success_interested" : "success_interested"
               }`,
             });
+            setCurrentMsgType(CHAT_ACTIONS.SUCCESS_INTERESTED_IN);
           } else if (response.data?.statusCode === 303) {
             // if 303 === the user has already registered themselves for this job
             interestedInResMess = createTextMess({
