@@ -32,11 +32,6 @@ export const Logout: FC<ILogoutProps> = ({
     useChatMessenger();
 
   const logoutHandle = useCallback(async () => {
-    postMessToParent(EventIds.RefreshChatbot);
-    localStorage.clear();
-    localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
-
-    // TODO: delete after adding a new endpoint for chat terminating !!!
     if (candidateId && flowId && subscriberWorkflowId) {
       try {
         const payload = createSendMessPayload({
@@ -48,14 +43,19 @@ export const Logout: FC<ILogoutProps> = ({
           isOwn: true,
           message: "q",
         });
-
+        // TODO: delete after adding a new endpoint for chat terminating !!!
         if (payload) {
           await apiInstance.sendMessage(payload);
         }
-      } catch (error) {}
+      } catch (error) {
+      } finally {
+        postMessToParent(EventIds.RefreshChatbot);
+        localStorage.clear();
+        localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+      }
     }
     // -------------------------------------------------------------------------- //
-  }, []);
+  }, [candidateId, flowId, subscriberWorkflowId]);
 
   return showLogoutScreen ? (
     showSessionWarning ? (
