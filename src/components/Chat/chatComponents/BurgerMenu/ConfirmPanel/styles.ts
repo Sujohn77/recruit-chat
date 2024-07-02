@@ -14,7 +14,10 @@ export const TextWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-export const Text = styled.span``;
+export const Text = styled.span`
+  display: block;
+  text-align: center;
+`;
 
 export const ButtonsWrapper = styled.div`
   display: flex;
