@@ -789,6 +789,7 @@ const ChatProvider = ({
       PPLinkUrl,
       withFindJobOption,
       sendNewMessage,
+      chatConsent,
     ]
   );
 
@@ -806,13 +807,13 @@ const ChatProvider = ({
       employeeLocationID?: string,
       employeeJobFamilyNames?: string[]
     ): Promise<null | boolean> => {
-      const payload = getSearchJobsData(
-        searchCategory,
-        searchLocation,
-        searchCountry,
+      const payload = getSearchJobsData({
+        category: searchCategory,
+        city: searchLocation,
+        country: searchCountry,
         employeeLocationID,
-        employeeJobFamilyNames
-      );
+        employeeJobFamilyNames,
+      });
 
       setIsChatLoading(true);
       try {
@@ -864,6 +865,10 @@ const ChatProvider = ({
             const locations = searchLocations.length
               ? searchLocations[0]?.split(",")[0] || searchLocations[0]
               : payload?.items?.[0];
+
+            // LOG(searchLocations, "searchLocations");
+            // LOG(locations, "locations");
+            // LOG(payload?.items, "payload?.items");
             try {
               setIsChatLoading(true);
               additionalCondition = await searchRequisitions(
@@ -1105,7 +1110,7 @@ const ChatProvider = ({
     },
     [
       messages,
-      searchLocations?.length,
+      searchLocations,
       currentMsgType,
       user,
       isInitialized,
@@ -1114,6 +1119,7 @@ const ChatProvider = ({
       companyName,
       withFindJobOption,
       sendNewMessage,
+      chatConsent,
     ]
   );
 

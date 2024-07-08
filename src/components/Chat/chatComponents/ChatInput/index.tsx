@@ -43,6 +43,7 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
+  LOG,
   parsePathname,
   validateEmail,
   validateEmailOrPhone,
@@ -172,6 +173,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [refError, setRefError] = useState("");
+  const [locations, setLocations] = useState<string[]>([]);
 
   const [isAcceptedApplyJob, setIsAcceptedApplyJob] = usePersistStore<boolean>(
     hostname + "isAccepted",
@@ -258,7 +260,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   useEffect(() => {
     if (currentMsgType === CHAT_ACTIONS.SEND_LOCATIONS) {
-      setInputValues([]);
+      setTimeout(() => setInputValues([]), 1000);
     }
   }, [currentMsgType]);
 
@@ -885,36 +887,50 @@ export const ChatInput: FC<IChatInputProps> = ({
     }
 
     if (currentMsgType) {
-      setInputValues(uniq(newValues));
+      const values = uniq(newValues);
+      setInputValues(values);
       setMessageValue("");
-      if (currentMsgType !== CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS) {
-        dispatch({
-          type: currentMsgType,
-          payload: { items: uniq(newValues) },
-          i18nProps: null,
-        });
 
-        // temporary solution, since the api can only search for vacancies in 1 location
-        // (if the api is updated, then remove this part)
-        if (
-          currentMsgType === CHAT_ACTIONS.SET_LOCATIONS &&
-          newValues.length &&
-          !isJobSearchLocationMultiSelect
-        ) {
-          const userMessWithLocation = createTextMess({
-            isOwn: true,
-            text: newValues[0],
+      switch (currentMsgType) {
+        case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
+          if (values.length) {
+            setSearchLocations(values);
+            onSendMessageHandler();
+          }
+          break;
+        case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
+          values.length && onSendMessageHandler();
+          break;
+
+        default:
+          LOG(values, "values");
+          dispatch({
+            type: currentMsgType,
+            payload: { items: values },
+            i18nProps: null,
           });
-          setMessages((prev) => [userMessWithLocation, ...prev]);
-          sendNewMessage({
-            isOwn: true,
-            message: userMessWithLocation.content.text,
-            localId: userMessWithLocation.localId,
-          });
-          onSendMessageHandler();
-        }
-      } else {
-        setSearchLocations(uniq(newValues));
+
+          // temporary solution, since the api can only search for vacancies in 1 location
+          // (if the api is updated, then remove this part)
+          if (
+            currentMsgType === CHAT_ACTIONS.SET_LOCATIONS &&
+            newValues.length &&
+            !isJobSearchLocationMultiSelect
+          ) {
+            setSearchLocations(values);
+            setLocations(values);
+            const userMessWithLocation = createTextMess({
+              isOwn: true,
+              text: newValues[0],
+            });
+            setMessages((prev) => [userMessWithLocation, ...prev]);
+            sendNewMessage({
+              isOwn: true,
+              message: userMessWithLocation.content.text,
+              localId: userMessWithLocation.localId,
+            });
+            onSendMessageHandler();
+          }
       }
     }
   };

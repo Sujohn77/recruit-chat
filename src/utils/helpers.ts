@@ -104,6 +104,13 @@ export interface ICreateSendMessPayload extends ISendNewMessage {
   flowId?: number;
   directionId: 1 | 2;
 }
+interface IGetSearchJob {
+  category?: string | string[];
+  city?: string;
+  country?: string;
+  employeeLocationID?: string;
+  employeeJobFamilyNames?: string[];
+}
 
 export const generateLocalId = (): string => randomString({ length: 32 });
 
@@ -210,7 +217,7 @@ export const validateEmailOrPhone = (value: string) => {
   if (!value) {
     return i18n.t("labels:required");
   }
-
+  // @ts-ignore
   const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/is;
   const phoneRegExp =
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -580,13 +587,13 @@ export const getNextActionType = (
   }
 };
 
-export const getSearchJobsData = (
-  category?: string | string[],
-  city?: string,
-  country?: string,
-  employeeLocationID?: string,
-  employeeJobFamilyNames?: string[]
-): ISearchJobsPayload => {
+export const getSearchJobsData = ({
+  category,
+  city,
+  country,
+  employeeJobFamilyNames,
+  employeeLocationID,
+}: IGetSearchJob): ISearchJobsPayload => {
   return {
     page: 0,
     pageSize: 50,
