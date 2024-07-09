@@ -703,7 +703,7 @@ const ChatProvider = ({
           return;
         }
         case CHAT_ACTIONS.SET_ALERT_CATEGORIES: {
-          setAlertCategories(payload?.items!);
+          payload?.items && setAlertCategories(payload?.items);
           return;
         }
         case CHAT_ACTIONS.INTERESTED_IN: {

@@ -121,7 +121,7 @@ export enum CHAT_ACTIONS {
   SEND_TRANSCRIPT_EMAIL = "send_transcript_email",
   FETCH_JOBS = "fetch_jobs",
   SET_JOB_ALERT = "set_job_alert",
-  SET_ALERT_CATEGORIES = "set_alert_category",
+  SET_ALERT_CATEGORIES = "SET_ALERT_CATEGORIES",
   SET_ALERT_PERIOD = "set_alert_period",
   SET_ALERT_EMAIL = "set_alert_email",
   INTERESTED_IN = "insterested_in",

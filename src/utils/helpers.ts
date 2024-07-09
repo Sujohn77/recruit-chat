@@ -956,7 +956,7 @@ export const createTextMess = ({
   _id,
   localId,
   content: {
-    text: text.trim(),
+    text: text?.trim(),
     i18n: i18n || null,
     i18nProps: i18nProps || null,
     subType,
