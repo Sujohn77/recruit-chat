@@ -73,7 +73,7 @@ export const en = {
     answerQuestions: "Answer questions",
     whatJobTitle:
       "What's your preferred job title? We'll try finding similar jobs.",
-    botMessageYou:
+    where_do_you_want_to_work:
       "Where do you want to work? This can be your current location or a list of preferred locations.",
     whatCategoryJob: "What's your preferred job category?",
     setJobAlert: "Set Job Alert",

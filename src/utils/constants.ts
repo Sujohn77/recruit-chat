@@ -110,8 +110,8 @@ export const getChatActionMessages = ({
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t("messages:botMessageYou"),
-          i18n: "messages:botMessageYou",
+          text: i18n.t("messages:where_do_you_want_to_work"),
+          i18n: "messages:where_do_you_want_to_work",
         },
       ];
     case CHAT_ACTIONS.SUCCESS_UPLOAD_CV:
@@ -172,13 +172,9 @@ export const getChatActionMessages = ({
       return [
         {
           subType: MessageType.TEXT,
-          text: i18n.t("messages:botMessageYou"),
-          i18n: "messages:botMessageYou",
+          text: i18n.t("messages:where_do_you_want_to_work"),
+          i18n: "messages:where_do_you_want_to_work",
         },
-        // {
-        //   subType: MessageType.TEXT,
-        //   text: i18n.t("messages:alertEmail"),
-        // },
       ];
     case CHAT_ACTIONS.SET_ALERT_EMAIL:
       return [

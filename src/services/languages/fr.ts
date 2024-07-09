@@ -75,7 +75,7 @@ export const fr = {
     answerQuestions: "Répondre à des questions",
     whatJobTitle:
       "Quel est votre intitulé de poste préféré ? Nous essaierons de trouver des postes semblables.",
-    botMessageYou:
+    where_do_you_want_to_work:
       "Où voulez-vous travailler ? Il peut s'agir de votre lieu actuel ou d'une liste de lieux préférés.",
     whatCategoryJob: "Quelle est votre catégorie de postes préférée ?",
     setJobAlert: "Définir une alerte d'emploi",

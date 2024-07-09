@@ -8,6 +8,7 @@ import React, {
   ChangeEvent,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import { useTranslation } from "react-i18next";
 import uniq from "lodash/uniq";
@@ -141,6 +142,7 @@ export const ChatInput: FC<IChatInputProps> = ({
     setSubscriberWorkflowId,
     parentPathname,
     isJobSearchLocationMultiSelect,
+    setAlertCategories,
   } = useChatMessenger();
   const onValidateReferral = useValidateReferral();
   const onSubmitReferral = useSubmitReferral();
@@ -173,7 +175,8 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [refError, setRefError] = useState("");
-  const [locations, setLocations] = useState<string[]>([]);
+
+  const locationsForAlert = useRef<string[]>([]);
 
   const [isAcceptedApplyJob, setIsAcceptedApplyJob] = usePersistStore<boolean>(
     hostname + "isAccepted",
@@ -265,120 +268,99 @@ export const ChatInput: FC<IChatInputProps> = ({
   }, [currentMsgType]);
 
   // Callbacks
-  const sendMessage = useCallback(
-    async (message: string | null) => {
-      const matchedSearchItem = getMatchedItem(message, searchItems);
-      const isSelectedValues =
-        matchedSearchItem || inputValues.length || message;
-      const actionType =
-        isSelectedValues && currentMsgType
-          ? getNextActionType(currentMsgType)
-          : CHAT_ACTIONS.NO_MATCH;
+  const sendMessage = async (message: string | null) => {
+    const matchedSearchItem = getMatchedItem(message, searchItems);
+    const isSelectedValues = matchedSearchItem || inputValues.length || message;
+    const actionType =
+      isSelectedValues && currentMsgType
+        ? getNextActionType(currentMsgType)
+        : CHAT_ACTIONS.NO_MATCH;
 
-      const createAlertHandle = (successText: string) => {
-        clearJobFilters();
-        createJobAlert({
-          email: emailAddress || message!,
-          type: CHAT_ACTIONS.SET_ALERT_EMAIL,
-          successText,
+    const createAlertHandle = (successText: string) => {
+      clearJobFilters();
+      createJobAlert({
+        email: emailAddress || message!,
+        type: CHAT_ACTIONS.SET_ALERT_EMAIL,
+        successText,
+      });
+      setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
+    };
+
+    if (inputType === TextFieldTypes.MultiSelect && actionType) {
+      const items = !!matchedSearchItem
+        ? uniq(inputValues)
+        : uniq(inputValues.length ? inputValues : [message!]);
+
+      if (
+        actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
+        currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
+      ) {
+        const alertEmailMess: ILocalMessage = getAlertJobMessage(
+          userFName || userFirstName,
+          userLName || userLastName,
+          emailAddress
+        );
+
+        const messWithLocations = createTextMess({
+          isOwn: true,
+          text:
+            message ||
+            searchLocations[0] ||
+            locationsForAlert.current[0] ||
+            items.join("\r"),
+          // locations: items.length ? items : [message || ""],
         });
-        setCurrentMsgType(CHAT_ACTIONS.SET_ALERT_EMAIL);
-      };
 
-      if (inputType === TextFieldTypes.MultiSelect && actionType) {
-        const items = !!matchedSearchItem
-          ? uniq(inputValues)
-          : uniq(inputValues.length ? inputValues : [message!]);
+        locationsForAlert.current = [];
+        // setSearchLocations(items.length ? items : [message!]);
+        setInputValues([]);
 
-        if (
-          actionType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS &&
-          currentMsgType === CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS
-        ) {
-          const alertEmailMess: ILocalMessage = getAlertJobMessage(
-            userFName || userFirstName,
-            userLName || userLastName,
-            emailAddress
-          );
-
-          const messWithLocations = createTextMess({
+        const text = matchedSearchItem
+          ? items.join("\r")
+          : message || searchLocations[0];
+        if (text) {
+          sendNewMessage({
+            message: text,
             isOwn: true,
-            text: matchedSearchItem ? items.join("\r") : message!,
-            locations: items.length ? items : [message || ""],
-          });
-
-          setSearchLocations(items.length ? items : [message!]);
-          setInputValues([]);
-
-          const text = matchedSearchItem ? items.join("\r") : message;
-          if (text) {
-            await sendNewMessage({
-              message: text,
-              isOwn: true,
-              localId: messWithLocations.localId,
-            });
-          }
-
-          if (!emailAddress) {
-            sendNewMessage({
-              isOwn: false,
-              message: alertEmailMess.content.text,
-              localId: alertEmailMess.localId,
-            });
-            setMessages((prevMessages) => [
-              alertEmailMess,
-              messWithLocations,
-              ...prevMessages,
-            ]);
-
-            if (!userFName) {
-              setCurrentMsgType(CHAT_ACTIONS.SET_USER_FIRST_NAME);
-            } else if (!userLName) {
-              setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
-            } else if (!userEmail) {
-              setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
-            }
-          } else {
-            setMessages((prevMessages) => [messWithLocations, ...prevMessages]);
-            createAlertHandle(t("messages:emailAlreadyProvided"));
-          }
-        } else {
-          if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
-            setSearchLocations(items);
-          }
-
-          const text = items.length ? items.join("\r\n") : message;
-          if (text) {
-            try {
-              await sendNewMessage({
-                message: text,
-                isOwn: true,
-                localId: null,
-              });
-              setMessageValue("");
-            } catch (error) {
-              console.log(error);
-            }
-          }
-
-          dispatch({
-            type: actionType,
-            payload: { items: items.length ? items : [message] },
-            i18nProps: null,
+            localId: messWithLocations.localId,
           });
         }
-      } else {
-        const currentMess = createTextMess({
-          isOwn: true,
-          text: message || "",
-        });
 
-        const text = currentMess.content.text;
+        if (!emailAddress) {
+          sendNewMessage({
+            isOwn: false,
+            message: alertEmailMess.content.text,
+            localId: alertEmailMess.localId,
+          });
+          setMessages((prevMessages) => [
+            alertEmailMess,
+            messWithLocations,
+            ...prevMessages,
+          ]);
+
+          if (!userFName) {
+            setCurrentMsgType(CHAT_ACTIONS.SET_USER_FIRST_NAME);
+          } else if (!userLName) {
+            setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
+          } else if (!userEmail) {
+            setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
+          }
+        } else {
+          setMessages((prevMessages) => [messWithLocations, ...prevMessages]);
+          createAlertHandle(t("messages:emailAlreadyProvided"));
+        }
+      } else {
+        if (actionType === CHAT_ACTIONS.SEND_LOCATIONS) {
+          setSearchLocations(items);
+        }
+
+        const text = items.length ? items.join("\r\n") : message;
         if (text) {
           try {
             await sendNewMessage({
               message: text,
               isOwn: true,
-              localId: currentMess.localId,
+              localId: null,
             });
             setMessageValue("");
           } catch (error) {
@@ -386,109 +368,116 @@ export const ChatInput: FC<IChatInputProps> = ({
           }
         }
 
-        if (
-          (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
-            currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) &&
-          (message || phone)
-        ) {
-          referralHandle(message || phone);
-        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_FIRST_NAME) {
-          setUserFirstName(message!);
+        dispatch({
+          type: actionType,
+          payload: { items: items.length ? items : [message] },
+          i18nProps: null,
+        });
+      }
+    } else {
+      const currentMess = createTextMess({
+        isOwn: true,
+        text: message || "",
+      });
 
-          const alertMess = getAlertJobMessage(
-            message!,
-            userLName,
-            emailAddress
-          );
-
-          sendNewMessage({
-            isOwn: false,
-            message: alertMess.content.text,
-            localId: alertMess.localId,
+      const text = currentMess.content.text;
+      if (text) {
+        try {
+          await sendNewMessage({
+            message: text,
+            isOwn: true,
+            localId: currentMess.localId,
           });
-          setMessages((prev) => [alertMess, currentMess, ...prev]);
-          setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
-        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_LAST_NAME) {
-          setUserLastName(message!);
-
-          const alertMess = getAlertJobMessage(
-            userFName || userFirstName,
-            message!,
-            emailAddress
-          );
-
-          sendNewMessage({
-            isOwn: false,
-            message: alertMess.content.text,
-            localId: alertMess.localId,
-          });
-          setMessages((prev) => [alertMess, currentMess, ...prev]);
-          setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
-        } else if (currentMsgType === CHAT_ACTIONS.SET_USER_EMAIL) {
-          setMessages((prev) => [currentMess, ...prev]);
-          setIsChatLoading(true);
-
-          setTimeout(() => {
-            setIsChatLoading(false);
-
-            const emailError = validateEmail(message!);
-            if (emailError) {
-              const errorEmailMessage = createTextMess({
-                isError: true,
-                text: emailError,
-              });
-
-              sendNewMessage({
-                isOwn: false,
-                message: errorEmailMessage.content.text,
-                localId: errorEmailMessage.localId,
-              });
-              setMessages((prev) => [errorEmailMessage, ...prev]);
-            } else {
-              setUserEmail(message!);
-              // _setMessages((prev) => [message, ...prev]);
-              dispatch({
-                type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
-                payload: {
-                  candidateData: {
-                    emailAddress: emailAddress || message!,
-                    firstName: userFName || userFirstName,
-                    lastName: userLName || userLastName,
-                    callback: () => {
-                      createAlertHandle(t("messages:successSubscribed"));
-                    },
-                  },
-                },
-                i18nProps: null,
-              });
-            }
-          }, 500);
-        } else {
-          dispatch({
-            type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
-            payload: { item: message },
-            i18nProps: null,
-          });
+          setMessageValue("");
+        } catch (error) {
+          console.log(error);
         }
       }
 
-      setMessageValue("");
-    },
-    [
-      currentMsgType,
-      matchedItems.length,
-      searchLocations.length,
-      inputValues,
-      referralStep,
-      dispatch,
-      phone,
-      emailAddress,
-      userFirstName,
-      userLastName,
-      userEmail,
-      chatId,
-    ]
-  );
+      if (
+        (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL ||
+          currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) &&
+        (message || phone)
+      ) {
+        referralHandle(message || phone);
+      } else if (currentMsgType === CHAT_ACTIONS.SET_USER_FIRST_NAME) {
+        setUserFirstName(message!);
+
+        const alertMess = getAlertJobMessage(message!, userLName, emailAddress);
+
+        sendNewMessage({
+          isOwn: false,
+          message: alertMess.content.text,
+          localId: alertMess.localId,
+        });
+        setMessages((prev) => [alertMess, currentMess, ...prev]);
+        setCurrentMsgType(CHAT_ACTIONS.SET_USER_LAST_NAME);
+      } else if (currentMsgType === CHAT_ACTIONS.SET_USER_LAST_NAME) {
+        setUserLastName(message!);
+
+        const alertMess = getAlertJobMessage(
+          userFName || userFirstName,
+          message!,
+          emailAddress
+        );
+
+        sendNewMessage({
+          isOwn: false,
+          message: alertMess.content.text,
+          localId: alertMess.localId,
+        });
+        setMessages((prev) => [alertMess, currentMess, ...prev]);
+        setCurrentMsgType(CHAT_ACTIONS.SET_USER_EMAIL);
+      } else if (currentMsgType === CHAT_ACTIONS.SET_USER_EMAIL) {
+        setMessages((prev) => [currentMess, ...prev]);
+        setIsChatLoading(true);
+
+        setTimeout(() => {
+          setIsChatLoading(false);
+
+          const emailError = validateEmail(message!);
+          if (emailError) {
+            const errorEmailMessage = createTextMess({
+              isError: true,
+              text: emailError,
+            });
+
+            sendNewMessage({
+              isOwn: false,
+              message: errorEmailMessage.content.text,
+              localId: errorEmailMessage.localId,
+            });
+            setMessages((prev) => [errorEmailMessage, ...prev]);
+          } else {
+            setUserEmail(message!);
+            // _setMessages((prev) => [message, ...prev]);
+            dispatch({
+              type: CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE,
+              payload: {
+                candidateData: {
+                  emailAddress: emailAddress || message!,
+                  firstName: userFName || userFirstName,
+                  lastName: userLName || userLastName,
+                  callback: () => {
+                    createAlertHandle(t("messages:successSubscribed"));
+                  },
+                },
+              },
+              i18nProps: null,
+            });
+          }
+        }, 500);
+      } else {
+        dispatch({
+          type: !currentMsgType ? CHAT_ACTIONS.NO_MATCH : currentMsgType,
+          payload: { item: message },
+          i18nProps: null,
+        });
+      }
+    }
+
+    setMessageValue("");
+  };
 
   const referralHandle = (draftMessage: string) => {
     const mess = createTextMess({ isOwn: true, text: draftMessage });
@@ -892,18 +881,34 @@ export const ChatInput: FC<IChatInputProps> = ({
       setMessageValue("");
 
       switch (currentMsgType) {
-        case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
+        case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
           if (values.length) {
-            setSearchLocations(values);
+            setAlertCategories(values);
+            const userMessWithCategory = createTextMess({
+              isOwn: true,
+              text: values[0],
+            });
+
+            setMessages((prev) => [userMessWithCategory, ...prev]);
+            sendNewMessage({
+              isOwn: true,
+              message: userMessWithCategory.content.text,
+              localId: userMessWithCategory.localId,
+            });
             onSendMessageHandler();
           }
+
           break;
-        case CHAT_ACTIONS.SET_ALERT_CATEGORIES:
-          values.length && onSendMessageHandler();
+        case CHAT_ACTIONS.SET_ALERT_JOB_LOCATIONS:
+          if (!!values[0]?.trim()) {
+            setSearchLocations(values);
+            locationsForAlert.current = values;
+            onSendMessageHandler();
+          }
+
           break;
 
         default:
-          LOG(values, "values");
           dispatch({
             type: currentMsgType,
             payload: { items: values },
@@ -914,14 +919,13 @@ export const ChatInput: FC<IChatInputProps> = ({
           // (if the api is updated, then remove this part)
           if (
             currentMsgType === CHAT_ACTIONS.SET_LOCATIONS &&
-            newValues.length &&
+            values.length &&
             !isJobSearchLocationMultiSelect
           ) {
             setSearchLocations(values);
-            setLocations(values);
             const userMessWithLocation = createTextMess({
               isOwn: true,
-              text: newValues[0],
+              text: values[0],
             });
             setMessages((prev) => [userMessWithLocation, ...prev]);
             sendNewMessage({
