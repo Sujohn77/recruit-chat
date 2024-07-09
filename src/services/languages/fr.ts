@@ -80,7 +80,7 @@ export const fr = {
     whatCategoryJob: "Quelle est votre catégorie de postes préférée ?",
     setJobAlert: "Définir une alerte d'emploi",
     interestedCategories:
-      "Lesquelles de nos catégories de postes vous intéressent ?\n\n \n Vous pouvez sélectionner une seule catégorie ou plusieurs.",
+      "Lesquelles de nos catégories de postes vous intéressent ?",
     alertPeriod:
       "À quelle fréquence voulez-vous recevoir vos alertes d'emploi ?",
     monthy: "Tous les mois",
