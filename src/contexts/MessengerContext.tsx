@@ -964,6 +964,16 @@ const ChatProvider = ({
         }
         case CHAT_ACTIONS.SEARCH_WITH_RESUME: {
           if (payload?.items) {
+            if (payload.item?.length) {
+              setMessages((prev) => [
+                createTextMess({
+                  text: t("messages:processed_your_resume"),
+                  i18n: "messages:processed_your_resume",
+                }),
+                ...prev,
+              ]);
+            }
+
             setJobPositions(payload.items);
             additionalCondition = !!payload.items.length;
           } else {

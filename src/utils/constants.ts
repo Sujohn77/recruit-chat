@@ -332,11 +332,11 @@ export const getChatActionMessages = ({
     }
     case CHAT_ACTIONS.UPLOADED_CV: {
       return [
-        {
-          subType: MessageType.TEXT,
-          text: i18n.t("messages:processed_your_resume"),
-          i18n: "messages:processed_your_resume",
-        },
+        // {
+        //   subType: MessageType.TEXT,
+        //   text: i18n.t("messages:processed_your_resume"),
+        //   i18n: "messages:processed_your_resume",
+        // },
         {
           subType: MessageType.UPLOADED_CV,
           text: param,
