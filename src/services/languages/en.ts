@@ -73,8 +73,7 @@ export const en = {
     answerQuestions: "Answer questions",
     whatJobTitle:
       "What's your preferred job title? We'll try finding similar jobs.",
-    where_do_you_want_to_work:
-      "Where do you want to work? This can be your current location or a list of preferred locations.",
+    where_do_you_want_to_work: "What is your preferred job location?",
     whatCategoryJob: "What's your preferred job category?",
     setJobAlert: "Set Job Alert",
     interestedCategories: "Which of our job categories are you interested in?",
