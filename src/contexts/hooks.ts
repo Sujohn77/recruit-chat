@@ -363,7 +363,8 @@ export const useCreateAnonymCandidate = ({
 
 export const useAksQuestion = () => {
   const { t } = useTranslation();
-  const { setIsChatLoading, setMessages, sendNewMessage } = useChatMessenger();
+  const { setIsChatLoading, setMessages, sendNewMessage, isReferralEnabled } =
+    useChatMessenger();
   const [isAlreadyAsked, setIsAlreadyAsked] = useState(false);
 
   const askQuestionHandler = useCallback(
@@ -409,7 +410,7 @@ export const useAksQuestion = () => {
             (answer) => ({
               content: {
                 subType:
-                  answer === REFERRAL_OFFER_TEXT
+                  answer === REFERRAL_OFFER_TEXT && isReferralEnabled
                     ? MessageType.REFERRAL
                     : MessageType.TEXT,
                 text: answer,
