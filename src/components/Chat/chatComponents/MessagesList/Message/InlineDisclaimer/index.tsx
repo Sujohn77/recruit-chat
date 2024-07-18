@@ -70,7 +70,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
           withOptions={!!message?.optionList}
           isOwn={message.isOwn}
         >
-          <span>
+          <span style={{ fontWeight: 600, fontSize: 14 }}>
             <Linkify
               options={{
                 render: () => (

@@ -11,7 +11,6 @@ import { UploadCV } from "./UploadCV";
 import { EmailForm } from "./EmailForm";
 import { JobOffers } from "./JobOffers";
 import { NoMatchJob } from "./NoMatchJob";
-import { TextWithOptions } from "./TextWithOptions";
 import { TranscriptSent } from "./TranscriptSent";
 import { TextMessage } from "./TextMessage";
 import { InterestedIn } from "./InterestedIn";
@@ -73,13 +72,13 @@ export const Message: FC<IMessageProps> = ({
     }
     case MessageType.INTERESTED_IN:
       return <InterestedIn {...defProps} />;
-    case MessageType.TEXT_WITH_CHOICE: {
-      return <TextWithOptions message={message} {...messageProps} />;
-    }
-    case MessageType.HIRING_PROCESS: {
-      // return <HiringHelp message={message} />; // for phase 2
-      return null;
-    }
+    // case MessageType.TEXT_WITH_CHOICE: {
+    //   return <TextWithOptions message={message} {...messageProps} />;
+    // }
+    // case MessageType.HIRING_PROCESS: {
+    //   // return <HiringHelp message={message} />; // for phase 2
+    //   return null;
+    // }
     case MessageType.NO_MATCH:
     case MessageType.REFINE_SEARCH: {
       return <NoMatchJob />;

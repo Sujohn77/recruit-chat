@@ -64,6 +64,8 @@ export const fr = {
     ua: "Ukrainien",
   },
   messages: {
+    warning:
+      "Veillez à ne pas inclure d'informations personnelles ou sensibles dans cette conversation.",
     great_apply: "Parfait, je peux vous aider à postuler...",
     initialMessage: "Bonjour ! Êtes-vous à la recherche d'un poste ?",
     initialMessage2: "Bonjour, je suis l'assistante virtuelle de GMS !",
@@ -179,6 +181,17 @@ export const fr = {
     recruitment_process: "Quel est le processus recrutement ?",
     refer_friend:
       "Puis-je recommander un(e) ami(e) à {{referralCompanyName}} ?",
+
+    // new referral questions
+    whats_the_requirements_to_refer:
+      "What are the requirements to refer someone?",
+    how_can_refer: "How can I refer someone?",
+    whats_positions: "What positions can I refer someone to?",
+    choose_specific: "Do I have to choose a specific job to refer someone to?",
+    how_much_paid: "How much do I get paid for a referral?",
+    will_receive_payment: "How and when will I receive payment?",
+    get_error_mess:
+      "When I was trying to submit my referral I received an error message, how can I fix it?",
   },
   errors: {
     not_match:

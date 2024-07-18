@@ -101,9 +101,12 @@ export const getChatActionMessages = ({
   }
 
   const withInlineDisclaimer =
+    !some(
+      messages,
+      (m) => m.content.subType === MessageType.INLINE_DISCLAIMER
+    ) &&
     !consentOptIn?.enabled &&
-    inlineDisclaimer?.enabled &&
-    !some(messages, (m) => m.content.subType === MessageType.INLINE_DISCLAIMER);
+    inlineDisclaimer?.enabled;
 
   switch (type) {
     case CHAT_ACTIONS.SET_CATEGORY:
@@ -241,12 +244,34 @@ export const getChatActionMessages = ({
               text: inlineDisclaimer.content_en,
               isChatMessage: true,
             },
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:warning"),
+              i18n: "messages:warning",
+              isChatMessage: true,
+            },
           ]
         : defMessage;
     case CHAT_ACTIONS.ASK_QUESTION:
-      return withoutDefaultQuestions
+      const defQuestions = withoutDefaultQuestions
         ? []
         : getQuestions(withReferralFlow, referralCompanyName);
+      return withInlineDisclaimer
+        ? [
+            ...defQuestions,
+            {
+              subType: MessageType.INLINE_DISCLAIMER,
+              text: inlineDisclaimer.content_en,
+              isChatMessage: true,
+            },
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:warning"),
+              i18n: "messages:warning",
+              isChatMessage: true,
+            },
+          ]
+        : defQuestions;
     case CHAT_ACTIONS.GET_USER_NAME:
       return [
         {
@@ -363,6 +388,12 @@ export const getChatActionMessages = ({
               i18nProps: {
                 companyName: referralCompanyName,
               },
+            },
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:warning"),
+              i18n: "messages:warning",
+              isChatMessage: true,
             },
             {
               subType: MessageType.INLINE_DISCLAIMER,

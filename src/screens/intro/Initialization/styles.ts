@@ -102,6 +102,7 @@ export const Question = styled(MessageBox)<IFrProps>`
   box-sizing: border-box;
   margin-bottom: 12px;
   animation: fade 0.3s ease-in;
+  overflow: hidden;
 
   ${({ isFrench }) => isFrench && "max-width: 292px;"}
 

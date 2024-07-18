@@ -63,11 +63,14 @@ export const en = {
     ua: "Ukrainian",
   },
   messages: {
+    warning:
+      "Please be sure not to include any personal or sensitive information in this conversation.",
     great_apply: "Great, I can help you apply...",
     initialMessage: "Hi! Are you looking for a job?",
     initialMessage2: "Hi! I'm the GMS Virtual Assistant!",
     initialMessage3: "Hi! Are you interested in this job?",
-    refInitialMessage: "Hi! I'm here to help with referrals!",
+    refInitialMessage:
+      "Hi! I'm the UPS Referrals Assistant and I'm ready to assist you with the Employee Referral Process.",
     uploadCV: "Upload resume",
     dragAndDrop: "Drag and drop a resume file here",
     answerQuestions: "Answer questions",
@@ -168,6 +171,17 @@ export const en = {
     part_time: "Do you offer part-time positions?",
     recruitment_process: "What’s the recruitment process?",
     refer_friend: "Can I refer a friend to {{companyName}}?",
+
+    // new referral questions
+    whats_the_requirements_to_refer:
+      "What are the requirements to refer someone?",
+    how_can_refer: "How can I refer someone?",
+    whats_positions: "What positions can I refer someone to?",
+    choose_specific: "Do I have to choose a specific job to refer someone to?",
+    how_much_paid: "How much do I get paid for a referral?",
+    will_receive_payment: "How and when will I receive payment?",
+    get_error_mess:
+      "When I was trying to submit my referral I received an error message, how can I fix it?",
   },
   errors: {
     not_match: "Email addresses do not match - please re-enter",

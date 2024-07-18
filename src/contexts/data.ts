@@ -164,27 +164,83 @@ const defaultQuestions = (referralCompanyName: string | null) => [
   },
 ];
 
-export const getReferralMessText = (referralCompanyName: string | null) =>
+const newDefaultReferralQuestions = [
+  {
+    text: i18n.t("questions:get_error_mess"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:get_error_mess",
+  },
+  {
+    text: i18n.t("questions:will_receive_payment"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:will_receive_payment",
+  },
+  {
+    text: i18n.t("questions:how_much_paid"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:how_much_paid",
+  },
+  {
+    text: i18n.t("questions:choose_specific"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:choose_specific",
+  },
+  {
+    text: i18n.t("questions:whats_positions"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:whats_positions",
+  },
+  {
+    text: i18n.t("questions:how_can_refer"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:how_can_refer",
+  },
+  {
+    text: i18n.t("questions:whats_the_requirements_to_refer"),
+    subType: MessageType.BUTTON,
+    isChatMessage: true,
+    isOwn: true,
+    i18n: "questions:whats_the_requirements_to_refer",
+  },
+];
+
+const getReferralMessText = (referralCompanyName: string | null) =>
   i18n.t("questions:refer_friend", { companyName: referralCompanyName });
 
 export const getQuestions = (
   withReferralFlow: boolean,
   referralCompanyName: string | null
 ) => {
-  if (withReferralFlow && referralCompanyName) {
-    return [
-      {
-        text: getReferralMessText(referralCompanyName),
-        subType: MessageType.BUTTON,
-        isChatMessage: true,
-        isOwn: true,
-        i18n: "questions:refer_friend",
-        i18nProps: {
-          companyName: referralCompanyName,
-        },
-      },
-      ...defaultQuestions(referralCompanyName),
-    ];
+  // if (withReferralFlow && referralCompanyName) {
+  //   return [
+  //     {
+  //       text: getReferralMessText(referralCompanyName),
+  //       subType: MessageType.BUTTON,
+  //       isChatMessage: true,
+  //       isOwn: true,
+  //       i18n: "questions:refer_friend",
+  //       i18nProps: {
+  //         companyName: referralCompanyName,
+  //       },
+  //     },
+  //     ...defaultQuestions(referralCompanyName),
+  //   ];
+  // }
+
+  if (withReferralFlow) {
+    return newDefaultReferralQuestions;
   }
 
   return defaultQuestions(referralCompanyName);
