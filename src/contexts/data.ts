@@ -165,27 +165,27 @@ const defaultQuestions = (referralCompanyName: string | null) => [
 ];
 
 const newDefaultReferralQuestions = [
-  {
-    text: i18n.t("questions:get_error_mess"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:get_error_mess",
-  },
-  {
-    text: i18n.t("questions:will_receive_payment"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:will_receive_payment",
-  },
-  {
-    text: i18n.t("questions:how_much_paid"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:how_much_paid",
-  },
+  // {
+  //   text: i18n.t("questions:get_error_mess"),
+  //   subType: MessageType.BUTTON,
+  //   isChatMessage: true,
+  //   isOwn: true,
+  //   i18n: "questions:get_error_mess",
+  // },
+  // {
+  //   text: i18n.t("questions:will_receive_payment"),
+  //   subType: MessageType.BUTTON,
+  //   isChatMessage: true,
+  //   isOwn: true,
+  //   i18n: "questions:will_receive_payment",
+  // },
+  // {
+  //   text: i18n.t("questions:how_much_paid"),
+  //   subType: MessageType.BUTTON,
+  //   isChatMessage: true,
+  //   isOwn: true,
+  //   i18n: "questions:how_much_paid",
+  // },
   {
     text: i18n.t("questions:choose_specific"),
     subType: MessageType.BUTTON,
