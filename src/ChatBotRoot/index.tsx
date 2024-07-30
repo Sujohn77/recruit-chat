@@ -47,6 +47,7 @@ export interface IParentMessage {
   clientApiToken?: string;
   hostname?: string;
   pathname?: string;
+  chatbotHeight?: string;
 }
 
 export const ChatBotRoot: FC = () => {
@@ -68,6 +69,7 @@ export const ChatBotRoot: FC = () => {
   const [isJobSearchLocationMultiSelect, setJobSearchLocationMultiSelect] =
     useState(false);
   const [parentPathname, setParenPathname] = useState("/");
+  const [chatbotHeigh, setChatbotHeight] = useState("600px");
 
   // PP
   const [consentOptIn, setConsentOptIn] = useState<IPrivacyPolicy | null>(null);
@@ -88,9 +90,11 @@ export const ChatBotRoot: FC = () => {
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
       LOG(data, "data", COLORS.BLACK, COLORS.WHITE);
-      const { props, style, hostname, token, guid, pathname } = data;
+      const { props, style, hostname, token, guid, pathname, chatbotHeight } =
+        data;
       hostname && setHostname(hostname);
       style && setTheme(style);
+      chatbotHeight && setChatbotHeight(chatbotHeight);
 
       if (props) {
         const {
@@ -216,6 +220,7 @@ export const ChatBotRoot: FC = () => {
           parentPathname={parentPathname}
           chatBotId={chatBotID}
           isJobSearchLocationMultiSelect={isJobSearchLocationMultiSelect}
+          chatbotHeigh={chatbotHeigh}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

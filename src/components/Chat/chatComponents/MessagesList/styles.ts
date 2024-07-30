@@ -18,6 +18,7 @@ export const infiniteScrollStyle: CSSProperties = {
 
 export const MessagesArea = styled.div<IMessagesAreaProps>`
   max-height: calc(100% - ${({ withPPLink }) => (withPPLink ? 150 : 120)}px);
+  height: 100%;
   overflow: hidden;
   border: ${({ theme: { borderStyle, borderWidth } }) =>
     `${borderWidth} ${borderStyle}  ${COLORS.ALTO}`};
@@ -25,8 +26,10 @@ export const MessagesArea = styled.div<IMessagesAreaProps>`
 `;
 
 export const MessageListContainer = styled.div<IMessageListContainerProps>`
-  height: ${({ resultsHeight, isMobile }) =>
-    (isMobile ? window.innerHeight - 120 : 480) - resultsHeight}px;
+  /* height: ${({ resultsHeight, isMobile }) =>
+    (isMobile ? window.innerHeight - 120 : 480) - resultsHeight}px; */
+  height: 100%;
+  width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
   display: flex;

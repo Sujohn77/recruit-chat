@@ -107,6 +107,7 @@ interface IChatProviderProps extends IPPKeys {
   withFindJobOption: boolean;
   parentPathname: string;
   isJobSearchLocationMultiSelect: boolean;
+  chatbotHeigh: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -135,6 +136,7 @@ const ChatProvider = ({
   withFindJobOption,
   parentPathname,
   isJobSearchLocationMultiSelect,
+  chatbotHeigh,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -1493,6 +1495,7 @@ const ChatProvider = ({
     flowId,
     parentPathname,
     isJobSearchLocationMultiSelect,
+    chatbotHeigh,
   };
 
   return (

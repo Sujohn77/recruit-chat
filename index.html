@@ -14,6 +14,7 @@
   const iframeID = "chat-iframe";
   const loaderID = "_chat-bot-loader";
   const loaderStyleId = "loader_style_id";
+  const chatbotHeight = "777px";
 
   const eventIds = {
     REFRESH_TOKEN: "refresh_token",
@@ -65,7 +66,6 @@
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
     const showChatbot = isChatbotAvailable(props?.pages);
-    LOG(showChatbot, "showChatbot");
 
     if (showChatbot) {
       document.body?.appendChild(ifrm);
@@ -81,6 +81,7 @@
             clientApiToken,
             hostname: window.location.hostname,
             pathname: window.location.pathname,
+            chatbotHeight,
           },
           ifrm.src
         );
@@ -164,7 +165,7 @@
             .then((data) => {
               if (data && chatbotIframe) {
                 chatbotIframe?.contentWindow?.postMessage(
-                  { token: data },
+                  { token: data, chatbotHeight },
                   chatbotSrc
                 );
               }
@@ -183,7 +184,7 @@
             chatbotIframe.style.height = event.data.isSelectedOption
               ? chatBotIsMobile || isMobView
                 ? window.innerHeight + "px"
-                : "601px"
+                : chatbotHeight
               : "135px";
           }
           break;
@@ -200,6 +201,7 @@
               clientApiToken: chatBotClientApiToken,
               hostname: window.location.hostname,
               pathname: window.location.pathname,
+              chatbotHeight,
             },
             chatbotSrc
           );
@@ -286,7 +288,7 @@
   </head>
   <body>
     <div id="root">
-      <div>___ CHATBOT ___</div>
+      <div>CHATBOT</div>
 
       <div>can i speak to someone?</div>
     </div>

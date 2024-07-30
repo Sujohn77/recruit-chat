@@ -28,8 +28,13 @@ interface IChatProps {
 }
 
 export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
-  const { isReferralEnabled, currentMsgType, messages, chatScreen } =
-    useChatMessenger();
+  const {
+    isReferralEnabled,
+    currentMsgType,
+    messages,
+    chatScreen,
+    chatbotHeigh,
+  } = useChatMessenger();
 
   const [height, setHeight] = useState(480);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
@@ -76,7 +81,11 @@ export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
   }, []);
 
   return (
-    <S.Wrapper isOpened={isShowChat} isMobile={isMobile}>
+    <S.Wrapper
+      isOpened={isShowChat}
+      isMobile={isMobile}
+      chatbotHeigh={chatbotHeigh}
+    >
       <ChatHeader
         setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}

@@ -169,6 +169,7 @@ export interface IChatMessengerContext extends IPPKeys {
   subscriberWorkflowId: number | undefined;
   parentPathname: string;
   isJobSearchLocationMultiSelect: boolean;
+  chatbotHeigh: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

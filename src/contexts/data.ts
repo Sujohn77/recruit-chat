@@ -122,6 +122,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   subscriberWorkflowId: undefined,
   parentPathname: "",
   isJobSearchLocationMultiSelect: false,
+  chatbotHeigh: "600px",
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [
