@@ -17,8 +17,8 @@ export const LinkWrapper = styled.span`
   cursor: pointer;
 `;
 
-export const SendingTime = styled.span`
+export const SendingTime = styled.span<{ isOwn?: boolean }>`
   position: absolute;
-  right: 77px;
+  right: ${({ isOwn }) => (isOwn ? 14 : 77)}px;
   bottom: 8px;
 `;

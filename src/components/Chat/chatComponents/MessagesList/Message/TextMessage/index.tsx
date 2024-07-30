@@ -175,7 +175,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
         </S.MessageContent>
       </S.MessageBox>
 
-      <SendingTime>{renderSendingTime(message)}</SendingTime>
+      <SendingTime isOwn={message.isOwn}>
+        {renderSendingTime(message)}
+      </SendingTime>
     </S.Wrapper>
   );
 };
