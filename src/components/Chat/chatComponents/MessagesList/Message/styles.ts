@@ -1,5 +1,6 @@
-import { Button } from "@material-ui/core";
+import { CSSProperties } from "react";
 import styled from "styled-components";
+import { Button } from "@material-ui/core";
 
 import { COLORS } from "utils/colors";
 import { IMessageProps, isValidColor } from "utils/helpers";
@@ -29,6 +30,9 @@ interface IMessageTextProps {
 
 interface ISenderProps {
   isOwn: boolean;
+}
+interface IWrapperProps {
+  position?: CSSProperties["position"];
 }
 
 export const MessageBox = styled.div<IMessageBoxProps>`
@@ -79,7 +83,9 @@ export const MessageBox = styled.div<IMessageBoxProps>`
     }`};
 `;
 
-export const Wrapper = styled.div``;
+export const Wrapper = styled.div<IWrapperProps>`
+  ${({ position }) => position && `position: ${position};`}
+`;
 
 export const Sender = styled.div<ISenderProps>`
   font-style: normal;

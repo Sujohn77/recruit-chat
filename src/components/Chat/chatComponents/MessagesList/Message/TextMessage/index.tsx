@@ -4,7 +4,7 @@ import { useTheme } from "styled-components";
 import Linkify from "linkify-react";
 
 import { OptionList } from "./OptionList";
-import { LocationList, LocationItem, LinkWrapper } from "./styles";
+import { LocationList, LocationItem, LinkWrapper, SendingTime } from "./styles";
 import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
@@ -110,7 +110,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
       : theme.message.chat.backgroundColor;
 
   return wrongMess ? null : (
-    <S.Wrapper>
+    <S.Wrapper position="relative">
       {message.sender?.firstName && (
         <S.Sender isOwn={!!message.isOwn}>
           {message.sender?.firstName} {message.sender?.lastName}
@@ -167,8 +167,6 @@ export const TextMessage: FC<ITextMessageProps> = ({
             </Linkify>
           )}
 
-          {renderSendingTime(message)}
-
           <OptionList
             setSelectedReferralJobId={setSelectedReferralJobId}
             message={message}
@@ -176,6 +174,8 @@ export const TextMessage: FC<ITextMessageProps> = ({
           />
         </S.MessageContent>
       </S.MessageBox>
+
+      <SendingTime>{renderSendingTime(message)}</SendingTime>
     </S.Wrapper>
   );
 };

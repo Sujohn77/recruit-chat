@@ -16,3 +16,9 @@ export const LinkWrapper = styled.span`
   color: ${({ theme }) => theme.linkColor};
   cursor: pointer;
 `;
+
+export const SendingTime = styled.span`
+  position: absolute;
+  right: 77px;
+  bottom: 8px;
+`;
