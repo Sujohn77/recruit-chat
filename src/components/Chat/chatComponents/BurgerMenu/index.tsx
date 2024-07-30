@@ -13,6 +13,7 @@ import map from "lodash/map";
 import * as S from "./styles";
 import { Burger } from "./Burger";
 import { MenuItem } from "./MenuItem";
+import { ConfirmPanel } from "./ConfirmPanel";
 import {
   baseWithRefItems,
   baseWithRef,
@@ -22,9 +23,8 @@ import {
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { createTextMess } from "utils/helpers";
-import { CHAT_ACTIONS, IMenuItem, NextMsgType } from "utils/types";
+import { CHAT_ACTIONS, IMenuItem, MessageType, NextMsgType } from "utils/types";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
-import { ConfirmPanel } from "./ConfirmPanel";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -84,6 +84,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
   const [showPopUp, setShowPopUp] = useState(false);
   const [nxtMsgType, setNxtMsgType] = useState<NextMsgType | null>(null);
+  const [isReferralClicked, setIsReferralClicked] = useState(false);
+
+  // const isLastMessRef = messages[0]?.content.subType === MessageType.REFERRAL;
 
   const list = useMemo(() => {
     const withSendTranscript =
@@ -97,12 +100,10 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         : menuItems(languages, isMultiLanguage, withFindJob);
 
     if (isReferralEnabled && !!employeeId) {
-      return baseWithRef(languages, isMultiLanguage);
-    }
-    if (isReferralEnabled) {
-      return baseWithRefItems(languages, isMultiLanguage);
-    }
-    return defaultItems;
+      return baseWithRef(languages, isMultiLanguage, isReferralClicked);
+    } else if (isReferralEnabled) {
+      return baseWithRefItems(languages, isMultiLanguage, isReferralClicked);
+    } else return defaultItems;
   }, [
     isReferralEnabled,
     isCandidateWithEmail,
@@ -115,7 +116,12 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     messages,
     withFindJobOption,
     chatConsent,
+    isReferralClicked,
   ]);
+
+  useEffect(() => {
+    employeeId && setIsReferralClicked(true);
+  }, [employeeId]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

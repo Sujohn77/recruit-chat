@@ -12,6 +12,7 @@ export const en = {
     ask_questions: "Ask questions",
     searchJobs: "Search jobs with resume",
     make_referral: "Make a referral",
+    restart_referral: "Restart referral",
     try_again: "Try again",
     refer_friend: "Refer a friend",
   },

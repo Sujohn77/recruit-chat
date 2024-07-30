@@ -3,13 +3,16 @@ import { CHAT_ACTIONS } from "utils/types";
 
 export const baseWithRefItems = (
   languages: string[],
-  isMultiLanguage: boolean
+  isMultiLanguage: boolean,
+  isLastMessRef: boolean
 ) => {
   const base = [
     {
       type: CHAT_ACTIONS.MAKE_REFERRAL,
-      text: i18n.t("buttons:make_referral"),
-      i18n: "buttons:make_referral",
+      text: i18n.t(
+        `buttons:${isLastMessRef ? "restart_referral" : "make_referral"}`
+      ),
+      i18n: `buttons:${isLastMessRef ? "restart_referral" : "make_referral"}`,
     },
     {
       type: CHAT_ACTIONS.ASK_QUESTION,
@@ -32,12 +35,18 @@ export const baseWithRefItems = (
     : base;
 };
 
-export const baseWithRef = (languages: string[], isMultiLanguage: boolean) => {
+export const baseWithRef = (
+  languages: string[],
+  isMultiLanguage: boolean,
+  isLastMessRef: boolean
+) => {
   const base = [
     {
       type: CHAT_ACTIONS.MAKE_REFERRAL,
-      text: i18n.t("buttons:make_referral"),
-      i18n: "buttons:make_referral",
+      text: i18n.t(
+        `buttons:${isLastMessRef ? "restart_referral" : "make_referral"}`
+      ),
+      i18n: `buttons:${isLastMessRef ? "restart_referral" : "make_referral"}`,
     },
     {
       type: CHAT_ACTIONS.SEE_MY_REFERRALS,

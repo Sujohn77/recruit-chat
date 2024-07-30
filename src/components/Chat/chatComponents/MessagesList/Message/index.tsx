@@ -4,7 +4,6 @@ import moment from "moment";
 
 import * as S from "./styles";
 import { MS_1000 } from "utils/constants";
-import { getMessageProps } from "utils/helpers";
 import { MessageType, ILocalMessage } from "utils/types";
 
 import { UploadCV } from "./UploadCV";
@@ -37,7 +36,7 @@ export const Message: FC<IMessageProps> = ({
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
   const isLastMess = messageIndex === 0;
   const defProps = { isLastMess, message };
-  const messageProps = { ...getMessageProps(message) };
+  // const messageProps = { ...getMessageProps(message) };
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
@@ -72,13 +71,6 @@ export const Message: FC<IMessageProps> = ({
     }
     case MessageType.INTERESTED_IN:
       return <InterestedIn {...defProps} />;
-    // case MessageType.TEXT_WITH_CHOICE: {
-    //   return <TextWithOptions message={message} {...messageProps} />;
-    // }
-    // case MessageType.HIRING_PROCESS: {
-    //   // return <HiringHelp message={message} />; // for phase 2
-    //   return null;
-    // }
     case MessageType.NO_MATCH:
     case MessageType.REFINE_SEARCH: {
       return <NoMatchJob />;

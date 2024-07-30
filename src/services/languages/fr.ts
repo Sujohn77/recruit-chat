@@ -12,6 +12,7 @@ export const fr = {
     ask_questions: "Poser des questions",
     searchJobs: "Rechercher des postes avec un CV",
     make_referral: "Faire une recommandation",
+    restart_referral: "Redémarrer la saisine",
     try_again: "Réessayer",
     refer_friend: "Recommander un(e) ami(e)",
   },
