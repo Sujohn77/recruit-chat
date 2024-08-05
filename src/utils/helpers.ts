@@ -88,6 +88,7 @@ export interface IMessageProps {
   padding?: string;
   cursor?: string;
   flexDirection?: CSSProperties["flexDirection"];
+  nextMessFromSameSender?: boolean;
 }
 interface IUserContact {
   isPhoneType: boolean;
@@ -951,7 +952,7 @@ export const createTextMess = ({
   localId = generateLocalId(),
   subType = MessageType.TEXT,
 }: ICreateMessage): ILocalMessage => ({
-  isOwn,
+  isOwn: isOwn || false,
   _id,
   localId,
   content: {

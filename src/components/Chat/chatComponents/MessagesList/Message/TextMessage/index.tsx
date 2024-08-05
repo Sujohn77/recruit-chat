@@ -30,6 +30,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
+  const { messages } = useChatMessenger();
   const theme = useTheme() as DefaultThemeType;
   const {
     companyName: referralCompanyName,
@@ -95,11 +96,15 @@ export const TextMessage: FC<ITextMessageProps> = ({
     }
   }, [currentLanguage, consentOptIn]);
 
+  const messageIndex = messages.findIndex((m) => m.localId === message.localId);
+  const nextMessage: ILocalMessage | undefined = messages?.[messageIndex - 1];
+  const isNextMessFromSameSender =
+    !isLastMess && !!nextMessage?.isOwn === !!message.isOwn;
+
   const isErrorMessage = message.content.isError;
   const messageProps = { ...getMessageProps(message) };
   const subType = message?.content.subType;
   const isFile = subType === MessageType.FILE;
-  // TODO: fix
   const wrongMess = !!message.isOwn && !!message.optionList;
   const isWarningMess = message?.optionList?.status === MessageStatuses.warning;
   const backgroundColor =
@@ -118,7 +123,10 @@ export const TextMessage: FC<ITextMessageProps> = ({
       )}
       <S.MessageBox
         {...messageProps}
-        isWarningMess={isWarningMess || !!message.background}
+        isWarningMess={
+          isWarningMess || !!message.background || isNextMessFromSameSender
+        }
+        nextMessFromSameSender={isNextMessFromSameSender}
         isError={isErrorMessage}
         style={{
           background: message.background || backgroundColor,

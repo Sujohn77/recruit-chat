@@ -45,17 +45,12 @@ export interface ISendTranscript {
   codeVersion?: string;
 }
 
-export enum UserLicenseTypes {
-  Standard = "Standart",
-}
-
 export type AppKeyType = {
   appKey: string;
 };
 
 export interface IUserSelf {
   id: number;
-  userLicenseType: UserLicenseTypes.Standard;
   userLicenseTypeId: 1;
   photoURL?: null | boolean | string;
   photoUrl?: null | boolean | string;

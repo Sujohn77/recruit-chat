@@ -18,6 +18,7 @@ interface IMessageContentProps {
 }
 
 interface IMessageBoxProps extends IMessageProps {
+  nextMessFromSameSender?: boolean;
   border?: string | null;
   isWarningMess?: boolean;
   isError?: boolean;
@@ -39,7 +40,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
   min-height: 41px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   box-sizing: border-box;
   width: fit-content;
@@ -51,7 +52,8 @@ export const MessageBox = styled.div<IMessageBoxProps>`
       : message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  margin-bottom: 24px;
+  margin-bottom: ${({ nextMessFromSameSender }) =>
+    nextMessFromSameSender ? 4 : 24}px;
   background: ${({ isOwn, theme, backgroundColor: backColor }) =>
     backColor || isOwn
       ? theme.primaryColor
@@ -99,7 +101,7 @@ export const Sender = styled.div<ISenderProps>`
 `;
 
 export const Cancel = styled.div<ICancelProps>`
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   border-bottom: 1px solid ${(props) => props.theme.primaryColor};
   color: ${(props) => props.theme.primaryColor};
@@ -113,7 +115,7 @@ export const Cancel = styled.div<ICancelProps>`
 export const MessageButton = styled.div<IMessageProps>`
   position: relative;
   min-height: 41px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   box-sizing: border-box;
   width: fit-content;
@@ -129,7 +131,8 @@ export const MessageButton = styled.div<IMessageProps>`
     theme.buttonPrimaryColor || theme.messageButtonColor};
 
   border-radius: 100px;
-  margin-bottom: 16px !important;
+  margin-bottom: ${({ nextMessFromSameSender }) =>
+    nextMessFromSameSender ? 4 : 16}px !important;
 `;
 
 export const MessageContent = styled.div<IMessageContentProps>`
@@ -177,7 +180,7 @@ export const MessageText = styled.span<IMessageTextProps>`
 
 export const InitialMessage = styled.div`
   color: ${({ theme: { message } }) => message.chat.color};
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   margin-bottom: 32px;
 `;
@@ -209,7 +212,7 @@ export const ActionButton = styled(Button)`
   background: ${(props) => props.theme.primaryColor}!important;
   margin: 1em 0 !important;
   border-radius: 20px !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   padding: 11px 12px !important;
 
   span {

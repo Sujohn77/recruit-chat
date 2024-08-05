@@ -12,10 +12,15 @@ interface IButtonMessageProps {
 }
 
 export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
-  const { chooseButtonOption, chatId, chatQueueId, sendNewMessage } =
+  const { chooseButtonOption, chatId, chatQueueId, sendNewMessage, messages } =
     useChatMessenger();
   const messageText = useGetMessageText(mess);
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
+
+  const messageIndex = messages.findIndex((m) => m.localId === mess.localId);
+  const isLastMess = messageIndex === 0;
+  const nextMessFromSameSender =
+    !isLastMess && !!messages[messageIndex + 1]?.isOwn === !!mess.isOwn;
 
   const onClick = useCallback(() => {
     if (mess?.content.subType === MessageType.BUTTON && mess?.content?.text) {
@@ -34,7 +39,11 @@ export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
   }, [sendNewMessage]);
 
   return (
-    <S.MessageButton onClick={onClick} {...getMessageProps(mess)}>
+    <S.MessageButton
+      onClick={onClick}
+      nextMessFromSameSender={nextMessFromSameSender}
+      {...getMessageProps(mess)}
+    >
       {messageText}
     </S.MessageButton>
   );

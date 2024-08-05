@@ -83,7 +83,7 @@ export interface ILocalMessage {
   _id: number | string | null;
   localId: string | number;
   content: IContent;
-  isOwn?: boolean;
+  isOwn: boolean;
   optionList?: null | IMessageOptions;
   chatItemId?: number;
   background?: string;

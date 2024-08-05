@@ -36,7 +36,6 @@ export const Message: FC<IMessageProps> = ({
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
   const isLastMess = messageIndex === 0;
   const defProps = { isLastMess, message };
-  // const messageProps = { ...getMessageProps(message) };
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:
