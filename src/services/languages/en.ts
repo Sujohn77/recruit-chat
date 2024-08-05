@@ -80,7 +80,7 @@ export const en = {
     where_do_you_want_to_work: "What is your preferred job location?",
     whatCategoryJob: "What's your preferred job category?",
     setJobAlert: "Set Job Alert",
-    interestedCategories: "Which of our job categories are you interested in?",
+    interestedCategories: "Which job category are you interested in?",
     alertPeriod: "How often would you like to receive your job alerts?",
     monthy: "Monthly",
     weekly: "Weekly",
