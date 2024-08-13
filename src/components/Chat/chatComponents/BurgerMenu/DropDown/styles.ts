@@ -35,7 +35,7 @@ export const Option = styled.li`
   }
   padding: 11px 21px 10px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   text-transform: uppercase;
   margin: 0;

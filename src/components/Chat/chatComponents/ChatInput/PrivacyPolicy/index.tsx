@@ -1,8 +1,8 @@
 import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import * as S from "./styles";
 import { useChatMessenger } from "contexts/MessengerContext";
-import { useTranslation } from "react-i18next";
 
 export const PrivacyPolicy: FC = () => {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ export const PrivacyPolicy: FC = () => {
           newTab?.focus();
         }}
       >
-        {t("labels:privacy_policy", { companyName })}
+        <S.Text>{t("labels:privacy_policy", { companyName })}</S.Text>
       </S.Link>
     </S.Wrapper>
   ) : null;

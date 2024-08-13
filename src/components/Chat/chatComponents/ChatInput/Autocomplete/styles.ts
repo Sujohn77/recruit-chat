@@ -10,7 +10,7 @@ export const FormInput = styled(TextField)<{ validationError?: boolean }>`
     border-radius: 10px;
     padding: 10px;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 17px;
     min-height: 38px;
     box-sizing: border-box;

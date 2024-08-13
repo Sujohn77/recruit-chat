@@ -17,3 +17,7 @@ export const Link = styled.span`
   font-size: 10px;
   cursor: pointer;
 `;
+
+export const Text = styled.span`
+  font-size: 12px;
+`;

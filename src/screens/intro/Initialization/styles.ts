@@ -120,7 +120,7 @@ export const Question = styled(MessageBox)<IFrProps>`
 `;
 
 export const Text = styled.span`
-  font-size: 14px;
+  font-size: 12px;
   color: ${(props) => props.theme.initialColor};
 `;
 

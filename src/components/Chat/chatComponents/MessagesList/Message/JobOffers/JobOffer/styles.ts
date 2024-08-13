@@ -7,7 +7,7 @@ export const JobOfferWrapper = styled.div`
   padding: 20px 18px;
   margin: 0 18px;
   box-sizing: border-box;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   min-height: 200px;
   display: flex;

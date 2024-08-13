@@ -67,7 +67,7 @@ export const ViewText = styled.div`
   margin: 0 0px 32px;
   white-space: pre-line;
   line-height: 17px;
-  font-size: 14px;
+  font-size: 12px;
 
   p {
     margin: 0 0 12px;
@@ -92,7 +92,7 @@ export const ViewDescription = styled.div`
   }
   white-space: pre-line;
   line-height: 22px;
-  font-size: 14px;
+  font-size: 12px;
 `;
 
 export const TextHeaderTitle = styled.div`

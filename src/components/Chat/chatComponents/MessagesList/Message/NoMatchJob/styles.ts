@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
 import styled from "styled-components";
+import { Button } from "@mui/material";
 import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
@@ -12,14 +12,6 @@ export const Wrapper = styled.div<{ isRefineOnly?: boolean }>`
   max-width: 306px;
   box-sizing: border-box;
   margin-bottom: 24px;
-`;
-
-export const Title = styled.p`
-  margin: 0 0 24px;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${({ theme: { text } }) => text.color};
-  text-align: center;
 `;
 
 export const Avatar = styled.div`
@@ -52,7 +44,7 @@ export const Text = styled.span`
   overflow: hidden;
   white-space: pre-line;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   color: ${({ theme }) => theme.message?.chat.color};
   margin-bottom: 18px;

@@ -116,24 +116,11 @@ interface IGetSearchJob {
 export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
-  const padding =
-    msg?.content?.subType === MessageType.FILE ? "8px" : "12px 16px";
+  // const padding =  msg?.content?.subType === MessageType.FILE ? "8px" : "8px 10px";
+  const padding = "8px";
   const cursor =
     msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial";
-
-  if (!msg.isOwn) {
-    return {
-      isOwn: !!msg.isOwn,
-      padding,
-      cursor,
-    };
-  } else {
-    return {
-      padding,
-      isOwn: !!msg.isOwn,
-      cursor,
-    };
-  }
+  return { isOwn: !!msg.isOwn, padding, cursor };
 };
 
 export const getActionTypeByOption = (
@@ -390,6 +377,20 @@ const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
     },
   ]);
 
+export const getConsentOpInText = (
+  consentOptIn: IPrivacyPolicy | null,
+  currentLanguage: string
+): string | undefined => {
+  switch (currentLanguage) {
+    case "en":
+      return consentOptIn?.content_en || undefined;
+    case "fr":
+      return consentOptIn?.content_fr || undefined;
+    default:
+      return undefined;
+  }
+};
+
 export const createConsentInMsg = ({
   currentLanguage,
   consentOptIn,
@@ -403,17 +404,7 @@ export const createConsentInMsg = ({
 }): ILocalMessage | null => {
   if (!consentOptIn) return null;
 
-  let consentOptInText = undefined;
-  switch (currentLanguage) {
-    case "en":
-      if (consentOptIn?.content_en) consentOptInText = consentOptIn?.content_en;
-      break;
-    case "fr":
-      if (consentOptIn?.content_fr) consentOptInText = consentOptIn?.content_fr;
-      break;
-    default:
-      break;
-  }
+  const consentOptInText = getConsentOpInText(consentOptIn, currentLanguage);
 
   const consentOptInOptionList: IMessageOptions = {
     isActive: true,
@@ -745,7 +736,7 @@ export const LOG = (
   if (description && log) {
     console.log(
       `%c   ${description}   `,
-      `color: ${color}; font-size: 14px; background-color: ${background};`,
+      `color: ${color}; font-size: 12px; background-color: ${background};`,
       logObj
     );
   } else {
@@ -753,7 +744,7 @@ export const LOG = (
       `%c   ___   `,
       `color: ${
         description?.includes("ERROR") ? COLORS.TORCH_RED : color
-      }; font-size: 14px; background-color: ${background};`,
+      }; font-size: 12px; background-color: ${background};`,
       logObj
     );
   }
@@ -1087,4 +1078,22 @@ export const checkTextInTranslations = async (
   }
 
   return false;
+};
+
+export const getIsNextMsgFromSameSender = ({
+  isLastMess,
+  currentMess,
+  messages,
+}: {
+  isLastMess: boolean;
+  currentMess: ILocalMessage;
+  messages: ILocalMessage[];
+}) => {
+  const messageIndex = messages.findIndex(
+    (m) => m.localId === currentMess.localId
+  );
+  const nextMessage: ILocalMessage | undefined = messages?.[messageIndex - 1];
+  const isNextMessFromSameSender =
+    !isLastMess && !!nextMessage?.isOwn === !!currentMess.isOwn;
+  return isNextMessFromSameSender;
 };

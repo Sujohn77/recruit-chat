@@ -1358,7 +1358,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         switch (currentMsgType) {
           case CHAT_ACTIONS.ASK_QUESTION:
-            askQuestionHandler(setMessageValue, messageValue);
+            askQuestionHandler({ setMessageValue, question: messageValue });
             break;
           default:
             break;

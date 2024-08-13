@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
 
 export const Title = styled.p`
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   color: ${({ theme: { message } }) => message.transcriptForm.color};
   text-align: center;
@@ -28,7 +28,7 @@ export const FormButton = styled(Button)`
   border-radius: 100px !important;
   font-weight: 500 !important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   line-height: 17px !important;
   height: 40px;
   text-transform: initial !important;

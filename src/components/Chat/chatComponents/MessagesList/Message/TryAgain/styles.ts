@@ -23,5 +23,5 @@ export const Wrapper = styled.div<IWrapperProps>`
 export const MessageText = styled.span`
   margin-bottom: 12px;
   color: ${COLORS.NEW_YORK_PINK};
-  font-size: 14px;
+  font-size: 12px;
 `;

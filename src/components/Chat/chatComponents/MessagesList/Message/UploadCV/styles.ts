@@ -22,14 +22,14 @@ export const Button = styled.label`
   text-align: center;
   width: 100%;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   border-radius: 100px;
   font-weight: 500;
 `;
 
 export const Cancel = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   border-bottom: 1px solid ${(props) => props.theme.primaryColor};
   color: ${(props) => props.theme.primaryColor};
@@ -47,7 +47,7 @@ export const FileWrapper = styled.div`
 export const FileName = styled.p`
   margin: 0;
   color: ${({ theme: { message } }) => message.file.color};
-  font-size: 14px;
+  font-size: 12px;
 `;
 
 export const FileError = styled(FileName)``;

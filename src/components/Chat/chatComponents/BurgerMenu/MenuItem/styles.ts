@@ -4,7 +4,7 @@ import { COLORS } from "utils/colors";
 export const MenuItemWrapper = styled.div`
   display: flex;
   padding: 0 6px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   padding: 11px 0;
   cursor: pointer;

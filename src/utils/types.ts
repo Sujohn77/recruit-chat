@@ -53,6 +53,7 @@ export enum MessageType {
   TRY_AGAIN = "try_again",
   REFERRAL = "referral",
   INLINE_DISCLAIMER = "inline_disclaimer_text",
+  QUESTIONS_LIST = "question_list",
 }
 export interface IState {
   option: CHAT_OPTIONS | null;

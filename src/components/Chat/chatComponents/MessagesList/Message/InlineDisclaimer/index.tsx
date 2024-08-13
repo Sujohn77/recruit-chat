@@ -2,10 +2,10 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useMemo } from "react";
 import Linkify from "linkify-react";
 
-import { Link } from "./styles";
+import { Link, Text } from "./styles";
 import * as S from "../styles";
 import { renderSendingTime } from "..";
-import { getMessageProps } from "utils/helpers";
+import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
 import { ILocalMessage } from "utils/types";
 import { useTheme } from "styled-components";
 import { DefaultThemeType } from "utils/theme/default";
@@ -13,12 +13,21 @@ import { useTranslation } from "react-i18next";
 
 interface IInlineDisclaimerProps {
   message: ILocalMessage;
+  isLastMess: boolean;
 }
 
-export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
+export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
+  message,
+  isLastMess,
+}) => {
   const { t } = useTranslation();
-  const { inlineDisclaimer, PPLinkUrl, currentLanguage, companyName } =
-    useChatMessenger();
+  const {
+    inlineDisclaimer,
+    PPLinkUrl,
+    currentLanguage,
+    companyName,
+    messages,
+  } = useChatMessenger();
   const messageProps = { ...getMessageProps(message) };
 
   const theme = useTheme() as DefaultThemeType;
@@ -52,6 +61,12 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
     return text.trim();
   }, [currentLanguage, inlineDisclaimer, PPLinkUrl]);
 
+  const isNextMessFromSameSender = getIsNextMsgFromSameSender({
+    isLastMess,
+    currentMess: message,
+    messages: messages,
+  });
+
   return !!disclaimerText ? (
     <S.Wrapper>
       {message.sender?.firstName && (
@@ -61,6 +76,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
       )}
       <S.MessageBox
         {...messageProps}
+        isWarningMess={isNextMessFromSameSender}
         style={{
           background: message.background || backgroundColor,
           border: message.border,
@@ -70,17 +86,21 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({ message }) => {
           withOptions={!!message?.optionList}
           isOwn={message.isOwn}
         >
-          <span style={{ fontWeight: 600, fontSize: 14 }}>
+          <span style={{ fontWeight: 500, fontSize: 12 }}>
             <Linkify
               options={{
                 render: () => (
-                  <Link target="_blank" href={PPLinkUrl || ""}>
+                  <Link
+                    style={{ fontSize: "12px" }}
+                    target="_blank"
+                    href={PPLinkUrl || ""}
+                  >
                     {t("labels:privacy_policy", { companyName })}
                   </Link>
                 ),
               }}
             >
-              {disclaimerText}
+              <Text style={{ fontWeight: 500 }}>{disclaimerText}</Text>
             </Linkify>
           </span>
 

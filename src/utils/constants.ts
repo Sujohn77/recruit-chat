@@ -244,18 +244,33 @@ export const getChatActionMessages = ({
               text: inlineDisclaimer.content_en,
               isChatMessage: true,
             },
-            {
-              subType: MessageType.TEXT,
-              text: i18n.t("messages:warning"),
-              i18n: "messages:warning",
-              isChatMessage: true,
-            },
+            // {
+            //   subType: MessageType.TEXT,
+            //   text: i18n.t("messages:warning"),
+            //   i18n: "messages:warning",
+            //   isChatMessage: true,
+            // },
           ]
         : defMessage;
     case CHAT_ACTIONS.ASK_QUESTION:
       const defQuestions = withoutDefaultQuestions
         ? []
-        : getQuestions(withReferralFlow, referralCompanyName);
+        : // : getQuestions(withReferralFlow, referralCompanyName);
+          [
+            {
+              text: " ",
+              subType: MessageType.QUESTIONS_LIST,
+              isChatMessage: true,
+              isOwn: false,
+            },
+            {
+              subType: MessageType.TEXT,
+              text: i18n.t("messages:popularQuestions"),
+              i18n: "messages:popularQuestions",
+              isChatMessage: true,
+              isOwn: false,
+            },
+          ];
       return withInlineDisclaimer
         ? [
             ...defQuestions,
@@ -264,12 +279,12 @@ export const getChatActionMessages = ({
               text: inlineDisclaimer.content_en,
               isChatMessage: true,
             },
-            {
-              subType: MessageType.TEXT,
-              text: i18n.t("messages:warning"),
-              i18n: "messages:warning",
-              isChatMessage: true,
-            },
+            // {
+            //   subType: MessageType.TEXT,
+            //   text: i18n.t("messages:warning"),
+            //   i18n: "messages:warning",
+            //   isChatMessage: true,
+            // },
           ]
         : defQuestions;
     case CHAT_ACTIONS.GET_USER_NAME:
@@ -389,12 +404,12 @@ export const getChatActionMessages = ({
                 companyName: referralCompanyName,
               },
             },
-            {
-              subType: MessageType.TEXT,
-              text: i18n.t("messages:warning"),
-              i18n: "messages:warning",
-              isChatMessage: true,
-            },
+            // {
+            //   subType: MessageType.TEXT,
+            //   text: i18n.t("messages:warning"),
+            //   i18n: "messages:warning",
+            //   isChatMessage: true,
+            // },
             {
               subType: MessageType.INLINE_DISCLAIMER,
               text: inlineDisclaimer.content_en,

@@ -30,6 +30,11 @@ import {
 import { createTextMess, generateLocalId, parsePathname } from "utils/helpers";
 import { userAPI } from "services/api/user.api";
 
+interface IAksQuestion {
+  setMessageValue?: (value: string) => void;
+  question?: string | null;
+  i18n?: string;
+}
 export interface ISubmitReferral {
   referralSourceTypeId: number;
   referredCandidate: {
@@ -368,11 +373,7 @@ export const useAksQuestion = () => {
   const [isAlreadyAsked, setIsAlreadyAsked] = useState(false);
 
   const askQuestionHandler = useCallback(
-    async (
-      setMessageValue: (value: string) => void,
-      question?: string | null,
-      i18n?: string
-    ) => {
+    async ({ setMessageValue, i18n, question }: IAksQuestion) => {
       if (!question) return;
       setIsAlreadyAsked(true);
       const questionMess = createTextMess({
@@ -386,7 +387,7 @@ export const useAksQuestion = () => {
         isOwn: true,
         localId: questionMess.localId,
       });
-      setMessageValue("");
+      setMessageValue?.("");
       setMessages((prev) => [questionMess, ...prev]);
 
       try {

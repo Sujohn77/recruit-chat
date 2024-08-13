@@ -22,6 +22,8 @@ interface IMessageBoxProps extends IMessageProps {
   border?: string | null;
   isWarningMess?: boolean;
   isError?: boolean;
+  maxWidth?: number;
+  marginTop?: number;
 }
 
 interface IMessageTextProps {
@@ -39,12 +41,12 @@ interface IWrapperProps {
 export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
-  min-height: 41px;
+  min-height: 33px;
   font-size: 12px;
   line-height: 17px;
   box-sizing: border-box;
   width: fit-content;
-  max-width: 270px;
+  max-width: ${({ maxWidth = 270 }) => maxWidth}px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
   color: ${({ theme: { message, messageTextColor }, isOwn }) =>
     isOwn
@@ -58,6 +60,8 @@ export const MessageBox = styled.div<IMessageBoxProps>`
     backColor || isOwn
       ? theme.primaryColor
       : theme.message.chat.backgroundColor};
+
+  ${({ marginTop }) => marginTop && `margin-top: ${marginTop}px;`}
 
   ${({ border }) => border && `border: ${border};`}
 
@@ -169,6 +173,10 @@ export const MessageContent = styled.div<IMessageContentProps>`
     `}
 `;
 
+export const Text = styled.span`
+  font-size: 12px;
+`;
+
 export const MessageText = styled.span<IMessageTextProps>`
   margin: 0;
   text-overflow: ellipsis;
@@ -197,7 +205,6 @@ export const TimeText = styled.div`
   font-size: 10px;
   line-height: 12px;
   margin-top: auto;
-  margin-left: 8px;
   width: fit-content;
   display: inline-block;
 `;

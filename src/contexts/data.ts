@@ -217,9 +217,6 @@ const newDefaultReferralQuestions = [
   },
 ];
 
-const getReferralMessText = (referralCompanyName: string | null) =>
-  i18n.t("questions:refer_friend", { companyName: referralCompanyName });
-
 export const getQuestions = (
   withReferralFlow: boolean,
   referralCompanyName: string | null
@@ -242,7 +239,5 @@ export const getQuestions = (
 
   if (withReferralFlow) {
     return newDefaultReferralQuestions;
-  }
-
-  return defaultQuestions(referralCompanyName);
+  } else return defaultQuestions(referralCompanyName);
 };

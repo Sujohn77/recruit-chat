@@ -2,25 +2,30 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback } from "react";
 
 import * as S from "../styles";
-import { getMessageProps } from "utils/helpers";
+import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
 import { ButtonsOptions, ILocalMessage, MessageType } from "utils/types";
 import { useGetMessageText } from "utils/hooks";
 import { useConnectToLiveChat } from "contexts/hooks";
 
 interface IButtonMessageProps {
   message: ILocalMessage;
+  isLastMess: boolean;
 }
 
-export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
+export const ButtonMessage: FC<IButtonMessageProps> = ({
+  message: mess,
+  isLastMess,
+}) => {
   const { chooseButtonOption, chatId, chatQueueId, sendNewMessage, messages } =
     useChatMessenger();
   const messageText = useGetMessageText(mess);
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
-  const messageIndex = messages.findIndex((m) => m.localId === mess.localId);
-  const isLastMess = messageIndex === 0;
-  const nextMessFromSameSender =
-    !isLastMess && !!messages[messageIndex + 1]?.isOwn === !!mess.isOwn;
+  const isNextMessFromSameSender = getIsNextMsgFromSameSender({
+    isLastMess,
+    currentMess: mess,
+    messages: messages,
+  });
 
   const onClick = useCallback(() => {
     if (mess?.content.subType === MessageType.BUTTON && mess?.content?.text) {
@@ -41,7 +46,7 @@ export const ButtonMessage: FC<IButtonMessageProps> = ({ message: mess }) => {
   return (
     <S.MessageButton
       onClick={onClick}
-      nextMessFromSameSender={nextMessFromSameSender}
+      nextMessFromSameSender={isNextMessFromSameSender}
       {...getMessageProps(mess)}
     >
       {messageText}

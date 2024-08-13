@@ -33,7 +33,7 @@ export const Title = styled.h3`
 
 export const ViewTitle = styled.h3`
   margin: 0 auto;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   font-weight: 500;
 

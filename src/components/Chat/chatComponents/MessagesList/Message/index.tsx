@@ -19,6 +19,7 @@ import { UploadedFile } from "./UploadedFile";
 import { TryAgain } from "./TryAgain";
 import { MakeReferralMess } from "./MakeReferralMess";
 import { InlineDisclaimer } from "./InlineDisclaimer";
+import { QuestionsList } from "./QuestionsList";
 
 interface IMessageProps {
   message: ILocalMessage;
@@ -42,20 +43,17 @@ export const Message: FC<IMessageProps> = ({
       return <S.InitialMessage>{message?.content?.text}</S.InitialMessage>;
     case MessageType.UPLOAD_CV:
       return <UploadCV />;
-    case MessageType.EMAIL_FORM: {
+    case MessageType.EMAIL_FORM:
       return <EmailForm />;
-    }
-    case MessageType.JOB_POSITIONS: {
+    case MessageType.JOB_POSITIONS:
       return (
         <JobOffers
           isLastMess={isLastMess}
           setSelectedReferralJobId={setSelectedReferralJobId}
         />
       );
-    }
-    case MessageType.TRANSCRIPT: {
+    case MessageType.TRANSCRIPT:
       return <TranscriptSent />;
-    }
     case MessageType.TEXT:
     case MessageType.FILE:
     case MessageType.CHAT_CREATED:
@@ -65,15 +63,13 @@ export const Message: FC<IMessageProps> = ({
           setSelectedReferralJobId={setSelectedReferralJobId}
         />
       );
-    case MessageType.BUTTON: {
+    case MessageType.BUTTON:
       return <ButtonMessage {...defProps} />;
-    }
     case MessageType.INTERESTED_IN:
       return <InterestedIn {...defProps} />;
     case MessageType.NO_MATCH:
-    case MessageType.REFINE_SEARCH: {
+    case MessageType.REFINE_SEARCH:
       return <NoMatchJob />;
-    }
     case MessageType.SUBMIT_FILE:
       return <SearchJob {...defProps} />;
     case MessageType.UPLOADED_CV:
@@ -84,7 +80,8 @@ export const Message: FC<IMessageProps> = ({
       return <MakeReferralMess {...defProps} />;
     case MessageType.INLINE_DISCLAIMER:
       return <InlineDisclaimer {...defProps} />;
-
+    case MessageType.QUESTIONS_LIST:
+      return <QuestionsList {...defProps} />;
     default: {
       return null;
     }

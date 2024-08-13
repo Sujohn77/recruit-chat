@@ -5,4 +5,5 @@ export * from "./Logout";
 export * from "./MessagesList";
 export * from "./PopUp";
 export * from "./ReferralViewJob";
+export * from "./ToggleButton";
 export * from "./ViewJob";

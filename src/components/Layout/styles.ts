@@ -18,7 +18,7 @@ export const StyledButton = styled(ButtonBase)`
   justify-content: center;
   height: 40px;
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   background: ${({ theme }) => theme.buttonPrimaryColor || theme.primaryColor};
 `;
@@ -49,7 +49,7 @@ export const PrimaryButton = styled(StyledButton)`
   height: 40px;
   justify-content: center;
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   /* font-family: Inter-SemiBold; */
   margin: 0 0 16px !important;

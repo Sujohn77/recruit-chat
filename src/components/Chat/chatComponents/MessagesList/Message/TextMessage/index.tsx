@@ -9,7 +9,7 @@ import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
 import { ICONS } from "assets";
-import { getMessageProps } from "utils/helpers";
+import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
 import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
 import { DefaultThemeType } from "utils/theme/default";
@@ -96,10 +96,11 @@ export const TextMessage: FC<ITextMessageProps> = ({
     }
   }, [currentLanguage, consentOptIn]);
 
-  const messageIndex = messages.findIndex((m) => m.localId === message.localId);
-  const nextMessage: ILocalMessage | undefined = messages?.[messageIndex - 1];
-  const isNextMessFromSameSender =
-    !isLastMess && !!nextMessage?.isOwn === !!message.isOwn;
+  const isNextMessFromSameSender = getIsNextMsgFromSameSender({
+    isLastMess,
+    currentMess: message,
+    messages: messages,
+  });
 
   const isErrorMessage = message.content.isError;
   const messageProps = { ...getMessageProps(message) };
@@ -171,7 +172,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
                 ),
               }}
             >
-              {messageText}
+              <S.Text style={{ fontWeight: "500" }}>{messageText}</S.Text>
             </Linkify>
           )}
 
