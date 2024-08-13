@@ -10,7 +10,7 @@ export const ViewBody = styled.div`
   overflow: auto;
   height: 480px;
   box-sizing: border-box;
-  font-weight: 500;
+  font-weight: 400;
   animation: fade-in 0.25s ease-in forwards;
   opacity: 0;
   z-index: 1;

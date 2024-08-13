@@ -59,7 +59,7 @@ export const MessageText = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: pre-line;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 export const ConsentOptionButton = styled(DarkButton)`

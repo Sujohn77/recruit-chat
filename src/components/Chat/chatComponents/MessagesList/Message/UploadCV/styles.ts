@@ -25,7 +25,7 @@ export const Button = styled.label`
   font-size: 12px;
   line-height: 17px;
   border-radius: 100px;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 export const Cancel = styled.div`

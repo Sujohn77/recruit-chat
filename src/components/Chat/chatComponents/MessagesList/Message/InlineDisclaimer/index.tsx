@@ -76,7 +76,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
       )}
       <S.MessageBox
         {...messageProps}
-        isWarningMess={isNextMessFromSameSender}
+        hideSpeechBubble={isNextMessFromSameSender}
         style={{
           background: message.background || backgroundColor,
           border: message.border,
@@ -86,7 +86,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
           withOptions={!!message?.optionList}
           isOwn={message.isOwn}
         >
-          <span style={{ fontWeight: 500, fontSize: 12 }}>
+          <span style={{ fontWeight: 400, fontSize: 12 }}>
             <Linkify
               options={{
                 render: () => (
@@ -100,7 +100,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
                 ),
               }}
             >
-              <Text style={{ fontWeight: 500 }}>{disclaimerText}</Text>
+              <Text style={{ fontWeight: 400 }}>{disclaimerText}</Text>
             </Linkify>
           </span>
 

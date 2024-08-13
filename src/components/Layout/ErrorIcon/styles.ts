@@ -16,5 +16,5 @@ export const Wrapper = styled.div`
 export const ExclamationMark = styled.span`
   color: ${COLORS.WHITE};
   font-size: 16px;
-  font-weight: bolder;
+  font-weight: 700;
 `;

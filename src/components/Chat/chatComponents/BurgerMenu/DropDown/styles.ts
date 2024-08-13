@@ -34,7 +34,7 @@ export const Option = styled.li`
     border-bottom: 1px solid ${COLORS.SILVER_DARK};
   }
   padding: 11px 21px 10px;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 12px;
   line-height: 17px;
   text-transform: uppercase;

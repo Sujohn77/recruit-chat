@@ -43,7 +43,7 @@ export const Text = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: pre-line;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 12px;
   line-height: 17px;
   color: ${({ theme }) => theme.message?.chat.color};

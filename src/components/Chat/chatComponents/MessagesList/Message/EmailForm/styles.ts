@@ -19,14 +19,14 @@ export const Title = styled.p`
   line-height: 17px;
   color: ${({ theme: { message } }) => message.transcriptForm.color};
   text-align: center;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 export const FormButton = styled(Button)`
   background: ${({ theme }) =>
     theme.buttonPrimaryColor || theme.primaryColor}!important;
   border-radius: 100px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
   font-size: 12px !important;
   line-height: 17px !important;

@@ -19,7 +19,7 @@ export const ResumeName = styled.p`
   margin-left: 0.5em;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-weight: 500;
+  font-weight: 400;
   max-width: calc(100% - 60px);
   white-space: nowrap;
   font-size: 12px;

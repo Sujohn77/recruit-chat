@@ -55,13 +55,14 @@ export const QuestionsList: FC<IProps> = ({ isLastMess, message }) => {
 
   return (
     <MessageBox
+      isOwn={false}
       style={{ background: "transparent" }}
       aria-expanded={height !== 0}
       aria-controls={ANIMATION_ID}
       {...messageProps}
       maxWidth={310}
       padding="0px"
-      isWarningMess
+      hideSpeechBubble
       nextMessFromSameSender
       marginTop={6}
     >

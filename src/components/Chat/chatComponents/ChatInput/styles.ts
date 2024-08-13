@@ -61,7 +61,7 @@ export const SearchWrapper = styled.div<{ searchOptionsHeight: number }>`
   top: ${({ searchOptionsHeight }) =>
     -searchOptionsHeight - searchHeaderHeight + "px"};
   color: ${({ theme: { searchResults } }) => searchResults.color};
-  font-weight: 500;
+  font-weight: 400;
   z-index: 1;
 `;
 
