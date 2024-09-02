@@ -40,7 +40,7 @@ export const Question = styled.div<{ isOpen: boolean }>`
   align-items: center;
   cursor: pointer;
   font-weight: 400;
-  padding: 0px 12px;
+  padding: 0px 8px;
   box-sizing: border-box;
   transition: all 0.2s ease-in;
 
