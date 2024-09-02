@@ -47,17 +47,17 @@ export const Logout: FC<ILogoutProps> = ({
       postMessToParent(EventIds.RefreshChatbot);
       localStorage.clear();
       localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
-      localStorage.setItem(hostname + "isClosed", "true");
-      setIsClosed(true);
+
+      if (parentPathname.includes("job")) {
+        // close chatbot and show chatbot icon
+        localStorage.setItem(hostname + "isClosed", "true");
+        localStorage.setItem(hostname + "show_icon", "true");
+        setIsClosed(true);
+        setShowIcon(true);
+      }
     };
 
-    if (parentPathname.includes("job")) {
-      // close chatbot and show chatbot icon
-      localStorage.setItem(hostname + "isClosed", "true");
-      localStorage.setItem(hostname + "show_icon", "true");
-      setIsClosed(true);
-      setShowIcon(true);
-    } else if (candidateId && flowId && subscriberWorkflowId) {
+    if (candidateId && flowId && subscriberWorkflowId) {
       const payload = createSendMessPayload({
         candidateId,
         flowId,

@@ -36,7 +36,6 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
 
   const onSelectOption = useCallback(
     ({ type, screen, i18n, i18nProps }: IScreenOption) => {
-      setIsClosed(false);
       setChatScreen(screen);
       dispatch({
         type,

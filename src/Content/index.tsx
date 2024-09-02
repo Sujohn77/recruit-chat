@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import isNull from "lodash/isNull";
 
@@ -39,6 +39,11 @@ export const Content: FC = () => {
     !!chatScreen &&
     chatScreen !== ChatScreens.Default &&
     !!messages.length;
+
+  const onIconClick = useCallback(() => {
+    setIsClosed(false);
+    setShowIcon(false);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => setShowLoader(false), 1000);
@@ -133,7 +138,7 @@ export const Content: FC = () => {
           {showIcon ? (
             <ImgWrapper>
               <MobileIntroImg
-                onClick={() => setShowIcon(false)}
+                onClick={onIconClick}
                 src={theme?.imageUrl}
                 alt=""
               />
