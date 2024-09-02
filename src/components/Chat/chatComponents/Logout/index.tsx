@@ -19,6 +19,8 @@ interface ILogoutProps {
   showSessionWarning: boolean;
   showLogoutScreen: boolean;
   setShowConfirmLogout: Dispatch<SetStateAction<boolean>>;
+  setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
   onContinueSession: () => void;
 }
 
@@ -27,10 +29,17 @@ export const Logout: FC<ILogoutProps> = ({
   showLogoutScreen,
   setShowConfirmLogout,
   onContinueSession,
+  setIsClosed,
+  setShowIcon,
 }) => {
   const { t } = useTranslation();
-  const { candidateId, hostname, flowId, subscriberWorkflowId } =
-    useChatMessenger();
+  const {
+    candidateId,
+    hostname,
+    flowId,
+    subscriberWorkflowId,
+    parentPathname,
+  } = useChatMessenger();
   const [loading, setLoading] = useState(false);
 
   const logoutHandle = useCallback(async () => {
@@ -38,8 +47,17 @@ export const Logout: FC<ILogoutProps> = ({
       postMessToParent(EventIds.RefreshChatbot);
       localStorage.clear();
       localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+      localStorage.setItem(hostname + "isClosed", "true");
+      setIsClosed(true);
     };
-    if (candidateId && flowId && subscriberWorkflowId) {
+
+    if (parentPathname.includes("job")) {
+      // close chatbot and show chatbot icon
+      localStorage.setItem(hostname + "isClosed", "true");
+      localStorage.setItem(hostname + "show_icon", "true");
+      setIsClosed(true);
+      setShowIcon(true);
+    } else if (candidateId && flowId && subscriberWorkflowId) {
       const payload = createSendMessPayload({
         candidateId,
         flowId,
@@ -69,7 +87,7 @@ export const Logout: FC<ILogoutProps> = ({
       refreshChatbot();
     }
     // -------------------------------------------------------------------------- //
-  }, [candidateId, flowId, subscriberWorkflowId, hostname]);
+  }, [candidateId, flowId, subscriberWorkflowId, hostname, parentPathname]);
 
   return showLogoutScreen ? (
     showSessionWarning ? (

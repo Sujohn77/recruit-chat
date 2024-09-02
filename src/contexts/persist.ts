@@ -14,15 +14,21 @@ type UsePersisStateType = <T>(
   props: IUsePersisState<T>
 ) => [T, Dispatch<SetStateAction<T>>];
 
-export const usePersisState: UsePersisStateType = (props) => {
-  const { initialState, storageKey } = props;
+export const usePersisState: UsePersisStateType = ({
+  initialState,
+  storageKey,
+}) => {
   const [state, setInternalState] = useState(initialState);
 
   useEffect(() => {
     const storageInBrowser = browserStorage.get(storageKey);
 
     if (storageInBrowser) {
-      setInternalState(storageInBrowser);
+      setInternalState(
+        typeof state === "string"
+          ? storageInBrowser
+          : JSON.parse(storageInBrowser)
+      );
     }
   }, []);
 

@@ -118,7 +118,7 @@ export const Cancel = styled.div<ICancelProps>`
 
 export const MessageButton = styled.div<IMessageProps>`
   position: relative;
-  min-height: 41px;
+  min-height: 28px;
   font-size: 12px;
   line-height: 17px;
   box-sizing: border-box;

@@ -24,10 +24,14 @@ import {
 interface IChatProps {
   isShowChat: boolean;
   setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
-  children?: React.ReactNode | React.ReactNode[];
+  setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
+export const Chat: FC<IChatProps> = ({
+  isShowChat,
+  setShowIcon,
+  setIsClosed,
+}) => {
   const {
     isReferralEnabled,
     currentMsgType,
@@ -107,6 +111,8 @@ export const Chat: FC<IChatProps> = ({ isShowChat, setShowIcon }) => {
         onContinueSession={onContinueSession}
         showLogoutScreen={showConfirmLogout}
         setShowConfirmLogout={setShowConfirmLogout}
+        setIsClosed={setIsClosed}
+        setShowIcon={setShowIcon}
       />
 
       {isReferralEnabled ? (

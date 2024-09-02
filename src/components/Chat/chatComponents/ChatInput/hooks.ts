@@ -7,6 +7,8 @@ import { apiInstance } from "services/api";
 import { ICheckAnswerResponse } from "services/types";
 import { createTextMess } from "utils/helpers";
 import { CHAT_ACTIONS, MessageType } from "utils/types";
+import { TextFieldTypes } from "utils/constants";
+import { useTextField } from "utils/hooks";
 
 interface ISetUserDataProps {
   messageValue: string;
@@ -98,4 +100,48 @@ export const useIsDisabledInput = () => {
       currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS);
 
   return disabled;
+};
+
+// TODO: test
+export const useInputPlaceholder = (
+  type: TextFieldTypes,
+  isInputDisabled: boolean,
+  isAlreadyAsked: boolean
+) => {
+  const { t } = useTranslation();
+  const { currentMsgType, messages, companyName } = useChatMessenger();
+  const { placeHolder } = useTextField();
+
+  if (
+    type === TextFieldTypes.Select &&
+    isInputDisabled &&
+    currentMsgType !== CHAT_ACTIONS.SUCCESS_INTERESTED_IN &&
+    currentMsgType !== CHAT_ACTIONS.CREATED_JOB_ALERT
+  ) {
+    return "";
+  } else if (messages[0]?.optionList) {
+    return t("placeHolders:selectOption");
+  }
+
+  switch (currentMsgType) {
+    case CHAT_ACTIONS.ASK_QUESTION:
+      return t(
+        `placeHolders:${isAlreadyAsked ? "aks_another_question" : "default"}`
+      );
+    case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
+      return t("placeHolders:default");
+    case CHAT_ACTIONS.SUCCESS_INTERESTED_IN:
+    case CHAT_ACTIONS.CREATED_JOB_ALERT:
+      return t("placeHolders:click_menu");
+  }
+
+  if (
+    messages?.[0]?.content?.text ===
+    t("messages:employeeId", {
+      companyName,
+    })
+  ) {
+    return t("placeHolders:enter_employee_id");
+  }
+  return placeHolder || t("placeHolders:bot_typing");
 };

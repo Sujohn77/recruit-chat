@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface IWrapperProps {
   isMobile: boolean;
-  isClosed: boolean;
+  isSelectedOption: boolean | null;
 }
 interface IImageProps {
   size?: string;
@@ -24,7 +24,7 @@ export const Wrapper = styled.div<IWrapperProps>`
   bottom: 0;
   right: 0;
 
-  animation: ${({ isClosed }) =>
+  animation: ${({ isSelectedOption: isClosed }) =>
     isClosed && `fadeOut ${animationDuration} ease-in-out`};
   overflow: hidden;
   animation-fill-mode: forwards;
@@ -83,4 +83,16 @@ export const MobileIntroImg = styled.img`
   height: 60px;
   object-fit: fill;
   border-radius: 50%;
+`;
+
+export const ImgWrapper = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

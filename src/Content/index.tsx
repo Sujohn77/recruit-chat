@@ -12,21 +12,35 @@ import {
   REFRESH_TOKEN_TIMEOUT,
   isMobile,
 } from "utils/constants";
-import { postMessToParent } from "utils/helpers";
+import { LOG, postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
-import { MobileIntroImg } from "screens/Intro/styles";
+import { ImgWrapper, MobileIntroImg } from "screens/Intro/styles";
 import { DefaultThemeType } from "utils/theme/default";
+import { usePersisState } from "contexts/persist";
 
 export const Content: FC = () => {
-  const { setIsApplyJobFlow, chatScreen, messages } = useChatMessenger();
+  const { setIsApplyJobFlow, chatScreen, messages, hostname } =
+    useChatMessenger();
   const firstTime = useRef<Date>(new Date());
   const theme = useTheme() as DefaultThemeType;
 
   const [showLoader, setShowLoader] = useState(true);
-  const [showIcon, setShowIcon] = useState(isMobile);
+  const [showIcon, setShowIcon] = usePersisState<boolean>({
+    initialState: isMobile,
+    storageKey: hostname + "show_icon",
+  });
+  const [isClosed, setIsClosed] = usePersisState<boolean>({
+    initialState: false,
+    storageKey: hostname + "isClosed",
+  });
+
+  LOG(isClosed, "isClosed");
 
   const isSelectedOption =
-    !!chatScreen && chatScreen !== ChatScreens.Default && !!messages.length;
+    !isClosed &&
+    !!chatScreen &&
+    chatScreen !== ChatScreens.Default &&
+    !!messages.length;
 
   useEffect(() => {
     setTimeout(() => setShowLoader(false), 1000);
@@ -119,32 +133,27 @@ export const Content: FC = () => {
       ) : (
         <>
           {showIcon ? (
-            // TODO: refactor
-            <div
-              style={{
-                position: "absolute",
-                right: "20px",
-                bottom: "20px",
-                cursor: "pointer",
-                width: "70px",
-                height: "70px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <ImgWrapper>
               <MobileIntroImg
                 onClick={() => setShowIcon(false)}
                 src={theme?.imageUrl}
                 alt=""
               />
-            </div>
+            </ImgWrapper>
           ) : (
             <>
               {isSelectedOption && (
-                <Chat isShowChat={isSelectedOption} setShowIcon={setShowIcon} />
+                <Chat
+                  isShowChat={isSelectedOption}
+                  setShowIcon={setShowIcon}
+                  setIsClosed={setIsClosed}
+                />
               )}
-              <Intro isSelectedOption={isSelectedOption} />
+              <Intro
+                isClosed={isClosed}
+                isSelectedOption={isSelectedOption}
+                setIsClosed={setIsClosed}
+              />
             </>
           )}
         </>

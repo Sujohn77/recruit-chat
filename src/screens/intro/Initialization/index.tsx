@@ -10,7 +10,12 @@ import { DefaultThemeType } from "utils/theme/default";
 import { IScreenOption } from "utils/types";
 import { useSearchJobFromParentSite } from "contexts/hooks";
 
-export const Initialization: FC = () => {
+interface IProps {
+  isClosed: boolean;
+  setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
   const { t } = useTranslation();
   const theme = useTheme() as DefaultThemeType;
   const {
@@ -24,13 +29,14 @@ export const Initialization: FC = () => {
   const searchJob = useSearchJobFromParentSite();
 
   useEffect(() => {
-    if (parentPathname.includes("job")) {
+    if (parentPathname.includes("job") && !isClosed) {
       searchJob();
     }
-  }, [parentPathname]);
+  }, [parentPathname, isClosed]);
 
   const onSelectOption = useCallback(
     ({ type, screen, i18n, i18nProps }: IScreenOption) => {
+      setIsClosed(false);
       setChatScreen(screen);
       dispatch({
         type,

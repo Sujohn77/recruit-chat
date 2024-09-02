@@ -11,7 +11,6 @@ import {
   IPrivacyPolicy,
   MessageType,
 } from "./types";
-import { getQuestions } from "contexts/data";
 
 export const isMobile = !!new MobileDetect(navigator.userAgent).mobile();
 

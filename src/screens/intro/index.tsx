@@ -6,10 +6,16 @@ import { isMobile } from "utils/constants";
 
 interface IIntroScreenProps {
   isSelectedOption: boolean | null;
+  isClosed: boolean;
+  setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Intro: FC<IIntroScreenProps> = ({ isSelectedOption }) => (
-  <S.Wrapper isClosed={!!isSelectedOption} isMobile={isMobile}>
-    <Initialization />
+export const Intro: FC<IIntroScreenProps> = ({
+  isSelectedOption,
+  setIsClosed,
+  isClosed,
+}) => (
+  <S.Wrapper isSelectedOption={isSelectedOption} isMobile={isMobile}>
+    <Initialization isClosed={isClosed} setIsClosed={setIsClosed} />
   </S.Wrapper>
 );
