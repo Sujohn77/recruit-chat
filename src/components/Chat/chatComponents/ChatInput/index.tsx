@@ -44,7 +44,6 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
-  LOG,
   parsePathname,
   validateEmail,
   validateEmailOrPhone,
@@ -67,7 +66,7 @@ import {
   IUpdateOrMergeCandidateResponse,
 } from "services/types";
 import { PrivacyPolicy } from "./PrivacyPolicy";
-import { useCheckAnswer, useSetUserData } from "./hooks";
+import { useCheckAnswer, useIsDisabledInput } from "./hooks";
 
 interface IChatInputProps {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
@@ -105,7 +104,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     emailAddress,
     createJobAlert,
     clearJobFilters,
-    isChatInputAvailable,
     setEmployeeId,
     companyName: referralCompanyName,
     setRefBirth,
@@ -148,9 +146,9 @@ export const ChatInput: FC<IChatInputProps> = ({
   const onSubmitReferral = useSubmitReferral();
   const isTabActive = useIsTabActive();
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
-  const setUserData = useSetUserData();
   const checkAnswer = useCheckAnswer();
   const { askQuestionHandler, isAlreadyAsked } = useAksQuestion();
+  const isInputDisabled = useIsDisabledInput();
 
   // ---------------------- State --------------------- //
   const { searchItems, placeHolder, headerName, subHeaderName } =
@@ -1377,14 +1375,10 @@ export const ChatInput: FC<IChatInputProps> = ({
     setError("");
   }, [employeeId]);
 
-  const isLastMessageWithOptions =
-    !!messages?.[0]?.optionList && !!messages?.[0]?.optionList.options.length;
-  const disabled = !isChatInputAvailable || isLastMessageWithOptions;
-
   const getPlaceholder = (): string => {
     if (
       inputType === TextFieldTypes.Select &&
-      disabled &&
+      isInputDisabled &&
       currentMsgType !== CHAT_ACTIONS.SUCCESS_INTERESTED_IN &&
       currentMsgType !== CHAT_ACTIONS.CREATED_JOB_ALERT
     ) {
@@ -1450,28 +1444,18 @@ export const ChatInput: FC<IChatInputProps> = ({
         {inputType === TextFieldTypes.MultiSelect ? (
           <MultiSelectInput
             {...inputProps}
+            disabled={isInputDisabled}
             values={inputValues}
             onChange={onChangeMultiselect}
-            disabled={
-              disabled ||
-              (isChatLoading &&
-                currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
-                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS)
-            }
           />
         ) : (
           <Autocomplete
             {...inputProps}
+            disabled={isInputDisabled}
             sendMessage={sendMessage}
             phoneValue={phone}
             setPhoneValue={setPhone}
             onChange={onChangeCategory}
-            disabled={
-              disabled ||
-              (isChatLoading &&
-                currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
-                currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS)
-            }
             errorText={refError}
             isPhoneNumberMode={referralStep === ReferralSteps.UserMobileNumber}
           />

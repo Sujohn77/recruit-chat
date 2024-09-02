@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { apiInstance } from "services/api";
 import { ICheckAnswerResponse } from "services/types";
 import { createTextMess } from "utils/helpers";
+import { CHAT_ACTIONS, MessageType } from "utils/types";
 
 interface ISetUserDataProps {
   messageValue: string;
@@ -59,8 +60,8 @@ export const useSetUserData = (): ((
   );
 };
 
-export const useCheckAnswer = () => {
-  return useCallback(
+export const useCheckAnswer = () =>
+  useCallback(
     async (
       messageValue: string,
       isAcceptedApplyJob: boolean
@@ -80,4 +81,21 @@ export const useCheckAnswer = () => {
     },
     []
   );
+
+export const useIsDisabledInput = () => {
+  const { currentMsgType, isChatLoading, messages, isChatInputAvailable } =
+    useChatMessenger();
+
+  const isLastMessageWithOptions =
+    (!!messages?.[0]?.optionList &&
+      !!messages?.[0]?.optionList.options.length) ||
+    messages?.[0].content.subType === MessageType.TRY_AGAIN;
+  const disabled =
+    !isChatInputAvailable ||
+    isLastMessageWithOptions ||
+    (isChatLoading &&
+      currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
+      currentMsgType !== CHAT_ACTIONS.SET_LOCATIONS);
+
+  return disabled;
 };
