@@ -6,6 +6,7 @@ import { COLORS } from "utils/colors";
 
 export const HeightWrapper = styled(AnimateHeight)`
   background: ${COLORS.ALABASTER}88;
+  margin-top: 10px;
 `;
 
 export const ButtonsWrapper = styled.div`

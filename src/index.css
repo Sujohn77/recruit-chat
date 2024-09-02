@@ -19,33 +19,6 @@ input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
-/* @font-face {
-  font-family: "Inter";
-  src: local("Inter-Regular"),
-    url(./assets/fonts/Inter-Regular.woff2) format("woff2");
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "Inter-Bold";
-  src: local("Inter-Bold"), url(./assets/fonts/Inter-Bold.woff2) format("woff2");
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Inter-SemiBold";
-  src: local("Inter-SemiBold"),
-    url(./assets/fonts/Inter-SemiBold.woff2) format("woff2");
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "Inter-Medium";
-  src: local("Inter-Medium"),
-    url(./assets/fonts/Inter-Medium.woff2) format("woff2");
-  font-weight: 500;
-} */
-
 .MuiButton-root {
   text-transform: none !important;
 }

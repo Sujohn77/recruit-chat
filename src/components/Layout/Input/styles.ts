@@ -57,7 +57,7 @@ export const ErrorText = styled.span`
   left: 2px;
   top: 20px;
   width: 300px;
-  font-size: 16px;
+  font-size: 14px;
   color: ${COLORS.PERSIAN_RED};
   display: flex;
   align-items: center;

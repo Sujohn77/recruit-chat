@@ -62,7 +62,7 @@ export const QuestionsList: FC<IProps> = ({ isLastMess, message }) => {
       {...messageProps}
       maxWidth={310}
       padding="0px"
-      hideSpeechBubble
+      isWarningMess
       nextMessFromSameSender
       marginTop={6}
     >

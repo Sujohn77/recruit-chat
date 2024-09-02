@@ -115,6 +115,14 @@ export const TextMessage: FC<ITextMessageProps> = ({
       ? theme.primaryColor
       : theme.message.chat.backgroundColor;
 
+  const checkIsWarningMess = () => {
+    if (message.content.text === t("messages:popularQuestions")) {
+      return false;
+    } else {
+      return isWarningMess || !!message.background || isNextMessFromSameSender;
+    }
+  };
+
   return wrongMess ? null : (
     <S.Wrapper position="relative">
       {message.sender?.firstName && (
@@ -124,9 +132,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
       )}
       <S.MessageBox
         {...messageProps}
-        isWarningMess={
-          isWarningMess || !!message.background || isNextMessFromSameSender
-        }
+        isWarningMess={checkIsWarningMess()}
         nextMessFromSameSender={isNextMessFromSameSender}
         isError={isErrorMessage}
         style={{
@@ -172,7 +178,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
                 ),
               }}
             >
-              <S.Text style={{ fontWeight: "500" }}>{messageText}</S.Text>
+              <S.Text style={{ fontWeight: "400" }}>{messageText}</S.Text>
             </Linkify>
           )}
 

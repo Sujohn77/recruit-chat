@@ -55,7 +55,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
-    nextMessFromSameSender ? 4 : 24}px;
+    nextMessFromSameSender ? 4 : 18}px;
   background: ${({ isOwn, theme, backgroundColor: backColor }) =>
     backColor || isOwn
       ? theme.primaryColor
@@ -183,7 +183,7 @@ export const MessageText = styled.span<IMessageTextProps>`
   overflow: hidden;
   ${({ withMaxWidth = true }) => withMaxWidth && "max-width: 218px;"}
   white-space: pre-line;
-  font-weight: ${({ fontWeight = 500 }) => fontWeight};
+  font-weight: ${({ fontWeight = 400 }) => fontWeight};
 `;
 
 export const InitialMessage = styled.div`

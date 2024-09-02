@@ -76,10 +76,6 @@ export const Content: FC = () => {
         }, REFRESH_TOKEN_TIMEOUT);
       } else if (resultInMinutes > 28) {
         // if token exp.
-        // console.log(
-        //   "%c token expired -> refresh token + add interval for refresh token",
-        //   "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;"
-        // );
         postMessToParent(EventIds.RefreshToken);
         interval = setInterval(() => {
           postMessToParent(EventIds.RefreshToken);

@@ -62,7 +62,7 @@ export const Message = styled.div<IFrProps>`
   padding: 11px ${({ isFrench }) => (isFrench ? 10 : 16)}px;
   white-space: nowrap;
   overflow: hidden;
-  font-size: calc(8px + 1vmin);
+  font-size: 12px;
   margin: 0 0 ${({ isFrench }) => (isFrench ? 0 : 10)}px;
   text-align: center;
   cursor: pointer;

@@ -76,10 +76,11 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
       )}
       <S.MessageBox
         {...messageProps}
-        hideSpeechBubble={isNextMessFromSameSender}
+        isWarningMess={isNextMessFromSameSender}
         style={{
           background: message.background || backgroundColor,
           border: message.border,
+          marginBottom: "4px",
         }}
       >
         <S.MessageContent
