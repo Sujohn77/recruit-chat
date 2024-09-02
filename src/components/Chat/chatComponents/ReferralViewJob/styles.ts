@@ -8,7 +8,7 @@ export const ViewBody = styled.div`
   background: ${COLORS.WHITE};
   padding: 0 16px 38px;
   overflow: auto;
-  height: 480px;
+  height: 100%;
   box-sizing: border-box;
   font-weight: 400;
   animation: fade-in 0.25s ease-in forwards;
@@ -75,7 +75,6 @@ export const ViewText = styled.div`
 `;
 
 export const ViewDescription = styled.div`
-  margin: 0 0 32px;
   p {
     margin: 0 0px 32px;
   }
@@ -90,6 +89,14 @@ export const ViewDescription = styled.div`
       margin: 0 0 8px;
     }
   }
+  i {
+    &:first-child {
+      padding-bottom: 50px;
+    }
+  }
+
+  margin: 0 0 33px;
+  padding-bottom: 33px;
   white-space: pre-line;
   line-height: 22px;
   font-size: 12px;

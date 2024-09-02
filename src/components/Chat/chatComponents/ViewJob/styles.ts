@@ -11,7 +11,7 @@ export const ViewBody = styled.div`
   background: ${COLORS.WHITE};
   padding: 0 16px 38px;
   overflow: auto;
-  height: 480px;
+  height: 100%;
   box-sizing: border-box;
   font-weight: 400;
   animation: fade-in 0.25s ease-in forwards;

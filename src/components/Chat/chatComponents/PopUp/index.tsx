@@ -4,9 +4,9 @@ export const PopUp = styled.div`
   position: absolute;
   top: 60px;
   background: rgb(255, 255, 255, 0.85);
-  padding: 0 16px 38px;
+  padding: 0 16px 48px;
   overflow: auto;
-  height: 480px;
+  height: 95%;
   box-sizing: border-box;
   font-weight: 400;
   animation: fade-in 0.25s ease-in forwards;

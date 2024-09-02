@@ -28,7 +28,7 @@ export const LoaderWrapper = styled.div`
 `;
 
 export const Description = styled.p`
-  height: 130px;
+  height: 127px;
   overflow: hidden;
   margin: 0;
   opacity: 0.4;
