@@ -595,10 +595,10 @@ const ChatProvider = ({
       const payload = createSendMessPayload({
         ...props,
         isLiveChat,
-        candidateId,
         queueId,
         flowId,
         subscriberWorkflowId,
+        candidateId: props.newCandidateId || candidateId,
         directionId: props.isOwn ? 1 : 2,
         localId: props.localId,
       });

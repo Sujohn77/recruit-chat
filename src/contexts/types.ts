@@ -258,11 +258,12 @@ export interface IEmailLogin {
 
 export interface ISendNewMessage {
   isOwn: boolean;
+  localId: string | number | null;
+  newCandidateId?: number;
   message?: string;
   optionId?: number;
   chatItemId?: number;
   isLiveChat?: boolean;
-  localId: string | number | null;
 }
 
 export interface IPPKeys {

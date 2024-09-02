@@ -72,7 +72,7 @@ export const useValidateReferral = () => {
   return useCallback(
     async (
       data: IReferralData,
-      onSuccess: (fullName?: string) => void,
+      onSuccess: (fullName?: string, newCandidateId?: number) => void,
       onFailure: () => void
     ) => {
       if (candidateId && chatId) {
@@ -104,6 +104,7 @@ export const useValidateReferral = () => {
               setCandidateId(candidateId);
               // setIsCandidateAnonym(false);
             }
+
             employeeLocationCity && setEmployeeLocation(employeeLocationCity);
             employeeJobTitle && setEmployeeJobCategory(employeeJobTitle);
             employeeFullName && setEmployeeFullName(employeeFullName);
@@ -113,7 +114,12 @@ export const useValidateReferral = () => {
           }
 
           if (res?.data?.isValid) {
-            onSuccess(res.data.employeeFullName);
+            onSuccess(
+              res.data.employeeFullName,
+              res.data.candidateId && res.data.updateChatBotCandidateId
+                ? res.data.candidateId
+                : undefined
+            );
           }
 
           if (

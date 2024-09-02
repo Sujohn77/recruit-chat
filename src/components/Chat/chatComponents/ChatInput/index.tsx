@@ -523,17 +523,20 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         break;
       case ReferralSteps.ReferralBirth:
-        const onSuccessCallback = (employeeFullName: string) => {
+        const onSuccessCallback = (
+          employeeFullName: string,
+          newCandidateId?: number
+        ) => {
           const resMess = getValidationRefResponse(
             employeeJobCategory,
             employeeFullName || refLastName,
             true
           );
-
           sendNewMessage({
             isOwn: false,
             message: resMess.content.text,
             localId: resMess.localId,
+            newCandidateId: newCandidateId,
           });
           setMessages((prevMessages) => [resMess, ...prevMessages]);
 
