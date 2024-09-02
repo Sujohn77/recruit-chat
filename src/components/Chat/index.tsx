@@ -96,10 +96,7 @@ export const Chat: FC<IChatProps> = ({
         setShowLoginScreen={setShowLoginScreen}
         setShowIcon={setShowIcon}
       />
-      <MessagesList
-        resultsHeight={height}
-        setSelectedReferralJobId={setSelectedReferralJobId}
-      />
+      <MessagesList setSelectedReferralJobId={setSelectedReferralJobId} />
 
       {/* -------------------------- PopUp's -------------------------- */}
       <Login

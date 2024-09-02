@@ -7,20 +7,17 @@ import * as S from "./styles";
 import { Message } from "./Message";
 import { infiniteScrollStyle } from "./styles";
 import { InfiniteScrollView } from "components";
-import { isMobile } from "utils/constants";
 import { Loader } from "components/Layout/Loader";
 
 const MESSAGE_SCROLL_LIST_DIV_ID = "message-scroll-list";
 
 interface IMessagesListProps {
-  resultsHeight: number;
   setSelectedReferralJobId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
 }
 
 export const MessagesList: FC<IMessagesListProps> = ({
-  resultsHeight,
   setSelectedReferralJobId,
 }) => {
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -55,11 +52,7 @@ export const MessagesList: FC<IMessagesListProps> = ({
 
   return (
     <S.MessagesArea withPPLink={!!footerPrivacyLink?.enabled}>
-      <S.MessageListContainer
-        ref={messagesRef}
-        id={MESSAGE_SCROLL_LIST_DIV_ID}
-        isLoading={showLoader}
-      >
+      <S.MessageListContainer ref={messagesRef} id={MESSAGE_SCROLL_LIST_DIV_ID}>
         <InfiniteScrollView
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}
           onLoadMore={() => {}}

@@ -20,7 +20,7 @@ export const MessagesArea = styled.div<IMessagesAreaProps>`
   position: relative;
 `;
 
-export const MessageListContainer = styled.div<{ isLoading: boolean }>`
+export const MessageListContainer = styled.div`
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ export const MessageListContainer = styled.div<{ isLoading: boolean }>`
   flex-direction: column-reverse;
   padding: 16px;
   transition: all 0.2s ease-in-out;
-  padding-bottom: ${({ isLoading }) => (isLoading ? 26 : 16)}px;
+  padding-bottom: 22px;
 
   .infinite-scroll-component {
     overflow: hidden !important;
