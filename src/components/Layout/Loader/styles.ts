@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 interface IWrapperProps {
   absolutePosition?: boolean;
+  margin?: string;
 }
 
 export const Wrapper = styled.div<IWrapperProps>`
@@ -14,6 +15,7 @@ export const Wrapper = styled.div<IWrapperProps>`
     `position: absolute;
     bottom: 10px;
     left: 16px;`}
+  ${({ margin }) => margin && `margin: ${margin};`}
 `;
 
 export const Dot = styled.span`

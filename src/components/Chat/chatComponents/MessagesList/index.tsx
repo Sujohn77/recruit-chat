@@ -56,12 +56,9 @@ export const MessagesList: FC<IMessagesListProps> = ({
   return (
     <S.MessagesArea withPPLink={!!footerPrivacyLink?.enabled}>
       <S.MessageListContainer
-        resultsHeight={
-          !!footerPrivacyLink?.enabled ? resultsHeight + 30 : resultsHeight
-        }
-        id={MESSAGE_SCROLL_LIST_DIV_ID}
         ref={messagesRef}
-        isMobile={isMobile}
+        id={MESSAGE_SCROLL_LIST_DIV_ID}
+        isLoading={showLoader}
       >
         <InfiniteScrollView
           scrollableParentId={MESSAGE_SCROLL_LIST_DIV_ID}

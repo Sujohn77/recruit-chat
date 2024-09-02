@@ -12,7 +12,7 @@ import {
   REFRESH_TOKEN_TIMEOUT,
   isMobile,
 } from "utils/constants";
-import { LOG, postMessToParent } from "utils/helpers";
+import { postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
 import { ImgWrapper, MobileIntroImg } from "screens/Intro/styles";
 import { DefaultThemeType } from "utils/theme/default";
@@ -33,8 +33,6 @@ export const Content: FC = () => {
     initialState: false,
     storageKey: hostname + "isClosed",
   });
-
-  LOG(isClosed, "isClosed");
 
   const isSelectedOption =
     !isClosed &&
