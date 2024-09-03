@@ -1,5 +1,6 @@
 import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
+import browserStorage from "store";
 
 import * as S from "./styles";
 import { SessionWarning } from "./SessionWarning";
@@ -50,8 +51,8 @@ export const Logout: FC<ILogoutProps> = ({
 
       if (parentPathname.includes("job")) {
         // close chatbot and show chatbot icon
-        localStorage.setItem(hostname + "isClosed", "true");
-        localStorage.setItem(hostname + "show_icon", "true");
+        browserStorage.set(hostname + "isClosed", true);
+        browserStorage.set(hostname + "show_icon", true);
         setIsClosed(true);
         setShowIcon(true);
       }

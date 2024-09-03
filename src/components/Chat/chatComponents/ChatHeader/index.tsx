@@ -40,7 +40,7 @@ export const ChatHeader: FC<IChatHeaderProps> = ({
 
   const onCloseChat = useCallback(() => setShowConfirmLogout(true), []);
 
-  const onMinimizeChatbot = useCallback(() => setShowIcon((prev) => !prev), []);
+  const onMinimizeChatbot = useCallback(() => setShowIcon(true), []);
 
   return (
     <S.ChatHeaderWrapper>

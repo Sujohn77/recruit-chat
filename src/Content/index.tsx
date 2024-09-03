@@ -12,11 +12,11 @@ import {
   REFRESH_TOKEN_TIMEOUT,
   isMobile,
 } from "utils/constants";
-import { postMessToParent } from "utils/helpers";
 import { Loader } from "components/Layout";
+import { postMessToParent } from "utils/helpers";
+import { usePersisState } from "contexts/persist";
 import { ImgWrapper, MobileIntroImg } from "screens/Intro/styles";
 import { DefaultThemeType } from "utils/theme/default";
-import { usePersisState } from "contexts/persist";
 
 export const Content: FC = () => {
   const { setIsApplyJobFlow, chatScreen, messages, hostname } =
