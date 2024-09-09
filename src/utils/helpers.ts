@@ -693,7 +693,7 @@ export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
   borderWidth: theme.chatbot_border_thickness,
   borderColor: theme.chatbot_border_colour,
   headerColor: theme.chatbot_header_colour,
-  messageButtonColor: theme.chatbot_bubble_colour,
+  messageBubbleColor: theme.chatbot_bubble_colour,
   buttonSecondaryColor: theme.chat_button_secondary_colour,
   searchResultsColor: theme.chat_search_results_colour,
   chatbotName: theme.chatbot_name,

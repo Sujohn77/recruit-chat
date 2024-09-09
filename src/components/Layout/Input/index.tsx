@@ -1,6 +1,5 @@
 import {
   ChangeEvent,
-  FC,
   useState,
   Dispatch,
   SetStateAction,
@@ -33,7 +32,7 @@ interface IInputProps {
   disabled?: boolean;
 }
 
-export const DefaultInput: FC<IInputProps> = forwardRef(
+export const DefaultInput = forwardRef<HTMLInputElement, IInputProps>(
   (
     {
       value,

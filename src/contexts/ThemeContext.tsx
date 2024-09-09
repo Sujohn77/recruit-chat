@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 
 import { parseThemeResponse } from "utils/helpers";
-import defaultTheme from "utils/theme/default";
+import defaultTheme, { DefaultThemeType } from "utils/theme/default";
 import { IApiThemeResponse, IParsedTheme } from "utils/types";
 
 interface IThemeContextProviderProps {
@@ -14,13 +14,16 @@ const ThemeContextProvider = ({
   value,
   children,
 }: IThemeContextProviderProps) => {
-  const [apiTheme, setApiTheme] = useState<IParsedTheme>({});
+  const [theme, setTheme] = useState<DefaultThemeType>({
+    ...defaultTheme,
+  });
 
   useEffect(() => {
-    !!value && setApiTheme(parseThemeResponse(value));
+    if (!!value) {
+      const parsedTheme = parseThemeResponse(value);
+      setTheme((prevTheme) => ({ ...prevTheme, ...parsedTheme }));
+    }
   }, [value]);
-
-  const theme: typeof defaultTheme = { ...defaultTheme, ...apiTheme };
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

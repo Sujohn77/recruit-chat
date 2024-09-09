@@ -333,7 +333,7 @@ export interface IParsedTheme {
   borderWidth?: string;
   borderColor?: string;
   headerColor?: string;
-  messageButtonColor?: string;
+  messageBubbleColor?: string;
   buttonSecondaryColor?: string;
   searchResultsColor?: string;
   chatbotName?: string;
