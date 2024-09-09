@@ -62,7 +62,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
       return (
         <S.MessageText>
           {content?.text?.substring(0, index)}
-          <S.MessageText fontWeight={700}>{jobOffer?.title}</S.MessageText>
+          <S.MessageText>{jobOffer?.title}</S.MessageText>
           {content?.text?.substring(index + jobOffer?.title.length)}
         </S.MessageText>
       );
@@ -83,7 +83,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
       return (
         <S.MessageText withMaxWidth={withMaxTextWidth}>
           {text.substring(0, index)}
-          <S.MessageText fontWeight={700}>{referralCompanyName}</S.MessageText>
+          <S.MessageText>{referralCompanyName}</S.MessageText>
           {text.substring(index + referralCompanyName.length)}
         </S.MessageText>
       );

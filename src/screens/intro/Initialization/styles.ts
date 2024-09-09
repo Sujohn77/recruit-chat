@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { MessageBox } from "components/Chat/ChatComponents/MessagesList/Message/styles";
 
 interface IFrProps {
-  isFrench: boolean;
+  isFrench?: boolean;
 }
 
 interface IImgProps {

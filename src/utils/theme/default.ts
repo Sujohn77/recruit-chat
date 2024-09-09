@@ -6,7 +6,6 @@ const defaultTheme = {
   secondaryColor: COLORS.ALTO,
   imageUrl: null || "",
   headerColor: COLORS.ALTO,
-  messageButtonColor: COLORS.ALTO,
   buttonSecondaryColor: COLORS.GRAY_2,
   searchResultsColor: COLORS.SILVER,
   borderStyle: "solid",

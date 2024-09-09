@@ -71,7 +71,9 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
         <S.InfoContent>
           <S.Header>
             <S.IntroImage isFrench src={theme?.imageUrl} size="34px" alt="" />
-            <S.Question isFrench={isFr}>{welcomeMessage}</S.Question>
+            <S.Question isInitMess isFrench={isFr}>
+              {welcomeMessage}
+            </S.Question>
           </S.Header>
           <S.Options isFrench>
             {map(list, (opt, index) => (
@@ -90,7 +92,7 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
         <>
           <S.IntroImage src={theme?.imageUrl} size="34px" alt="" />
           <S.InfoContent>
-            <S.Question isFrench={isFr}>{welcomeMessage}</S.Question>
+            <S.Question isInitMess>{welcomeMessage}</S.Question>
 
             <S.Options isFrench={false}>
               {map(list, (opt, index) => (

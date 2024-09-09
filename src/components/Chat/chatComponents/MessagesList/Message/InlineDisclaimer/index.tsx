@@ -91,11 +91,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
             <Linkify
               options={{
                 render: () => (
-                  <Link
-                    style={{ fontSize: "12px" }}
-                    target="_blank"
-                    href={PPLinkUrl || ""}
-                  >
+                  <Link target="_blank" href={PPLinkUrl || ""}>
                     {t("labels:privacy_policy", { companyName })}
                   </Link>
                 ),

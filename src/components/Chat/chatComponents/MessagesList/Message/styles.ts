@@ -24,6 +24,7 @@ interface IMessageBoxProps extends IMessageProps {
   isError?: boolean;
   maxWidth?: number;
   marginTop?: number;
+  isInitMess?: boolean;
 }
 
 interface IMessageTextProps {
@@ -65,8 +66,16 @@ export const MessageBox = styled.div<IMessageBoxProps>`
 
   ${({ border }) => border && `border: ${border};`}
 
-  ${({ isOwn = false, theme, backgroundColor, isWarningMess, isError }) =>
+  ${({
+    theme,
+    backgroundColor,
+    isWarningMess,
+    isError,
+    isOwn = false,
+    isInitMess = false,
+  }) =>
     !isWarningMess &&
+    !isInitMess &&
     `&:after {
       content: '';
       width: 0; 
@@ -132,7 +141,7 @@ export const MessageButton = styled.div<IMessageProps>`
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   background: ${({ theme }) =>
-    theme.buttonPrimaryColor || theme.messageButtonColor};
+    theme.messageButtonColor || theme.buttonPrimaryColor};
 
   border-radius: 100px;
   margin-bottom: ${({ nextMessFromSameSender }) =>
