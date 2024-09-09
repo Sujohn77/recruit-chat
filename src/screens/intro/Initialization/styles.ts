@@ -63,7 +63,6 @@ export const Message = styled.div<IFrProps>`
   white-space: nowrap;
   overflow: hidden;
   font-size: 12px;
-  margin: 0 0 ${({ isFrench }) => (isFrench ? 0 : 10)}px;
   text-align: center;
   cursor: pointer;
   display: flex;
@@ -91,17 +90,21 @@ export const Message = styled.div<IFrProps>`
 `;
 
 export const Question = styled(MessageBox)<IFrProps>`
+  display: flex;
+  align-items: center;
   min-width: 225px;
   padding: 5px 16px;
   line-height: 19px;
   border: none;
-  font-weight: 400;
+  font-weight: 500;
   box-sizing: border-box;
-  margin-bottom: 12px;
   animation: fade 0.3s ease-in;
   overflow: hidden;
   color: ${({ theme }) => theme.startMessColor}!important;
   background: ${({ theme }) => theme.startMessBackground}!important;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  min-height: 38px;
 
   ${({ isFrench }) => isFrench && "max-width: 292px;"}
 
@@ -145,7 +148,6 @@ export const Options = styled(Flex)<IFrProps>`
   width: fit-content;
   gap: 8px;
   animation: fade 0.4s ease-in;
-  margin: ${({ isFrench = false }) => (isFrench ? 10 : 22)}px 0 0;
 `;
 
 export const InfoContent = styled.div`
