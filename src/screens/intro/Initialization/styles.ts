@@ -92,11 +92,10 @@ export const Message = styled.div<IFrProps>`
 
 export const Question = styled(MessageBox)<IFrProps>`
   min-width: 225px;
-  padding: ${({ isFrench }) => (isFrench ? 7 : 0)}px 16px;
-  line-height: ${({ isFrench }) => (isFrench ? 20 : 41)}px;
+  padding: 5px 16px;
+  line-height: 19px;
   border: none;
-  font-weight: 500;
-  height: ${({ isFrench }) => (isFrench ? 56 : 41)}px;
+  font-weight: 400;
   box-sizing: border-box;
   margin-bottom: 12px;
   animation: fade 0.3s ease-in;
