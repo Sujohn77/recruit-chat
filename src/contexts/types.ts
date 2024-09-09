@@ -170,6 +170,7 @@ export interface IChatMessengerContext extends IPPKeys {
   parentPathname: string;
   isJobSearchLocationMultiSelect: boolean;
   chatbotHeigh: string;
+  welcomeMessage?: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

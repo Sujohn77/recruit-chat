@@ -32,11 +32,8 @@ import {
 } from "utils/types";
 import {
   IAskAQuestionResponse,
-  ICreateCandidateResponse,
-  ICreateChatResponse,
   IFollowingResponse,
   IMessage,
-  ISendTranscriptResponse,
   ISnapshot,
   IUpdateOrMergeCandidateRequest,
   IUpdateOrMergeCandidateResponse,
@@ -45,7 +42,6 @@ import {
 import {
   ChatScreens,
   getChatActionResponse,
-  isDevMode,
   isPushMessageType,
   LocalStorage,
   REFERRAL_OFFER_TEXT,
@@ -87,7 +83,6 @@ import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { chatMessengerDefaultState, getQuestions } from "./data";
-import { COLORS } from "utils/colors";
 
 interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
@@ -108,6 +103,7 @@ interface IChatProviderProps extends IPPKeys {
   parentPathname: string;
   isJobSearchLocationMultiSelect: boolean;
   chatbotHeigh: string;
+  welcomeMessage?: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -115,7 +111,7 @@ const ChatContext = createContext<IChatMessengerContext>(
 );
 
 const ChatProvider = ({
-  chatBotId = "17",
+  chatBotId,
   children,
   companyName,
   isReferralEnabled,
@@ -137,6 +133,7 @@ const ChatProvider = ({
   parentPathname,
   isJobSearchLocationMultiSelect,
   chatbotHeigh,
+  welcomeMessage,
 }: IChatProviderProps) => {
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
@@ -1496,6 +1493,7 @@ const ChatProvider = ({
     parentPathname,
     isJobSearchLocationMultiSelect,
     chatbotHeigh,
+    welcomeMessage,
   };
 
   return (

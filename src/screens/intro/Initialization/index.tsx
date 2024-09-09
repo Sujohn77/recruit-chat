@@ -25,6 +25,7 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
     currentLanguage,
     withFindJobOption,
     parentPathname,
+    welcomeMessage,
   } = useChatMessenger();
   const searchJob = useSearchJobFromParentSite();
 
@@ -48,15 +49,15 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
   );
 
   const isFr = currentLanguage === "fr";
-  const question = t(
-    `messages:${
-      isReferralEnabled
-        ? "refInitialMessage"
-        : withFindJobOption
-        ? "initialMessage"
-        : "initialMessage2"
-    }`
-  );
+  // const question = t(
+  //   `messages:${
+  //     isReferralEnabled
+  //       ? "refInitialMessage"
+  //       : withFindJobOption
+  //       ? "initialMessage"
+  //       : "initialMessage2"
+  //   }`
+  // );
 
   const list = isReferralEnabled
     ? optionWithReferral
@@ -70,7 +71,7 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
         <S.InfoContent>
           <S.Header>
             <S.IntroImage isFrench src={theme?.imageUrl} size="34px" alt="" />
-            <S.Question isFrench={isFr}>{question}</S.Question>
+            <S.Question isFrench={isFr}>{welcomeMessage}</S.Question>
           </S.Header>
           <S.Options isFrench>
             {map(list, (opt, index) => (
@@ -89,7 +90,7 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
         <>
           <S.IntroImage src={theme?.imageUrl} size="34px" alt="" />
           <S.InfoContent>
-            <S.Question isFrench={isFr}>{question}</S.Question>
+            <S.Question isFrench={isFr}>{welcomeMessage}</S.Question>
 
             <S.Options isFrench={false}>
               {map(list, (opt, index) => (

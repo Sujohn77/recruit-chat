@@ -40,6 +40,7 @@ export const COLORS = {
   HAWKES_BLUE: "#f0f6fe",
   ONAHAU: "#c8e8ff",
   FAIR_PINK: "#FFEAEA",
+  MALIBU: "#6BB2F7",
 };
 
 // a way to sort COLORS object keys alphabetically

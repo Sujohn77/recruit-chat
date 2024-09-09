@@ -69,11 +69,10 @@ export const Message = styled.div<IFrProps>`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: ${({ theme: { message } }) =>
-    message.chat.backgroundColor}!important;
+  background: ${({ theme }) => theme.startBtnBackground}!important;
 
   span {
-    color: ${({ theme }) => theme?.message.initialColor}!important;
+    color: ${({ theme }) => theme.startBtnColor}!important;
   }
   animation: opacity 0.3s ease-in;
 
@@ -96,13 +95,14 @@ export const Question = styled(MessageBox)<IFrProps>`
   padding: ${({ isFrench }) => (isFrench ? 7 : 0)}px 16px;
   line-height: ${({ isFrench }) => (isFrench ? 20 : 41)}px;
   border: none;
-  color: ${({ theme: { message } }) => message.chat.color};
   font-weight: 500;
   height: ${({ isFrench }) => (isFrench ? 56 : 41)}px;
   box-sizing: border-box;
   margin-bottom: 12px;
   animation: fade 0.3s ease-in;
   overflow: hidden;
+  color: ${({ theme }) => theme.startMessColor}!important;
+  background: ${({ theme }) => theme.startMessBackground}!important;
 
   ${({ isFrench }) => isFrench && "max-width: 292px;"}
 

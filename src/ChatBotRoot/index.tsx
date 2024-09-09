@@ -39,8 +39,10 @@ export interface IParentMessage {
     inlineDisclaimer?: string;
     privacyPolicyLinkInnerText?: string;
     privacyPolicyLinkUrl?: string;
+    // --------------
     jobsearchEnabled?: BooleanInString;
     jobSearchLocationMultiSelect?: BooleanInString;
+    welcomeMessage?: string;
   };
   companyName?: string;
   referralListDomain?: string;
@@ -70,6 +72,7 @@ export const ChatBotRoot: FC = () => {
     useState(false);
   const [parentPathname, setParenPathname] = useState("/");
   const [chatbotHeigh, setChatbotHeight] = useState("600px");
+  const [welcomeMessage, setWelcomeMessage] = useState("Hi!");
 
   // PP
   const [consentOptIn, setConsentOptIn] = useState<IPrivacyPolicy | null>(null);
@@ -115,8 +118,10 @@ export const ChatBotRoot: FC = () => {
           privacyPolicyLinkUrl,
           jobsearchEnabled,
           jobSearchLocationMultiSelect,
+          welcomeMessage,
         } = props;
 
+        welcomeMessage && setWelcomeMessage(welcomeMessage);
         setWithFindJobOption(jobsearchEnabled === "true");
         setJobSearchLocationMultiSelect(
           jobSearchLocationMultiSelect === "true"
@@ -221,6 +226,7 @@ export const ChatBotRoot: FC = () => {
           chatBotId={chatBotID}
           isJobSearchLocationMultiSelect={isJobSearchLocationMultiSelect}
           chatbotHeigh={chatbotHeigh}
+          welcomeMessage={welcomeMessage}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>
