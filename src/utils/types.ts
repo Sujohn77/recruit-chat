@@ -303,18 +303,18 @@ export interface IJobAlertData {
 
 export interface IApiThemeResponse {
   client_primary_colour: string;
-  client_secondary_color: string;
-  chatbot_border_color: string;
+  client_secondary_colour: string;
+  chatbot_border_colour: string;
   chatbot_border_thickness: string;
   chatbot_border_style: string;
   chatbot_logo_URL: string;
-  chatbot_header_color: string;
-  chatbot_bubble_color: string;
-  chat_button_secondary_color: string;
-  chat_search_results_color: string;
+  chatbot_header_colour: string;
+  chatbot_bubble_colour: string;
+  chat_button_secondary_colour: string;
+  chat_search_results_colour: string;
   chatbot_name: string;
   chatbot_header_text_colour: string;
-  chatbot_bubble_text_color?: string;
+  chatbot_bubble_text_colour?: string;
   chat_button_primary_colour?: string;
   chatbot_bubble_link_colour?: string;
   chatbot_bubble_link_color?: string;
