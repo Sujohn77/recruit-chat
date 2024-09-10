@@ -49,21 +49,15 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   width: fit-content;
   max-width: ${({ maxWidth = 270 }) => maxWidth}px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
-  color: ${({
-    theme: { message, messageTextColor, userMessageTextColor },
-    isOwn,
-  }) =>
-    isOwn
-      ? (isValidColor(userMessageTextColor) && userMessageTextColor) ||
-        message?.own.color
-      : (isValidColor(messageTextColor) && messageTextColor) ||
-        message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
     nextMessFromSameSender ? 4 : 18}px;
-  background: ${({ isOwn, theme, backgroundColor: backColor }) =>
-    backColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
+
+  background: ${({ isOwn, theme, backgroundColor }) =>
+    backgroundColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
+  color: ${({ theme, isOwn }) =>
+    isOwn ? theme.userMessageTextColor : theme.messageTextColor};
 
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop}px;`}
   ${({ border }) => border && `border: ${border};`}
@@ -153,7 +147,7 @@ export const MessageContent = styled.div<IMessageContentProps>`
     isError
       ? COLORS.NEW_YORK_PINK
       : isOwn
-      ? (isValidColor(color) && color) || theme.messageTextColor
+      ? (isValidColor(color) && color) || theme.userMessageTextColor
       : theme.messageTextColor};
 
   ${({ isFile, theme }) =>
@@ -192,7 +186,7 @@ export const MessageText = styled.span<IMessageTextProps>`
 `;
 
 export const InitialMessage = styled.div`
-  color: ${({ theme: { message } }) => message.chat.color};
+  color: ${({ theme }) => theme.messageTextColor};
   font-size: 12px;
   line-height: 17px;
   margin-bottom: 32px;
@@ -211,7 +205,6 @@ export const TimeText = styled.div`
 export const MessageItem = styled(InfoItem)``;
 
 export const ActionButton = styled(Button)`
-  color: ${({ theme: { button } }) => button.secondaryColor};
   width: fit-content;
   align-self: flex-start;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;

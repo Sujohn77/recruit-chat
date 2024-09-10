@@ -69,7 +69,6 @@ import { PrivacyPolicy } from "./PrivacyPolicy";
 import { useCheckAnswer, useIsDisabledInput } from "./hooks";
 
 interface IChatInputProps {
-  setHeight: React.Dispatch<React.SetStateAction<number>>;
   setSelectedReferralJobId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -79,7 +78,6 @@ interface IChatInputProps {
 const INPUT_KEY = "input-value";
 
 export const ChatInput: FC<IChatInputProps> = ({
-  setHeight,
   setSelectedReferralJobId,
   selectedReferralJobId,
 }) => {

@@ -49,7 +49,8 @@ export interface IParentMessage {
   clientApiToken?: string;
   hostname?: string;
   pathname?: string;
-  chatbotHeight?: string;
+  chatbotMaxHeight?: string;
+  parentHeight?: string;
 }
 
 export const ChatBotRoot: FC = () => {
@@ -71,7 +72,8 @@ export const ChatBotRoot: FC = () => {
   const [isJobSearchLocationMultiSelect, setJobSearchLocationMultiSelect] =
     useState(false);
   const [parentPathname, setParenPathname] = useState("/");
-  const [chatbotHeigh, setChatbotHeight] = useState("600px");
+  const [chatbotMaxHeigh, setChatbotMaxHeight] = useState("600px");
+  const [chatbotParentHeigh, setParentHeight] = useState<string | undefined>();
   const [welcomeMessage, setWelcomeMessage] = useState("Hi!");
 
   // PP
@@ -93,11 +95,21 @@ export const ChatBotRoot: FC = () => {
   useEffect(() => {
     const onMessage = ({ data }: MessageEvent<IParentMessage>) => {
       LOG(data, "data", COLORS.BLACK, COLORS.WHITE);
-      const { props, style, hostname, token, guid, pathname, chatbotHeight } =
-        data;
+      LOG(data.parentHeight, "parentHeight", COLORS.WHITE, COLORS.BLACK);
+      const {
+        props,
+        style,
+        hostname,
+        token,
+        guid,
+        pathname,
+        chatbotMaxHeight,
+        parentHeight,
+      } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);
-      chatbotHeight && setChatbotHeight(chatbotHeight);
+      chatbotMaxHeight && setChatbotMaxHeight(chatbotMaxHeight);
+      parentHeight && setParentHeight(parentHeight);
 
       if (props) {
         const {
@@ -225,8 +237,9 @@ export const ChatBotRoot: FC = () => {
           parentPathname={parentPathname}
           chatBotId={chatBotID}
           isJobSearchLocationMultiSelect={isJobSearchLocationMultiSelect}
-          chatbotHeigh={chatbotHeigh}
+          chatbotMaxHeigh={chatbotMaxHeigh}
           welcomeMessage={welcomeMessage}
+          chatbotParentHeigh={chatbotParentHeigh}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

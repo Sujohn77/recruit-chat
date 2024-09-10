@@ -1,5 +1,5 @@
 import { useChatMessenger } from "./MessengerContext";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ApiResponse } from "apisauce";
 import { useTranslation } from "react-i18next";
 import isNumber from "lodash/isNumber";
@@ -27,7 +27,12 @@ import {
   IReferralData,
   MessageType,
 } from "utils/types";
-import { createTextMess, generateLocalId, parsePathname } from "utils/helpers";
+import {
+  createTextMess,
+  generateLocalId,
+  LOG,
+  parsePathname,
+} from "utils/helpers";
 import { userAPI } from "services/api/user.api";
 
 interface IAksQuestion {
@@ -474,4 +479,22 @@ export const useAksQuestion = () => {
   );
 
   return { askQuestionHandler, isAlreadyAsked };
+};
+
+export const useChatbotHeight = () => {
+  const { chatbotParentHeigh, chatbotMaxHeigh } = useChatMessenger();
+
+  const chatbotHeight = useMemo(() => {
+    const heightNumber = parseInt(chatbotMaxHeigh, 10);
+    const newHeightNumber =
+      chatbotParentHeigh && parseInt(chatbotParentHeigh, 10);
+
+    if (newHeightNumber && newHeightNumber <= heightNumber) {
+      return `${newHeightNumber - 20}px`;
+    } else {
+      return chatbotMaxHeigh;
+    }
+  }, [chatbotParentHeigh, chatbotMaxHeigh]);
+
+  return chatbotHeight;
 };

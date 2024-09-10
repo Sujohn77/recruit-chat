@@ -35,9 +35,8 @@ export const Chat: FC<IChatProps> = ({
 }) => {
   const { isReferralEnabled, currentMsgType, messages, chatScreen } =
     useChatMessenger();
-
   const chatbotHeight = useChatbotHeight();
-  const [height, setHeight] = useState(480);
+
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showSessionWarning, setShowSessionWarning] = useState(false);
@@ -116,7 +115,6 @@ export const Chat: FC<IChatProps> = ({
       )}
       {/* ------------------------------------------------------------- */}
       <ChatInput
-        setHeight={setHeight}
         selectedReferralJobId={selectedReferralJobId}
         setSelectedReferralJobId={setSelectedReferralJobId}
       />

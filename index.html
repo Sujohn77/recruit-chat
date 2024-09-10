@@ -11,10 +11,11 @@
   const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
   const logStyle =
     "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;";
-  const iframeID = "chat-iframe";
-  const loaderID = "_chat-bot-loader";
-  const loaderStyleId = "loader_style_id";
-  let chatbotHeight = "777px";
+  const IFRAME_ID = "chat-iframe";
+  const LOADER_ID = "_chat-bot-loader";
+  const LOADER_STYLE_ID = "loader_style_id";
+  const MINI_HEIGH = "135px";
+  const chatbotMaxHeight = "777px";
 
   const eventIds = {
     REFRESH_TOKEN: "refresh_token",
@@ -32,6 +33,7 @@
   let chatBotReferralListDomain;
   let chatBotClientApiToken;
   let chatBotIsMobile = false;
+  let resizeTimeout;
 
   function appendChatBot(
     style,
@@ -50,7 +52,7 @@
 
     const ifrm = document.createElement("iframe");
     ifrm.setAttribute("src", chatbotSrc);
-    ifrm.setAttribute("id", iframeID);
+    ifrm.setAttribute("id", IFRAME_ID);
     ifrm.setAttribute("width", "370px");
     ifrm.setAttribute(
       "sandbox",
@@ -69,6 +71,8 @@
 
     if (showChatbot) {
       document.body?.appendChild(ifrm);
+
+      const currentHeight = window.innerHeight + "px";
       ifrm.addEventListener("load", () => {
         ifrm.contentWindow.postMessage(
           {
@@ -81,10 +85,14 @@
             clientApiToken,
             hostname: window.location.hostname,
             pathname: window.location.pathname,
-            chatbotHeight,
+            chatbotMaxHeight: chatbotMaxHeight,
+            parentHeight: currentHeight,
           },
           ifrm.src
         );
+
+        // Add resize listener after iframe is loaded
+        window.addEventListener("resize", onResize);
       });
     }
 
@@ -157,7 +165,7 @@
   function onMessage(event) {
     // console.log("%cEVENT", logStyle, event);
     if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-      const chatbotIframe = document.getElementById(iframeID);
+      const chatbotIframe = document.getElementById(IFRAME_ID);
 
       switch (event.data.event_id) {
         case eventIds.REFRESH_TOKEN:
@@ -165,7 +173,7 @@
             .then((data) => {
               if (data && chatbotIframe) {
                 chatbotIframe?.contentWindow?.postMessage(
-                  { token: data, chatbotHeight },
+                  { token: data, chatbotMaxHeight: chatbotMaxHeight },
                   chatbotSrc
                 );
               }
@@ -184,8 +192,8 @@
             chatbotIframe.style.height = event.data.isSelectedOption
               ? chatBotIsMobile || isMobView
                 ? window.innerHeight + "px"
-                : chatbotHeight
-              : "135px";
+                : chatbotMaxHeight
+              : MINI_HEIGH;
           }
           break;
         case eventIds.GET_CHATBOT_DATA:
@@ -201,7 +209,7 @@
               clientApiToken: chatBotClientApiToken,
               hostname: window.location.hostname,
               pathname: window.location.pathname,
-              chatbotHeight,
+              chatbotMaxHeight: chatbotMaxHeight,
             },
             chatbotSrc
           );
@@ -228,6 +236,24 @@
           break;
       }
     }
+  }
+
+  // Function to handle viewport resize
+  function onResize() {
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
+    resizeTimeout = setTimeout(() => {
+      const currentHeight = window.innerHeight + "px";
+      const chatbotIframe = document.getElementById(IFRAME_ID);
+
+      if (chatbotIframe) {
+        chatbotIframe.contentWindow.postMessage(
+          { event_id: eventIds.IFRAME_HEIGHT, parentHeight: currentHeight },
+          chatbotSrc
+        );
+      }
+    }, 200); // Delay to avoid rapid firing of resize events
   }
 
   function strToArray(str) {

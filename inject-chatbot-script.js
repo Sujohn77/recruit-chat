@@ -3,12 +3,14 @@
 // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
 // const chatbotSrc = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`; // zustand
 const guid = "f466faec-ea83-4122-8c23-458ab21e96be"; // qa guid
-const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com";
+const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com"; // TODO: replace with your chatbotSrc
 
 const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
 const logStyle =
   "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;";
-const iframeID = "chat-iframe";
+const IFRAME_ID = "chat-iframe";
+const MINI_HEIGH = "135px";
+const chatbotMaxHeight = "777px";
 
 const eventIds = {
   REFRESH_TOKEN: "refresh_token",
@@ -16,6 +18,7 @@ const eventIds = {
   IFRAME_HEIGHT: "iframe_height",
   GET_CHATBOT_DATA: "get_chatbot_data",
   IS_MOBILE: "is_mobile",
+  CHATBOT_VERSION: "chatbot_version",
 };
 // ---------------------------------------------------------------------- //
 let chatBotToken;
@@ -25,6 +28,7 @@ let chatBotCompanyName;
 let chatBotReferralListDomain;
 let chatBotClientApiToken;
 let chatBotIsMobile = false;
+let resizeTimeout;
 
 function appendChatBot(
   style,
@@ -43,7 +47,7 @@ function appendChatBot(
 
   const ifrm = document.createElement("iframe");
   ifrm.setAttribute("src", chatbotSrc);
-  ifrm.setAttribute("id", iframeID);
+  ifrm.setAttribute("id", IFRAME_ID);
   ifrm.setAttribute("width", "370px");
   ifrm.setAttribute(
     "sandbox",
@@ -58,12 +62,12 @@ function appendChatBot(
   );
   ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
 
-  const currentPage = window.location.pathname;
-  const availablePages = strToArray(props?.pages);
-  const showChatbot = availablePages?.some((p) => p === currentPage);
+  const showChatbot = isChatbotAvailable(props?.pages);
 
   if (showChatbot) {
     document.body?.appendChild(ifrm);
+
+    const currentHeight = window.innerHeight + "px";
     ifrm.addEventListener("load", () => {
       ifrm.contentWindow.postMessage(
         {
@@ -75,9 +79,15 @@ function appendChatBot(
           referralListDomain,
           clientApiToken,
           hostname: window.location.hostname,
+          pathname: window.location.pathname,
+          chatbotMaxHeight: chatbotMaxHeight,
+          parentHeight: currentHeight,
         },
         ifrm.src
       );
+
+      // Add resize listener after iframe is loaded
+      window.addEventListener("resize", onResize);
     });
   }
 
@@ -132,12 +142,12 @@ async function getChatBotStyle(token) {
       refreshToken(getChatBotStyle);
     } else {
       appendChatBot(
-        data.style,
+        data?.style,
         token,
-        data.props,
-        data.props?.companyName,
-        data.props?.referralListDomain,
-        data.props?.clientApiToken
+        data?.props,
+        data?.props?.companyName,
+        data?.props?.referralListDomain,
+        data?.props?.clientApiToken
       );
     }
   } catch (error) {
@@ -150,15 +160,15 @@ refreshToken(getChatBotStyle);
 function onMessage(event) {
   // console.log("%cEVENT", logStyle, event);
   if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
-    const chatbotIframe = document.getElementById(iframeID);
+    const chatbotIframe = document.getElementById(IFRAME_ID);
 
     switch (event.data.event_id) {
       case eventIds.REFRESH_TOKEN:
-        refreshToken(event.data.callback)
+        refreshToken(event?.data?.callback)
           .then((data) => {
             if (data && chatbotIframe) {
-              chatbotIframe.contentWindow.postMessage(
-                { token: data },
+              chatbotIframe?.contentWindow?.postMessage(
+                { token: data, chatbotMaxHeight: chatbotMaxHeight },
                 chatbotSrc
               );
             }
@@ -177,8 +187,8 @@ function onMessage(event) {
           chatbotIframe.style.height = event.data.isSelectedOption
             ? chatBotIsMobile || isMobView
               ? window.innerHeight + "px"
-              : "601px"
-            : "135px";
+              : chatbotMaxHeight
+            : MINI_HEIGH;
         }
         break;
       case eventIds.GET_CHATBOT_DATA:
@@ -193,6 +203,8 @@ function onMessage(event) {
             referralListDomain: chatBotReferralListDomain,
             clientApiToken: chatBotClientApiToken,
             hostname: window.location.hostname,
+            pathname: window.location.pathname,
+            chatbotMaxHeight: chatbotMaxHeight,
           },
           chatbotSrc
         );
@@ -209,21 +221,73 @@ function onMessage(event) {
           chatBotIsMobile = false;
         }
         break;
-
+      case eventIds.CHATBOT_VERSION:
+        window.__chatbot = {
+          CODE_VERSION: event.data.payload.CODE_VERSION,
+          type: event.data.payload.ENV_TYPE,
+        };
+        break;
       default:
         break;
     }
   }
 }
 
+// Function to handle viewport resize
+function onResize() {
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout);
+  }
+  resizeTimeout = setTimeout(() => {
+    const currentHeight = window.innerHeight + "px";
+    const chatbotIframe = document.getElementById(IFRAME_ID);
+    if (chatbotIframe) {
+      chatbotIframe.contentWindow.postMessage(
+        { event_id: eventIds.IFRAME_HEIGHT, parentHeight: currentHeight },
+        chatbotSrc
+      );
+    }
+  }, 200); // Delay to avoid rapid firing of resize events
+}
+
 function strToArray(str) {
-  if (!str.trim()) return [];
+  if (!str?.trim()) return [];
   return str
     ?.replace(/"/g, "")
     ?.replace("{", "")
     ?.replace("}", "")
     ?.split(", ")
     ?.map((p) => (p[0] === "/" ? p : "/" + p));
+}
+
+function isChatbotAvailable(pages) {
+  if (!pages) return false;
+
+  const pathname = window.location.pathname;
+  const availablePages = strToArray(pages);
+
+  if (pathname.length === 1) {
+    return availablePages?.some((p) => pathname === p);
+  } else {
+    return availablePages?.some((p) => p !== "/" && pathname.includes(p));
+  }
+}
+
+function LOG(logObj, description, color = "#3B96F0", background = "#90ee90") {
+  if (description) {
+    console.log(
+      `%c   ${description}   `,
+      `color: ${color}; font-size: 12px; background-color: ${background};`,
+      logObj
+    );
+  } else {
+    console.log(
+      `%c   ___   `,
+      `color: ${color}; font-size: 12px; background-color: ${background};`,
+      logObj
+    );
+  }
+  console.log("_____________________________________________________________");
 }
 
 if (window.addEventListener) {
