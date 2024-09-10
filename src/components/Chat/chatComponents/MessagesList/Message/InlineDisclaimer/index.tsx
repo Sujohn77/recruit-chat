@@ -28,12 +28,12 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     companyName,
     messages,
   } = useChatMessenger();
-  const messageProps = { ...getMessageProps(message) };
+  const msgProps = { ...getMessageProps(message) };
 
   const theme = useTheme() as DefaultThemeType;
-  const backgroundColor = messageProps.isOwn
-    ? theme.primaryColor
-    : theme.message.chat.backgroundColor;
+  const backgroundColor = msgProps.isOwn
+    ? theme.userMessageBubbleColor
+    : theme.messageBubbleColor;
 
   const disclaimerText = useMemo<string>(() => {
     let text = "";
@@ -75,7 +75,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
         </S.Sender>
       )}
       <S.MessageBox
-        {...messageProps}
+        {...msgProps}
         isWarningMess={isNextMessFromSameSender}
         style={{
           background: message.background || backgroundColor,

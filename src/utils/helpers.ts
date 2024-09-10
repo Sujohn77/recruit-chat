@@ -115,13 +115,11 @@ interface IGetSearchJob {
 
 export const generateLocalId = (): string => randomString({ length: 32 });
 
-export const getMessageProps = (msg: ILocalMessage): IMessageProps => {
-  // const padding =  msg?.content?.subType === MessageType.FILE ? "8px" : "8px 10px";
-  const padding = "8px";
-  const cursor =
-    msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial";
-  return { isOwn: !!msg.isOwn, padding, cursor };
-};
+export const getMessageProps = (msg: ILocalMessage): IMessageProps => ({
+  isOwn: !!msg.isOwn,
+  padding: "8px",
+  cursor: msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial",
+});
 
 export const getActionTypeByOption = (
   excludeItem: ButtonsOptions | null | string,
@@ -707,6 +705,8 @@ export const parseThemeResponse = (theme: IApiThemeResponse): IParsedTheme => ({
   startMessColor: theme.start_ui_welcome_message_text_colour,
   startBtnBackground: theme.start_ui_button_message_colour,
   startBtnColor: theme.start_ui_button_message_text_colour,
+  userMessageBubbleColor: theme.chatbot_user_bubble_colour,
+  userMessageTextColor: theme.chatbot_user_bubble_text_colour,
 });
 
 export const getStorageValue = (

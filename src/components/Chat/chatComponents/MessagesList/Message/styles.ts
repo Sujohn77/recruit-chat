@@ -49,23 +49,24 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   width: fit-content;
   max-width: ${({ maxWidth = 270 }) => maxWidth}px;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
-  color: ${({ theme: { message, messageTextColor }, isOwn }) =>
+  color: ${({
+    theme: { message, messageTextColor, userMessageTextColor },
+    isOwn,
+  }) =>
     isOwn
-      ? (isValidColor(messageTextColor) && COLORS.WHITE) || message?.own.color
-      : message?.chat.color};
+      ? (isValidColor(userMessageTextColor) && userMessageTextColor) ||
+        message?.own.color
+      : (isValidColor(messageTextColor) && messageTextColor) ||
+        message?.chat.color};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
     nextMessFromSameSender ? 4 : 18}px;
   background: ${({ isOwn, theme, backgroundColor: backColor }) =>
-    backColor || isOwn
-      ? theme.primaryColor
-      : theme.message.chat.backgroundColor};
+    backColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
 
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop}px;`}
-
   ${({ border }) => border && `border: ${border};`}
-
   ${({
     theme,
     backgroundColor,
@@ -89,7 +90,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
           ? COLORS.PIPPIN
           : backgroundColor || isOwn
           ? theme.primaryColor
-          : theme.message.chat.backgroundColor
+          : theme.messageBubbleColor
       } transparent transparent transparent;
       position: absolute;
       bottom: -12px;
@@ -133,16 +134,11 @@ export const MessageButton = styled.div<IMessageProps>`
   box-sizing: border-box;
   width: fit-content;
   margin-left: ${({ isOwn = false }) => (isOwn ? "auto" : "initial")};
-  color: ${({
-    theme: {
-      message: { button },
-    },
-  }) => button.color};
+  color: ${({ theme: { messageTextColor } }) => messageTextColor};
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
-  background: ${({ theme }) =>
-    theme.messageButtonColor || theme.buttonPrimaryColor};
-
+  background: ${({ theme, isOwn }) =>
+    isOwn ? theme.primaryColor : theme.messageBubbleColor};
   border-radius: 100px;
   margin-bottom: ${({ nextMessFromSameSender }) =>
     nextMessFromSameSender ? 4 : 16}px !important;
@@ -157,8 +153,8 @@ export const MessageContent = styled.div<IMessageContentProps>`
     isError
       ? COLORS.NEW_YORK_PINK
       : isOwn
-      ? (isValidColor(color) && COLORS.WHITE) || theme.message?.own.color
-      : theme.message?.chat.color};
+      ? (isValidColor(color) && color) || theme.messageTextColor
+      : theme.messageTextColor};
 
   ${({ isFile, theme }) =>
     isFile &&
@@ -200,12 +196,6 @@ export const InitialMessage = styled.div`
   font-size: 12px;
   line-height: 17px;
   margin-bottom: 32px;
-`;
-
-export const MessageUnsendIcon = styled.img`
-  width: 12px;
-  height: 12px;
-  filter: invert(1);
 `;
 
 export const TimeText = styled.div`

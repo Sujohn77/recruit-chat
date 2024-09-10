@@ -5,7 +5,7 @@ import { Close, Flex } from "../../../../screens/Intro/styles";
 
 export const ChatHeaderWrapper = styled.div`
   height: 60px;
-  background: ${(props) => props.theme.headerColor};
+  background: ${({ theme }) => theme.headerColor};
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 14px 12px;

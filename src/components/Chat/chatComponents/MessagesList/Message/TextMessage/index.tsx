@@ -112,8 +112,8 @@ export const TextMessage: FC<ITextMessageProps> = ({
     isWarningMess || isErrorMessage
       ? COLORS.PIPPIN
       : messageProps.isOwn
-      ? theme.primaryColor
-      : theme.message.chat.backgroundColor;
+      ? theme.userMessageBubbleColor
+      : theme.messageBubbleColor;
 
   const checkIsWarningMess = () => {
     if (message.content.text === t("messages:popularQuestions")) {
