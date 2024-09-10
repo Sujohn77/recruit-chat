@@ -30,7 +30,6 @@ interface IMultiSelectInputProps {
   setIsShowResults: Dispatch<SetStateAction<boolean>>;
   onChange: (event: any, values: string[]) => void;
   setInputValue: (value: string | null) => void;
-  setHeight: Dispatch<SetStateAction<number>>;
   disabled: boolean;
 }
 
@@ -45,7 +44,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   isShowResults,
   setInputValue,
   setIsShowResults,
-  setHeight,
   disabled,
 }) => {
   const {
@@ -88,10 +86,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
   }, [currentMsgType, debouncedValue]);
 
   useEffect(() => {
-    !isResults && setHeight(0);
-  }, [isResults]);
-
-  useEffect(() => {
     onChange(null, []);
   }, [currentMsgType]);
 
@@ -117,7 +111,6 @@ export const MultiSelectInput: FC<IMultiSelectInputProps> = ({
     <S.Wrapper>
       {isResults && (
         <SearchResults
-          setHeight={setHeight}
           headerName={headerName}
           matchedItems={matchedItems}
           matchedPart={matchedPart}

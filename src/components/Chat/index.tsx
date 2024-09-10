@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import isNull from "lodash/isNull";
 
 import * as S from "./styles";
@@ -20,6 +20,7 @@ import {
   SESSION_WARNING_TIMEOUT,
   isMobile,
 } from "utils/constants";
+import { useChatbotHeight } from "contexts/hooks";
 
 interface IChatProps {
   isShowChat: boolean;
@@ -32,14 +33,10 @@ export const Chat: FC<IChatProps> = ({
   setShowIcon,
   setIsClosed,
 }) => {
-  const {
-    isReferralEnabled,
-    currentMsgType,
-    messages,
-    chatScreen,
-    chatbotHeigh,
-  } = useChatMessenger();
+  const { isReferralEnabled, currentMsgType, messages, chatScreen } =
+    useChatMessenger();
 
+  const chatbotHeight = useChatbotHeight();
   const [height, setHeight] = useState(480);
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -88,7 +85,7 @@ export const Chat: FC<IChatProps> = ({
     <S.Wrapper
       isOpened={isShowChat}
       isMobile={isMobile}
-      chatbotHeigh={chatbotHeigh}
+      chatbotHeigh={chatbotHeight}
     >
       <ChatHeader
         setShowConfirmLogout={setShowConfirmLogout}

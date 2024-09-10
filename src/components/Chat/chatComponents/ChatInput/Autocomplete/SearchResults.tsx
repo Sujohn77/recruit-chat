@@ -16,7 +16,6 @@ interface ISearchResultsProps {
   matchedPart: string;
   headerName: string;
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
-  setHeight: React.Dispatch<React.SetStateAction<number>>;
   onClick?: (event?: MouseEvent<HTMLLIElement>) => void;
   getListboxProps?: () => React.HTMLAttributes<HTMLUListElement>;
   getOptionProps?: (props: IGetOption) => React.HTMLAttributes<HTMLLIElement>;
@@ -39,7 +38,6 @@ export const SearchResults: FC<ISearchResultsProps> = ({
   getOptionProps,
   onClick,
   setIsShowResults,
-  setHeight,
   getListboxProps = () => ({}),
   isSingleSelection = false,
 }) => {
@@ -49,10 +47,6 @@ export const SearchResults: FC<ISearchResultsProps> = ({
     matchedItems.length < 6
       ? S.searchItemHeight * matchedItems.length + 1
       : maxSearchHeight;
-
-  useEffect(() => {
-    setHeight(searchOptionsHeight + 40); // 40px = header height
-  }, [searchOptionsHeight, setHeight]);
 
   const onClose = () => setIsShowResults(false);
 

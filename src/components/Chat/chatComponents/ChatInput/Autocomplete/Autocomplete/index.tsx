@@ -30,7 +30,6 @@ interface IAutocompleteProps {
   setInputValue: (value: string | null) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
-  setHeight: React.Dispatch<React.SetStateAction<number>>;
   isPhoneNumberMode: boolean;
   phoneValue: string;
   setPhoneValue: React.Dispatch<React.SetStateAction<string>>;
@@ -49,7 +48,6 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   setInputValue,
   isShowResults,
   setIsShowResults,
-  setHeight,
   isPhoneNumberMode,
   phoneValue,
   setPhoneValue,
@@ -83,10 +81,6 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
   useEffect(() => {
     isTabActive && inputRef.current?.focus();
   }, [isTabActive]);
-
-  useEffect(() => {
-    !isResults && setHeight(0);
-  }, [isResults]);
 
   useEffect(() => {
     !isChatLoading && inputRef.current?.focus();
@@ -124,7 +118,6 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
           matchedItems={matchedItems}
           matchedPart={matchedPart}
           onClick={onClick}
-          setHeight={setHeight}
         />
       )}
 

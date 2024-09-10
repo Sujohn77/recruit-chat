@@ -1421,7 +1421,6 @@ export const ChatInput: FC<IChatInputProps> = ({
     placeHolder: getPlaceholder(),
     setIsShowResults,
     isShowResults,
-    setHeight,
     setInputValue: (value: string) => {
       setError(null);
       setMessageValue(value);
