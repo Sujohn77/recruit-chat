@@ -102,9 +102,9 @@ interface IChatProviderProps extends IPPKeys {
   withFindJobOption: boolean;
   parentPathname: string;
   isJobSearchLocationMultiSelect: boolean;
+  welcomeMessage?: string;
   chatbotMaxHeigh: string;
   chatbotParentHeigh?: string;
-  welcomeMessage?: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
