@@ -172,7 +172,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setIsOpen(false);
     !isApplyJobFlow && !isApplyJobSuccessfully && refreshInputStateIfNeed(type);
 
-    if (type === CHAT_ACTIONS.MAKE_REFERRAL && employeeId) {
+    if (type === CHAT_ACTIONS.MAKE_REFERRAL) {
       if (!isApplyJobFlow && !isApplyJobSuccessfully) {
         const resMess = getValidationRefResponse(
           employeeJobCategory,
