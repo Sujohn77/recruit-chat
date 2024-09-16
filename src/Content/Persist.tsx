@@ -77,6 +77,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     setFlowId,
     subscriberWorkflowId,
     setSubscriberWorkflowId,
+    setReferralStep,
+    referralStep,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -228,6 +230,12 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       setSubscriberWorkflowId(
         storedSubscriberWorkflowId ? +storedSubscriberWorkflowId : undefined
       );
+      const storedReferralStep = localStorage.getItem(
+        hostname + "referralStep"
+      );
+      if (storedReferralStep) {
+        setReferralStep(Number(storedReferralStep));
+      }
     }
   }, []);
 
@@ -298,6 +306,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
       isApplyJobSuccessfully?.toString()
     );
 
+    localStorage.setItem(hostname + "referralStep", referralStep.toString());
+
     if (viewJob) {
       localStorage.setItem(hostname + "viewJob", JSON.stringify(viewJob));
     } else {
@@ -350,6 +360,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
     isApplyJobSuccessfully,
     flowId,
     subscriberWorkflowId,
+    referralStep,
   ]);
 
   useEffect(() => {

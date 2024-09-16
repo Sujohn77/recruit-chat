@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import isNull from "lodash/isNull";
 
 import * as S from "./styles";
@@ -23,19 +23,34 @@ import {
 import { useChatbotHeight } from "contexts/hooks";
 
 interface IChatProps {
-  isShowChat: boolean;
   setShowIcon: React.Dispatch<React.SetStateAction<boolean>>;
   setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Chat: FC<IChatProps> = ({
-  isShowChat,
-  setShowIcon,
-  setIsClosed,
+interface IChatWrapperProps {
+  isChatOpen: boolean;
+  children: React.ReactNode;
+}
+
+export const ChatWrapper: FC<IChatWrapperProps> = ({
+  isChatOpen,
+  children,
 }) => {
+  const chatbotHeight = useChatbotHeight();
+  return (
+    <S.Wrapper
+      isOpened={isChatOpen}
+      chatbotHeigh={chatbotHeight}
+      isMobile={isMobile}
+    >
+      {children}
+    </S.Wrapper>
+  );
+};
+
+export const Chat: FC<IChatProps> = ({ setShowIcon, setIsClosed }) => {
   const { isReferralEnabled, currentMsgType, messages, chatScreen } =
     useChatMessenger();
-  const chatbotHeight = useChatbotHeight();
 
   const [showLoginScreen, setShowLoginScreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -81,20 +96,16 @@ export const Chat: FC<IChatProps> = ({
   }, []);
 
   return (
-    <S.Wrapper
-      isOpened={isShowChat}
-      isMobile={isMobile}
-      chatbotHeigh={chatbotHeight}
-    >
+    <>
       <ChatHeader
         setShowConfirmLogout={setShowConfirmLogout}
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
         setShowIcon={setShowIcon}
       />
+
       <MessagesList setSelectedReferralJobId={setSelectedReferralJobId} />
 
-      {/* -------------------------- PopUp's -------------------------- */}
       <Login
         showLoginScreen={showLoginScreen}
         setShowLoginScreen={setShowLoginScreen}
@@ -113,11 +124,11 @@ export const Chat: FC<IChatProps> = ({
       ) : (
         <ViewJob setShowLoginScreen={setShowLoginScreen} />
       )}
-      {/* ------------------------------------------------------------- */}
+
       <ChatInput
         selectedReferralJobId={selectedReferralJobId}
         setSelectedReferralJobId={setSelectedReferralJobId}
       />
-    </S.Wrapper>
+    </>
   );
 };

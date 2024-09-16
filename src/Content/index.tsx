@@ -4,7 +4,7 @@ import { useTheme } from "styled-components";
 import isNull from "lodash/isNull";
 
 import { StorePersist } from "./Persist";
-import { Chat } from "components";
+import { Chat, ChatWrapper } from "components";
 import { Intro } from "screens";
 import {
   ChatScreens,
@@ -145,13 +145,12 @@ export const Content: FC = () => {
             </ImgWrapper>
           ) : (
             <>
-              {isSelectedOption && (
-                <Chat
-                  isShowChat={isSelectedOption}
-                  setShowIcon={setShowIcon}
-                  setIsClosed={setIsClosed}
-                />
-              )}
+              <ChatWrapper isChatOpen={isSelectedOption}>
+                {isSelectedOption && (
+                  <Chat setShowIcon={setShowIcon} setIsClosed={setIsClosed} />
+                )}
+              </ChatWrapper>
+
               <Intro
                 isClosed={isClosed}
                 isSelectedOption={isSelectedOption}

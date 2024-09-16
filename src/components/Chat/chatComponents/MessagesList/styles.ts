@@ -33,8 +33,6 @@ export const MessageListContainer = styled.div`
 
   .infinite-scroll-component {
     overflow: hidden !important;
-    > div {
-    }
   }
 `;
 

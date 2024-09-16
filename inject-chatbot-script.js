@@ -60,8 +60,8 @@ function appendChatBot(
     "allow-scripts",
     "allow-same-origin"
   );
-  ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; transition: all 0.5s ease-in-out;border: none;`;
-
+  ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; border: none;`;
+  // transition: all 0.5s ease-in-out;
   const showChatbot = isChatbotAvailable(props?.pages);
 
   if (showChatbot) {

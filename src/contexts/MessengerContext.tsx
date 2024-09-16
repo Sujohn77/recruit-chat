@@ -1107,6 +1107,7 @@ const ChatProvider = ({
         isReferralEnabled,
         withFindJob: withFindJobOption,
         sendNewMessage,
+        companyName,
       });
 
       // Simulate chat bot reaction

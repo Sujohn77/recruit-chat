@@ -71,7 +71,7 @@ export const en = {
     initialMessage2: "Hi! I'm the GMS Virtual Assistant!",
     initialMessage3: "Hi! Are you interested in this job?",
     refInitialMessage:
-      "Hi! I'm the UPS Referrals Assistant and I'm ready to assist you with the Employee Referral Process.",
+      "Hi! I'm the {{companyName}} Referrals Assistant and I'm ready to assist you with the Employee Referral Process.",
     uploadCV: "Upload resume",
     dragAndDrop: "Drag and drop a resume file here",
     answerQuestions: "Answer questions",

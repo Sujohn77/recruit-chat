@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { COLORS } from "utils/colors";
 
-const duration = "0.35s";
-
 interface IWrapperProps {
   isOpened: boolean;
   isMobile: boolean;
@@ -16,57 +14,14 @@ export const Wrapper = styled.div<IWrapperProps>`
   background: ${COLORS.WHITE};
   border-radius: 10px;
   overflow: hidden;
-  height: 0;
+  height: ${({ isMobile, chatbotHeigh, isOpened }) =>
+    isOpened ? (isMobile ? window.innerHeight + "px" : chatbotHeigh) : 0};
+  width: ${({ isOpened, isMobile }) =>
+    isOpened ? (isMobile ? "100%" : "370px") : 0};
   z-index: 1;
-
-  animation: ${({ isOpened }) =>
-    isOpened ? `open ${duration} ease-in` : `close ${duration} ease-in`};
-  animation-fill-mode: forwards;
   margin-left: auto;
-
-  @keyframes open {
-    0% {
-      height: 0;
-      width: 0;
-    }
-
-    30% {
-      height: 0;
-      width: 0;
-      transform: translate(27.5px, 0);
-      margin-top: 450px;
-    }
-
-    100% {
-      height: ${({ isMobile, chatbotHeigh }) =>
-        isMobile ? window.innerHeight + "px" : chatbotHeigh};
-      width: ${({ isMobile }) => (isMobile ? "100%" : "370px")};
-      transform: translate(0, 0);
-      margin-top: 30px;
-    }
-  }
-
-  @keyframes close {
-    0% {
-      height: ${({ isMobile, chatbotHeigh }) =>
-        isMobile ? window.innerHeight + "px" : chatbotHeigh};
-      width: ${({ isMobile }) => (isMobile ? "100%" : "370px")};
-      transform: translate(0, 0);
-      margin-top: 30px;
-    }
-
-    50% {
-      height: 0;
-      width: 0;
-      transform: translate(27.5px, 0);
-      margin-top: 450px;
-    }
-
-    100% {
-      height: 0;
-      width: 0;
-    }
-  }
+  transition: height 0.5s ease-in-out;
+  overflow: hidden;
 `;
 
 export const Notification = styled.div`

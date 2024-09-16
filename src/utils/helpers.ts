@@ -313,6 +313,7 @@ export const getMessagesOnAction = ({
   isReferralEnabled,
   withFindJob,
   sendNewMessage,
+  companyName,
 }: IGetUpdatedMessages) => {
   const { type } = action;
   let updatedMessages = messages;
@@ -327,7 +328,7 @@ export const getMessagesOnAction = ({
       messages: !updatedMessages.length
         ? [
             ...updatedMessages,
-            ...initialMessages(isReferralEnabled, withFindJob),
+            ...initialMessages(isReferralEnabled, withFindJob, companyName),
           ]
         : updatedMessages,
     });
@@ -351,7 +352,11 @@ export const getMessagesOnAction = ({
   return [...responseMessages, ...updatedMessages];
 };
 
-const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
+const initialMessages = (
+  isReferralEnabled: boolean,
+  withFindJob: boolean,
+  companyName: string | undefined | null
+) =>
   getParsedMessages([
     {
       text: i18n.t(
@@ -361,7 +366,8 @@ const initialMessages = (isReferralEnabled: boolean, withFindJob: boolean) =>
             : withFindJob
             ? "initialMessage"
             : "initialMessage2"
-        }`
+        }`,
+        { companyName: companyName + "!!!!!" }
       ),
       isChatMessage: true,
       i18n: `messages:${
@@ -467,7 +473,10 @@ export const pushMessage = ({
   const updatedMessages = popMessage({
     type: getReplaceMessageType(type),
     messages: !messages.length
-      ? [...messages, ...initialMessages(isReferralEnabled, withFindJob)]
+      ? [
+          ...messages,
+          ...initialMessages(isReferralEnabled, withFindJob, companyName),
+        ]
       : messages,
   });
 

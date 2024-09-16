@@ -225,6 +225,7 @@ export interface IGetUpdatedMessages {
   isReferralEnabled: boolean;
   withFindJob: boolean;
   sendNewMessage: (props: ISendNewMessage) => Promise<any>;
+  companyName: string | undefined | null;
 }
 
 export interface IPushMessage {
