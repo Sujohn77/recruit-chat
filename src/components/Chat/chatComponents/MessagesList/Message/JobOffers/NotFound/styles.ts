@@ -28,7 +28,7 @@ export const NoFound = styled.div<INoFoundProps>`
 
 export const Title = styled.p<ITitleProps>`
   white-space: pre-line;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 17px;
   color: ${({ theme: { text } }) => text.color};
   text-align: center;
@@ -43,6 +43,8 @@ export const SetJobAlert = styled(Button)`
   border-radius: 100px !important;
   text-transform: initial !important;
   background-color: ${COLORS.WHITE} !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
 `;
 
 export const RefineJobSearch = styled(Button)`
@@ -50,4 +52,6 @@ export const RefineJobSearch = styled(Button)`
   border-radius: 100px !important;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
   text-transform: initial !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
 `;

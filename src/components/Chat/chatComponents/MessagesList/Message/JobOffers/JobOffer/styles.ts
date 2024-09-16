@@ -17,7 +17,7 @@ export const JobOfferWrapper = styled.div`
 
 export const OfferTitle = styled.p`
   margin: 0;
-  font-weight: 600;
+  font-weight: 400;
 `;
 
 export const LoaderWrapper = styled.div`

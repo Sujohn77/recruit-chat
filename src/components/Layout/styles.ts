@@ -35,7 +35,7 @@ export const DarkButton = styled(StyledButton)<IDarkButtonProps>`
   border-radius: 8px !important;
   font-size: ${({ fontSize = 12 }) => fontSize}px;
   line-height: 17px;
-  font-weight: ${({ fontWeight = 700 }) => fontWeight};
+  font-weight: ${({ fontWeight = 500 }) => fontWeight};
   margin-bottom: ${({ marginBottom }) => marginBottom} !important;
 
   &:disabled {
