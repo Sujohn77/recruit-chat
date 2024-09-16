@@ -1,5 +1,11 @@
 import { ISearchRequisition } from "contexts/types";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import browserStorage from "store";
 import firebase from "firebase";
@@ -7,10 +13,17 @@ import map from "lodash/map";
 import "firebase/auth";
 
 import { CHAT_ACTIONS, ILocalMessage } from "./types";
-import { getFormattedLocations } from "./helpers";
+import { getFormattedLocations, postMessToParent } from "./helpers";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { IRequisitionType, useIsTabActive } from "services/hooks";
 import i18n from "services/localization";
+import {
+  ChatScreens,
+  EventIds,
+  isMobile,
+  REFRESH_TOKEN_TIMEOUT,
+} from "./constants";
+import isNull from "lodash/isNull";
 
 interface IUseTextField {
   currentMsgType: CHAT_ACTIONS | null;
@@ -197,4 +210,89 @@ export const usePersistStore = <StateType>(
   );
 
   return [state, setState];
+};
+
+export const useChatbotSideEffects = (isSelectedOption: boolean) => {
+  const firstTime = useRef<Date>(new Date());
+  const { chatScreen, setIsApplyJobFlow } = useChatMessenger();
+
+  useEffect(() => {
+    // for parent iframe height size
+    window.parent.postMessage(
+      JSON.parse(
+        JSON.stringify({
+          event_id: EventIds.IFrameHeight,
+          isSelectedOption: isSelectedOption,
+          isMobile: isMobile,
+        })
+      ),
+      "*"
+    );
+  }, [isSelectedOption]);
+
+  useEffect(() => {
+    if (chatScreen !== ChatScreens.FindAJob) {
+      setIsApplyJobFlow(false);
+    }
+  }, [chatScreen]);
+
+  useEffect(() => {
+    // REFRESH TOKEN
+    let timeout: NodeJS.Timeout | undefined;
+    let interval: NodeJS.Timer | undefined;
+
+    // the candidate may not initiate the chatbot for a long time (not selected anything in init screen)
+    // in this case do not start the interval for token refresh
+    if (!isNull(chatScreen)) {
+      const currentTime = new Date();
+      const difference = currentTime.getTime() - firstTime.current.getTime(); // difference in milliseconds
+      let resultInMinutes = Math.round(difference / 60000);
+
+      // when the candidate selects one of the chatbot options (ask a question or find a job)
+      // then check how much time the token has left
+      // and if it has expired then immediately refresh the token
+      // and start an interval that will refresh the token after 29 minutes.
+
+      if (resultInMinutes === 0) {
+        // candidate chose the option immediately
+        interval = setInterval(() => {
+          postMessToParent(EventIds.RefreshToken);
+        }, REFRESH_TOKEN_TIMEOUT);
+      } else if (resultInMinutes > 28) {
+        // if token exp.
+        postMessToParent(EventIds.RefreshToken);
+        interval = setInterval(() => {
+          postMessToParent(EventIds.RefreshToken);
+        }, REFRESH_TOKEN_TIMEOUT);
+      } else {
+        // otherwise we calculate how much time is left and start a timeout with the remaining time as prop.
+        // and in the same timeout start an interval that will update the token every 29 min.
+
+        const minutes = !!resultInMinutes ? 28 - resultInMinutes : 1;
+
+        console.log(
+          `%c no token expired soon -> refresh token (timeout ms: ${
+            minutes * 60 * 1000
+          }, min: ${minutes} ) + add interval for refresh token`,
+          "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;"
+        );
+
+        timeout = setTimeout(() => {
+          postMessToParent(EventIds.RefreshToken);
+          sessionStorage.clear();
+
+          interval = setInterval(() => {
+            postMessToParent(EventIds.RefreshToken);
+          }, REFRESH_TOKEN_TIMEOUT);
+        }, minutes * 60 * 1000);
+      }
+
+      firstTime.current = new Date();
+    }
+
+    return () => {
+      timeout && clearTimeout(timeout);
+      interval && clearInterval(interval);
+    };
+  }, [chatScreen]);
 };
