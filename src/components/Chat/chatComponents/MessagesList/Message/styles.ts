@@ -25,6 +25,7 @@ interface IMessageBoxProps extends IMessageProps {
   maxWidth?: number;
   marginTop?: number;
   isInitMess?: boolean;
+  stringStyle?: string;
 }
 
 interface IMessageTextProps {
@@ -53,7 +54,6 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
     nextMessFromSameSender ? 4 : 18}px;
-
   background: ${({ isOwn, theme, backgroundColor }) =>
     backgroundColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
   color: ${({ theme, isOwn }) =>
@@ -91,6 +91,8 @@ export const MessageBox = styled.div<IMessageBoxProps>`
       transform:  ${isOwn && "matrix(-1, 0, 0, 1, 0, 0)"} ;
       left:  ${isOwn ? "calc(100% - 20px)" : "0"} ;
     }`};
+
+  ${({ stringStyle }) => stringStyle}
 `;
 
 export const Wrapper = styled.div<IWrapperProps>`
@@ -204,12 +206,12 @@ export const TimeText = styled.div`
 
 export const MessageItem = styled(InfoItem)``;
 
-export const ActionButton = styled(Button)`
+export const SearchButton = styled(Button)`
   width: fit-content;
   align-self: flex-start;
   color: ${({ theme: { button } }) => button.secondaryColor}!important;
   background: ${(props) => props.theme.primaryColor}!important;
-  margin: 1em 0 !important;
+  margin: 1em auto !important;
   border-radius: 20px !important;
   font-size: 12px !important;
   padding: 11px 12px !important;

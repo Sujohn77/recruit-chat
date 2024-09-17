@@ -89,6 +89,7 @@ export interface IMessageProps {
   cursor?: string;
   flexDirection?: CSSProperties["flexDirection"];
   nextMessFromSameSender?: boolean;
+  stringStyle?: string;
 }
 interface IUserContact {
   isPhoneType: boolean;
@@ -119,6 +120,10 @@ export const getMessageProps = (msg: ILocalMessage): IMessageProps => ({
   isOwn: !!msg.isOwn,
   padding: "8px",
   cursor: msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial",
+  stringStyle:
+    msg.content.subType === MessageType.SUBMIT_FILE
+      ? "display: flex;flex-direction: column;"
+      : "",
 });
 
 export const getActionTypeByOption = (

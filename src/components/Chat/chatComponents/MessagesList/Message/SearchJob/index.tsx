@@ -3,12 +3,11 @@ import { useChatMessenger } from "contexts/MessengerContext";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ILocalMessage, ButtonsOptions } from "utils/types";
+import * as S from "../styles";
+import { useGetMessageText } from "utils/hooks";
 import { getMessageProps } from "utils/helpers";
 import { resumeElementId } from "utils/constants";
-import * as S from "../styles";
-import { renderSendingTime } from "..";
-import { useGetMessageText } from "utils/hooks";
+import { ILocalMessage, ButtonsOptions } from "utils/types";
 
 interface IProps {
   message: ILocalMessage;
@@ -48,16 +47,14 @@ export const SearchJob: FC<IProps> = ({ message, isLastMess }) => {
 
   return (
     <S.MessageBox {...getMessageProps(message)}>
-      {messageText}
+      <span>{messageText}</span>
 
-      <S.ActionButton
+      <S.SearchButton
         onClick={onSearchWithResume}
         disabled={isJobSearchingLoading || !isLastMess}
       >
         {t("buttons:searchJobs")}
-      </S.ActionButton>
-
-      {renderSendingTime(message)}
+      </S.SearchButton>
 
       <S.Cancel
         onClick={onResetResume}
