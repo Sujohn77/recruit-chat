@@ -33,6 +33,7 @@ export const Question = styled.div<{ isOpen: boolean }>`
   width: 100%;
   height: 45px;
 
+  color: ${COLORS.DUSTY_GRAY};
   border-bottom: 1px solid ${COLORS.CHINESE_SILVER};
   border-left: 1px solid ${COLORS.CHINESE_SILVER};
   border-right: 1px solid ${COLORS.CHINESE_SILVER};
