@@ -367,7 +367,7 @@ const initialMessages = (
             ? "initialMessage"
             : "initialMessage2"
         }`,
-        { companyName: companyName + "!!!!!" }
+        { companyName: companyName }
       ),
       isChatMessage: true,
       i18n: `messages:${
@@ -912,11 +912,12 @@ export const isValidColor = (strColor?: string): boolean => {
 };
 
 const parse = (number: string, iso2?: string) => {
+  if (!number) return null;
   try {
     return phoneUtil.parse(number, iso2);
   } catch (err) {
     // @ts-ignore
-    console.log(`Exception was thrown: ${err.toString()}`);
+    // console.log(`Exception was thrown: ${err.toString()}`);
     return null;
   }
 };

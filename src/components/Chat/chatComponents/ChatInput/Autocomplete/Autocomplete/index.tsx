@@ -13,7 +13,6 @@ import "react-international-phone/style.css";
 import { PhoneInputWrapper } from "./styles";
 import { useIsTabActive } from "services/hooks";
 import { isResultsType } from "utils/helpers";
-import { useDetectCountry } from "utils/hooks";
 import { TextFieldTypes } from "utils/constants";
 import { DefaultInput } from "components/Layout";
 import { SearchResults } from "components/Chat/ChatComponents/ChatInput/Autocomplete/SearchResults";
@@ -61,8 +60,8 @@ export const Autocomplete: React.FC<IAutocompleteProps> = ({
     error,
     isChatLoading,
     searchRequisitionsByKeyword,
+    detectedCountry,
   } = useChatMessenger();
-  const detectedCountry = useDetectCountry();
   const inputRef = useRef<HTMLInputElement>(null);
   const isTabActive = useIsTabActive();
   const [debouncedValue] = useDebounce(value, 500, {

@@ -5,14 +5,14 @@ import { createTextMess, generateLocalId } from "utils/helpers";
 import { ILocalMessage, MessageType } from "utils/types";
 
 export enum ReferralSteps {
-  EmployeeId,
-  ReferralLastName,
-  ReferralBirth,
-  UserFirstName,
-  UserLastName,
-  UserEmail,
-  UserConfirmationEmail,
-  UserMobileNumber,
+  EmployeeId = "employeeId",
+  ReferralLastName = "referralLastName",
+  ReferralBirth = "referralBirth",
+  UserFirstName = "userFirstName",
+  UserLastName = "userLastName",
+  UserEmail = "userEmail",
+  UserConfirmationEmail = "userConfirmationEmail",
+  UserMobileNumber = "userMobileNumber",
 }
 
 export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {

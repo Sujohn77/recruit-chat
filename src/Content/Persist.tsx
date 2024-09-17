@@ -1,12 +1,13 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useCallback, useEffect } from "react";
 
-import { ChatMessengerContextKeys, IUser } from "contexts/types";
+import { IUser } from "contexts/types";
 import { IRequisitionType } from "services/hooks";
 import { ChatScreens, EventIds } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, IRequisition } from "utils/types";
 import { postMessToParent } from "utils/helpers";
 import { useTranslation } from "react-i18next";
+import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 
 interface IStorePersistProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -234,7 +235,7 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
         hostname + "referralStep"
       );
       if (storedReferralStep) {
-        setReferralStep(Number(storedReferralStep));
+        setReferralStep(storedReferralStep as ReferralSteps);
       }
     }
   }, []);

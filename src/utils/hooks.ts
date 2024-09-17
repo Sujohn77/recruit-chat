@@ -93,7 +93,6 @@ export const useFirebaseSignIn = () => {
 
   useEffect(() => {
     if (firebaseToken) {
-      // reinitializeAppWithoutLongPolling().then(() => {
       firebase
         .auth()
         .signInWithCustomToken(firebaseToken)
@@ -113,21 +112,30 @@ export const useFirebaseSignIn = () => {
           );
           return { error };
         });
-      // });
     }
   }, [firebaseToken]);
 };
 
-export const useDetectCountry = (lowerCase = true): string => {
-  const [country, setCountry] = useState<string>("us");
+export const useDetectCountry = (
+  lowerCase = true,
+  isReferralEnabled = false
+): string => {
+  const [country, setCountry] = useState<string>(
+    localStorage.getItem("country_code") || "us"
+  );
 
   useEffect(() => {
-    fetch("https://ipapi.co/json/")
-      .then((response) => response.json())
-      .then((data: { country_code?: string }) => {
-        data.country_code && setCountry(data.country_code);
-      });
-  }, []);
+    if (isReferralEnabled) {
+      fetch("https://ipapi.co/json/")
+        .then((response) => response.json())
+        .then((data: { country_code?: string }) => {
+          if (data.country_code) {
+            setCountry(data.country_code);
+            localStorage.setItem("country_code", data.country_code);
+          }
+        });
+    }
+  }, [isReferralEnabled]);
 
   return lowerCase ? country.toLowerCase() : country;
 };

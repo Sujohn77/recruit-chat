@@ -83,6 +83,7 @@ import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { chatMessengerDefaultState, getQuestions } from "./data";
+import { useDetectCountry } from "utils/hooks";
 
 interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
@@ -137,6 +138,7 @@ const ChatProvider = ({
   welcomeMessage,
   chatbotParentHeigh,
 }: IChatProviderProps) => {
+  const detectedCountry = useDetectCountry(true, isReferralEnabled);
   const messagesSocketConnection = useRef<any>(null);
   const queueMessagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
@@ -276,7 +278,8 @@ const ChatProvider = ({
     string[]
   >([]);
   const [referralStep, setReferralStep] = useState<ReferralSteps>(
-    ReferralSteps.EmployeeId
+    (localStorage.getItem(hostname + "referralStep") as ReferralSteps) ||
+      ReferralSteps.EmployeeId
   );
   const [queueId, setQueueId] = useState<null | number>(null);
 
@@ -338,7 +341,7 @@ const ChatProvider = ({
   // -------------------------------------------------------------------------------------------- //
 
   useEffect(() => {
-    LOG(currentMsgType, "currentMsgType");
+    // LOG(currentMsgType, "currentMsgType");
     switch (currentMsgType) {
       case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
       case CHAT_ACTIONS.ASK_QUESTION:
@@ -637,8 +640,7 @@ const ChatProvider = ({
   // Initiate an action & set state
   const dispatch = useCallback(
     async (action: ITriggerActionProps) => {
-      LOG(action.type, "DISPATCH", "#ff8c00");
-      LOG(action.payload, "DISPATCH payload", "#ff8c00");
+      LOG(action, "DISPATCH action: " + action.type, "#ff8c00");
 
       // Check if all previous actions were completed
       const { type, payload } = action;
@@ -1498,6 +1500,7 @@ const ChatProvider = ({
     chatbotMaxHeigh,
     welcomeMessage,
     chatbotParentHeigh,
+    detectedCountry,
   };
 
   return (

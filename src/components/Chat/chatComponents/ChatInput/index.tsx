@@ -183,8 +183,6 @@ export const ChatInput: FC<IChatInputProps> = ({
   const inputType = getInputType(currentMsgType);
 
   useEffect(() => {
-    referralStep &&
-      localStorage.setItem(hostname + "referralStep", referralStep.toString());
     refEmployeeId &&
       localStorage.setItem(hostname + "refEmployeeId", refEmployeeId);
     firstName && localStorage.setItem(hostname + "firstName", firstName);
@@ -196,7 +194,7 @@ export const ChatInput: FC<IChatInputProps> = ({
   useEffect(() => {
     const storedReferralStep = localStorage.getItem(hostname + "referralStep");
     if (storedReferralStep) {
-      setReferralStep(Number(storedReferralStep));
+      setReferralStep(storedReferralStep as ReferralSteps);
     }
 
     setRefEmployeeId(localStorage.getItem(hostname + "refEmployeeId") || "");
@@ -253,7 +251,12 @@ export const ChatInput: FC<IChatInputProps> = ({
     }
 
     if (currentMsgType === CHAT_ACTIONS.MAKE_REFERRAL_FRIEND) {
-      setReferralStep(ReferralSteps.UserFirstName);
+      const storedReferralStep = localStorage.getItem(
+        hostname + "referralStep"
+      );
+      setReferralStep(
+        (storedReferralStep as ReferralSteps) || ReferralSteps.UserFirstName
+      );
     }
   }, [currentMsgType]);
 

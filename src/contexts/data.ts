@@ -123,6 +123,7 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
   parentPathname: "",
   isJobSearchLocationMultiSelect: false,
   chatbotMaxHeigh: "600px",
+  detectedCountry: "us",
 };
 
 const defaultQuestions = (referralCompanyName: string | null) => [

@@ -172,6 +172,7 @@ export interface IChatMessengerContext extends IPPKeys {
   chatbotMaxHeigh: string;
   welcomeMessage?: string;
   chatbotParentHeigh?: string;
+  detectedCountry: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;
