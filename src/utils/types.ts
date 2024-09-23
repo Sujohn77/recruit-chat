@@ -90,7 +90,7 @@ export interface ILocalMessage {
   background?: string;
   border?: string;
   jobId?: string | number;
-  dateCreated?: { seconds: number };
+  dateCreated: { seconds: number };
   sender?: IUserSelf;
 }
 
@@ -168,48 +168,8 @@ export enum Status {
   DONE = "DONE",
 }
 
-export enum ButtonsTheme {
-  Purple = "PURPLE",
-}
-
-export interface IChatRoom extends IChatRoomID {
-  canChat: {
-    canChat: boolean;
-    errorCode: null;
-    isImageEnabled: boolean;
-    unavailableMessage: null;
-  };
-  countOfUnread: number;
-  dateCreated: { seconds: string };
-  dateModified: { seconds: string } | string | false;
-  imageUrl: null;
-  imageUrlSasToken: string;
-  isOptedOut: boolean;
-  isViewed: boolean;
-  lastMessage: IMessage;
-  participantIds: string[];
-  participants: (IUserSelf & { countOfUnread: number; uniqueId?: string })[];
-  subscriber: IUserSelf;
-  subscriberId: number;
-  messages: IMessage[];
-  pinned: string[];
-  archived: string[];
-  muted: IMuteStatus[];
-  ownerId: number;
-}
-
-export interface IQueue {
-  name: string;
-  queueId: number | string;
-  rooms: IChatRoom[];
-}
-
 export interface IMessageID {
   chatItemId: number;
-}
-export interface IQueueItem {
-  queueId: string;
-  name: string;
 }
 
 export enum HTTPStatusCodes {

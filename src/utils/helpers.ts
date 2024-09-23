@@ -181,6 +181,9 @@ export const getParsedMessages = (
       localId,
       isOwn: !!msg.isOwn,
       optionList: msg.optionList,
+      dateCreated: {
+        seconds: new Date().getTime(),
+      },
     };
 
     responseMessages.push(message);
@@ -975,7 +978,7 @@ export const createTextMess = ({
     locations,
     nextMsgType,
   },
-  dateCreated,
+  dateCreated: { seconds: dateCreated?.seconds || new Date().getTime() },
   optionList,
 });
 
@@ -1112,7 +1115,5 @@ export const getIsNextMsgFromSameSender = ({
     (m) => m.localId === currentMess.localId
   );
   const nextMessage: ILocalMessage | undefined = messages?.[messageIndex - 1];
-  const isNextMessFromSameSender =
-    !isLastMess && !!nextMessage?.isOwn === !!currentMess.isOwn;
-  return isNextMessFromSameSender;
+  return !isLastMess && !!nextMessage?.isOwn === !!currentMess.isOwn;
 };

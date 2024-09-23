@@ -28,6 +28,10 @@ interface IMessageBoxProps extends IMessageProps {
   stringStyle?: string;
 }
 
+interface IBtnMessProps extends IMessageBoxProps {
+  isChatMess?: boolean;
+}
+
 interface IMessageTextProps {
   fontWeight?: number;
   withMaxWidth?: boolean;
@@ -43,7 +47,6 @@ interface IWrapperProps {
 export const MessageBox = styled.div<IMessageBoxProps>`
   position: relative;
   border-radius: 10px;
-  min-height: 33px;
   font-size: 12px;
   line-height: 17px;
   box-sizing: border-box;
@@ -53,7 +56,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
-    nextMessFromSameSender ? 4 : 18}px;
+    nextMessFromSameSender ? 4 : 22}px;
   background: ${({ isOwn, theme, backgroundColor }) =>
     backgroundColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
   color: ${({ theme, isOwn }) =>
@@ -78,7 +81,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
       width: 0;
       height: 0;
       border-style: solid;
-      border-width: 20px 20px 0 0;
+      border-width: 11px 20px 0 0;
       border-color: ${
         isError
           ? COLORS.PIPPIN
@@ -87,7 +90,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
           : theme.messageBubbleColor
       } transparent transparent transparent;
       position: absolute;
-      bottom: -12px;
+      bottom: -4px;
       transform:  ${isOwn && "matrix(-1, 0, 0, 1, 0, 0)"} ;
       left:  ${isOwn ? "calc(100% - 20px)" : "0"} ;
     }`};
@@ -101,11 +104,10 @@ export const Wrapper = styled.div<IWrapperProps>`
 
 export const Sender = styled.div<ISenderProps>`
   font-style: normal;
-  font-weight: normal;
+  font-weight: 600;
   font-size: 10px;
   line-height: 14px;
-  letter-spacing: -0.3px;
-  color: rgb(0, 0, 0);
+  color: ${COLORS.BLACK};
   padding: 0px 3px;
   text-align: ${({ isOwn }) => (isOwn ? "right" : "left")};
 `;
@@ -122,7 +124,7 @@ export const Cancel = styled.div<ICancelProps>`
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;
 
-export const MessageButton = styled.div<IMessageProps>`
+export const MessageButton = styled.div<IBtnMessProps>`
   position: relative;
   min-height: 28px;
   font-size: 12px;
@@ -138,6 +140,9 @@ export const MessageButton = styled.div<IMessageProps>`
   border-radius: 100px;
   margin-bottom: ${({ nextMessFromSameSender }) =>
     nextMessFromSameSender ? 4 : 16}px !important;
+
+  ${({ isChatMess }) =>
+    isChatMess && "min-height: 33px;display: flex;align-items: center;"}
 `;
 
 export const MessageContent = styled.div<IMessageContentProps>`
@@ -197,11 +202,12 @@ export const InitialMessage = styled.div`
 export const TimeText = styled.div`
   color: ${({ theme: { text } }) => text.postedDate};
   white-space: nowrap;
+  margin-left: 8px;
   font-size: 10px;
   line-height: 12px;
-  margin-top: auto;
   width: fit-content;
   display: inline-block;
+  color: ${COLORS.GRAY};
 `;
 
 export const MessageItem = styled(InfoItem)``;

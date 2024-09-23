@@ -762,6 +762,9 @@ export const ChatInput: FC<IChatInputProps> = ({
               background: isOk ? COLORS.HAWKES_BLUE : undefined,
               border: `1px solid ${COLORS[isOk ? "ONAHAU" : "BEAUTY_BUSH"]}`,
               jobId: jobOffer?.id,
+              dateCreated: {
+                seconds: new Date().getTime(),
+              },
             };
 
             sendNewMessage({

@@ -56,7 +56,6 @@ export const Message: FC<IMessageProps> = ({
       return <TranscriptSent />;
     case MessageType.TEXT:
     case MessageType.FILE:
-    case MessageType.CHAT_CREATED:
       return (
         <TextMessage
           {...defProps}
@@ -89,10 +88,12 @@ export const Message: FC<IMessageProps> = ({
 };
 
 export const renderSendingTime = (message: ILocalMessage) => {
-  const createdAt = moment(message.dateCreated?.seconds! * MS_1000).format(
-    "HH:mm A"
-  );
   if (message._id) {
-    return <S.TimeText>{message.dateCreated?.seconds && createdAt}</S.TimeText>;
+    return (
+      <S.TimeText>
+        {message.dateCreated?.seconds &&
+          moment(message.dateCreated?.seconds! * MS_1000).format("HH:mm A")}
+      </S.TimeText>
+    );
   }
 };

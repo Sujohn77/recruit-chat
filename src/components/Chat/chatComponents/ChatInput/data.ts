@@ -16,6 +16,10 @@ export enum ReferralSteps {
 }
 
 export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
+  const dateCreated = {
+    seconds: new Date().getTime(),
+  };
+
   switch (step) {
     case ReferralSteps.EmployeeId:
       return {
@@ -28,6 +32,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.ReferralLastName:
       return {
@@ -40,6 +45,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.ReferralBirth:
       return {
@@ -52,6 +58,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.UserFirstName:
       return {
@@ -64,6 +71,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.UserLastName:
       return {
@@ -76,6 +84,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.UserEmail:
       return {
@@ -88,6 +97,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.UserConfirmationEmail:
       return {
@@ -100,6 +110,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
     case ReferralSteps.UserMobileNumber:
       return {
@@ -112,6 +123,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
           i18nProps: null,
         },
         _id: generateLocalId(),
+        dateCreated,
       };
 
     default:
@@ -120,6 +132,7 @@ export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
         content: { subType: MessageType.TEXT, i18n: "", i18nProps: null },
         localId: generateLocalId(),
         isOwn: false,
+        dateCreated,
       };
   }
 };
@@ -179,6 +192,9 @@ export const getValidationRefResponse = (
       type: MessageOptionTypes.AvailableJobs,
       isActive: true,
       options: getReferralOptions(searchCategory, withReferralsHistoryBtn),
+    },
+    dateCreated: {
+      seconds: new Date().getTime(),
     },
   });
 
@@ -271,15 +287,20 @@ export const getAlertJobMessage = (
   lastName: string,
   emailAddress: string
 ): ILocalMessage => {
+  const dateCreated = {
+    seconds: new Date().getTime(),
+  };
   if (!firstName) {
     return createTextMess({
       text: i18n.t("messages:provide_firstname"),
       i18n: "messages:provide_firstname",
+      dateCreated,
     });
   } else if (!lastName) {
     return createTextMess({
       text: i18n.t("messages:provide_lastname"),
       i18n: "messages:provide_lastname",
+      dateCreated,
     });
   } else {
     return createTextMess({
@@ -287,6 +308,7 @@ export const getAlertJobMessage = (
         `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`
       ),
       i18n: `messages:${emailAddress ? "emailAlreadyProvided" : "alertEmail"}`,
+      dateCreated,
     });
   }
 };

@@ -1,6 +1,7 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, ReactNode, useMemo } from "react";
 import { useTheme } from "styled-components";
+import { useTranslation } from "react-i18next";
 import Linkify from "linkify-react";
 
 import { OptionList } from "./OptionList";
@@ -9,13 +10,12 @@ import { renderSendingTime } from "..";
 import * as S from "../styles";
 import { Icon } from "../../styles";
 import { ICONS } from "assets";
-import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
-import { MessageOptionTypes, MessageStatuses } from "utils/constants";
 import { COLORS } from "utils/colors";
-import { DefaultThemeType } from "utils/theme/default";
-import { ILocalMessage, MessageType } from "utils/types";
 import { useGetMessageText } from "utils/hooks";
-import { useTranslation } from "react-i18next";
+import { ILocalMessage, MessageType } from "utils/types";
+import { MessageOptionTypes, MessageStatuses } from "utils/constants";
+import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
+import { DefaultThemeType } from "utils/theme/default";
 
 interface ITextMessageProps {
   message: ILocalMessage;
@@ -30,7 +30,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { messages } = useChatMessenger();
+  const { messages, chatbotName } = useChatMessenger();
   const theme = useTheme() as DefaultThemeType;
   const {
     companyName: referralCompanyName,
@@ -125,11 +125,6 @@ export const TextMessage: FC<ITextMessageProps> = ({
 
   return wrongMess ? null : (
     <S.Wrapper position="relative">
-      {message.sender?.firstName && (
-        <S.Sender isOwn={!!message.isOwn}>
-          {message.sender?.firstName} {message.sender?.lastName}
-        </S.Sender>
-      )}
       <S.MessageBox
         {...messageProps}
         isWarningMess={checkIsWarningMess()}
@@ -190,9 +185,25 @@ export const TextMessage: FC<ITextMessageProps> = ({
         </S.MessageContent>
       </S.MessageBox>
 
-      <SendingTime isOwn={message.isOwn}>
-        {renderSendingTime(message)}
-      </SendingTime>
+      {!isNextMessFromSameSender && (
+        <SendingTime isOwn={message.isOwn}>
+          {message.sender?.firstName ? (
+            <S.Sender isOwn={!!message.isOwn}>
+              {message.sender?.firstName} {message.sender?.lastName}
+            </S.Sender>
+          ) : (
+            !message.isOwn && (
+              <S.Sender isOwn={!!message.isOwn}>
+                {message.sender?.firstName
+                  ? `${message.sender?.firstName} ${message.sender?.lastName}`
+                  : chatbotName}
+              </S.Sender>
+            )
+          )}
+
+          {renderSendingTime(message)}
+        </SendingTime>
+      )}
     </S.Wrapper>
   );
 };

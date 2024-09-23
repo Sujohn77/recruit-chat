@@ -45,6 +45,7 @@ export const ButtonMessage: FC<IButtonMessageProps> = ({
 
   return (
     <S.MessageButton
+      isChatMess
       onClick={onClick}
       nextMessFromSameSender={isNextMessFromSameSender}
       {...getMessageProps(mess)}

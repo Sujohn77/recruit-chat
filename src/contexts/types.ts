@@ -173,6 +173,7 @@ export interface IChatMessengerContext extends IPPKeys {
   welcomeMessage?: string;
   chatbotParentHeigh?: string;
   detectedCountry: string;
+  chatbotName: string;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;

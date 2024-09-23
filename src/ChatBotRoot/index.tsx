@@ -83,6 +83,7 @@ export const ChatBotRoot: FC = () => {
   const [footerPrivacyLink, setFooterPrivacyLink] =
     useState<IPrivacyPolicy | null>(null);
   const [PPLinkUrl, setPPLinkUrl] = useState<string | null>(null);
+  const [chatbotName, setChatbotName] = useState("");
 
   useEffect(() => {
     postMessToParent(EventIds.IsMobile, { isMobile: isMobile });
@@ -107,6 +108,7 @@ export const ChatBotRoot: FC = () => {
       } = data;
       hostname && setHostname(hostname);
       style && setTheme(style);
+      style?.chatbot_name && setChatbotName(style?.chatbot_name);
       chatbotMaxHeight && setChatbotMaxHeight(chatbotMaxHeight);
       parentHeight && setParentHeight(parentHeight);
 
@@ -239,6 +241,7 @@ export const ChatBotRoot: FC = () => {
           chatbotMaxHeigh={chatbotMaxHeigh}
           welcomeMessage={welcomeMessage}
           chatbotParentHeigh={chatbotParentHeigh}
+          chatbotName={chatbotName}
         >
           <ThemeContextProvider value={theme}>
             <FileUploadProvider>

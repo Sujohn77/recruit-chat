@@ -106,6 +106,7 @@ interface IChatProviderProps extends IPPKeys {
   welcomeMessage?: string;
   chatbotMaxHeigh: string;
   chatbotParentHeigh?: string;
+  chatbotName: string;
 }
 
 const ChatContext = createContext<IChatMessengerContext>(
@@ -137,6 +138,7 @@ const ChatProvider = ({
   chatbotMaxHeigh,
   welcomeMessage,
   chatbotParentHeigh,
+  chatbotName,
 }: IChatProviderProps) => {
   const detectedCountry = useDetectCountry(true, isReferralEnabled);
   const messagesSocketConnection = useRef<any>(null);
@@ -1501,6 +1503,7 @@ const ChatProvider = ({
     welcomeMessage,
     chatbotParentHeigh,
     detectedCountry,
+    chatbotName,
   };
 
   return (
