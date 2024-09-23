@@ -3,7 +3,7 @@ import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`
   position: relative;
-  margin: 0 0 16px;
+  margin: 8px 0 16px;
 
   button {
     opacity: 1;

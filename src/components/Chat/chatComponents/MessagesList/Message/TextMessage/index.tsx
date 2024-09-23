@@ -169,7 +169,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
                         `${attributes.href}`,
                         "_blank"
                       );
-                      newTab!.focus();
+                      newTab?.focus();
                     }}
                     {...attributes.props}
                   >
