@@ -81,7 +81,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
       width: 0;
       height: 0;
       border-style: solid;
-      border-width: 11px 20px 0 0;
+      border-width: 13px 20px 0 0;
       border-color: ${
         isError
           ? COLORS.PIPPIN

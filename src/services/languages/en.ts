@@ -61,7 +61,6 @@ export const en = {
   languages: {
     en: "English",
     fr: "French",
-    ua: "Ukrainian",
   },
   messages: {
     warning:
@@ -76,9 +75,9 @@ export const en = {
     dragAndDrop: "Drag and drop a resume file here",
     answerQuestions: "Answer questions",
     whatJobTitle:
-      "What's your preferred job title? We'll try finding similar jobs.",
+      "What is your preferred job title? We'll try finding similar jobs.",
     where_do_you_want_to_work: "What is your preferred job location?",
-    whatCategoryJob: "What's your preferred job category?",
+    whatCategoryJob: "What is your preferred job category?",
     setJobAlert: "Set Job Alert",
     interestedCategories: "Which job category are you interested in?",
     alertPeriod: "How often would you like to receive your job alerts?",
@@ -86,7 +85,7 @@ export const en = {
     weekly: "Weekly",
     daily: "Daily",
     alertEmail:
-      "What's the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities.",
+      "What is the best email address to reach you? \n \n We will only contact you for updates and potential job opportunities.",
     emailAlreadyProvided:
       "You've successfully subscribed to job alerts using the email address that you already provided",
     successSubscribed: "You've successfully subscribed to job alerts.",
@@ -94,8 +93,8 @@ export const en = {
     contactLater: "We will only contact you for potential job opportunities.",
     niceToMeet: "Nice to meet you, {{name}}",
     reachEmail:
-      "What's the best email address or phone number to reach you? \n \n We will only contact you for potential job opportunities.",
-    whatFullName: "What's your full name?",
+      "What is the best email address or phone number to reach you? \n \n We will only contact you for potential job opportunities.",
+    whatFullName: "What is your full name?",
     fewQuestions:
       "We have a few questions about your background and experience to get your application started.",
     jobRecommendations:
@@ -132,8 +131,8 @@ export const en = {
     processed_your_resume:
       "We have processed your resume and found the following jobs",
     dont_have_answer: "Sorry, I don't have an answer to that question yet",
-    provide_firstname: "What's your first name?",
-    provide_lastname: "What's your last name?",
+    provide_firstname: "What is your first name?",
+    provide_lastname: "What is your last name?",
     please_choose:
       "Please choose one of the following options to begin your job search",
     apply_job_provide_firstname: "So to kick off, what's your first name?",

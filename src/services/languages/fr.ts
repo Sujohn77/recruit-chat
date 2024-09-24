@@ -62,7 +62,6 @@ export const fr = {
   languages: {
     en: "Anglais",
     fr: "Français",
-    ua: "Ukrainien",
   },
   messages: {
     warning:

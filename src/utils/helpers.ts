@@ -118,7 +118,7 @@ export const generateLocalId = (): string => randomString({ length: 32 });
 
 export const getMessageProps = (msg: ILocalMessage): IMessageProps => ({
   isOwn: !!msg.isOwn,
-  padding: "4px",
+  padding: "8px",
   cursor: msg?.content?.subType === MessageType.BUTTON ? "pointer" : "initial",
   stringStyle:
     msg.content.subType === MessageType.SUBMIT_FILE

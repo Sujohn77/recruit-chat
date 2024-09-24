@@ -4,7 +4,6 @@ import Linkify from "linkify-react";
 
 import { Link, Text } from "./styles";
 import * as S from "../styles";
-import { renderSendingTime } from "..";
 import { getIsNextMsgFromSameSender, getMessageProps } from "utils/helpers";
 import { ILocalMessage } from "utils/types";
 import { useTheme } from "styled-components";
@@ -100,8 +99,6 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
               <Text style={{ fontWeight: 400 }}>{disclaimerText}</Text>
             </Linkify>
           </span>
-
-          {renderSendingTime(message)}
         </S.MessageContent>
       </S.MessageBox>
     </S.Wrapper>
