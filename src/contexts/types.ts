@@ -262,7 +262,7 @@ export interface IEmailLogin {
 
 export interface ISendNewMessage {
   isOwn: boolean;
-  localId: string | number | null;
+  localId: string | number;
   newCandidateId?: number;
   message?: string;
   optionId?: number;

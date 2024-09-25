@@ -37,9 +37,25 @@ export const TextMessage: FC<ITextMessageProps> = ({
     offerJobs,
     currentLanguage,
     consentOptIn,
+    firstName,
+    lastName,
   } = useChatMessenger();
   const altMessText = useGetMessageText(message);
   const { t, i18n } = useTranslation();
+
+  const senderName = useMemo<string>(
+    () =>
+      message.isOwn
+        ? firstName && lastName
+          ? `${firstName} ${lastName}`
+          : `${message.sender?.firstName || ""} ${
+              message.sender?.lastName || ""
+            }`
+        : message.sender?.firstName
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
+        : chatbotName || "",
+    [message, firstName, lastName, chatbotName]
+  );
 
   const messageText = useMemo((): ReactNode => {
     const { content } = message;
@@ -187,20 +203,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
 
       {!isNextMessFromSameSender && (
         <SendingTime isOwn={message.isOwn}>
-          {message.sender?.firstName ? (
-            <S.Sender isOwn={!!message.isOwn}>
-              {message.sender?.firstName} {message.sender?.lastName}
-            </S.Sender>
-          ) : (
-            !message.isOwn && (
-              <S.Sender isOwn={!!message.isOwn}>
-                {message.sender?.firstName
-                  ? `${message.sender?.firstName} ${message.sender?.lastName}`
-                  : chatbotName}
-              </S.Sender>
-            )
-          )}
-
+          <S.Sender isOwn={!!message.isOwn}>{senderName}</S.Sender>
           {renderSendingTime(message)}
         </SendingTime>
       )}

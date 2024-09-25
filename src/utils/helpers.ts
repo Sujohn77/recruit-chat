@@ -1,5 +1,5 @@
 import { profile } from "contexts/mockData";
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { Buffer } from "buffer";
 import moment from "moment";
 import randomString from "random-string";
@@ -770,6 +770,18 @@ export const LOG = (
     );
   }
   console.log("_____________________________________________________________");
+};
+
+export const LOG_IF_CHANGE = (
+  logObj: any,
+  description?: string,
+  color = COLORS.PURPLE,
+  background = COLORS.BLACK,
+  log = true
+) => {
+  useEffect(() => {
+    LOG(logObj, description, color, background, log);
+  }, [logObj]);
 };
 
 export const parseFirebaseMessages = (
