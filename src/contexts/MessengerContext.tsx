@@ -70,19 +70,20 @@ import {
   IChatMessengerContext,
   IPPKeys,
   IPortionMessages,
+  IQnAState,
   ISendNewMessage,
   ISubmitMessageProps,
   ITriggerActionProps,
   IUser,
 } from "./types";
-import { useCreateAnonymCandidate } from "./hooks";
+import { useCreateAnonymCandidate, useGetPopularQuestions } from "./hooks";
 import { useIsTabActive, useRequisitions } from "services/hooks";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
 import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
-import { chatMessengerDefaultState, getQuestions } from "./data";
+import { chatMessengerDefaultState } from "./data";
 import { useDetectCountry } from "utils/hooks";
 
 interface Task {
@@ -150,6 +151,7 @@ const ChatProvider = ({
   const queueMessagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
   const isTabActive = useIsTabActive();
+  const getPopularQuestions = useGetPopularQuestions();
   // -------------------------------- State -------------------------------- //
   const sentMessagesRef = useRef<string[]>([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -190,8 +192,16 @@ const ChatProvider = ({
   const [resumeName, setResumeName] = useState("");
   const [showJobAutocompleteBox, setShowJobAutocompleteBox] = useState(false);
   const [requisitionsPage, setRequisitionsPage] = useState(0);
-
   const [categoriesForAlert, setCategoriesForAlert] = useState<string[]>([]);
+
+  const [QnAState, setQnAState] = useState<IQnAState>({
+    questions: [],
+    message: null,
+  });
+
+  useEffect(() => {
+    getPopularQuestions().then((QnAState) => setQnAState(QnAState));
+  }, []);
 
   useEffect(() => {
     const getCategoriesForAlert = async () => {
@@ -1111,6 +1121,7 @@ const ChatProvider = ({
         currentLanguage,
         inlineDisclaimer,
         messages,
+        QnAState,
       });
 
       updatedMessages = getMessagesOnAction({
@@ -1145,6 +1156,7 @@ const ChatProvider = ({
       withFindJobOption,
       sendNewMessage,
       chatConsent,
+      QnAState.message,
     ]
   );
 
@@ -1219,9 +1231,7 @@ const ChatProvider = ({
       messages,
       excludeItem,
       // for ask questions
-      withoutFiltering: getQuestions(isReferralEnabled, companyName).some(
-        (q) => q.text === excludeItem
-      ),
+      withoutFiltering: QnAState.questions.some((q) => q === excludeItem),
     });
 
     if (type) {
@@ -1239,6 +1249,7 @@ const ChatProvider = ({
         currentLanguage,
         inlineDisclaimer,
         messages,
+        QnAState,
       });
 
       switch (type) {
@@ -1524,6 +1535,7 @@ const ChatProvider = ({
     chatbotParentHeigh,
     detectedCountry,
     chatbotName,
+    QNA: QnAState,
   };
 
   return (

@@ -225,6 +225,7 @@ function onMessage(event) {
         window.__chatbot = {
           CODE_VERSION: event.data.payload.CODE_VERSION,
           type: event.data.payload.ENV_TYPE,
+          state: {},
         };
         break;
       default:

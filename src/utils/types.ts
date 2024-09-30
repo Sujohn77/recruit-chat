@@ -1,14 +1,16 @@
-import { ISendNewMessage, ITriggerActionProps } from "contexts/types";
+import {
+  IQnAState,
+  ISendNewMessage,
+  ITriggerActionProps,
+} from "contexts/types";
 import { DocumentChangeType } from "@firebase/firestore-types";
 import { Dispatch, SetStateAction } from "react";
 import { TFunction } from "react-i18next";
 
 import { CHAT_OPTIONS, ChatScreens, TryAgainTypes } from "./constants";
 import {
-  IChatRoomID,
   IMessage,
   IMessageOptions,
-  IMuteStatus,
   IUserSelf,
   LocationType,
 } from "services/types";
@@ -217,6 +219,7 @@ export interface IGetChatResponseProps {
   currentLanguage: string;
   inlineDisclaimer: IPrivacyPolicy | null;
   messages: ILocalMessage[];
+  QnAState: IQnAState;
 }
 
 export interface IFilterItemsWithType {

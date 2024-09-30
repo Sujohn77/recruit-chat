@@ -34,6 +34,7 @@ import {
   parsePathname,
 } from "utils/helpers";
 import { userAPI } from "services/api/user.api";
+import { IQnAState } from "./types";
 
 interface IAksQuestion {
   setMessageValue?: (value: string) => void;
@@ -497,4 +498,29 @@ export const useChatbotHeight = () => {
   }, [chatbotParentHeigh, chatbotMaxHeigh]);
 
   return chatbotHeight;
+};
+
+export const useGetPopularQuestions = () => {
+  const getPopularQuestions = useCallback(async (): Promise<IQnAState> => {
+    const resWithoutData = { message: null, questions: [] };
+    try {
+      let questions: string[] = [];
+      let message: ILocalMessage | null = null;
+      const res: ApiResponse<IAskAQuestionResponse> =
+        await apiInstance.getPopularQuestions();
+
+      if (res.data?.prompts?.length) {
+        questions = res.data?.prompts;
+      }
+      if (res.data?.answers[0]) {
+        message = createTextMess({ text: res.data?.answers[0] });
+      }
+      return { questions, message };
+    } catch (error) {
+      LOG(error, "useGetPopularQuestions error");
+      return resWithoutData;
+    }
+  }, []);
+
+  return getPopularQuestions;
 };

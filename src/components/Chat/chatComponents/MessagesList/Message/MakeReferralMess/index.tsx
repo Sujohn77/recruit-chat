@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { renderSendingTime } from "..";
@@ -8,6 +8,7 @@ import { createTextMess, getMessageProps } from "utils/helpers";
 import { ButtonsOptions, ILocalMessage } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
 import { getValidationRefResponse } from "components/Chat/ChatComponents/ChatInput/data";
+import { SendingTime } from "../TextMessage/styles";
 
 interface IMakeReferralProps {
   message: ILocalMessage;
@@ -27,7 +28,24 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     employeeJobCategory,
     employeeFullName,
     sendNewMessage,
+    firstName,
+    lastName,
+    chatbotName,
   } = useChatMessenger();
+
+  const senderName = useMemo<string>(
+    () =>
+      message.isOwn
+        ? firstName && lastName
+          ? `${firstName} ${lastName}`
+          : `${message.sender?.firstName || ""} ${
+              message.sender?.lastName || ""
+            }`
+        : message.sender?.firstName
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
+        : chatbotName || "",
+    [message, firstName, lastName, chatbotName]
+  );
 
   const onMakeReferral = () => {
     const makeRefMess = createTextMess({
@@ -75,7 +93,10 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
         </DarkButton>
       </S.MessageContent>
 
-      {renderSendingTime(message)}
+      <SendingTime isOwn={message.isOwn}>
+        <S.Sender isOwn={!!message.isOwn}>{senderName}</S.Sender>
+        {renderSendingTime(message)}
+      </SendingTime>
     </S.MessageBox>
   );
 };

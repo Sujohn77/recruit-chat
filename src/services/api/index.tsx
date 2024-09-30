@@ -24,12 +24,9 @@ import {
 } from "../../utils/constants";
 import { getStorageValue, postMessToParent } from "../../utils/helpers";
 import {
-  AppKeyType,
   IRequisitionsResponse,
   ISearchJobsPayload,
-  IUpdateMessagesResponse,
   IUploadCVPayload,
-  IUserSelf,
   IUploadResponse,
   ISendTranscriptResponse,
   ISendTranscript,
@@ -134,12 +131,18 @@ class Api {
       "api/questionAnswering/answers",
       data
     );
-
   connectToLiveChat = () =>
     this.client.post<IAskAQuestionResponse>(
       "api/questionAnswering/answerdata",
       {
         question: "can i speak to someone?",
+      }
+    );
+  getPopularQuestions = () =>
+    this.client.post<IAskAQuestionResponse>(
+      "api/questionAnswering/answerdata",
+      {
+        question: "what are the most popular questions",
       }
     );
 
@@ -149,13 +152,6 @@ class Api {
       data
     );
 
-  markChatRead = (chatId?: number) =>
-    this.client.post<IUpdateMessagesResponse>(
-      "/api/messenger/chat/acknowledge",
-      { chatId }
-    );
-  getUserSelf = (data: AppKeyType) =>
-    this.client.get<IUserSelf>("api/user/self", data);
   uploadCV = (data: IUploadCVPayload) =>
     this.client.post<IUploadResponse>("api/candidate/resume/upload", data);
 
@@ -203,7 +199,7 @@ class Api {
       "api/chatbot/update-or-merge-candidate".trim(),
       data
     );
-  // Referral
+  // ---------------------------- Referral ---------------------------- //
   validateReferral = (data: IValidateRefPayload) =>
     this.client.post<IValidateRefResponse>(
       "/api/chatbot/validate-and-get-worker",
@@ -214,7 +210,7 @@ class Api {
       "/api/referral/createandsend",
       data
     );
-
+  // -------------------------------------------------------------------- //
   checkAnswer = ({ body }: ICheckAnswerPayload) =>
     this.client.post<ICheckAnswerResponse>("/api/messenger/intent/boolean", {
       body,

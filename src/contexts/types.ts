@@ -174,6 +174,7 @@ export interface IChatMessengerContext extends IPPKeys {
   chatbotParentHeigh?: string;
   detectedCountry: string;
   chatbotName: string;
+  QNA: IQnAState;
 }
 
 export type ChatMessengerContextKeys = keyof IChatMessengerContext;
@@ -275,4 +276,9 @@ export interface IPPKeys {
   inlineDisclaimer: IPrivacyPolicy | null;
   footerPrivacyLink: IPrivacyPolicy | null;
   PPLinkUrl: string | null;
+}
+
+export interface IQnAState {
+  message: ILocalMessage | null;
+  questions: string[];
 }

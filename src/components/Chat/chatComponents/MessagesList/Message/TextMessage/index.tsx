@@ -131,19 +131,13 @@ export const TextMessage: FC<ITextMessageProps> = ({
       ? theme.userMessageBubbleColor
       : theme.messageBubbleColor;
 
-  const checkIsWarningMess = () => {
-    if (message.content.text === t("messages:popularQuestions")) {
-      return false;
-    } else {
-      return isWarningMess || !!message.background || isNextMessFromSameSender;
-    }
-  };
-
   return wrongMess ? null : (
     <S.Wrapper position="relative">
       <S.MessageBox
         {...messageProps}
-        isWarningMess={checkIsWarningMess()}
+        isWarningMess={
+          isWarningMess || !!message.background || isNextMessFromSameSender
+        }
         nextMessFromSameSender={isNextMessFromSameSender}
         isError={isErrorMessage}
         style={{

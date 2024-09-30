@@ -11,6 +11,7 @@ import {
   IPrivacyPolicy,
   MessageType,
 } from "./types";
+import { IQnAState } from "contexts/types";
 
 export const isMobile = !!new MobileDetect(navigator.userAgent).mobile();
 
@@ -72,7 +73,6 @@ export enum ChannelName {
 
 interface IGetChatActionMessages {
   type: CHAT_ACTIONS | null;
-  withReferralFlow: boolean;
   referralCompanyName: string | null;
   chatConsent: boolean;
   param?: string;
@@ -81,19 +81,20 @@ interface IGetChatActionMessages {
   inlineDisclaimer: IPrivacyPolicy | null;
   consentOptIn: IPrivacyPolicy | null;
   messages: ILocalMessage[];
+  QnAState: IQnAState;
 }
 
 export const getChatActionMessages = ({
   type,
   chatConsent,
   referralCompanyName,
-  withReferralFlow,
   employeeId,
   param,
   withoutDefaultQuestions,
   inlineDisclaimer,
   consentOptIn,
   messages,
+  QnAState,
 }: IGetChatActionMessages) => {
   if (!chatConsent) {
     return [];
@@ -252,10 +253,12 @@ export const getChatActionMessages = ({
           ]
         : defMessage;
     case CHAT_ACTIONS.ASK_QUESTION:
+      const showQuestionList =
+        QnAState?.message?.content.text && QnAState.questions.length;
       const defQuestions = withoutDefaultQuestions
         ? []
-        : // : getQuestions(withReferralFlow, referralCompanyName);
-          [
+        : showQuestionList
+        ? [
             {
               text: " ",
               subType: MessageType.QUESTIONS_LIST,
@@ -264,12 +267,12 @@ export const getChatActionMessages = ({
             },
             {
               subType: MessageType.TEXT,
-              text: i18n.t("messages:popularQuestions"),
-              i18n: "messages:popularQuestions",
+              text: QnAState?.message?.content.text,
               isChatMessage: true,
               isOwn: false,
             },
-          ];
+          ]
+        : [];
       return withInlineDisclaimer
         ? [
             ...defQuestions,
@@ -278,12 +281,6 @@ export const getChatActionMessages = ({
               text: inlineDisclaimer.content_en,
               isChatMessage: true,
             },
-            // {
-            //   subType: MessageType.TEXT,
-            //   text: i18n.t("messages:warning"),
-            //   i18n: "messages:warning",
-            //   isChatMessage: true,
-            // },
           ]
         : defQuestions;
     case CHAT_ACTIONS.GET_USER_NAME:
@@ -472,6 +469,7 @@ export const getChatActionResponse = ({
   currentLanguage,
   inlineDisclaimer,
   messages,
+  QnAState,
 }: IGetChatResponseProps): ILocalMessage[] => {
   if (
     additionalCondition !== null &&
@@ -494,12 +492,12 @@ export const getChatActionResponse = ({
       currentLanguage,
       inlineDisclaimer,
       messages,
+      QnAState,
     });
   }
 
   const responseMessages = getChatActionMessages({
     type,
-    withReferralFlow,
     referralCompanyName,
     param,
     withoutDefaultQuestions: isQuestion,
@@ -508,6 +506,7 @@ export const getChatActionResponse = ({
     inlineDisclaimer,
     consentOptIn,
     messages,
+    QnAState: QnAState,
   });
 
   return getParsedMessages(responseMessages);

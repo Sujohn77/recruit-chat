@@ -28,6 +28,7 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
     consentOptIn,
     sendNewMessage,
     isReferralEnabled,
+    QNA,
   } = useChatMessenger();
   const { t } = useTranslation();
 
@@ -82,11 +83,11 @@ export const ConsentOptions: FC<IConsentOptionsProps> = ({
                   getChatActionMessages({
                     chatConsent: true,
                     referralCompanyName: "",
-                    withReferralFlow: isReferralEnabled,
                     type: currentMsgType,
                     inlineDisclaimer,
                     consentOptIn,
                     messages,
+                    QnAState: QNA,
                   })
                 );
                 responseMessages.forEach(

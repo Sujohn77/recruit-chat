@@ -9,32 +9,11 @@ import {
 import { IRequisition, MessageType } from "utils/types";
 
 export type DateType = { seconds: number } | string;
-export interface IUpdateMessagesResponse {
-  errorOccurrenceId: null;
-  errors: [];
-  message: null;
-  redirectUri: null;
-  status: null;
-  statusCode: null;
-  success: boolean;
-  unreadMsgCount: number;
-}
 
 export interface IVerifyChatBotResponse {
   isDomainVerified: boolean;
   chatBotStyle: string | null;
   chatBotId: string | null;
-}
-
-export interface IUpdateMessagesResponse {
-  errorOccurrenceId: null;
-  errors: [];
-  message: null;
-  redirectUri: null;
-  status: null;
-  statusCode: null;
-  success: boolean;
-  unreadMsgCount: number;
 }
 
 export interface ISendTranscriptResponse extends ISuccessResponse {}
@@ -44,10 +23,6 @@ export interface ISendTranscript {
   appKey?: string;
   codeVersion?: string;
 }
-
-export type AppKeyType = {
-  appKey: string;
-};
 
 export interface IUserSelf {
   id: number;
@@ -439,6 +414,7 @@ export interface IAskMetadata {
 export interface IAskAQuestionResponse {
   answers: string[];
   metadata?: IAskMetadata[];
+  prompts?: string[];
 }
 
 export interface IContactPersonRes {

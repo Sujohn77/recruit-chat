@@ -57,6 +57,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
     consentOptIn,
     currentLanguage,
     inlineDisclaimer,
+    QNA,
   } = useChatMessenger();
 
   // ----------------------------- STATE ----------------------------- //
@@ -172,6 +173,7 @@ const FileUploadProvider = ({ children }: IFileUploadProviderProps) => {
             PPLinkUrl,
             inlineDisclaimer,
             messages,
+            QnAState: QNA,
           });
           _setMessages([...responseMessages, ...updatedMessages]);
           setShowJobTitles(true);

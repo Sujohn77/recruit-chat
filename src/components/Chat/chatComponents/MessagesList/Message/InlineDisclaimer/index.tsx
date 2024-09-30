@@ -68,18 +68,13 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
 
   return !!disclaimerText ? (
     <S.Wrapper>
-      {message.sender?.firstName && (
-        <S.Sender isOwn={!!message.isOwn}>
-          {message.sender?.firstName} {message.sender?.lastName}
-        </S.Sender>
-      )}
       <S.MessageBox
         {...msgProps}
         isWarningMess={isNextMessFromSameSender}
         style={{
           background: message.background || backgroundColor,
           border: message.border,
-          marginBottom: "4px",
+          marginBottom: isNextMessFromSameSender ? "4px" : "22px",
         }}
       >
         <S.MessageContent
