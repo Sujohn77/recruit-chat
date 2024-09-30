@@ -5,7 +5,7 @@ import parse from "html-react-parser";
 
 import * as S from "./styles";
 import { ButtonsOptions } from "utils/types";
-import { getFormattedDate } from "utils/helpers";
+import { createTextMess, getFormattedDate } from "utils/helpers";
 import { DarkButton } from "components/Layout/styles";
 
 interface IRefViewJobProps {
@@ -19,10 +19,14 @@ export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
 
   const referFriendHandle = useCallback(() => {
     viewJob?.id && setJobId(+viewJob.id);
-    sendNewMessage({
-      message: t("buttons:refer_friend"),
+    const userMess = createTextMess({
       isOwn: true,
-      localId: null,
+      text: t("buttons:refer_friend"),
+    });
+    sendNewMessage({
+      message: userMess.content.text,
+      isOwn: true,
+      localId: userMess.localId,
     });
     chooseButtonOption(
       ButtonsOptions.MAKE_REFERRAL,
@@ -31,7 +35,7 @@ export const ReferralViewJob: FC<IRefViewJobProps> = ({ setJobId }) => {
     );
     localStorage.removeItem(hostname + "viewJob");
     setViewJob(null);
-  }, [viewJob]);
+  }, [viewJob, chooseButtonOption, sendNewMessage]);
 
   return !viewJob ? null : (
     <S.ViewBody>

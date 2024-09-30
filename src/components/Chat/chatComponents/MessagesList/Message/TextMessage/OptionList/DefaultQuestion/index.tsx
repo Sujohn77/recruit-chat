@@ -18,30 +18,33 @@ export const DefOptions: FC<IDefOptions> = ({ message }) => {
   const { dispatch, setChatScreen, sendNewMessage } = useChatMessenger();
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const onSelectOption = useCallback((option: IMessageOption) => {
-    setSelectedId(option.id);
-    const isFindJob = option.id === 1;
-    const isOnlyQnA = message.optionList?.options.length === 1;
-    const screen =
-      ChatScreens[isOnlyQnA ? "QnA" : isFindJob ? "FindAJob" : "QnA"];
-    const type =
-      CHAT_ACTIONS[
-        isOnlyQnA ? "ASK_QUESTION" : isFindJob ? "FIND_JOB" : "ASK_QUESTION"
-      ];
+  const onSelectOption = useCallback(
+    (option: IMessageOption) => {
+      setSelectedId(option.id);
+      const isFindJob = option.id === 1;
+      const isOnlyQnA = message.optionList?.options.length === 1;
+      const screen =
+        ChatScreens[isOnlyQnA ? "QnA" : isFindJob ? "FindAJob" : "QnA"];
+      const type =
+        CHAT_ACTIONS[
+          isOnlyQnA ? "ASK_QUESTION" : isFindJob ? "FIND_JOB" : "ASK_QUESTION"
+        ];
 
-    sendNewMessage({
-      isOwn: false,
-      message: getMessageOptionText(option, t),
-      localId: null,
-    });
-    setChatScreen(screen);
-    dispatch({
-      type,
-      payload: { item: getMessageOptionText(option, t), isChatMessage: true },
-      i18nProps: option.i18nProps,
-      i18n: option.i18nPhrase,
-    });
-  }, []);
+      sendNewMessage({
+        isOwn: false,
+        message: getMessageOptionText(option, t),
+        localId: "DefOptions_null",
+      });
+      setChatScreen(screen);
+      dispatch({
+        type,
+        payload: { item: getMessageOptionText(option, t), isChatMessage: true },
+        i18nProps: option.i18nProps,
+        i18n: option.i18nPhrase,
+      });
+    },
+    [sendNewMessage]
+  );
 
   return (
     <S.OptionListWrapper>

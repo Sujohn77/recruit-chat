@@ -115,10 +115,14 @@ export const ReferralJobOptions: FC<IReferralJobOptionsProps> = ({
             break;
           case 4:
             setSelectedReferralJobId(undefined);
-            sendNewMessage({
-              message: t("referral:general_referral"),
+            const userMess = createTextMess({
               isOwn: true,
-              localId: null,
+              text: t("referral:general_referral"),
+            });
+            sendNewMessage({
+              message: userMess.content.text,
+              isOwn: true,
+              localId: userMess.localId,
             });
             chooseButtonOption(
               ButtonsOptions.MAKE_REFERRAL,

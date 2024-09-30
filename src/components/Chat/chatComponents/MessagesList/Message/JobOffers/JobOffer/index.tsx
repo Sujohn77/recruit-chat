@@ -6,6 +6,7 @@ import parse from "html-react-parser";
 import * as S from "./styles";
 import { ButtonsOptions, IRequisition } from "utils/types";
 import { DarkButton } from "components/Layout/styles";
+import { createTextMess } from "utils/helpers";
 
 interface IJobOfferProps {
   isLastMess: boolean;
@@ -34,18 +35,22 @@ export const JobOffer: React.FC<IJobOfferProps> = ({
   const referFriendHandle = useCallback(() => {
     jobOffer.id && setSelectedReferralJobId(+jobOffer.id);
     localStorage.removeItem(hostname + "viewJob");
+    const userMess = createTextMess({
+      isOwn: true,
+      text: t("buttons:refer_friend"),
+    });
     setViewJob(null);
     sendNewMessage({
-      message: t("buttons:refer_friend"),
+      message: userMess.content.text,
       isOwn: true,
-      localId: null,
+      localId: userMess.localId,
     });
     chooseButtonOption(
       ButtonsOptions.MAKE_REFERRAL,
       t("buttons:refer_friend"),
       "buttons:refer_friend"
     );
-  }, [jobOffer.id]);
+  }, [jobOffer.id, chooseButtonOption, sendNewMessage]);
 
   return (
     <S.JobOfferWrapper>

@@ -30,17 +30,18 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
   } = useChatMessenger();
 
   const onMakeReferral = () => {
+    const makeRefMess = createTextMess({
+      isOwn: true,
+      text: t("buttons:make_referral"),
+      i18n: "buttons:make_referral",
+    });
     if (employeeId) {
       const resMess = getValidationRefResponse(
         employeeJobCategory,
         employeeFullName || refLastName,
         false
       );
-      const makeRefMess = createTextMess({
-        isOwn: true,
-        text: t("buttons:make_referral"),
-        i18n: "buttons:make_referral",
-      });
+
       sendNewMessage({
         isOwn: false,
         message: resMess.content.text,
@@ -49,9 +50,9 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
       setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
     } else {
       sendNewMessage({
-        message: t("buttons:make_referral"),
+        message: makeRefMess.content.text,
         isOwn: true,
-        localId: null,
+        localId: makeRefMess.localId,
       });
       chooseButtonOption(
         ButtonsOptions.MAKE_REFERRAL,

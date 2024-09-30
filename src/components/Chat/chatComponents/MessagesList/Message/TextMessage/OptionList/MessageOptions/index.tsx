@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { IMessageOption } from "services/types";
 import { ILocalMessage } from "utils/types";
 import * as S from "../styles";
+import { generateLocalId } from "utils/helpers";
 
 interface IOptionListProps {
   message: ILocalMessage;
@@ -32,7 +33,7 @@ export const MessageOptions: FC<IOptionListProps> = ({
             optionId: id,
             chatItemId: message.chatItemId,
             isOwn: true,
-            localId: message.localId,
+            localId: generateLocalId(),
           });
         } catch (error) {}
       }

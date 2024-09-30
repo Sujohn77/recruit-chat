@@ -85,6 +85,11 @@ import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
 import { chatMessengerDefaultState, getQuestions } from "./data";
 import { useDetectCountry } from "utils/hooks";
 
+interface Task {
+  task: () => Promise<void>;
+  localId: string;
+}
+
 interface IChatProviderProps extends IPPKeys {
   children: React.ReactNode;
   isReferralEnabled: boolean;
@@ -146,7 +151,7 @@ const ChatProvider = ({
   const { t } = useTranslation();
   const isTabActive = useIsTabActive();
   // -------------------------------- State -------------------------------- //
-
+  const sentMessagesRef = useRef<string[]>([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isLoadedMessages, setIsLoadedMessages] = useState(false);
   const [chatConsent, setChatConsent] = useState(!consentOptIn?.enabled);
@@ -163,7 +168,7 @@ const ChatProvider = ({
 
   const [messages, setMessages] = useState<ILocalMessage[]>([]);
   const [queueForSendingMessages, setQueueForSendingMessages] = useState<
-    (() => Promise<void>)[]
+    Task[]
   >([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -343,7 +348,7 @@ const ChatProvider = ({
   // -------------------------------------------------------------------------------------------- //
 
   useEffect(() => {
-    // LOG(currentMsgType, "currentMsgType");
+    LOG(currentMsgType, "currentMsgType");
     switch (currentMsgType) {
       case CHAT_ACTIONS.UPDATE_OR_MERGE_CANDIDATE:
       case CHAT_ACTIONS.ASK_QUESTION:
@@ -611,6 +616,10 @@ const ChatProvider = ({
         return Promise.resolve();
       }
 
+      if (sentMessagesRef.current.includes(props.localId.toString())) {
+        return Promise.resolve();
+      }
+
       return new Promise<void>((resolve, reject) => {
         const task = async () => {
           if (candidateId && props.message) {
@@ -633,7 +642,7 @@ const ChatProvider = ({
             resolve();
           }
         };
-        addToQueue(task);
+        addToQueue(task, props.localId.toString());
       });
     },
     [isLiveChat, candidateId, queueId, flowId, subscriberWorkflowId]
@@ -1167,15 +1176,26 @@ const ChatProvider = ({
     [nextMessages]
   );
 
-  const addToQueue = useCallback((task: () => Promise<void>) => {
-    setQueueForSendingMessages((prevQueue) => [...prevQueue, task]);
-  }, []);
+  const addToQueue = useCallback(
+    (task: () => Promise<void>, localId: string) => {
+      setQueueForSendingMessages((prevQueue) => {
+        if (
+          prevQueue.some((queuedTask) => queuedTask.localId === localId) ||
+          sentMessagesRef.current.includes(localId)
+        ) {
+          return prevQueue;
+        }
+        sentMessagesRef.current = [...sentMessagesRef.current, localId];
+        return [...prevQueue, { task, localId }];
+      });
+    },
+    []
+  );
 
   const processQueue = useCallback(async () => {
     if (isProcessing || queueForSendingMessages.length === 0) return;
+    const nextTask = queueForSendingMessages[0].task;
     setIsProcessing(true);
-
-    const nextTask = queueForSendingMessages[0];
     await nextTask();
 
     setQueueForSendingMessages((prevQueue) => prevQueue.slice(1));

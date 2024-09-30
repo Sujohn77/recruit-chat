@@ -44,6 +44,7 @@ import {
   getMatchedItems,
   getNextActionType,
   isValidNumber,
+  LOG,
   parsePathname,
   validateEmail,
   validateEmailOrPhone,
@@ -359,7 +360,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             await sendNewMessage({
               message: text,
               isOwn: true,
-              localId: null,
+              localId: "_localId",
             });
             setMessageValue("");
           } catch (error) {
@@ -947,11 +948,16 @@ export const ChatInput: FC<IChatInputProps> = ({
   const onSendMessageHandler = async () => {
     if (!isChatLoading && isTabActive) {
       const withSendMessToSever = withSendNewMess(messageValue, currentMsgType);
+      const newUserMess = messageValue
+        ? createTextMess({
+            isOwn: true,
+            text: messageValue,
+          })
+        : null;
 
-      if (withSendMessToSever && messageValue) {
+      if (withSendMessToSever && newUserMess) {
         if (
           currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
-          messageValue &&
           messages.length === 1
         ) {
           sendNewMessage({
@@ -963,9 +969,9 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         try {
           sendNewMessage({
-            message: messageValue,
             isOwn: true,
-            localId: null,
+            localId: newUserMess.localId,
+            message: newUserMess.content.text,
           });
         } catch (error) {
           console.log(error);
@@ -974,19 +980,20 @@ export const ChatInput: FC<IChatInputProps> = ({
         }
       }
 
-      if (messageValue?.trim() === "can i speak to someone?") {
+      if (newUserMess?.content.text?.trim() === "can i speak to someone?") {
         setMessageValue("");
         setIsOpenBurgerMenu(false);
         connectToLiveChat();
         return;
-      } else if (currentMsgType === CHAT_ACTIONS.LIVE_CHAT && messageValue) {
+      } else if (
+        currentMsgType === CHAT_ACTIONS.LIVE_CHAT &&
+        newUserMess?.content.text
+      ) {
+        LOG(currentMsgType, "__currentMsgType");
         if (!userFName) {
-          setFName(messageValue.trim());
-          setUserFirstName(messageValue.trim());
-          setMessages((prev) => [
-            createTextMess({ isOwn: true, text: messageValue }),
-            ...prev,
-          ]);
+          setFName(newUserMess?.content.text.trim());
+          setUserFirstName(newUserMess?.content.text.trim());
+          setMessages((prev) => [newUserMess, ...prev]);
           setMessageValue("");
           setIsChatLoading(true);
           setTimeout(() => {
@@ -1005,21 +1012,15 @@ export const ChatInput: FC<IChatInputProps> = ({
           }, 500);
           return;
         } else if (!userLName) {
-          setLName(messageValue.trim());
-          setUserLastName(messageValue.trim());
-          setMessages((prev) => [
-            createTextMess({
-              isOwn: true,
-              text: messageValue,
-            }),
-            ...prev,
-          ]);
+          setLName(newUserMess?.content.text.trim());
+          setUserLastName(newUserMess?.content.text.trim());
+          setMessages((prev) => [newUserMess, ...prev]);
           setMessageValue("");
 
           try {
             const candidateData: IUpdateOrMergeCandidateRequest = {
               firstName: userFName,
-              lastName: messageValue.trim(),
+              lastName: newUserMess?.content.text.trim(),
               candidateId: candidateId!,
               chatId: chatId!,
               skipEmailCheck: true,
@@ -1057,19 +1058,19 @@ export const ChatInput: FC<IChatInputProps> = ({
           return;
         } else {
           await sendNewMessage({
-            message: messageValue,
+            message: newUserMess?.content.text,
             isLiveChat: true,
             isOwn: true,
-            localId: null,
+            localId: newUserMess.localId,
           });
         }
         setMessageValue("");
-      } else if (currentMsgType === CHAT_ACTIONS.GET_EMAIL && messageValue) {
-        const emailError = validateEmail(messageValue);
-        setMessages((prevMessages) => [
-          createTextMess({ text: messageValue, isOwn: true }),
-          ...prevMessages,
-        ]);
+      } else if (
+        currentMsgType === CHAT_ACTIONS.GET_EMAIL &&
+        newUserMess?.content.text
+      ) {
+        const emailError = validateEmail(newUserMess?.content.text);
+        setMessages((prevMessages) => [newUserMess, ...prevMessages]);
         setIsChatLoading(true);
         setMessageValue("");
 
@@ -1089,11 +1090,11 @@ export const ChatInput: FC<IChatInputProps> = ({
             setMessages((prev) => [errorMessage, ...prev]);
           }, 300);
         } else {
-          setUserEmail(messageValue.trim());
+          setUserEmail(newUserMess?.content.text.trim());
           const candidatePayload: IUpdateOrMergeCandidateRequest = {
             firstName: userFName,
             lastName: userLName,
-            emailAddress: messageValue.trim(),
+            emailAddress: newUserMess?.content.text.trim(),
             candidateId: candidateId!,
             chatId: chatId!,
             skipEmailCheck: false,
@@ -1116,7 +1117,7 @@ export const ChatInput: FC<IChatInputProps> = ({
             }
 
             if (res?.success) {
-              setEmailAddress(messageValue.trim());
+              setEmailAddress(newUserMess?.content.text.trim());
               setUserFirstName(userFName);
               setUserLastName(userLName);
               setIsCandidateWithEmail(true);
@@ -1133,15 +1134,19 @@ export const ChatInput: FC<IChatInputProps> = ({
         }
       } else if (
         currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
-        messageValue
+        newUserMess &&
+        newUserMess.content.text
       ) {
-        const answer = createTextMess({ text: messageValue, isOwn: true });
-        setMessages((prev) => [answer, ...prev]);
+        const answer = newUserMess;
         setMessageValue("");
 
-        const isConfirm = await checkAnswer(messageValue, isAcceptedApplyJob);
+        const isConfirm = await checkAnswer(
+          newUserMess.content.text,
+          isAcceptedApplyJob
+        );
 
         if (!isConfirm && !isAcceptedApplyJob) {
+          setMessages((prev) => [answer, ...prev]);
           // just set user message
           const chatbotMess = createTextMess({
             text: t("messages:select_option"),
@@ -1194,14 +1199,15 @@ export const ChatInput: FC<IChatInputProps> = ({
 
           setMessages((prev) =>
             consentInMessage
-              ? [consentInMessage, resMess, ...prev]
-              : [resMess, ...prev]
+              ? [consentInMessage, resMess, answer, ...prev]
+              : [resMess, answer, ...prev]
           );
           setIsAcceptedApplyJob(true);
-          setUserFirstName(messageValue.trim());
+          setUserFirstName(newUserMess.content.text.trim());
         } else if (isAcceptedApplyJob) {
           if (!userFName) {
-            setFName(messageValue.trim());
+            setMessages((prev) => [answer, ...prev]);
+            setFName(newUserMess.content.text.trim());
 
             setIsChatLoading(true);
             setTimeout(() => {
@@ -1220,8 +1226,9 @@ export const ChatInput: FC<IChatInputProps> = ({
             }, 500);
             return;
           } else if (!userLName) {
-            setLName(messageValue.trim());
-            setUserLastName(messageValue.trim());
+            setMessages((prev) => [answer, ...prev]);
+            setLName(newUserMess.content.text.trim());
+            setUserLastName(newUserMess.content.text.trim());
 
             const chatbotMess = createTextMess({
               text: t("messages:provideEmail"),
@@ -1236,7 +1243,8 @@ export const ChatInput: FC<IChatInputProps> = ({
             setMessages((prev) => [chatbotMess, ...prev]);
             setMessageValue("");
           } else if (!emailAddress) {
-            const emailError = validateEmail(messageValue);
+            setMessages((prev) => [answer, ...prev]);
+            const emailError = validateEmail(newUserMess.content.text.trim());
             if (emailError) {
               const errorEmailMessage = createTextMess({
                 isError: true,
@@ -1252,7 +1260,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               const candidatePayload: IUpdateOrMergeCandidateRequest = {
                 firstName: userFName,
                 lastName: userLName,
-                emailAddress: messageValue.trim(),
+                emailAddress: newUserMess.content.text.trim(),
                 candidateId: candidateId!,
                 chatId: chatId!,
                 skipEmailCheck: false,
@@ -1275,7 +1283,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                 }
 
                 if (response?.success) {
-                  setEmailAddress(messageValue.trim());
+                  setEmailAddress(newUserMess.content.text.trim());
                   setUserFirstName(userFName);
                   setUserLastName(userLName);
                   setIsCandidateWithEmail(true);
@@ -1340,30 +1348,29 @@ export const ChatInput: FC<IChatInputProps> = ({
               } finally {
                 setIsChatLoading(false);
               }
-              setUserEmail(messageValue);
+              setUserEmail(newUserMess.content.text.trim());
             }
           }
         }
-      } else if (isApplyJobFlow && messageValue) {
+      } else if (isApplyJobFlow && newUserMess) {
         setMessageValue("");
-        await sendNewMessage({
-          message: messageValue,
-          isOwn: true,
-          localId: null,
-        });
+        await sendNewMessage(newUserMess);
       } else {
         const isSendMess =
           (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&
             currentMsgType !== CHAT_ACTIONS.ASK_QUESTION) ||
           requisitions.length;
         if (isSendMess) {
-          sendMessage(messageValue);
+          sendMessage(newUserMess?.content.text || null);
           setIsShowResults(false);
         }
 
         switch (currentMsgType) {
           case CHAT_ACTIONS.ASK_QUESTION:
-            askQuestionHandler({ setMessageValue, question: messageValue });
+            askQuestionHandler({
+              setMessageValue,
+              question: newUserMess?.content.text,
+            });
             break;
           default:
             break;
