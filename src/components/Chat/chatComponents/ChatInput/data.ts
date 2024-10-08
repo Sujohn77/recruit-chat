@@ -312,3 +312,22 @@ export const getAlertJobMessage = (
     });
   }
 };
+
+export const referralOptions = [
+  {
+    id: 1,
+    itemId: 1,
+    isSelected: false,
+    name: i18n.t("labels:yes"),
+    text: i18n.t("labels:yes"),
+    i18nPhrase: "labels:yes",
+  },
+  {
+    id: 2,
+    itemId: 2,
+    isSelected: false,
+    name: i18n.t("labels:no"),
+    text: i18n.t("labels:no"),
+    i18nPhrase: "labels:no",
+  },
+];

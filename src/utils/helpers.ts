@@ -72,6 +72,7 @@ interface ICreateMessage {
   optionList?: null | IMessageOptions;
   locations?: string[];
   nextMsgType?: NextMsgType;
+  jobId?: string | number;
 }
 interface IGetMatchedItems {
   searchStr: string | null;
@@ -973,6 +974,7 @@ export const createTextMess = ({
   optionList,
   locations,
   nextMsgType,
+  jobId,
   _id = generateLocalId(),
   localId = generateLocalId(),
   subType = MessageType.TEXT,
@@ -992,6 +994,7 @@ export const createTextMess = ({
   },
   dateCreated: { seconds: dateCreated?.seconds || new Date().getTime() },
   optionList,
+  jobId,
 });
 
 export const createSendMessPayload = (

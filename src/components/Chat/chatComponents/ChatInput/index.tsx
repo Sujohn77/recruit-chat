@@ -25,6 +25,7 @@ import {
   getReferralQuestion,
   getReferralResponseMess,
   getValidationRefResponse,
+  referralOptions,
 } from "./data";
 import { ICONS } from "assets";
 import { useIsTabActive } from "services/hooks";
@@ -38,7 +39,6 @@ import {
 import {
   createConsentInMsg,
   createTextMess,
-  generateLocalId,
   getInputType,
   getMatchedItem,
   getMatchedItems,
@@ -51,7 +51,6 @@ import {
   withSendNewMess,
 } from "utils/helpers";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
-import { COLORS } from "utils/colors";
 import { useFirebaseSignIn, usePersistStore, useTextField } from "utils/hooks";
 import {
   ISubmitReferral,
@@ -720,20 +719,13 @@ export const ChatInput: FC<IChatInputProps> = ({
             const isOk = previouslyReferredState === 0;
 
             // TODO: refactor
-            const question: ILocalMessage = {
-              isOwn: false,
-              localId: generateLocalId(),
-              _id: generateLocalId(),
-              content: {
-                i18nProps: null,
-                i18n: "",
-                subType: MessageType.TEXT,
-                text: `${getReferralResponseMess(
-                  previouslyReferredState,
-                  firstName,
-                  lastName,
-                  referralCompanyName
-                )}  \n  
+            const question = createTextMess({
+              text: `${getReferralResponseMess(
+                previouslyReferredState,
+                firstName,
+                lastName,
+                referralCompanyName
+              )}  \n  
                   ${
                     jobOffer?.title
                       ? t("referral:refer_someone_else_to_job", {
@@ -744,38 +736,15 @@ export const ChatInput: FC<IChatInputProps> = ({
                         })
                   }
                 `,
-                // TODO: test
-              },
+              isOwn: false,
               optionList: {
                 type: MessageOptionTypes.Referral,
                 isActive: true,
                 status: MessageStatuses[isOk ? "ok" : "warning"],
-                options: [
-                  {
-                    id: 1,
-                    itemId: 1,
-                    isSelected: false,
-                    name: t("labels:yes"),
-                    text: t("labels:yes"),
-                    i18nPhrase: "labels:yes",
-                  },
-                  {
-                    id: 2,
-                    itemId: 2,
-                    isSelected: false,
-                    name: t("labels:no"),
-                    text: t("labels:no"),
-                    i18nPhrase: "labels:no",
-                  },
-                ],
+                options: referralOptions,
               },
-              background: isOk ? COLORS.HAWKES_BLUE : undefined,
-              border: `1px solid ${COLORS[isOk ? "ONAHAU" : "BEAUTY_BUSH"]}`,
               jobId: jobOffer?.id,
-              dateCreated: {
-                seconds: new Date().getTime(),
-              },
-            };
+            });
 
             sendNewMessage({
               isOwn: false,
