@@ -5,8 +5,9 @@ import { COLORS } from "utils/colors";
 import { DarkButton } from "components/Layout/styles";
 
 interface IOptionProps {
-  isLast?: boolean;
   isActive: boolean;
+  isSelected?: boolean;
+  isLast?: boolean;
   height?: string;
 }
 
@@ -50,6 +51,9 @@ export const Option = styled(Button)<IOptionProps>`
 
 export const MessageOption = styled(Option)`
   width: 100%;
+  ${({ isSelected }) =>
+    isSelected &&
+    `background-color: ${COLORS.WHITE} !important; cursor: default !important;`}
 `;
 
 export const OptionText = styled.span``;

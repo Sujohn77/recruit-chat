@@ -20,7 +20,7 @@ export const LinkWrapper = styled.span`
 export const SendingTime = styled.span<{ isOwn?: boolean }>`
   position: absolute;
   ${({ isOwn }) => (isOwn ? "right: 0px" : "left: -3.5px")};
-  bottom: 5px;
+  bottom: 9px;
   display: flex;
   align-items: center;
 `;

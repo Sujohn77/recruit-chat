@@ -1,11 +1,16 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { IMessageOption } from "services/types";
 import { ILocalMessage } from "utils/types";
 import * as S from "../styles";
 import { generateLocalId } from "utils/helpers";
+
+type SelectedOptions = {
+  selectedOptionText?: string;
+  isSelected: boolean;
+};
 
 interface IOptionListProps {
   message: ILocalMessage;
@@ -20,12 +25,13 @@ export const MessageOptions: FC<IOptionListProps> = ({
   isLastMess,
   setSelectedReferralJobId,
 }) => {
-  const { sendNewMessage, currentLanguage } = useChatMessenger();
   const { t, i18n } = useTranslation();
+  const { sendNewMessage, currentLanguage } = useChatMessenger();
+  const selectedOptionRef = useRef<SelectedOptions>({ isSelected: false });
 
   const onSelectOption = useCallback(
     async ({ text, id }: IMessageOption) => {
-      if (text && isLastMess) {
+      if (text && isLastMess && !selectedOptionRef.current.isSelected) {
         setSelectedReferralJobId(undefined);
         try {
           await sendNewMessage({
@@ -35,7 +41,13 @@ export const MessageOptions: FC<IOptionListProps> = ({
             isOwn: true,
             localId: generateLocalId(),
           });
-        } catch (error) {}
+        } catch (error) {
+        } finally {
+          selectedOptionRef.current = {
+            isSelected: true,
+            selectedOptionText: text,
+          };
+        }
       }
     },
     [isLastMess]
@@ -51,9 +63,10 @@ export const MessageOptions: FC<IOptionListProps> = ({
       return (
         <S.MessageOption
           key={o.id}
-          isActive={isLastMess}
-          disabled={!isLastMess}
+          isActive={!selectedOptionRef.current.isSelected}
+          disabled={selectedOptionRef.current.isSelected}
           onClick={() => onSelectOption(o)}
+          isSelected={selectedOptionRef.current.selectedOptionText === text}
         >
           <S.Text>{text}</S.Text>
         </S.MessageOption>
