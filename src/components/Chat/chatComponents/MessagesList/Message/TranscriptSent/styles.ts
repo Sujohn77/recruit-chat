@@ -10,6 +10,7 @@ export const Wrapper = styled.div`
   width: 249px;
   box-sizing: border-box;
   margin-bottom: 24px;
+  margin: 10px auto 10px;
 `;
 
 export const Title = styled.p`

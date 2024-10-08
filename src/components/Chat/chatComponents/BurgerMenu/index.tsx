@@ -221,6 +221,12 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
               await apiInstance.sendTranscript({
                 ChatID: chatId,
               });
+              const successMess = createTextMess({
+                text,
+                isOwn: false,
+                subType: MessageType.TRANSCRIPT,
+              });
+              setMessages((prev) => [successMess, ...prev]);
             } else {
               const saveTranscriptMess = createTextMess({
                 text,
