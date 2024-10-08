@@ -87,10 +87,9 @@ export const Message: FC<IMessageProps> = ({
   }
 };
 
-export const renderSendingTime = (message: ILocalMessage) =>
-  message._id ? (
-    <S.TimeText>
-      {message.dateCreated?.seconds &&
-        moment(message.dateCreated?.seconds! * MS_1000).format("HH:mm A")}
-    </S.TimeText>
-  ) : null;
+export const renderSendingTime = (message: ILocalMessage) => (
+  <S.TimeText>
+    {message.dateCreated?.seconds &&
+      moment(message.dateCreated?.seconds! * MS_1000).format("HH:mm A")}
+  </S.TimeText>
+);

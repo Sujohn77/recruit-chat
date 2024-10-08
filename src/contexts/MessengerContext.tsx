@@ -698,9 +698,6 @@ const ChatProvider = ({
               const requisitionsResponse: ApiResponse<IRequisitionsResponse> =
                 await apiInstance.searchRequisitions(searchParams);
 
-              if (requisitionsResponse.data?.facets.Categories.length) {
-              }
-
               if (requisitionsResponse.data?.requisitions.length) {
                 foundRequisition = find(
                   map(
@@ -719,7 +716,6 @@ const ChatProvider = ({
             _setCategoryTitle(foundRequisition?.title || payload?.item?.trim());
             payload!.item = foundRequisition?.title || payload?.item?.trim();
           }
-
           break;
         }
         case CHAT_ACTIONS.SET_LOCATIONS: {

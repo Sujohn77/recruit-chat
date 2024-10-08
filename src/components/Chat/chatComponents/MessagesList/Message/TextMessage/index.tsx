@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC, ReactNode, useMemo } from "react";
+import { CSSProperties, FC, ReactNode, useMemo } from "react";
 import { useTheme } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Linkify from "linkify-react";
@@ -129,6 +129,14 @@ export const TextMessage: FC<ITextMessageProps> = ({
       : messageProps.isOwn
       ? theme.userMessageBubbleColor
       : theme.messageBubbleColor;
+  const baseInnerStyle = {
+    background: message.background || backgroundColor,
+    border: message.border,
+  };
+  const innerStyle: CSSProperties =
+    message.optionList?.type !== MessageOptionTypes.Consent
+      ? baseInnerStyle
+      : { ...baseInnerStyle, marginBottom: "23px" };
 
   return wrongMess ? null : (
     <S.Wrapper position="relative">
@@ -139,10 +147,7 @@ export const TextMessage: FC<ITextMessageProps> = ({
         }
         nextMessFromSameSender={isNextMessFromSameSender}
         isError={isErrorMessage}
-        style={{
-          background: message.background || backgroundColor,
-          border: message.border,
-        }}
+        style={innerStyle}
       >
         <S.MessageContent
           isError={isErrorMessage}
@@ -194,12 +199,13 @@ export const TextMessage: FC<ITextMessageProps> = ({
         </S.MessageContent>
       </S.MessageBox>
 
-      {!isNextMessFromSameSender && (
-        <SendingTime isOwn={message.isOwn}>
-          <S.Sender isOwn={!!message.isOwn}>{senderName}</S.Sender>
-          {renderSendingTime(message)}
-        </SendingTime>
-      )}
+      {!isNextMessFromSameSender &&
+        message.optionList?.type !== MessageOptionTypes.Consent && (
+          <SendingTime isOwn={message.isOwn}>
+            <S.Sender isOwn={!!message.isOwn}>{senderName}</S.Sender>
+            {renderSendingTime(message)}
+          </SendingTime>
+        )}
     </S.Wrapper>
   );
 };
