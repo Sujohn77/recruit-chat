@@ -366,7 +366,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           sendNewMessage({
             message: text,
             isOwn: true,
-            localId: "_localId",
+            localId: actionType + "_localId",
           });
           setMessageValue("");
         }
@@ -910,7 +910,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               message: userMessWithCategory.content.text,
               localId: userMessWithCategory.localId,
             });
-            onSendMessageHandler();
+            onSendMessageHandler(values[0]);
           }
 
           break;
@@ -918,7 +918,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           if (!!values[0]?.trim()) {
             setSearchLocations(values);
             locationsForAlert.current = values;
-            onSendMessageHandler();
+            onSendMessageHandler(values[0]?.trim());
           }
 
           break;
@@ -954,15 +954,11 @@ export const ChatInput: FC<IChatInputProps> = ({
     }
   };
 
-  const onSendMessageHandler = async () => {
+  const onSendMessageHandler = async (msgText?: string) => {
     if (!isChatLoading && isTabActive) {
       const withSendMessToSever = withSendNewMess(messageValue, currentMsgType);
-      const newUserMess = messageValue
-        ? createTextMess({
-            isOwn: true,
-            text: messageValue,
-          })
-        : null;
+      const text = messageValue || msgText;
+      const newUserMess = text ? createTextMess({ isOwn: true, text }) : null;
 
       if (withSendMessToSever && newUserMess) {
         if (
@@ -1486,7 +1482,7 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         {isWriteAccess && !messages[0]?.optionList && (
           <S.PlaneIcon
-            onClick={onSendMessageHandler}
+            onClick={() => onSendMessageHandler()}
             disabled={isChatLoading}
             src={ICONS.INPUT_PLANE}
             width="16"
