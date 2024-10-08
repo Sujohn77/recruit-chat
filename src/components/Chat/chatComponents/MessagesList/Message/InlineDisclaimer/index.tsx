@@ -61,7 +61,6 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
   }, [currentLanguage, inlineDisclaimer, PPLinkUrl]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
-    isLastMess,
     currentMess: message,
     messages: messages,
   });

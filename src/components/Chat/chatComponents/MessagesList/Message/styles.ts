@@ -56,7 +56,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
   cursor: ${({ cursor }) => cursor};
   padding: ${({ padding }) => padding};
   margin-bottom: ${({ nextMessFromSameSender }) =>
-    nextMessFromSameSender ? 4 : 22}px;
+    nextMessFromSameSender ? 4 : 26}px;
   background: ${({ isOwn, theme, backgroundColor }) =>
     backgroundColor || isOwn ? theme.primaryColor : theme.messageBubbleColor};
   color: ${({ theme, isOwn }) =>

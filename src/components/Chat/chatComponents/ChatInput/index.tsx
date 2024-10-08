@@ -173,6 +173,9 @@ export const ChatInput: FC<IChatInputProps> = ({
   const [phone, setPhone] = useState("");
   const [refError, setRefError] = useState("");
 
+  // TODO: tempo
+  const [searchLocation, setSearchLocation] = useState("");
+
   const locationsForAlert = useRef<string[]>([]);
 
   const [isAcceptedApplyJob, setIsAcceptedApplyJob] = usePersistStore<boolean>(
@@ -269,8 +272,12 @@ export const ChatInput: FC<IChatInputProps> = ({
 
   // Callbacks
   const sendMessage = async (message: string | null) => {
-    const matchedSearchItem = getMatchedItem(message, searchItems);
+    const matchedSearchItem = getMatchedItem(
+      currentMsgType === CHAT_ACTIONS.SET_LOCATIONS ? searchLocation : message,
+      searchItems
+    );
     const isSelectedValues = matchedSearchItem || inputValues.length || message;
+
     const actionType =
       isSelectedValues && currentMsgType
         ? getNextActionType(currentMsgType)
@@ -356,21 +363,23 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         const text = items.length ? items.join("\r\n") : message;
         if (text) {
-          try {
-            await sendNewMessage({
-              message: text,
-              isOwn: true,
-              localId: "_localId",
-            });
-            setMessageValue("");
-          } catch (error) {
-            console.log(error);
-          }
+          sendNewMessage({
+            message: text,
+            isOwn: true,
+            localId: "_localId",
+          });
+          setMessageValue("");
         }
+        const payload = { items: items.length ? items : [message] };
+        LOG(actionType, "actionType");
+        LOG(payload, "payload");
 
+        if (actionType === CHAT_ACTIONS.SET_LOCATIONS && payload.items[0]) {
+          setSearchLocation(payload.items[0]);
+        }
         dispatch({
           type: actionType,
-          payload: { items: items.length ? items : [message] },
+          payload,
           i18nProps: null,
         });
       }
@@ -1354,7 +1363,11 @@ export const ChatInput: FC<IChatInputProps> = ({
         }
       } else if (isApplyJobFlow && newUserMess) {
         setMessageValue("");
-        await sendNewMessage(newUserMess);
+        await sendNewMessage({
+          message: newUserMess.content.text,
+          isOwn: true,
+          localId: newUserMess.localId,
+        });
       } else {
         const isSendMess =
           (currentMsgType !== CHAT_ACTIONS.SET_CATEGORY &&

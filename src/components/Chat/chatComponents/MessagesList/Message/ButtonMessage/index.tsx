@@ -22,7 +22,6 @@ export const ButtonMessage: FC<IButtonMessageProps> = ({
   const connectToLiveChat = useConnectToLiveChat(chatId, chatQueueId);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
-    isLastMess,
     currentMess: mess,
     messages: messages,
   });

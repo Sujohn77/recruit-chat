@@ -113,7 +113,6 @@ export const TextMessage: FC<ITextMessageProps> = ({
   }, [currentLanguage, consentOptIn]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
-    isLastMess,
     currentMess: message,
     messages: messages,
   });

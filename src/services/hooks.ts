@@ -10,23 +10,10 @@ import uniq from "lodash/uniq";
 import uniqBy from "lodash/uniqBy";
 import { ApiResponse } from "apisauce";
 
-import {
-  IAskAQuestionResponse,
-  IContactPersonRes,
-  IRequisitionsResponse,
-  LocationType,
-} from "./types";
+import { IRequisitionsResponse, LocationType } from "./types";
 import { apiInstance } from "services/api";
-import {
-  CHAT_ACTIONS,
-  ILocalMessage,
-  IRequisition,
-  MessageType,
-} from "utils/types";
+import { IRequisition } from "utils/types";
 import { isDevMode } from "utils/constants";
-import some from "lodash/some";
-import { useChatMessenger } from "contexts/MessengerContext";
-import { generateLocalId } from "utils/helpers";
 
 export interface IRequisitionType {
   title: string;

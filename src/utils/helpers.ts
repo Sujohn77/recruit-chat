@@ -1115,17 +1115,20 @@ export const checkTextInTranslations = async (
 };
 
 export const getIsNextMsgFromSameSender = ({
-  isLastMess,
   currentMess,
   messages,
 }: {
-  isLastMess: boolean;
   currentMess: ILocalMessage;
   messages: ILocalMessage[];
-}) => {
-  const messageIndex = messages.findIndex(
-    (m) => m.localId === currentMess.localId
-  );
-  const nextMessage: ILocalMessage | undefined = messages?.[messageIndex - 1];
-  return !isLastMess && !!nextMessage?.isOwn === !!currentMess.isOwn;
+}): boolean => {
+  const messageIndex = messages.findIndex((m) => m._id === currentMess._id);
+  const nextMessage: ILocalMessage | undefined =
+    messageIndex === 0 ? undefined : messages?.[messageIndex + 1];
+  const isSameOwn =
+    !!nextMessage?.isOwn === !!currentMess.isOwn ||
+    (!!nextMessage?.sender?.id &&
+      !!currentMess.sender?.id &&
+      nextMessage.sender.id === currentMess.sender.id);
+
+  return messageIndex !== 0 && isSameOwn;
 };

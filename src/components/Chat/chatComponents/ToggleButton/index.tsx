@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
+import { COLORS } from "utils/colors";
 
 const ButtonContainer = styled.div<{ isOpen: boolean }>`
   display: flex;
@@ -11,11 +12,13 @@ const ButtonContainer = styled.div<{ isOpen: boolean }>`
   border-radius: 5px;
   margin-top: 2px;
   margin-bottom: 12px;
+  color: ${COLORS.DUSTY_GRAY};
 
   span {
     margin-right: 5px;
     transform: ${({ isOpen }) => (isOpen ? "rotate(180deg)" : "rotate(0)")};
     transition: transform 0.3s ease;
+    color: ${COLORS.DUSTY_GRAY};
   }
 `;
 
