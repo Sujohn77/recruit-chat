@@ -7,7 +7,7 @@ import { ChatScreens, EventIds } from "utils/constants";
 import { CHAT_ACTIONS, ILocalMessage, IRequisition } from "utils/types";
 import { postMessToParent } from "utils/helpers";
 import { useTranslation } from "react-i18next";
-import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 
 interface IStorePersistProps {
   children?: React.ReactNode | React.ReactNode[];

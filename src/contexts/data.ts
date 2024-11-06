@@ -1,4 +1,4 @@
-import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 import i18n from "services/localization";
 import { MessageType } from "utils/types";
 import { IChatMessengerContext } from "./types";

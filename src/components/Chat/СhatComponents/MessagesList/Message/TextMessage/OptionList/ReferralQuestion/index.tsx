@@ -1,0 +1,123 @@
+import { useChatMessenger } from "contexts/MessengerContext";
+import { FC, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import map from "lodash/map";
+
+import * as S from "../styles";
+import { createTextMess } from "utils/helpers";
+import { IMessageOption } from "services/types";
+import { ButtonsOptions, CHAT_ACTIONS, ILocalMessage } from "utils/types";
+import { getValidationRefResponse } from "components/Chat/СhatComponents/ChatInput/data";
+
+interface IOptionListProps {
+  message: ILocalMessage;
+  isLastMess: boolean;
+  setSelectedReferralJobId: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+}
+
+export const ReferralQuestion: FC<IOptionListProps> = ({
+  message,
+  isLastMess,
+  setSelectedReferralJobId,
+}) => {
+  const {
+    setMessages,
+    setCurrentMsgType,
+    refLastName,
+    employeeJobCategory,
+    employeeFullName,
+    employeeId,
+    chooseButtonOption,
+    setViewJob,
+    hostname,
+    sendNewMessage,
+  } = useChatMessenger();
+  const { t } = useTranslation();
+
+  const onSelectAnswer = useCallback(
+    (answer: IMessageOption) => {
+      if (isLastMess) {
+        switch (answer.id) {
+          case 1:
+            const answer = createTextMess({
+              isOwn: true,
+              text: t("labels:yes"),
+            });
+            sendNewMessage({
+              message: answer.content.text,
+              isOwn: true,
+              localId: answer.localId,
+            });
+            chooseButtonOption(
+              ButtonsOptions.MAKE_REFERRAL,
+              t("labels:yes"),
+              "labels:yes"
+            );
+            setMessages((prev) => [
+              ...prev.map((m) =>
+                m._id === message._id ? { ...m, optionList: undefined } : m
+              ),
+            ]);
+            localStorage.removeItem(hostname + "viewJob");
+            setViewJob(null);
+            break;
+          case 2:
+            setSelectedReferralJobId(undefined);
+            const newReferWithRefHistory = getValidationRefResponse(
+              employeeJobCategory,
+              employeeFullName || refLastName,
+              false,
+              true
+            );
+
+            sendNewMessage({
+              isOwn: false,
+              message: newReferWithRefHistory.content.text,
+              localId: newReferWithRefHistory.localId,
+            });
+            const answer2 = createTextMess({
+              isOwn: true,
+              text: t("labels:no"),
+              i18n: "labels:no",
+            });
+            setMessages((prev) => [
+              newReferWithRefHistory,
+              answer2,
+              ...prev.map((m) =>
+                m._id === message._id ? { ...m, optionList: undefined } : m
+              ),
+            ]);
+            setCurrentMsgType(CHAT_ACTIONS.REFERRAL_IS_SUBMITTED);
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [isLastMess, employeeJobCategory, employeeFullName, employeeId]
+  );
+
+  return (
+    <>
+      {message.optionList?.text && (
+        <S.MessageText>{message.optionList?.text}</S.MessageText>
+      )}
+
+      <S.List>
+        {map(message?.optionList?.options, (option) => (
+          <S.Option
+            key={`${option.id}-${option.text}-${option.name}`}
+            onClick={() => onSelectAnswer(option)}
+            isActive={isLastMess}
+            disabled={!isLastMess}
+            height="35px"
+          >
+            <S.OptionText>{option.text}</S.OptionText>
+          </S.Option>
+        ))}
+      </S.List>
+    </>
+  );
+};

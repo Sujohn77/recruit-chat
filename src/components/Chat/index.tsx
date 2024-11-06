@@ -11,7 +11,7 @@ import {
   ViewJob,
   Login,
   Logout,
-} from "./ChatComponents";
+} from "./СhatComponents";
 import { CHAT_ACTIONS } from "utils/types";
 import { postMessToParent } from "utils/helpers";
 import {

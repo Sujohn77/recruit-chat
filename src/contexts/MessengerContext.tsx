@@ -82,7 +82,7 @@ import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
-import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 import { chatMessengerDefaultState } from "./data";
 import { useDetectCountry } from "utils/hooks";
 

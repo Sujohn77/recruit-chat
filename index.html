@@ -66,7 +66,7 @@
       "allow-same-origin"
     );
     ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; border: none;`;
-
+    // transition: all 0.5s ease-in-out;
     const showChatbot = isChatbotAvailable(props?.pages);
 
     if (showChatbot) {
@@ -230,7 +230,6 @@
           window.__chatbot = {
             CODE_VERSION: event.data.payload.CODE_VERSION,
             type: event.data.payload.ENV_TYPE,
-            state: {},
           };
           break;
         default:

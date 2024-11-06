@@ -17,7 +17,7 @@ import {
   IPrivacyPolicy,
 } from "utils/types";
 import { IResumeData } from "./FileUploadContext";
-import { ReferralSteps } from "components/Chat/ChatComponents/ChatInput/data";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 
 export interface ISearchRequisition {
   title: string;
