@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { MessageBox } from "components/Chat/СhatComponents/MessagesList/Message/styles";
+import styled from "styled-components";
 
 interface IFrProps {
   isFrench?: boolean;
@@ -31,8 +31,6 @@ export const Header = styled.div`
 export const Close = styled.div<{ height?: string; color?: string }>`
   position: absolute;
   right: 16px;
-
-  
   top: 10px;
   cursor: pointer;
   width: 18px;

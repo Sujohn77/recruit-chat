@@ -9,12 +9,15 @@ import { EventIds } from "utils/constants";
 import {
   createSendMessPayload,
   generateLocalId,
+  LOG,
   postMessToParent,
 } from "utils/helpers";
 import { DarkButton } from "components/Layout/styles";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { apiInstance } from "services/api";
 import { Loader } from "components/Layout";
+import { ApiResponse } from "apisauce";
+import { IFollowingResponse } from "services/types";
 
 interface ILogoutProps {
   showSessionWarning: boolean;
@@ -45,17 +48,20 @@ export const Logout: FC<ILogoutProps> = ({
 
   const logoutHandle = useCallback(async () => {
     const refreshChatbot = () => {
-      postMessToParent(EventIds.RefreshChatbot);
-      localStorage.clear();
-      localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+      setTimeout(() => {
+        setLoading(false);
+        postMessToParent(EventIds.RefreshChatbot);
+        localStorage.clear();
+        localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
 
-      if (parentPathname.includes("job")) {
-        // close chatbot and show chatbot icon
-        browserStorage.set(hostname + "isClosed", true);
-        browserStorage.set(hostname + "show_icon", true);
-        setIsClosed(true);
-        setShowIcon(true);
-      }
+        if (parentPathname.includes("job")) {
+          // close chatbot and show chatbot icon
+          browserStorage.set(hostname + "isClosed", true);
+          browserStorage.set(hostname + "show_icon", true);
+          setIsClosed(true);
+          setShowIcon(true);
+        }
+      }, 1500);
     };
 
     if (candidateId && flowId && subscriberWorkflowId) {
@@ -72,17 +78,22 @@ export const Logout: FC<ILogoutProps> = ({
       if (payload) {
         try {
           setLoading(true);
+          LOG(payload);
           // TODO: delete after adding a new endpoint for chat terminating !!!
           if (payload) {
-            await apiInstance.sendMessage(payload);
+            const res: ApiResponse<IFollowingResponse> =
+              await apiInstance.sendMessage(payload);
+
+            LOG(res, "LOGOUT response");
+            refreshChatbot();
           }
         } catch (error) {
+          LOG(error, "logout error");
+          refreshChatbot();
         } finally {
-          setLoading(false);
+          LOG("finally");
           refreshChatbot();
         }
-      } else {
-        refreshChatbot();
       }
     } else {
       refreshChatbot();
@@ -106,10 +117,13 @@ export const Logout: FC<ILogoutProps> = ({
               <Loader showLoader absolutePosition={false} />
             ) : (
               <>
-                <DarkButton onClick={logoutHandle}>
+                <DarkButton disabled={loading} onClick={logoutHandle}>
                   {t("labels:yes")}
                 </DarkButton>
-                <DarkButton onClick={() => setShowConfirmLogout(false)}>
+                <DarkButton
+                  disabled={loading}
+                  onClick={() => setShowConfirmLogout(false)}
+                >
                   {t("labels:cancel")}
                 </DarkButton>
               </>

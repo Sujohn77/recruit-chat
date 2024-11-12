@@ -1,7 +1,7 @@
-import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 import i18n from "services/localization";
 import { MessageType } from "utils/types";
 import { IChatMessengerContext } from "./types";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 
 export const chatMessengerDefaultState: IChatMessengerContext = {
   messages: [],

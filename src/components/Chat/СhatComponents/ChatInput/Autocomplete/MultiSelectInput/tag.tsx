@@ -2,7 +2,7 @@ import { AutocompleteGetTagProps, Tooltip } from "@mui/material";
 
 import * as S from "./styles";
 import { COLORS } from "utils/colors";
-import { Close } from "screens/IntroSome/styles";
+import { Close } from "screens/styles";
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
   label: string;

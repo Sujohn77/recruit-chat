@@ -46,6 +46,7 @@ import {
   LocalStorage,
   REFERRAL_OFFER_TEXT,
   Status,
+  StorageKeys,
 } from "utils/constants";
 import {
   replaceItemsWithType,
@@ -82,9 +83,9 @@ import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { FirebaseSocketReactivePagination } from "services/firebase/socket";
 import { SocketCollectionPreset } from "services/firebase/socket.options";
-import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 import { chatMessengerDefaultState } from "./data";
 import { useDetectCountry } from "utils/hooks";
+import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 
 interface Task {
   task: () => Promise<void>;
@@ -147,11 +148,22 @@ const ChatProvider = ({
   chatbotName,
 }: IChatProviderProps) => {
   const detectedCountry = useDetectCountry(true, isReferralEnabled);
-  const messagesSocketConnection = useRef<any>(null);
-  const queueMessagesSocketConnection = useRef<any>(null);
   const { t } = useTranslation();
   const isTabActive = useIsTabActive();
   const getPopularQuestions = useGetPopularQuestions();
+
+  const firstMessDate = useRef<Date | null>(null);
+  const messagesSocketConnection = useRef<any>(null);
+  const queueMessagesSocketConnection = useRef<any>(null);
+
+  useEffect(() => {
+    const storedFirstMessDate = localStorage.getItem(
+      hostname + StorageKeys.FirstMessDate
+    );
+    if (storedFirstMessDate) {
+      firstMessDate.current = new Date(storedFirstMessDate);
+    }
+  }, []);
   // -------------------------------- State -------------------------------- //
   const sentMessagesRef = useRef<string[]>([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -262,7 +274,6 @@ const ChatProvider = ({
 
   const [isCandidateAnonym, setIsCandidateAnonym] = useState<boolean>(true);
   const [candidateId, setCandidateId] = useState<number | undefined>();
-  const [chatId, setChatId] = useState<number | undefined>();
   const [queueChatId, setQueueChatId] = useState<number | null>(null);
   const [isApplyJobSuccessfully, setIsApplyJobSuccessfully] = useState(false);
   const [isCandidateWithEmail, setIsCandidateWithEmail] = useState(false);
@@ -275,7 +286,9 @@ const ChatProvider = ({
   >(undefined);
   const [isChatInputAvailable, setIsChatInputAvailable] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
+  const [chatId, setChatId] = useState<number | undefined>();
 
+  const candidateIdRef = useRef<number | undefined>();
   // Candidate info
   const [emailAddress, setEmailAddress] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -312,6 +325,10 @@ const ChatProvider = ({
   useEffect(() => {
     createAnonymCandidate();
   }, []);
+
+  useEffect(() => {
+    candidateIdRef.current = candidateId;
+  }, [candidateId]);
 
   useEffect(() => {
     const storedCurrentLanguage = localStorage.getItem(
@@ -382,29 +399,21 @@ const ChatProvider = ({
 
   // ----------------------------------------------------------------------------- //
 
-  //.filter((newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id))
-
-  // useEffect(() => {
-  //   setMessages((prevMessages) => {
-  //     const parsedFBMessages = parseFirebaseMessages(
-  //       _firebaseMessages,
-  //       t,
-  //       candidateId
-  //     ).filter((newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id));
-
-  //     return unionBy<ILocalMessage>(
-  //       [...parsedFBMessages, ...prevMessages],
-  //       "_id"
-  //     );
-  //   });
-  // }, [_firebaseMessages]);
-
   useEffect(() => {
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseMessages, t, candidateId).filter(
-            (newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id)
+          ...parseFirebaseMessages({
+            fMessages: _firebaseMessages,
+            t,
+            candidateId,
+          }).filter(
+            (newMsg) =>
+              !prevMessages.some(
+                (msg) =>
+                  msg._id === newMsg._id ||
+                  (!!msg.localId && msg.localId === newMsg.localId)
+              )
           ),
           ...prevMessages,
         ],
@@ -457,7 +466,11 @@ const ChatProvider = ({
     setMessages((prevMessages) =>
       unionBy<ILocalMessage>(
         [
-          ...parseFirebaseMessages(_firebaseQueueMessages, t, candidateId),
+          ...parseFirebaseMessages({
+            fMessages: _firebaseQueueMessages,
+            t,
+            candidateId,
+          }),
           ...prevMessages,
         ],
         "_id"
@@ -628,6 +641,14 @@ const ChatProvider = ({
 
       if (sentMessagesRef.current.includes(props.localId.toString())) {
         return Promise.resolve();
+      }
+
+      if (!firstMessDate.current) {
+        firstMessDate.current = new Date();
+        localStorage.setItem(
+          hostname + StorageKeys.FirstMessDate,
+          new Date().toString()
+        );
       }
 
       return new Promise<void>((resolve, reject) => {
@@ -1338,7 +1359,7 @@ const ChatProvider = ({
   };
 
   const updateMessages = async (serverMessages: IMessage[]) => {
-    const parsedMessages = getServerParsedMessages(serverMessages);
+    const parsedMessages = getServerParsedMessages(serverMessages, candidateId);
 
     if (!messages.length) {
       setMessages(parsedMessages.reverse());

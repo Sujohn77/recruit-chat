@@ -1,5 +1,5 @@
 import { useChatMessenger } from "contexts/MessengerContext";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import moment from "moment";
 
 import * as S from "./styles";
@@ -32,11 +32,22 @@ export const Message: FC<IMessageProps> = ({
   message,
   setSelectedReferralJobId,
 }) => {
-  const { messages } = useChatMessenger();
+  const { messages, firstName, lastName, chatbotName } = useChatMessenger();
   const subType = message?.content?.subType;
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
   const isLastMess = messageIndex === 0;
-  const defProps = { isLastMess, message };
+  const senderName = useMemo<string>(
+    () =>
+      message.isOwn
+        ? `${message.sender?.firstName || firstName || ""} ${
+            message.sender?.lastName || lastName || ""
+          }`
+        : message.sender?.firstName
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
+        : chatbotName || "",
+    [message, firstName, lastName, chatbotName]
+  );
+  const defProps = { isLastMess, message, senderName };
 
   switch (subType) {
     case MessageType.INITIAL_MESSAGE:

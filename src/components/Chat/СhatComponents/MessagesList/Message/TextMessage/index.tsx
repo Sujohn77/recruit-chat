@@ -46,11 +46,9 @@ export const TextMessage: FC<ITextMessageProps> = ({
   const senderName = useMemo<string>(
     () =>
       message.isOwn
-        ? firstName && lastName
-          ? `${firstName} ${lastName}`
-          : `${message.sender?.firstName || ""} ${
-              message.sender?.lastName || ""
-            }`
+        ? `${message.sender?.firstName || firstName || ""} ${
+            message.sender?.lastName || lastName || ""
+          }`
         : message.sender?.firstName
         ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : chatbotName || "",

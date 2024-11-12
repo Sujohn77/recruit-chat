@@ -121,6 +121,7 @@ class Api {
 
   setHeader = (key: string, value: string) => this.client.setHeader(key, value);
   removeHeader = (key: string) => this.client.deleteHeader(key);
+  delay = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
   setChatAuthHeader = (token: string) =>
     this.client.setHeader("Authorization", "chatbot-jwt-token " + token);
 
@@ -194,11 +195,13 @@ class Api {
       data
     );
   // -------------------------------------------------------------------- //
-  updateOrMargeCandidate = (data: IUpdateOrMergeCandidateRequest) =>
-    this.client.post<IUpdateOrMergeCandidateResponse>(
+  updateOrMargeCandidate = async (data: IUpdateOrMergeCandidateRequest) => {
+    await this.delay();
+    return this.client.post<IUpdateOrMergeCandidateResponse>(
       "api/chatbot/update-or-merge-candidate".trim(),
       data
     );
+  };
   // ---------------------------- Referral ---------------------------- //
   validateReferral = (data: IValidateRefPayload) =>
     this.client.post<IValidateRefResponse>(

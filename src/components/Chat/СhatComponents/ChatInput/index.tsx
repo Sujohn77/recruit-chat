@@ -934,6 +934,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           currentMsgType === CHAT_ACTIONS.APPLY_JOB_FROM_PARENT_SITE &&
           messages.length === 1
         ) {
+          LOG(messages, " messages.length === 1, messages ->");
           sendNewMessage({
             isOwn: false,
             message: messages[0].content.text,
@@ -1119,6 +1120,8 @@ export const ChatInput: FC<IChatInputProps> = ({
           isAcceptedApplyJob
         );
 
+        LOG(isAcceptedApplyJob, "isAcceptedApplyJob");
+
         if (!isConfirm && !isAcceptedApplyJob) {
           setMessages((prev) => [answer, ...prev]);
           // just set user message
@@ -1208,6 +1211,7 @@ export const ChatInput: FC<IChatInputProps> = ({
               text: t("messages:provideEmail"),
               i18n: "messages:provideEmail",
             });
+            LOG(chatbotMess, chatbotMess.content.text);
 
             sendNewMessage({
               isOwn: false,

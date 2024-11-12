@@ -11,11 +11,11 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
 import { PhoneInputWrapper } from "./styles";
+import { SearchResults } from "../SearchResults";
 import { useIsTabActive } from "services/hooks";
 import { isResultsType } from "utils/helpers";
 import { TextFieldTypes } from "utils/constants";
 import { DefaultInput } from "components/Layout";
-import { SearchResults } from "components/Chat/СhatComponents/ChatInput/Autocomplete/SearchResults";
 import { CHAT_ACTIONS } from "utils/types";
 
 interface IAutocompleteProps {

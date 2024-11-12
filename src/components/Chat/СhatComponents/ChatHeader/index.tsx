@@ -6,7 +6,7 @@ import { useTheme } from "styled-components";
 import * as S from "./styles";
 import { BackButton } from "../ViewJob/styles";
 import { DefaultThemeType } from "utils/theme/default";
-import { Flex, IntroImage } from "screens/IntroSome/styles";
+import { Flex, IntroImage } from "screens/styles";
 
 interface IChatHeaderProps {
   showLoginScreen: boolean;

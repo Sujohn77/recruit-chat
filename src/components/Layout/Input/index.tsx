@@ -10,10 +10,10 @@ import {
 
 import * as S from "./styles";
 import { IMAGES } from "assets";
-import { INPUT_TYPES, InputTheme } from "utils/constants";
-import { Image } from "screens/IntroSome/styles";
-import { useChatMessenger } from "contexts/MessengerContext";
+import { Image } from "screens/styles";
 import { CHAT_ACTIONS } from "utils/types";
+import { INPUT_TYPES, InputTheme } from "utils/constants";
+import { useChatMessenger } from "contexts/MessengerContext";
 
 interface IInputProps {
   value: string;

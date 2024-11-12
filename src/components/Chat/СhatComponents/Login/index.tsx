@@ -10,7 +10,7 @@ import * as S from "./styles";
 import { CHAT_ACTIONS } from "utils/types";
 import { validateEmail } from "utils/helpers";
 import { FormButton } from "../MessagesList/Message/EmailForm/styles";
-import { FormInput } from "components/Chat/СhatComponents/ChatInput/Autocomplete/styles";
+import { FormInput } from "../ChatInput/Autocomplete/styles";
 
 const ANIMATION_ID = "LOGIN_ANIMATION_ID";
 

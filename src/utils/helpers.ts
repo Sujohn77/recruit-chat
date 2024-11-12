@@ -1,4 +1,3 @@
-import { profile } from "contexts/mockData";
 import { CSSProperties, useEffect } from "react";
 import { Buffer } from "buffer";
 import moment from "moment";
@@ -100,6 +99,12 @@ interface IParseParentPathName {
   keyword: string | null;
   jobId: number | null;
 }
+interface IFirebaseMsgData {
+  fMessages: IMessage[];
+  t: TFunction;
+  candidateId?: number;
+}
+
 export interface ICreateSendMessPayload extends ISendNewMessage {
   candidateId: number;
   queueId?: number | null;
@@ -293,7 +298,10 @@ export const getParsedMessage = ({
   };
 };
 
-export const getServerParsedMessages = (messages: IMessage[]) => {
+export const getServerParsedMessages = (
+  messages: IMessage[],
+  candidateId?: number
+) => {
   const parsedMessages = map(messages, (msg) => {
     const content: IContent = {
       subType: msg?.content?.subType,
@@ -304,7 +312,7 @@ export const getServerParsedMessages = (messages: IMessage[]) => {
     return {
       dateCreated: msg.dateCreated,
       content,
-      isOwn: msg.sender.id === profile.id,
+      isOwn: msg.sender.id === candidateId,
       localId: msg.localId,
       _id: msg.chatItemId,
     };
@@ -785,11 +793,11 @@ export const LOG_IF_CHANGE = (
   }, [logObj]);
 };
 
-export const parseFirebaseMessages = (
-  fMessages: IMessage[],
-  t: TFunction,
-  candidateId?: number
-): ILocalMessage[] => {
+export const parseFirebaseMessages = ({
+  t,
+  fMessages,
+  candidateId,
+}: IFirebaseMsgData): ILocalMessage[] => {
   let messages = fMessages;
 
   if (fMessages.length > 1) {
@@ -992,7 +1000,9 @@ export const createTextMess = ({
     locations,
     nextMsgType,
   },
-  dateCreated: { seconds: dateCreated?.seconds || new Date().getTime() },
+  dateCreated: {
+    seconds: dateCreated?.seconds || moment().unix(),
+  },
   optionList,
   jobId,
 });
@@ -1134,4 +1144,13 @@ export const getIsNextMsgFromSameSender = ({
       nextMessage.sender.id === currentMess.sender.id);
 
   return messageIndex !== 0 && isSameOwn;
+};
+
+export const checkMessageDate = (
+  dateInput: { seconds: number },
+  firstTime?: React.MutableRefObject<Date | null | undefined>
+) => {
+  return firstTime?.current
+    ? moment.unix(dateInput.seconds).isAfter(firstTime?.current)
+    : true;
 };

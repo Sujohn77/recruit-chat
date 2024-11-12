@@ -1,5 +1,6 @@
+import { Close } from "screens/styles";
 import styled from "styled-components";
-import { Close } from "screens/IntroSome/styles";
+
 import { COLORS } from "utils/colors";
 
 export const Wrapper = styled.div`

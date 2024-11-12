@@ -14,13 +14,17 @@ import * as S from "./styles";
 import { Burger } from "./Burger";
 import { MenuItem } from "./MenuItem";
 import { ConfirmPanel } from "./ConfirmPanel";
-
+import {
+  baseWithRefItems,
+  baseWithRef,
+  menuForCandidateWithEmail,
+  menuItems,
+} from "./data";
 import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { createTextMess } from "utils/helpers";
 import { CHAT_ACTIONS, IMenuItem, MessageType, NextMsgType } from "utils/types";
-import { getValidationRefResponse } from "components/Chat/СhatComponents/ChatInput/data";
-import { baseWithRef, baseWithRefItems, menuForCandidateWithEmail, menuItems } from "./data";
+import { getValidationRefResponse } from "../ChatInput/data";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;

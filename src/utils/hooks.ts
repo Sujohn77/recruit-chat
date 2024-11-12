@@ -254,7 +254,7 @@ export const useChatbotSideEffects = (isSelectedOption: boolean) => {
     if (!isNull(chatScreen)) {
       const currentTime = new Date();
       const difference = currentTime.getTime() - firstTime.current.getTime(); // difference in milliseconds
-      let resultInMinutes = Math.round(difference / 60000);
+      const resultInMinutes = Math.round(difference / 60000);
 
       // when the candidate selects one of the chatbot options (ask a question or find a job)
       // then check how much time the token has left

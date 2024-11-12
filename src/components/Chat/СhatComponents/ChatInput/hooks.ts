@@ -5,62 +5,9 @@ import { useTranslation } from "react-i18next";
 
 import { apiInstance } from "services/api";
 import { ICheckAnswerResponse } from "services/types";
-import { createTextMess } from "utils/helpers";
 import { CHAT_ACTIONS, MessageType } from "utils/types";
 import { TextFieldTypes } from "utils/constants";
 import { useTextField } from "utils/hooks";
-
-interface ISetUserDataProps {
-  messageValue: string;
-  withEmail?: boolean;
-}
-
-export const useSetUserData = (): ((
-  props: ISetUserDataProps
-) => Promise<void>) => {
-  const { t } = useTranslation();
-  const {
-    firstName,
-    setFirstName,
-    setMessages,
-    setIsChatLoading,
-    sendNewMessage,
-  } = useChatMessenger();
-
-  const setResponseWithDelay = useCallback((text: string, i18n?: string) => {
-    setIsChatLoading(true);
-    setTimeout(() => {
-      setIsChatLoading(false);
-      const res = createTextMess({ text, i18n });
-      sendNewMessage({
-        isOwn: false,
-        message: res.content.text,
-        localId: res.localId,
-      });
-      setMessages((prevMessages) => [res, ...prevMessages]);
-    }, 500);
-  }, []);
-
-  return useCallback(
-    async ({ messageValue }: ISetUserDataProps) => {
-      if (!firstName) {
-        setFirstName(messageValue.trim());
-        setMessages((prev) => [
-          createTextMess({ isOwn: true, text: messageValue }),
-          ...prev,
-        ]);
-
-        setResponseWithDelay(
-          t("messages:provide_lastname"),
-          "messages:provide_lastname"
-        );
-
-        return;
-      }
-    },
-    [firstName]
-  );
-};
 
 export const useCheckAnswer = () =>
   useCallback(

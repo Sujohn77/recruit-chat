@@ -1,3 +1,4 @@
+import moment from "moment";
 import i18n from "services/localization";
 import { IMessageOption } from "services/types";
 import { MessageOptionTypes, ReferralResponse } from "utils/constants";
@@ -194,7 +195,7 @@ export const getValidationRefResponse = (
       options: getReferralOptions(searchCategory, withReferralsHistoryBtn),
     },
     dateCreated: {
-      seconds: new Date().getTime(),
+      seconds: moment().unix(),
     },
   });
 

@@ -6,11 +6,11 @@ import * as S from "./styles";
 import {
   ChatHeader,
   ChatInput,
+  Login,
+  Logout,
   MessagesList,
   ReferralViewJob,
   ViewJob,
-  Login,
-  Logout,
 } from "./СhatComponents";
 import { CHAT_ACTIONS } from "utils/types";
 import { postMessToParent } from "utils/helpers";

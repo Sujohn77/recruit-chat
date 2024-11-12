@@ -1,8 +1,9 @@
 import { FC } from "react";
 
-import * as S from "../styles";
-import { Initialization } from "./initialization";
+import * as S from "./styles";
+
 import { isMobile } from "utils/constants";
+import { Initialization } from "./IntroSome/initialization";
 
 interface IIntroScreenProps {
   isSelectedOption: boolean | null;

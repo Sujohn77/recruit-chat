@@ -3,14 +3,14 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 
 import { StorePersist } from "./Persist";
+import { Intro } from "screens";
 import { Loader } from "components/Layout";
 import { Chat, ChatWrapper } from "components";
 import { usePersisState } from "contexts/persist";
 import { useChatbotSideEffects } from "utils/hooks";
 import { DefaultThemeType } from "utils/theme/default";
 import { ChatScreens, isMobile } from "utils/constants";
-import { ImgWrapper, MobileIntroImg } from "screens/IntroSome/styles";
-import { Intro } from "screens/IntroSome";
+import { ImgWrapper, MobileIntroImg } from "screens/styles";
 
 export const Content: FC = () => {
   const { chatScreen, messages, hostname } = useChatMessenger();

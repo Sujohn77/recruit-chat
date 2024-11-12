@@ -1,8 +1,7 @@
-import { Close, Flex } from "screens/IntroSome/styles";
+import { Close, Flex } from "screens/styles";
 import styled from "styled-components";
 
 import { COLORS } from "utils/colors";
-
 
 export const ChatHeaderWrapper = styled.div`
   height: 60px;

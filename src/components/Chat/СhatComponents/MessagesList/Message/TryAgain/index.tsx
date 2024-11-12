@@ -9,8 +9,8 @@ import { TryAgainTypes } from "utils/constants";
 import { useChatMessenger } from "contexts/MessengerContext";
 import { createTextMess } from "utils/helpers";
 import {
-  ReferralSteps,
   getReferralQuestion,
+  ReferralSteps,
 } from "components/Chat/СhatComponents/ChatInput/data";
 
 interface ITryAgainProps {

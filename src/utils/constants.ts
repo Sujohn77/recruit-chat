@@ -580,3 +580,7 @@ export enum IntentName {
   Reject = "Utilities.Reject",
   Unsure = "Utilities.Unsure",
 }
+
+export enum StorageKeys {
+  FirstMessDate = "_FMD",
+}

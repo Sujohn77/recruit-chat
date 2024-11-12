@@ -26,7 +26,7 @@ export interface ISendTranscript {
 
 export interface IUserSelf {
   id: number;
-  userLicenseTypeId: 1;
+  userLicenseTypeId?: 1;
   photoURL?: null | boolean | string;
   photoUrl?: null | boolean | string;
   photoSasToken?: null | boolean | string;
