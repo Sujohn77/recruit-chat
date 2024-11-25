@@ -65,7 +65,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     }
 
     return text
-      .replace("{privacyPolicyLink}", NOTICE_LINK)
+      .replaceAll("{secondaryPrivacyPolicyLinkUrl}", NOTICE_LINK)
       .replaceAll("{cookiePolicyLink}", cookiesPPLink)
       .trim();
   }, [currentLanguage, inlineDisclaimer, PPLinkUrl, cookiePPLinkUrl]);
@@ -98,7 +98,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
                 render: (ir: IntermediateRepresentation) => {
                   let linkName =
                     ir.attributes.href === NOTICE_LINK
-                      ? t("labels:privacy_policy_notice")
+                      ? t("labels:privacy_policy_withpout_company_name")
                       : t("labels:privacy_policy", { companyName });
 
                   const isCookiesLink =
