@@ -32,20 +32,18 @@ export const Message: FC<IMessageProps> = ({
   message,
   setSelectedReferralJobId,
 }) => {
-  const { messages, firstName, lastName, chatbotName } = useChatMessenger();
+  const { messages, chatbotName } = useChatMessenger();
   const subType = message?.content?.subType;
   const messageIndex = messages.findIndex((m) => m.localId === message.localId);
   const isLastMess = messageIndex === 0;
   const senderName = useMemo<string>(
     () =>
       message.isOwn
-        ? `${message.sender?.firstName || firstName || ""} ${
-            message.sender?.lastName || lastName || ""
-          }`
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : message.sender?.firstName
         ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : chatbotName || "",
-    [message, firstName, lastName, chatbotName]
+    [message, chatbotName]
   );
   const defProps = { isLastMess, message, senderName };
 

@@ -146,6 +146,7 @@ const ChatProvider = ({
   welcomeMessage,
   chatbotParentHeigh,
   chatbotName,
+  coockiesPPLinkUrl,
 }: IChatProviderProps) => {
   const detectedCountry = useDetectCountry(true, isReferralEnabled);
   const { t } = useTranslation();
@@ -831,6 +832,7 @@ const ChatProvider = ({
       withFindJobOption,
       sendNewMessage,
       chatConsent,
+      coockiesPPLinkUrl,
     ]
   );
 
@@ -1538,7 +1540,7 @@ const ChatProvider = ({
     setIsCandidateWithEmail,
     chatConsent,
     setChatConsent,
-
+    coockiesPPLinkUrl,
     PPLinkUrl,
     consentOptIn,
     footerPrivacyLink,

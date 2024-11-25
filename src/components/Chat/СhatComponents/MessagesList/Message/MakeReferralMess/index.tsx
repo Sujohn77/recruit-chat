@@ -28,23 +28,17 @@ export const MakeReferralMess: FC<IMakeReferralProps> = ({
     employeeJobCategory,
     employeeFullName,
     sendNewMessage,
-    firstName,
-    lastName,
     chatbotName,
   } = useChatMessenger();
 
   const senderName = useMemo<string>(
     () =>
       message.isOwn
-        ? firstName && lastName
-          ? `${firstName} ${lastName}`
-          : `${message.sender?.firstName || ""} ${
-              message.sender?.lastName || ""
-            }`
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : message.sender?.firstName
         ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : chatbotName || "",
-    [message, firstName, lastName, chatbotName]
+    [message, chatbotName]
   );
 
   const onMakeReferral = () => {

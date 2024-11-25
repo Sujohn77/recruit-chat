@@ -1,5 +1,3 @@
-import i18n from "services/localization";
-import { MessageType } from "utils/types";
 import { IChatMessengerContext } from "./types";
 import { ReferralSteps } from "components/Chat/СhatComponents/ChatInput/data";
 
@@ -129,70 +127,5 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
     message: null,
     questions: [],
   },
+  coockiesPPLinkUrl: null,
 };
-
-const defaultQuestions = (referralCompanyName: string | null) => [
-  {
-    text: i18n.t("questions:recruitment_process"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:recruitment_process",
-  },
-  {
-    text: i18n.t("questions:part_time"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-  },
-  {
-    text: i18n.t("questions:flexible_work", {
-      companyName: referralCompanyName,
-    }),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:flexible_work",
-    i18nProps: {
-      companyName: referralCompanyName,
-    },
-  },
-  {
-    text: i18n.t("questions:about_company"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:about_company",
-  },
-];
-
-const newDefaultReferralQuestions = [
-  {
-    text: i18n.t("questions:choose_specific"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:choose_specific",
-  },
-  {
-    text: i18n.t("questions:whats_positions"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:whats_positions",
-  },
-  {
-    text: i18n.t("questions:how_can_refer"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:how_can_refer",
-  },
-  {
-    text: i18n.t("questions:whats_the_requirements_to_refer"),
-    subType: MessageType.BUTTON,
-    isChatMessage: true,
-    isOwn: true,
-    i18n: "questions:whats_the_requirements_to_refer",
-  },
-];

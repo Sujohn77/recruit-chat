@@ -26,6 +26,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     currentLanguage,
     companyName,
     messages,
+    coockiesPPLinkUrl,
   } = useChatMessenger();
   const msgProps = { ...getMessageProps(message) };
 
@@ -36,28 +37,30 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
 
   const disclaimerText = useMemo<string>(() => {
     let text = "";
-    const link = PPLinkUrl ? PPLinkUrl : " ";
+    const ppLink = PPLinkUrl?.trim() || " ";
+    const coockiesPPLink = coockiesPPLinkUrl?.trim() || " ";
+
     switch (currentLanguage) {
       case "en":
         if (inlineDisclaimer?.content_en) {
-          text = inlineDisclaimer.content_en?.replace(
+          text = inlineDisclaimer.content_en?.replaceAll(
             "{privacyPolicyLink}",
-            link
+            ppLink
           );
         }
         break;
       case "fr":
         if (inlineDisclaimer?.content_fr) {
-          text = inlineDisclaimer.content_fr?.replace(
+          text = inlineDisclaimer.content_fr?.replaceAll(
             "{privacyPolicyLink}",
-            link
+            ppLink
           );
         }
         break;
       default:
         break;
     }
-    return text.trim();
+    return text.replaceAll("{cookiePolicyLink}", coockiesPPLink).trim();
   }, [currentLanguage, inlineDisclaimer, PPLinkUrl]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
@@ -80,7 +83,9 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
           withOptions={!!message?.optionList}
           isOwn={message.isOwn}
         >
-          <span style={{ fontWeight: 400, fontSize: 12 }}>
+          <span
+            style={{ fontWeight: 400, fontSize: 12, whiteSpace: "pre-line" }}
+          >
             <Linkify
               options={{
                 render: () => (

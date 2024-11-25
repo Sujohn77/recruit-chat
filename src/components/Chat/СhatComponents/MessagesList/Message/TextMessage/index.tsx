@@ -37,8 +37,6 @@ export const TextMessage: FC<ITextMessageProps> = ({
     offerJobs,
     currentLanguage,
     consentOptIn,
-    firstName,
-    lastName,
   } = useChatMessenger();
   const altMessText = useGetMessageText(message);
   const { t, i18n } = useTranslation();
@@ -46,13 +44,11 @@ export const TextMessage: FC<ITextMessageProps> = ({
   const senderName = useMemo<string>(
     () =>
       message.isOwn
-        ? `${message.sender?.firstName || firstName || ""} ${
-            message.sender?.lastName || lastName || ""
-          }`
+        ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : message.sender?.firstName
         ? `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`
         : chatbotName || "",
-    [message, firstName, lastName, chatbotName]
+    [message, chatbotName]
   );
 
   const messageText = useMemo((): ReactNode => {
