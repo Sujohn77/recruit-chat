@@ -168,6 +168,9 @@ export const ChatBotRoot: FC = () => {
         }
 
         if (inlineDisclaimer) {
+          // setInlineDisclaimer(
+          //   JSON.parse(inlineDisclaimer.replace(/“/g, '"').replace(/”/g, '"'))
+          // );
           setInlineDisclaimer(JSON.parse(inlineDisclaimer));
         }
 

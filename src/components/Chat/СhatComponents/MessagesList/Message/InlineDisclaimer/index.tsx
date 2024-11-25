@@ -65,10 +65,17 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     }
 
     return text
-      .replaceAll("{secondaryPrivacyPolicyLinkUrl}", NOTICE_LINK)
+      .replaceAll("{companyName}", companyName || "")
+      .replaceAll("{secondaryPrivacyPolicyLink}", NOTICE_LINK)
       .replaceAll("{cookiePolicyLink}", cookiesPPLink)
       .trim();
-  }, [currentLanguage, inlineDisclaimer, PPLinkUrl, cookiePPLinkUrl]);
+  }, [
+    currentLanguage,
+    inlineDisclaimer,
+    PPLinkUrl,
+    cookiePPLinkUrl,
+    companyName,
+  ]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
     currentMess: message,
@@ -96,10 +103,9 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
             <Linkify
               options={{
                 render: (ir: IntermediateRepresentation) => {
-                  let linkName =
-                    ir.attributes.href === NOTICE_LINK
-                      ? t("labels:privacy_policy_withpout_company_name")
-                      : t("labels:privacy_policy", { companyName });
+                  let linkName = t(
+                    "labels:privacy_policy_withpout_company_name"
+                  );
 
                   const isCookiesLink =
                     ir.attributes.href === cookiePPLinkUrl?.trim();
