@@ -1,6 +1,7 @@
 import { useChatMessenger } from "contexts/MessengerContext";
 import { FC, useMemo } from "react";
 import Linkify from "linkify-react";
+import { IntermediateRepresentation } from "linkifyjs";
 
 import { Link, Text } from "./styles";
 import * as S from "../styles";
@@ -9,6 +10,8 @@ import { ILocalMessage } from "utils/types";
 import { useTheme } from "styled-components";
 import { DefaultThemeType } from "utils/theme/default";
 import { useTranslation } from "react-i18next";
+
+const NOTICE_LINK = "https://gms.loop.jobs/notice-link";
 
 interface IInlineDisclaimerProps {
   message: ILocalMessage;
@@ -26,7 +29,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     currentLanguage,
     companyName,
     messages,
-    coockiesPPLinkUrl,
+    cookiePPLinkUrl,
   } = useChatMessenger();
   const msgProps = { ...getMessageProps(message) };
 
@@ -38,12 +41,12 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
   const disclaimerText = useMemo<string>(() => {
     let text = "";
     const ppLink = PPLinkUrl?.trim() || " ";
-    const coockiesPPLink = coockiesPPLinkUrl?.trim() || " ";
+    const cookiesPPLink = cookiePPLinkUrl?.trim() || " ";
 
     switch (currentLanguage) {
       case "en":
         if (inlineDisclaimer?.content_en) {
-          text = inlineDisclaimer.content_en?.replaceAll(
+          text = inlineDisclaimer.content_en?.replace(
             "{privacyPolicyLink}",
             ppLink
           );
@@ -51,7 +54,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
         break;
       case "fr":
         if (inlineDisclaimer?.content_fr) {
-          text = inlineDisclaimer.content_fr?.replaceAll(
+          text = inlineDisclaimer.content_fr?.replace(
             "{privacyPolicyLink}",
             ppLink
           );
@@ -60,8 +63,12 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
       default:
         break;
     }
-    return text.replaceAll("{cookiePolicyLink}", coockiesPPLink).trim();
-  }, [currentLanguage, inlineDisclaimer, PPLinkUrl]);
+
+    return text
+      .replace("{privacyPolicyLink}", NOTICE_LINK)
+      .replaceAll("{cookiePolicyLink}", cookiesPPLink)
+      .trim();
+  }, [currentLanguage, inlineDisclaimer, PPLinkUrl, cookiePPLinkUrl]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
     currentMess: message,
@@ -88,11 +95,27 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
           >
             <Linkify
               options={{
-                render: () => (
-                  <Link target="_blank" href={PPLinkUrl || ""}>
-                    {t("labels:privacy_policy", { companyName })}
-                  </Link>
-                ),
+                render: (ir: IntermediateRepresentation) => {
+                  let linkName =
+                    ir.attributes.href === NOTICE_LINK
+                      ? t("labels:privacy_policy_notice")
+                      : t("labels:privacy_policy", { companyName });
+
+                  const isCookiesLink =
+                    ir.attributes.href === cookiePPLinkUrl?.trim();
+
+                  if (isCookiesLink) {
+                    linkName = t("labels:cookies_policy");
+                  }
+                  return (
+                    <Link
+                      target="_blank"
+                      href={(isCookiesLink ? cookiePPLinkUrl : PPLinkUrl) || ""}
+                    >
+                      {linkName}
+                    </Link>
+                  );
+                },
               }}
             >
               <Text style={{ fontWeight: 400 }}>{disclaimerText}</Text>

@@ -127,5 +127,5 @@ export const chatMessengerDefaultState: IChatMessengerContext = {
     message: null,
     questions: [],
   },
-  coockiesPPLinkUrl: null,
+  cookiePPLinkUrl: null,
 };

@@ -84,7 +84,7 @@ export const ChatBotRoot: FC = () => {
   const [footerPrivacyLink, setFooterPrivacyLink] =
     useState<IPrivacyPolicy | null>(null);
   const [PPLinkUrl, setPPLinkUrl] = useState<string | null>(null);
-  const [coockiePPLinkUrl, setCookiePPLinkUrl] = useState<string | null>(null);
+  const [cookiePPLinkUrl, setCookiePPLinkUrl] = useState<string | null>(null);
   const [chatbotName, setChatbotName] = useState("");
 
   useEffect(() => {
@@ -223,7 +223,7 @@ export const ChatBotRoot: FC = () => {
       {chatBotID && (
         <ChatProvider
           PPLinkUrl={PPLinkUrl}
-          coockiesPPLinkUrl={coockiePPLinkUrl}
+          cookiePPLinkUrl={cookiePPLinkUrl}
           inlineDisclaimer={inlineDisclaimer}
           footerPrivacyLink={footerPrivacyLink}
           consentOptIn={consentOptIn}
