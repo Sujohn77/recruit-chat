@@ -11,8 +11,6 @@ import { useTheme } from "styled-components";
 import { DefaultThemeType } from "utils/theme/default";
 import { useTranslation } from "react-i18next";
 
-const NOTICE_LINK = "https://gms.loop.jobs/notice-link";
-
 interface IInlineDisclaimerProps {
   message: ILocalMessage;
   isLastMess: boolean;
@@ -30,6 +28,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     companyName,
     messages,
     cookiePPLinkUrl,
+    secondaryPrivacyPolicyLink,
   } = useChatMessenger();
   const msgProps = { ...getMessageProps(message) };
 
@@ -66,7 +65,10 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
 
     return text
       .replaceAll("{companyName}", companyName || "")
-      .replaceAll("{secondaryPrivacyPolicyLink}", NOTICE_LINK)
+      .replaceAll(
+        "{secondaryPrivacyPolicyLink}",
+        secondaryPrivacyPolicyLink || ""
+      )
       .replaceAll("{cookiePolicyLink}", cookiesPPLink)
       .trim();
   }, [
@@ -75,6 +77,7 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
     PPLinkUrl,
     cookiePPLinkUrl,
     companyName,
+    secondaryPrivacyPolicyLink,
   ]);
 
   const isNextMessFromSameSender = getIsNextMsgFromSameSender({
@@ -106,18 +109,15 @@ export const InlineDisclaimer: FC<IInlineDisclaimerProps> = ({
                   let linkName = t(
                     "labels:privacy_policy_withpout_company_name"
                   );
-
                   const isCookiesLink =
                     ir.attributes.href === cookiePPLinkUrl?.trim();
 
                   if (isCookiesLink) {
                     linkName = t("labels:cookies_policy");
                   }
+
                   return (
-                    <Link
-                      target="_blank"
-                      href={(isCookiesLink ? cookiePPLinkUrl : PPLinkUrl) || ""}
-                    >
+                    <Link target="_blank" href={ir.attributes.href || ""}>
                       {linkName}
                     </Link>
                   );

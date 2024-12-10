@@ -277,6 +277,7 @@ export interface IPPKeys {
   footerPrivacyLink: IPrivacyPolicy | null;
   PPLinkUrl: string | null;
   cookiePPLinkUrl: string | null;
+  secondaryPrivacyPolicyLink: string | null;
 }
 
 export interface IQnAState {

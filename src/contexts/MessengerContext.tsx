@@ -147,6 +147,7 @@ const ChatProvider = ({
   chatbotParentHeigh,
   chatbotName,
   cookiePPLinkUrl,
+  secondaryPrivacyPolicyLink,
 }: IChatProviderProps) => {
   const detectedCountry = useDetectCountry(true, isReferralEnabled);
   const { t } = useTranslation();
@@ -1425,6 +1426,7 @@ const ChatProvider = ({
   }, []);
 
   const chatState: IChatMessengerContext = {
+    secondaryPrivacyPolicyLink,
     status,
     messages,
     category,

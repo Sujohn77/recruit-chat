@@ -39,6 +39,7 @@ export interface IParentMessage {
     inlineDisclaimer?: string;
     privacyPolicyLinkInnerText?: string;
     privacyPolicyLinkUrl?: string;
+    secondaryPrivacyPolicyLinkUrl?: string;
     cookiePolicyLinkUrl?: string;
     // --------------
     jobsearchEnabled?: BooleanInString;
@@ -85,6 +86,9 @@ export const ChatBotRoot: FC = () => {
     useState<IPrivacyPolicy | null>(null);
   const [PPLinkUrl, setPPLinkUrl] = useState<string | null>(null);
   const [cookiePPLinkUrl, setCookiePPLinkUrl] = useState<string | null>(null);
+  const [secondaryPrivacyPolicyLink, setSecondaryPrivacyPolicyLink] = useState<
+    string | null
+  >(null);
   const [chatbotName, setChatbotName] = useState("");
 
   useEffect(() => {
@@ -135,6 +139,7 @@ export const ChatBotRoot: FC = () => {
           jobSearchLocationMultiSelect,
           welcomeMessage,
           cookiePolicyLinkUrl,
+          secondaryPrivacyPolicyLinkUrl,
         } = props;
 
         welcomeMessage && setWelcomeMessage(welcomeMessage);
@@ -177,6 +182,8 @@ export const ChatBotRoot: FC = () => {
         pathname && setParenPathname(pathname);
         privacyPolicyLinkUrl && setPPLinkUrl(privacyPolicyLinkUrl);
         cookiePolicyLinkUrl && setCookiePPLinkUrl(cookiePolicyLinkUrl);
+        secondaryPrivacyPolicyLinkUrl &&
+          setSecondaryPrivacyPolicyLink(secondaryPrivacyPolicyLinkUrl);
       }
 
       if (token) {
@@ -227,6 +234,7 @@ export const ChatBotRoot: FC = () => {
         <ChatProvider
           PPLinkUrl={PPLinkUrl}
           cookiePPLinkUrl={cookiePPLinkUrl}
+          secondaryPrivacyPolicyLink={secondaryPrivacyPolicyLink}
           inlineDisclaimer={inlineDisclaimer}
           footerPrivacyLink={footerPrivacyLink}
           consentOptIn={consentOptIn}

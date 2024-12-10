@@ -584,3 +584,10 @@ export enum IntentName {
 export enum StorageKeys {
   FirstMessDate = "_FMD",
 }
+
+export enum InlineDisclaimerReplaceItem {
+  PPLink = "{privacyPolicyLink}",
+  CompanyName = "{companyName}",
+  SecondaryPPLink = "{secondaryPrivacyPolicyLink}",
+  CookiePPLink = "{cookiePolicyLink}",
+}
