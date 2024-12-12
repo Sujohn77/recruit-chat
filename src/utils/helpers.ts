@@ -188,7 +188,7 @@ export const getParsedMessages = (
       isOwn: !!msg.isOwn,
       optionList: msg.optionList,
       dateCreated: {
-        seconds: new Date().getTime(),
+        seconds: moment().unix(),
       },
     };
 

@@ -18,7 +18,7 @@ export enum ReferralSteps {
 
 export const getReferralQuestion = (step: ReferralSteps): ILocalMessage => {
   const dateCreated = {
-    seconds: new Date().getTime(),
+    seconds: moment().unix(),
   };
 
   switch (step) {
@@ -289,7 +289,7 @@ export const getAlertJobMessage = (
   emailAddress: string
 ): ILocalMessage => {
   const dateCreated = {
-    seconds: new Date().getTime(),
+    seconds: moment().unix(),
   };
   if (!firstName) {
     return createTextMess({
