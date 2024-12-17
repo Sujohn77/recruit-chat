@@ -86,7 +86,7 @@ export const MessageBox = styled.div<IMessageBoxProps>`
         isError
           ? COLORS.PIPPIN
           : backgroundColor || isOwn
-          ? theme.primaryColor
+          ? theme.userMessageBubbleColor
           : theme.messageBubbleColor
       } transparent transparent transparent;
       position: absolute;
