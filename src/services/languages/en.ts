@@ -50,8 +50,8 @@ export const en = {
     continue: "Continue",
     log_out: "Log out",
     wish_continue: "I wish to continue",
-    privacy_policy: "{{companyName}} Privacy Policy",
-    privacy_policy_withpout_company_name: "Privacy Policy",
+    privacy_policy: "{{companyName}} Privacy Notice",
+    privacy_policy_withpout_company_name: "Privacy Notice",
     cookies_policy: "Cookies Policy",
     login:
       "Please complete the following form to start the application process:",
