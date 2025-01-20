@@ -206,9 +206,9 @@ export const en = {
     general_referral: "General referral",
     friend_first_name: "What is your friend's first name?",
     refer_someone_else: "Would you like to refer someone else?",
-    refer_someone_else_to: "Would you like to refer someone else to {{name}} ?",
+    refer_someone_else_to: "Would you like to refer someone else to {{name}}?",
     refer_someone_else_to_job:
-      "Would you like to refer someone else to the {{jobName}} job ?",
+      "Would you like to refer someone else to the {{jobName}} job?",
     successful_validation: `Hi {{userLastName}}, thanks for validating!     
     \n`,
     referral_options: `To refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
