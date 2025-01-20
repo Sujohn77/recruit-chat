@@ -217,9 +217,9 @@ export const fr = {
     friend_first_name: "Quel est le prénom de votre ami(e) ?",
     refer_someone_else: "Voulez-vous recommander quelqu'un d'autre ?",
     refer_someone_else_to:
-      "Voulez-vous recommander quelqu'un d'autre à {{name}} ?",
+      "Voulez-vous recommander quelqu'un d'autre à {{name}}?",
     refer_someone_else_to_job:
-      "Voulez-vous recommander quelqu'un d'autre au poste de {{jobName}} ?",
+      "Voulez-vous recommander quelqu'un d'autre au poste de {{jobName}}?",
     successful_validation:
       "Bonjour {{userLastName}}, merci pour la validation !     \n    \n",
     referral_options:
