@@ -50,53 +50,55 @@
     chatBotReferralListDomain = referralListDomain;
     chatBotClientApiToken = clientApiToken;
 
-    const ifrm = document.createElement("iframe");
-    ifrm.setAttribute("src", chatbotSrc);
-    ifrm.setAttribute("id", IFRAME_ID);
-    ifrm.setAttribute("width", "370px");
-    ifrm.setAttribute(
-      "sandbox",
-      "allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
-    );
+    if (!document.getElementById(IFRAME_ID)) {
+      const ifrm = document.createElement("iframe");
+      ifrm.setAttribute("src", chatbotSrc);
+      ifrm.setAttribute("id", IFRAME_ID);
+      ifrm.setAttribute("width", "370px");
+      ifrm.setAttribute(
+        "sandbox",
+        "allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
+      );
 
-    ifrm.sandbox.add(
-      "allow-popups",
-      "allow-popups-to-escape-sandbox",
-      "allow-scripts",
-      "allow-same-origin"
-    );
-    ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; border: none;`;
-    // transition: all 0.5s ease-in-out;
-    const showChatbot = isChatbotAvailable(props?.pages);
+      ifrm.sandbox.add(
+        "allow-popups",
+        "allow-popups-to-escape-sandbox",
+        "allow-scripts",
+        "allow-same-origin"
+      );
+      ifrm.style.cssText = `position: fixed;right: 10px; bottom: 10px; z-index: 2; border: none;`;
+      // transition: all 0.5s ease-in-out;
+      const showChatbot = isChatbotAvailable(props?.pages);
 
-    if (showChatbot) {
-      document.body?.appendChild(ifrm);
+      if (showChatbot) {
+        document.body?.appendChild(ifrm);
 
-      const currentHeight = window.innerHeight + "px";
-      ifrm.addEventListener("load", () => {
-        ifrm.contentWindow.postMessage(
-          {
-            guid,
-            style,
-            token,
-            props,
-            companyName,
-            referralListDomain,
-            clientApiToken,
-            hostname: window.location.hostname,
-            pathname: window.location.pathname,
-            chatbotMaxHeight: chatbotMaxHeight,
-            parentHeight: currentHeight,
-          },
-          ifrm.src
-        );
+        const currentHeight = window.innerHeight + "px";
+        ifrm.addEventListener("load", () => {
+          ifrm.contentWindow.postMessage(
+            {
+              guid,
+              style,
+              token,
+              props,
+              companyName,
+              referralListDomain,
+              clientApiToken,
+              hostname: window.location.hostname,
+              pathname: window.location.pathname,
+              chatbotMaxHeight: chatbotMaxHeight,
+              parentHeight: currentHeight,
+            },
+            ifrm.src
+          );
 
-        // Add resize listener after iframe is loaded
-        window.addEventListener("resize", onResize);
-      });
+          // Add resize listener after iframe is loaded
+          window.addEventListener("resize", onResize);
+        });
+      }
+
+      ifrm.onerror = () => refreshToken();
     }
-
-    ifrm.onerror = () => refreshToken();
   }
 
   async function refreshToken(callback) {
@@ -166,6 +168,8 @@
     // console.log("%cEVENT", logStyle, event);
     if (chatbotSrc.indexOf(event.origin) !== -1 && event.data.event_id) {
       const chatbotIframe = document.getElementById(IFRAME_ID);
+
+      LOG(event.data.event_id, "__event_id__");
 
       switch (event.data.event_id) {
         case eventIds.REFRESH_TOKEN:

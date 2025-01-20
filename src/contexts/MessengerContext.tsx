@@ -867,11 +867,11 @@ const ChatProvider = ({
         if (res.data?.requisitions.length) {
           const offersWithSelectedTitle = filter(
             res.data.requisitions,
-            (r) => r.title === _categoryTitle
+            (r) => r.title?.trim() === payload.keyword?.trim()
           );
           const restOffers = filter(
             res.data.requisitions,
-            (r) => r.title !== _categoryTitle
+            (r) => r.title?.trim() !== payload.keyword?.trim()
           );
 
           setOfferJobs([...offersWithSelectedTitle, ...restOffers]);

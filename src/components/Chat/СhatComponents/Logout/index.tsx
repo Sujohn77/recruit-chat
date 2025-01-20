@@ -49,10 +49,10 @@ export const Logout: FC<ILogoutProps> = ({
   const logoutHandle = useCallback(async () => {
     const refreshChatbot = () => {
       setTimeout(() => {
-        setLoading(false);
-        postMessToParent(EventIds.RefreshChatbot);
         localStorage.clear();
+        postMessToParent(EventIds.RefreshChatbot);
         localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
+        setLoading(false);
 
         if (parentPathname.includes("job")) {
           // close chatbot and show chatbot icon

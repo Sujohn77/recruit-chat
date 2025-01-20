@@ -2,10 +2,10 @@
 // const guid = "FE10595F-12C4-4C59-8FAA-055BB0FCB1A6"; // JJ guid
 // const guid = "9e2db3cf-238b-4182-980e-725e16699331"; // zustand
 // const chatbotSrc = `http://zustand-chatbot.s3-website.eu-west-2.amazonaws.com`; // zustand
-const guid = "f466faec-ea83-4122-8c23-458ab21e96be"; // qa guid
+const guid = "f466faec-ea83-4122-8c23-458ab21e96be"; // test guid
 const chatbotSrc = "http://loop-chat-bot.s3-website.eu-west-2.amazonaws.com"; // TODO: replace with your chatbotSrc
 
-const BASE_URL = "https://qa-integrations.loopworks.com/api/chatbot";
+const BASE_URL = "https://integrations.loopworks.com/api/chatbot";
 const logStyle =
   "background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 1em; padding: 5px;";
 const IFRAME_ID = "chat-iframe";

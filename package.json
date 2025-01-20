@@ -46,7 +46,6 @@
   "scripts": {
     "start": "dotenv -e .env.development react-scripts start",
     "start-prod": "dotenv -e .env.production react-scripts start",
-    "start-qa": "dotenv -e .env.qa react-scripts start",
     "build": "dotenv -e .env.qa react-scripts build",
     "build-dev": "dotenv -e .env.development react-scripts build",
     "build-uat": "CI=false dotenv -e .env.uat react-scripts build",
