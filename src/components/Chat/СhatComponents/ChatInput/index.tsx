@@ -729,7 +729,7 @@ export const ChatInput: FC<IChatInputProps> = ({
                   ${
                     jobOffer?.title
                       ? t("referral:refer_someone_else_to_job", {
-                          jobName: jobOffer.title,
+                          jobName: jobOffer.title.replaceAll("&amp;", ""),
                         })
                       : t("referral:refer_someone_else_to", {
                           name: referralCompanyName,
