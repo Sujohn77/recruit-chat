@@ -39,6 +39,7 @@ import {
 import {
   createConsentInMsg,
   createTextMess,
+  decodeHTML,
   getInputType,
   getMatchedItem,
   getMatchedItems,
@@ -729,13 +730,13 @@ export const ChatInput: FC<IChatInputProps> = ({
                   ${
                     jobOffer?.title
                       ? t("referral:refer_someone_else_to_job", {
-                          jobName: jobOffer.title.replaceAll("&amp;", ""),
+                          jobName: decodeHTML(jobOffer.title),
                         })
                       : t("referral:refer_someone_else_to", {
                           name: referralCompanyName,
                         })
                   }
-                `,
+                `.replaceAll("amp;", ""),
               isOwn: false,
               optionList: {
                 type: MessageOptionTypes.Referral,

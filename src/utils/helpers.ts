@@ -1154,3 +1154,9 @@ export const checkMessageDate = (
     ? moment.unix(dateInput.seconds).isAfter(firstTime?.current)
     : true;
 };
+
+export const decodeHTML = (html: string): string => {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+};

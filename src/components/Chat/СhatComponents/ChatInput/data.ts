@@ -142,30 +142,22 @@ export const getReferralResponseMess = (
   previouslyReferredState: ReferralResponse,
   refFirstName?: string,
   refLastName?: string,
-  refCompanyName?: string | null,
-  isI18nPhase = false
+  refCompanyName?: string | null
 ): string => {
   switch (previouslyReferredState) {
     case 0:
-      return isI18nPhase
-        ? "referral:thanks_you"
-        : i18n.t("referral:thanks_you");
-
+      return i18n.t("referral:thanks_you");
     case 1:
-      return isI18nPhase
-        ? "referral:previously_referred"
-        : i18n.t("referral:previously_referred", {
-            refFirstName,
-            refLastName,
-          });
+      return i18n.t("referral:previously_referred", {
+        refFirstName,
+        refLastName,
+      });
     case 2:
-      return isI18nPhase
-        ? "referral:previously_referred_to_company"
-        : i18n.t("referral:previously_referred_to_company", {
-            refFirstName,
-            refLastName,
-            refCompanyName,
-          });
+      return i18n.t("referral:previously_referred_to_company", {
+        refFirstName,
+        refLastName,
+        refCompanyName,
+      });
     default:
       return "";
   }

@@ -89,9 +89,8 @@ export const StorePersist: FC<IStorePersistProps> = ({ children }) => {
 
   const updateStorage = useCallback((e?: StorageEvent) => {
     if (e?.key === hostname + "status" && e.newValue === "close") {
-      postMessToParent(EventIds.RefreshChatbot);
-
       localStorage.clear();
+      postMessToParent(EventIds.RefreshChatbot);
     } else {
       const storedCurrentLanguage = localStorage.getItem(
         hostname + "currentLanguage"
