@@ -208,7 +208,7 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
         const inputString = `${clientApiToken}:${employeeId}:${refLastName}:${refBirth}`;
         const base64Encoded = btoa(inputString);
         const myReferralsTab = window.open(
-          `https://${refURL}/refer/myreferrals/?rvid=${base64Encoded}&staging=true`,
+          `https://${refURL}/refer/myreferrals/?rvid=${base64Encoded}`,
           "_blank"
         );
         myReferralsTab?.focus();

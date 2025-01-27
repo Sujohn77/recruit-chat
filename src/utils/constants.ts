@@ -15,7 +15,8 @@ import { IQnAState } from "contexts/types";
 
 export const isMobile = !!new MobileDetect(navigator.userAgent).mobile();
 
-export const BASE_API_URL = "https://qa-integrations.loopworks.com/";
+// export const BASE_API_URL = "https://integrations.loopworks.com/"; // PROD
+export const BASE_API_URL = "https://qa-integrations.loopworks.com/"; // QA
 export const isDevMode = process.env.NODE_ENV === "development";
 export const currencies = ["$", "€"];
 export const resumeElementId = "chatbot_resume";
