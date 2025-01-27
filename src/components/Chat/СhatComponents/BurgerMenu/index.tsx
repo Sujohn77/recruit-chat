@@ -24,7 +24,7 @@ import i18n from "services/localization";
 import { apiInstance } from "services/api";
 import { createTextMess } from "utils/helpers";
 import { CHAT_ACTIONS, IMenuItem, MessageType, NextMsgType } from "utils/types";
-import { getValidationRefResponse } from "../ChatInput/data";
+import { getValidationRefResponse, ReferralSteps } from "../ChatInput/data";
 
 interface IBurgerMenuProps {
   setIsShowResults: React.Dispatch<React.SetStateAction<boolean>>;
@@ -78,6 +78,8 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
     setSubscriberWorkflowId,
     isApplyJobFlow,
     isApplyJobSuccessfully,
+    setReferralStep,
+    companyName,
   } = useChatMessenger();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -174,11 +176,9 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
 
     if (type === CHAT_ACTIONS.MAKE_REFERRAL) {
       if (!isApplyJobFlow && !isApplyJobSuccessfully) {
-        const resMess = getValidationRefResponse(
-          employeeJobCategory,
-          refLastName,
-          false
-        );
+        const resMess = refLastName?.trim()
+          ? getValidationRefResponse(employeeJobCategory, refLastName, false)
+          : null;
         const makeRefMess = createTextMess({
           text,
           i18n: "buttons:make_referral",
@@ -190,13 +190,45 @@ export const BurgerMenu: FC<IBurgerMenuProps> = ({
           message: makeRefMess.content.text,
           localId: makeRefMess.localId.toString(),
         });
-        sendNewMessage({
-          isOwn: false,
-          message: resMess.content.text,
-          localId: resMess.localId,
-        });
 
-        setMessages((prevMessages) => [resMess, makeRefMess, ...prevMessages]);
+        if (resMess) {
+          sendNewMessage({
+            isOwn: false,
+            message: resMess.content.text,
+            localId: resMess.localId,
+          });
+
+          setMessages((prevMessages) => [
+            resMess,
+            makeRefMess,
+            ...prevMessages,
+          ]);
+        } else {
+          setCurrentMsgType(CHAT_ACTIONS.MAKE_REFERRAL);
+          const employeeQuestion = createTextMess({
+            text: t("messages:employeeId", {
+              companyName,
+            }),
+            i18n: "messages:employeeId",
+            i18nProps: {
+              companyName,
+            },
+          });
+
+          sendNewMessage({
+            isOwn: false,
+            message: employeeQuestion.content.text,
+            localId: employeeQuestion.localId,
+          });
+
+          setMessages((prevMessages) => [
+            employeeQuestion,
+            makeRefMess,
+            ...prevMessages,
+          ]);
+          setReferralStep(ReferralSteps.EmployeeId);
+        }
+
         return;
       } else {
         onLeaveApplyJob(type);
