@@ -30,7 +30,7 @@ export const Initialization: FC<IProps> = ({ isClosed, setIsClosed }) => {
   const searchJob = useSearchJobFromParentSite();
 
   useEffect(() => {
-    if (parentPathname.includes("job") && !isClosed) {
+    if (parentPathname.includes("job") && !isClosed && !isReferralEnabled) {
       searchJob();
     }
   }, [parentPathname, isClosed]);
