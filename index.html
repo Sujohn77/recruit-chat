@@ -270,16 +270,21 @@
       ?.map((p) => (p[0] === "/" ? p : "/" + p));
   }
 
+  function getBasePath(pathname) {
+    const segments = pathname.split("/").filter(Boolean);
+    return segments.length > 0 ? `/${segments[0]}` : "/";
+  }
+
   function isChatbotAvailable(pages) {
     if (!pages) return false;
 
-    const pathname = window.location.pathname;
+    const pathname = getBasePath(window.location.pathname);
     const availablePages = strToArray(pages);
 
     if (pathname.length === 1) {
       return availablePages?.some((p) => pathname === p);
     } else {
-      return availablePages?.some((p) => p !== "/" && pathname.includes(p));
+      return availablePages?.some((p) => p !== "/" && pathname === p);
     }
   }
 
