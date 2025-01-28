@@ -9,7 +9,7 @@ import { Chat, ChatWrapper } from "components";
 import { usePersisState } from "contexts/persist";
 import { useChatbotSideEffects } from "utils/hooks";
 import { DefaultThemeType } from "utils/theme/default";
-import { ChatScreens, isMobile } from "utils/constants";
+import { ChatScreens, EventIds, isMobile } from "utils/constants";
 import { ImgWrapper, MobileIntroImg } from "screens/styles";
 
 export const Content: FC = () => {
@@ -35,9 +35,32 @@ export const Content: FC = () => {
   useChatbotSideEffects(isSelectedOption);
 
   const onIconClick = useCallback(() => {
+    window.parent.postMessage(
+      JSON.parse(
+        JSON.stringify({
+          event_id: EventIds.IFrameHeight,
+          isSelectedOption: true,
+        })
+      ),
+      "*"
+    );
     setIsClosed(false);
     setShowIcon(false);
   }, []);
+
+  useEffect(() => {
+    if (showIcon) {
+      window.parent.postMessage(
+        JSON.parse(
+          JSON.stringify({
+            event_id: EventIds.IFrameHeight,
+            isSelectedOption: false,
+          })
+        ),
+        "*"
+      );
+    }
+  }, [showIcon]);
 
   useEffect(() => {
     setTimeout(() => setShowLoader(false), 1000);

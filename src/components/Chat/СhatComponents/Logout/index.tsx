@@ -51,7 +51,6 @@ export const Logout: FC<ILogoutProps> = ({
       setTimeout(() => {
         localStorage.setItem(hostname + "status", "close"); // to close chatbot in other tabs
         localStorage.clear();
-        postMessToParent(EventIds.RefreshChatbot);
         setLoading(false);
 
         if (parentPathname.includes("job")) {
@@ -61,6 +60,8 @@ export const Logout: FC<ILogoutProps> = ({
           setIsClosed(true);
           setShowIcon(true);
         }
+
+        postMessToParent(EventIds.RefreshChatbot);
       }, 1500);
     };
 

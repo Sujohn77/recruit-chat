@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import browserStorage from "store";
 
 // This hook receives two parameters:
@@ -32,10 +32,23 @@ export const usePersisState: UsePersisStateType = ({
     }
   }, []);
 
-  const setState = (newState: any) => {
+  const setState = useCallback((newState: any) => {
     browserStorage.set(storageKey, newState);
     setInternalState(newState);
-  };
+  }, []);
+
+  const updateStorage = useCallback((e?: StorageEvent) => {
+    if (e?.key === storageKey) {
+      setState(e.newValue === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("storage", updateStorage);
+    return () => {
+      window.removeEventListener("storage", updateStorage);
+    };
+  }, []);
 
   return [state, setState];
 };
