@@ -1160,3 +1160,32 @@ export const decodeHTML = (html: string): string => {
   txt.innerHTML = html;
   return txt.value;
 };
+
+export const validateBirthYear = (input: string): string | null => {
+  const currentYear = new Date().getFullYear();
+  const minYear = 1900;
+
+  if (!/^\d+$/.test(input)) {
+    return "Birth year must be a number.";
+  }
+
+  if (!/^\d{4}$/.test(input)) {
+    return "Year must be a 4-digit number.";
+  }
+
+  const year = Number(input);
+
+  if (year < minYear) {
+    return "Year is not valid. You're really over 125 years old?";
+  }
+
+  if (year > currentYear) {
+    return "Year cannot be in the future.";
+  }
+
+  if (year > currentYear - 16) {
+    return "Candidate must be at least 16 years old.";
+  }
+
+  return null;
+};

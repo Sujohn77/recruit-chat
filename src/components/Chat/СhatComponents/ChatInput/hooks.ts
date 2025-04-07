@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { apiInstance } from "services/api";
 import { ICheckAnswerResponse } from "services/types";
 import { CHAT_ACTIONS, MessageType } from "utils/types";
-import { TextFieldTypes } from "utils/constants";
+import { TextFieldTypes, TryAgainTypes } from "utils/constants";
 import { useTextField } from "utils/hooks";
 
 export const useCheckAnswer = () =>
@@ -34,11 +34,12 @@ export const useCheckAnswer = () =>
 export const useIsDisabledInput = () => {
   const { currentMsgType, isChatLoading, messages, isChatInputAvailable } =
     useChatMessenger();
+  const lastMsg = messages?.[0];
 
   const isLastMessageWithOptions =
-    (!!messages?.[0]?.optionList &&
-      !!messages?.[0]?.optionList?.options?.length) ||
-    messages?.[0]?.content?.subType === MessageType.TRY_AGAIN;
+    (!!lastMsg?.optionList && !!lastMsg?.optionList?.options?.length) ||
+    (lastMsg?.content?.subType === MessageType.TRY_AGAIN &&
+      lastMsg.content.tryAgainType !== TryAgainTypes.YearValidation);
   const disabled =
     !isChatInputAvailable ||
     isLastMessageWithOptions ||

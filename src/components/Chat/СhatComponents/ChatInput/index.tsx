@@ -47,6 +47,7 @@ import {
   isValidNumber,
   LOG,
   parsePathname,
+  validateBirthYear,
   validateEmail,
   validateEmailOrPhone,
   withSendNewMess,
@@ -532,57 +533,77 @@ export const ChatInput: FC<IChatInputProps> = ({
 
         break;
       case ReferralSteps.ReferralBirth:
-        const onSuccessCallback = (
-          employeeFullName: string,
-          newCandidateId?: number
-        ) => {
-          const resMess = getValidationRefResponse(
-            employeeJobCategory,
-            employeeFullName || refLastName,
-            true
-          );
-          sendNewMessage({
-            isOwn: false,
-            message: resMess.content.text,
-            localId: resMess.localId,
-            newCandidateId: newCandidateId,
-          });
-          setMessages((prevMessages) => [resMess, ...prevMessages]);
+        const validationMsg = validateBirthYear(draftMessage);
 
-          const trimmedEmployeeID = refEmployeeId.trim();
-          trimmedEmployeeID &&
-            !isNaN(trimmedEmployeeID) &&
-            setEmployeeId(+trimmedEmployeeID);
-          setReferralStep(ReferralSteps.UserFirstName);
-        };
-
-        const onFailure = () => {
-          const tryAgain = createTextMess({
+        if (validationMsg) {
+          const errorValidationMsg = createTextMess({
             subType: MessageType.TRY_AGAIN,
-            text: t("errors:referral_validation"),
-            tryAgainType: TryAgainTypes.Validate,
-            i18n: "errors:referral_validation",
+            text: validationMsg,
+            tryAgainType: TryAgainTypes.YearValidation,
           });
-
           sendNewMessage({
             isOwn: false,
-            message: tryAgain.content.text,
-            localId: tryAgain.localId,
+            message: errorValidationMsg.content.text,
+            localId: errorValidationMsg.localId,
           });
-          setMessages((prevMessages) => [tryAgain, ...prevMessages]);
-        };
+          setMessages((prevMessages) => [
+            errorValidationMsg,
+            mess,
+            ...prevMessages,
+          ]);
+        } else {
+          const onSuccessCallback = (
+            employeeFullName: string,
+            newCandidateId?: number
+          ) => {
+            const resMess = getValidationRefResponse(
+              employeeJobCategory,
+              employeeFullName || refLastName,
+              true
+            );
+            sendNewMessage({
+              isOwn: false,
+              message: resMess.content.text,
+              localId: resMess.localId,
+              newCandidateId: newCandidateId,
+            });
+            setMessages((prevMessages) => [resMess, ...prevMessages]);
 
-        setMessages((prevMessages) => [mess, ...prevMessages]);
-        setRefBirth(draftMessage);
-        onValidateReferral(
-          {
-            lastName: refLastName,
-            yeanOrBirth: draftMessage,
-            employeeId: refEmployeeId,
-          },
-          onSuccessCallback,
-          onFailure
-        );
+            const trimmedEmployeeID = refEmployeeId.trim();
+            trimmedEmployeeID &&
+              !isNaN(trimmedEmployeeID) &&
+              setEmployeeId(+trimmedEmployeeID);
+            setReferralStep(ReferralSteps.UserFirstName);
+          };
+          const onFailure = () => {
+            const tryAgain = createTextMess({
+              subType: MessageType.TRY_AGAIN,
+              text: t("errors:referral_validation"),
+              tryAgainType: TryAgainTypes.Validate,
+              i18n: "errors:referral_validation",
+            });
+
+            sendNewMessage({
+              isOwn: false,
+              message: tryAgain.content.text,
+              localId: tryAgain.localId,
+            });
+            setMessages((prevMessages) => [tryAgain, ...prevMessages]);
+          };
+
+          setMessages((prevMessages) => [mess, ...prevMessages]);
+          setRefBirth(draftMessage);
+          onValidateReferral(
+            {
+              lastName: refLastName,
+              yeanOrBirth: draftMessage,
+              employeeId: refEmployeeId,
+            },
+            onSuccessCallback,
+            onFailure
+          );
+        }
+
         break;
       case ReferralSteps.UserFirstName:
         draftMessage?.trim() && setFirstName(draftMessage);

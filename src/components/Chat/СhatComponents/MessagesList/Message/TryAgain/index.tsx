@@ -98,16 +98,18 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMess }) => {
   return (
     <S.Wrapper>
       <S.MessageText>{message.content.text}</S.MessageText>
-      <DarkButton
-        onClick={onTryAgainClick}
-        disabled={!isLastMess}
-        width="35%"
-        fontWeight={500}
-        fontColor={COLORS.WHITE}
-        backgroundColor={COLORS.VIVID_TANGERINE}
-      >
-        {t("buttons:try_again")}
-      </DarkButton>
+      {message.content.tryAgainType !== TryAgainTypes.YearValidation && (
+        <DarkButton
+          onClick={onTryAgainClick}
+          disabled={!isLastMess}
+          width="35%"
+          fontWeight={500}
+          fontColor={COLORS.WHITE}
+          backgroundColor={COLORS.VIVID_TANGERINE}
+        >
+          {t("buttons:try_again")}
+        </DarkButton>
+      )}
     </S.Wrapper>
   );
 };
