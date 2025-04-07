@@ -1401,6 +1401,8 @@ export const ChatInput: FC<IChatInputProps> = ({
       })
     ) {
       return t("placeHolders:enter_employee_id");
+    } else if (messages?.[0]?.content?.text === t("referral:birth")) {
+      return t("placeHolders:enter_year");
     }
     return placeHolder || t("placeHolders:bot_typing");
   };

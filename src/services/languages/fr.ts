@@ -29,6 +29,7 @@ export const fr = {
     click_menu: "Click the menu button left for more options",
     aks_another_question:
       "Ask another question or click the menu button at left for more options",
+    enter_year: "enter a year e.g. 1978",
   },
   labels: {
     required: "Obligatoire",

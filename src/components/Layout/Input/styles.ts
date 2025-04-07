@@ -39,6 +39,7 @@ export const TextInput = styled.input<ITextInputProps>`
 
   &::placeholder {
     font-size: 14px;
+    color: ${COLORS.MINE_SHAFT};
   }
 `;
 

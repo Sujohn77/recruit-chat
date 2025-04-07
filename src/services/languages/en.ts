@@ -29,6 +29,7 @@ export const en = {
     click_menu: "Click the menu button left for more options",
     aks_another_question:
       "Ask another question or click the menu button at left for more options",
+    enter_year: "enter a year e.g. 1978",
   },
   labels: {
     required: "Required",
@@ -213,7 +214,7 @@ export const en = {
     \n`,
     referral_options: `To refer a friend to a job, firstly choose one of the following options to narrow down the jobs available. You can choose to refer to jobs in your area, your job group or any job`,
     lastname: "What is your last name?",
-    birth: "What is your year of birth?",
+    birth: "What year you born in e.g. 1978?",
     thanks:
       "Thanks for confirming your employee details.\nTo continue, answer the following questions about your referral.",
     friend_firstname: "What is your friend's first name?",
