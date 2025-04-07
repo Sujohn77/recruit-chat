@@ -54,7 +54,7 @@ export enum MessageStatuses {
 export enum TryAgainTypes {
   Validate = "Validate",
   SendReferral = "SendReferral",
-  YearValidation = "YearValidation",
+  Error = "Error",
 }
 
 export const HTTP_RESPONSES = {

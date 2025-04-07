@@ -97,8 +97,12 @@ export const TryAgain: FC<ITryAgainProps> = ({ message, isLastMess }) => {
 
   return (
     <S.Wrapper>
-      <S.MessageText>{message.content.text}</S.MessageText>
-      {message.content.tryAgainType !== TryAgainTypes.YearValidation && (
+      <S.MessageText
+        withMargin={message.content.tryAgainType !== TryAgainTypes.Error}
+      >
+        {message.content.text}
+      </S.MessageText>
+      {message.content.tryAgainType !== TryAgainTypes.Error && (
         <DarkButton
           onClick={onTryAgainClick}
           disabled={!isLastMess}

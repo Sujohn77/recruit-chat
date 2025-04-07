@@ -20,8 +20,8 @@ export const Wrapper = styled.div<IWrapperProps>`
   border-radius: 8px;
 `;
 
-export const MessageText = styled.span`
-  margin-bottom: 12px;
+export const MessageText = styled.span<{ withMargin: boolean }>`
+  margin-bottom: ${({ withMargin }) => (withMargin ? 12 : 0)}px;
   color: ${COLORS.NEW_YORK_PINK};
   font-size: 12px;
 `;

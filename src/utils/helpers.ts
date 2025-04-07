@@ -1189,3 +1189,15 @@ export const validateBirthYear = (input: string): string | null => {
 
   return null;
 };
+
+export const validateEmployeeId = (input: string): string | null => {
+  if (!/^\d+$/.test(input)) {
+    return "Employee ID must contain only digits.";
+  }
+
+  if (input.length === 0) {
+    return "Employee ID cannot be empty.";
+  }
+
+  return null;
+};

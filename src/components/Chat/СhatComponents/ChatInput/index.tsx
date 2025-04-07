@@ -50,6 +50,7 @@ import {
   validateBirthYear,
   validateEmail,
   validateEmailOrPhone,
+  validateEmployeeId,
   withSendNewMess,
 } from "utils/helpers";
 import { CHAT_ACTIONS, ILocalMessage, MessageType } from "utils/types";
@@ -494,21 +495,57 @@ export const ChatInput: FC<IChatInputProps> = ({
 
     switch (referralStep) {
       case ReferralSteps.EmployeeId:
-        setRefEmployeeId(draftMessage);
-        setMessages((prevMessages) => [mess, ...prevMessages]);
-        setIsChatLoading(true);
-        setTimeout(() => {
-          const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
+        const validationIDMsg = validateEmployeeId(draftMessage);
+
+        if (validationIDMsg) {
+          const errorValidationMsg = createTextMess({
+            subType: MessageType.TRY_AGAIN,
+            text: validationIDMsg,
+            tryAgainType: TryAgainTypes.Error,
+          });
+          const employeeQuestion = createTextMess({
+            text: t("messages:employeeId", {
+              companyName,
+            }),
+            i18n: "messages:employeeId",
+            i18nProps: {
+              companyName,
+            },
+          });
 
           sendNewMessage({
             isOwn: false,
-            message: enterNamaMess.content.text,
-            localId: enterNamaMess.localId,
+            message: errorValidationMsg.content.text,
+            localId: errorValidationMsg.localId,
           });
-          setIsChatLoading(false);
-          setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
-        }, 500);
-        setReferralStep(ReferralSteps.ReferralLastName);
+          sendNewMessage({
+            isOwn: false,
+            message: employeeQuestion.content.text,
+            localId: employeeQuestion.localId,
+          });
+          setMessages((prevMessages) => [
+            employeeQuestion,
+            errorValidationMsg,
+            mess,
+            ...prevMessages,
+          ]);
+        } else {
+          setRefEmployeeId(draftMessage);
+          setMessages((prevMessages) => [mess, ...prevMessages]);
+          setIsChatLoading(true);
+          setTimeout(() => {
+            const enterNamaMess = getReferralQuestion(ReferralSteps.EmployeeId);
+
+            sendNewMessage({
+              isOwn: false,
+              message: enterNamaMess.content.text,
+              localId: enterNamaMess.localId,
+            });
+            setIsChatLoading(false);
+            setMessages((prevMessages) => [enterNamaMess, ...prevMessages]);
+          }, 500);
+          setReferralStep(ReferralSteps.ReferralLastName);
+        }
 
         break;
       case ReferralSteps.ReferralLastName:
@@ -539,7 +576,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           const errorValidationMsg = createTextMess({
             subType: MessageType.TRY_AGAIN,
             text: validationMsg,
-            tryAgainType: TryAgainTypes.YearValidation,
+            tryAgainType: TryAgainTypes.Error,
           });
           sendNewMessage({
             isOwn: false,

@@ -39,7 +39,7 @@ export const useIsDisabledInput = () => {
   const isLastMessageWithOptions =
     (!!lastMsg?.optionList && !!lastMsg?.optionList?.options?.length) ||
     (lastMsg?.content?.subType === MessageType.TRY_AGAIN &&
-      lastMsg.content.tryAgainType !== TryAgainTypes.YearValidation);
+      lastMsg.content.tryAgainType !== TryAgainTypes.Error);
   const disabled =
     !isChatInputAvailable ||
     isLastMessageWithOptions ||
