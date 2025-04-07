@@ -317,7 +317,7 @@ export interface IParsedTheme {
 }
 
 export interface IReferralData {
-  employeeId: number;
+  employeeId: number | string;
   lastName: string;
   yeanOrBirth: string;
 }

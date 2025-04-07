@@ -83,7 +83,7 @@ export const useValidateReferral = () => {
     ) => {
       if (candidateId && chatId) {
         const payload: IValidateRefPayload = {
-          employeeId: +data.employeeId,
+          employeeId: data.employeeId,
           lastName: data.lastName,
           candidateId: candidateId,
           chatId: chatId,

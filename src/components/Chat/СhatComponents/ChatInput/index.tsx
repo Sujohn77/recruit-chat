@@ -578,7 +578,7 @@ export const ChatInput: FC<IChatInputProps> = ({
           {
             lastName: refLastName,
             yeanOrBirth: draftMessage,
-            employeeId: +refEmployeeId,
+            employeeId: refEmployeeId,
           },
           onSuccessCallback,
           onFailure
